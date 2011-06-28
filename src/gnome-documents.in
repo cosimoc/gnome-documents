@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if test x"$GJS_PATH" = x ; then
+    export GJS_PATH=@pkgdatadir@/js
+else
+    export GJS_PATH=@pkgdatadir@/js:$GJS_PATH
+fi
+
+if test x"$GI_TYPELIB_PATH" = x ; then
+    export GI_TYPELIB_PATH=@libdir@/girepository-1.0
+else
+    export GI_TYPELIB_PATH=@libdir@/girepository-1.0:$GI_TYPELIB_PATH
+fi
+
+/usr/bin/env gjs @pkgdatadir@/js/main.js
