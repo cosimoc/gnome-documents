@@ -1,21 +1,13 @@
 const Gtk = imports.gi.Gtk;
+const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
+const Application = imports.application;
 
-const Gettext = imports.gettext;
-const GettextD = imports.gettext.domain("gnome-documents");
-const _ = GettextD.gettext;
+let application = null;
+let settings = null;
 
-const Mainloop = imports.mainloop;
-const Lang = imports.lang;
-
-const Format = imports.format;
-const Path = imports.path;
-
-GLib.set_prgname('gnome-documents');
-Gtk.init(null, null);
-Gettext.bindtextdomain('gnome-documents', Path.LOCALE_DIR);
-String.prototype.format = Format.format;
-
-let mainWindow = new Gtk.Window({ type: Gtk.WindowType.TOPLEVEL });
-mainWindow.show();
-Gtk.main();
+function start() {
+    application = new Application.Application();
+    settings = new Gio.Settings({ schema: 'org.gnome.documents' });
+    Gtk.main();
+}

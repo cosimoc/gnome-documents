@@ -1,0 +1,11 @@
+[Desktop Entry]
+_Name=Documents
+_Comment=Access, manage and share documents
+Exec=gnome-documents %U
+Icon=emblem-documents
+Terminal=false
+Type=Application
+StartupNotify=true
+OnlyShowIn=GNOME;
+Categories=GNOME;GTK;Utility;Core;
+MimeType=x-content/documents;
