@@ -25,7 +25,6 @@ MainToolbar.prototype = {
     },
 
     _populateForOverview: function() {
-        // FIXME: need correct icons
         let iconView = new Gtk.ToggleButton({ child: new Gtk.Image({ icon_name: 'view-grid-symbolic',
                                                                      pixel_size: 16 }) });
         iconView.get_style_context().add_class('linked');
