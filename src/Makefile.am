@@ -34,13 +34,6 @@ include $(INTROSPECTION_MAKEFILE)
 include Makefile-lib.am
 include Makefile-js.am
 
-# gsettingsschema_in_files = org.gnome.documents.gschema.xml.in
-# gsettings_SCHEMAS = $(gsettingsschema_in_files:.xml.in=.xml)
-# .PRECIOUS: $(gsettings_SCHEMAS)
-
-# @INTLTOOL_XML_NOMERGE_RULE@
-# @GSETTINGS_RULES@
-
 gir_DATA += $(INTROSPECTION_GIRS)
 typelib_DATA += $(gir_DATA:.gir=.typelib)
 
@@ -51,11 +44,6 @@ bin_SCRIPTS = gnome-documents
 gnome-documents: gnome-documents.in
 	$(AM_V_GEN) $(do_subst) $< > $@
 	chmod +x $@
-
-# CLEANFILES += gnome-documents \
-#     $(gsettings_SCHEMAS)
-# EXTRA_DIST += gnome-documents.in \
-#     $(gsettingsschema_in_files)
 
 CLEANFILES += gnome-documents
 EXTRA_DIST += gnome-documents.in

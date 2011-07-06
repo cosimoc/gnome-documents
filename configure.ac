@@ -56,7 +56,8 @@ GOBJECT_INTROSPECTION_MIN_VERSION=0.9.6
 PKG_CHECK_MODULES(DOCUMENTS,
                   glib-2.0 >= $GLIB_MIN_VERSION
                   gobject-introspection-1.0 >= $GOBJECT_INTROSPECTION_MIN_VERSION
-                  gtk+-3.0 >= $GTK_MIN_VERSION)
+                  gtk+-3.0 >= $GTK_MIN_VERSION
+                  gnome-desktop-3.0)
 
 AC_CONFIG_FILES([
 Makefile
