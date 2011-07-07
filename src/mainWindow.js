@@ -1,4 +1,6 @@
+const Gd = imports.gi.Gd;
 const Gtk = imports.gi.Gtk;
+const Pango = imports.gi.Pango;
 
 const Lang = imports.lang;
 
@@ -7,8 +9,14 @@ const MainToolbar = imports.mainToolbar;
 const TrackerModel = imports.trackerModel;
 const _ = imports.gettext.gettext;
 
-const _WINDOW_DEFAULT_WIDTH = 850;
+const _WINDOW_DEFAULT_WIDTH = 860;
 const _WINDOW_DEFAULT_HEIGHT = 600;
+
+const _VIEW_ITEM_WIDTH = 152;
+const _VIEW_ITEM_WRAP_WIDTH = 140;
+const _VIEW_COLUMN_SPACING = 20;
+const _VIEW_COLUMNS = 4;
+const _VIEW_MARGIN = 16;
 
 function MainWindow() {
     this._init();
@@ -32,6 +40,17 @@ MainWindow.prototype = {
                             Lang.bind(this, this._onDeleteEvent));
     },
 
+    _initView: function() {
+        this.view = new Gtk.IconView({ hexpand: true,
+                                       vexpand: true });
+
+        this.view.item_width = _VIEW_ITEM_WIDTH;
+        this.view.column_spacing = _VIEW_COLUMN_SPACING;
+        this.view.columns = _VIEW_COLUMNS;
+        this.view.margin = _VIEW_MARGIN;
+        this.view.set_selection_mode(Gtk.SelectionMode.MULTIPLE);
+    },
+
     _initUi: function() {
         this._grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,
                                     vexpand: true });
@@ -44,8 +63,8 @@ MainWindow.prototype = {
         this._scrolledWin = new Gtk.ScrolledWindow({ hexpand: true,
                                                      vexpand: true });
         this._grid.add(this._scrolledWin);
-        this.view = new Gtk.IconView({ hexpand: true,
-                                       vexpand: true });
+        this._initView();
+
         this._scrolledWin.add(this.view);
 
         this._grid.show_all();
@@ -56,9 +75,25 @@ MainWindow.prototype = {
     },
 
     _setModelView: function() {
+        // default params for cell renderers
+        let cellParams = { alignment: Pango.Alignment.CENTER,
+                           wrap_mode: Pango.WrapMode.WORD_CHAR,
+                           wrap_width: _VIEW_ITEM_WRAP_WIDTH,
+                           xalign: 0.5,
+                           yalign: 0.0 };
+
         this.view.set_model(this._model.model);
-        this.view.set_text_column(TrackerModel.ModelColumns.TITLE);
         this.view.set_pixbuf_column(TrackerModel.ModelColumns.ICON);
+
+        this._titleRenderer = new Gtk.CellRendererText(cellParams);
+        this.view.pack_start(this._titleRenderer, false);
+        this.view.add_attribute(this._titleRenderer,
+                                'text', TrackerModel.ModelColumns.TITLE);
+
+        this._authorRenderer = new Gd.DimRenderer(cellParams);
+        this.view.pack_end(this._authorRenderer, false);
+        this.view.add_attribute(this._authorRenderer,
+                                'text', TrackerModel.ModelColumns.AUTHOR);
     },
 
     _onModelCreated: function() {
