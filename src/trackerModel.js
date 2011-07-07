@@ -6,7 +6,6 @@ const Gtk = imports.gi.Gtk;
 const Tracker = imports.gi.Tracker;
 const Gd = imports.gi.Gd;
 const GdkPixbuf = imports.gi.GdkPixbuf;
-const GnomeDesktop = imports.gi.GnomeDesktop;
 
 const Main = imports.main;
 
