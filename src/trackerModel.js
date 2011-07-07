@@ -21,6 +21,7 @@ const ModelColumns = {
 };
 
 const _ICON_VIEW_SIZE = 128;
+const _LIMIT_STEP = 52; // needs to be multiple of four
 const _FILE_ATTRIBUTES = 'standard::icon,standard::content-type,thumbnail::path,time::modified';
 
 function TrackerModel(callback) {
@@ -31,6 +32,7 @@ TrackerModel.prototype = {
     _init: function(callback) {
         this._initCallback = callback;
 
+        this._limit = _LIMIT_STEP;
         this.model = Gd.create_list_store();
         this._initConnection();
     },
@@ -49,16 +51,18 @@ TrackerModel.prototype = {
         }));
     },
 
-    _buildOverviewQuery: function() {
+    _buildOverviewQuery: function(limit) {
         let sparql = 
-            'SELECT ?urn ' + // urn
-            '?uri ' + // uri
-            'tracker:coalesce(nie:title(?urn), nfo:fileName(?urn)) ' + // title
-            'tracker:coalesce(nco:fullname(?creator), nco:fullname(?publisher)) ' + // author
-            'nfo:fileLastModified(?urn) ' + // mtime
-            'WHERE { ?urn a nfo:PaginatedTextDocument; nie:url ?uri . ' +
-            'OPTIONAL { ?urn nco:creator ?creator . } ' +
-            'OPTIONAL { ?urn nco:publisher ?publisher . } }';
+            ('SELECT ?urn ' + // urn
+             '?uri ' + // uri
+             'tracker:coalesce(nie:title(?urn), nfo:fileName(?urn)) ' + // title
+             'tracker:coalesce(nco:fullname(?creator), nco:fullname(?publisher)) ' + // author
+             '?mtime ' + // mtime
+             'WHERE { ?urn a nfo:PaginatedTextDocument; nie:url ?uri; nfo:fileLastModified ?mtime . ' +
+             'OPTIONAL { ?urn nco:creator ?creator . } ' +
+             'OPTIONAL { ?urn nco:publisher ?publisher . } }' +
+             'ORDER BY DESC (?mtime)' +
+             'LIMIT %d').format(limit);
 
         return sparql;
     },
@@ -70,8 +74,24 @@ TrackerModel.prototype = {
         let author = cursor.get_string(ModelColumns.AUTHOR)[0];
         let mtime = cursor.get_string(ModelColumns.MTIME)[0];
 
+        let found = false;
+
         if (!author)
             author = '';
+
+        this.model.foreach(Lang.bind(this, function(model, path, iter) {
+            let value = this.model.get_value(iter, ModelColumns.URN);
+
+            if (urn == value) {
+                found = true;
+                return true;
+            }
+
+            return false;
+        }));
+
+        if (found)
+            return;
 
         let file = Gio.file_new_for_uri(uri);
         file.query_info_async(_FILE_ATTRIBUTES,
@@ -170,8 +190,18 @@ TrackerModel.prototype = {
         }
     },
 
-    populateForOverview: function() {
-        this._connection.query_async(this._buildOverviewQuery(), null,
+    _performCurrentQuery: function() {
+        this._connection.query_async(this._currentQueryBuilder(this._limit), null,
                                      Lang.bind(this, this._onQueryExecuted));
+    },
+
+    populateForOverview: function() {
+        this._currentQueryBuilder = this._buildOverviewQuery;
+        this._performCurrentQuery();
+    },
+
+    loadMore: function() {
+        this._limit += _LIMIT_STEP;
+        this._performCurrentQuery();
     }
 }

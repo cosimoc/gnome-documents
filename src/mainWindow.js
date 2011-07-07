@@ -41,6 +41,8 @@ MainWindow.prototype = {
     },
 
     _initView: function() {
+        this._viewBox = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
+
         this.view = new Gtk.IconView({ hexpand: true,
                                        vexpand: true });
 
@@ -49,6 +51,17 @@ MainWindow.prototype = {
         this.view.columns = _VIEW_COLUMNS;
         this.view.margin = _VIEW_MARGIN;
         this.view.set_selection_mode(Gtk.SelectionMode.MULTIPLE);
+
+        this._viewBox.add(this.view);
+
+        this._loadMore = new Gtk.Button({ label: 'Load more documents' });
+        this._viewBox.add(this._loadMore);
+
+        this._loadMore.connect('clicked', Lang.bind(this, function() {
+            this._model.loadMore();
+        }));
+
+        this._scrolledWin.add_with_viewport(this._viewBox);
     },
 
     _initUi: function() {
@@ -64,8 +77,6 @@ MainWindow.prototype = {
                                                      vexpand: true });
         this._grid.add(this._scrolledWin);
         this._initView();
-
-        this._scrolledWin.add(this.view);
 
         this._grid.show_all();
     },
