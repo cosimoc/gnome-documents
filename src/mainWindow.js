@@ -75,25 +75,20 @@ MainWindow.prototype = {
     },
 
     _setModelView: function() {
-        // default params for cell renderers
-        let cellParams = { alignment: Pango.Alignment.CENTER,
-                           wrap_mode: Pango.WrapMode.WORD_CHAR,
-                           wrap_width: _VIEW_ITEM_WRAP_WIDTH,
-                           xalign: 0.5,
-                           yalign: 0.0 };
-
         this.view.set_model(this._model.model);
         this.view.set_pixbuf_column(TrackerModel.ModelColumns.ICON);
 
-        this._titleRenderer = new Gtk.CellRendererText(cellParams);
-        this.view.pack_start(this._titleRenderer, false);
-        this.view.add_attribute(this._titleRenderer,
+        this._renderer = new Gd.TwoLinesRenderer({ alignment: Pango.Alignment.CENTER,
+                                                   wrap_mode: Pango.WrapMode.WORD_CHAR,
+                                                   wrap_width: _VIEW_ITEM_WRAP_WIDTH,
+                                                   xalign: 0.5,
+                                                   yalign: 0.0,
+                                                   text_lines: 3 });
+        this.view.pack_start(this._renderer, false);
+        this.view.add_attribute(this._renderer,
                                 'text', TrackerModel.ModelColumns.TITLE);
-
-        this._authorRenderer = new Gd.DimRenderer(cellParams);
-        this.view.pack_end(this._authorRenderer, false);
-        this.view.add_attribute(this._authorRenderer,
-                                'text', TrackerModel.ModelColumns.AUTHOR);
+        this.view.add_attribute(this._renderer,
+                                'line-two', TrackerModel.ModelColumns.AUTHOR);
     },
 
     _onModelCreated: function() {

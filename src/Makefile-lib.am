@@ -8,12 +8,12 @@ gdprivate_cflags = \
 
 gdprivate_source_h = \
     lib/gd-utils.h \
-    lib/gd-dim-renderer.h \
+    lib/gd-two-lines-renderer.h \
     $(NULL)
 
 gdprivate_source_c = \
     lib/gd-utils.c \
-    lib/gd-dim-renderer.c \
+    lib/gd-two-lines-renderer.c \
     $(NULL)
 
 lib_LTLIBRARIES += libgdprivate-1.0.la

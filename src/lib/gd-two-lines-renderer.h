@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef _GD_DIM_RENDERER_H
-#define _GD_DIM_RENDERER_H
+#ifndef _GD_TWO_LINES_RENDERER_H
+#define _GD_TWO_LINES_RENDERER_H
 
 #include <glib-object.h>
 
@@ -28,48 +28,48 @@
 
 G_BEGIN_DECLS
 
-#define GD_TYPE_DIM_RENDERER gd_dim_renderer_get_type()
+#define GD_TYPE_TWO_LINES_RENDERER gd_two_lines_renderer_get_type()
 
-#define GD_DIM_RENDERER(obj) \
+#define GD_TWO_LINES_RENDERER(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST ((obj), \
-   GD_TYPE_DIM_RENDERER, GdDimRenderer))
+   GD_TYPE_TWO_LINES_RENDERER, GdTwoLinesRenderer))
 
-#define GD_DIM_RENDERER_CLASS(klass) \
+#define GD_TWO_LINES_RENDERER_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_CAST ((klass), \
-   GD_TYPE_DIM_RENDERER, GdDimRendererClass))
+   GD_TYPE_TWO_LINES_RENDERER, GdTwoLinesRendererClass))
 
-#define GD_IS_DIM_RENDERER(obj) \
+#define GD_IS_TWO_LINES_RENDERER(obj) \
   (G_TYPE_CHECK_INSTANCE_TYPE ((obj), \
-   GD_TYPE_DIM_RENDERER))
+   GD_TYPE_TWO_LINES_RENDERER))
 
-#define GD_IS_DIM_RENDERER_CLASS(klass) \
+#define GD_IS_TWO_LINES_RENDERER_CLASS(klass) \
   (G_TYPE_CHECK_CLASS_TYPE ((klass), \
-   GD_TYPE_DIM_RENDERER))
+   GD_TYPE_TWO_LINES_RENDERER))
 
-#define GD_DIM_RENDERER_GET_CLASS(obj) \
+#define GD_TWO_LINES_RENDERER_GET_CLASS(obj) \
   (G_TYPE_INSTANCE_GET_CLASS ((obj), \
-   GD_TYPE_DIM_RENDERER, GdDimRendererClass))
+   GD_TYPE_TWO_LINES_RENDERER, GdTwoLinesRendererClass))
 
-typedef struct _GdDimRenderer GdDimRenderer;
-typedef struct _GdDimRendererClass GdDimRendererClass;
-typedef struct _GdDimRendererPrivate GdDimRendererPrivate;
+typedef struct _GdTwoLinesRenderer GdTwoLinesRenderer;
+typedef struct _GdTwoLinesRendererClass GdTwoLinesRendererClass;
+typedef struct _GdTwoLinesRendererPrivate GdTwoLinesRendererPrivate;
 
-struct _GdDimRenderer
+struct _GdTwoLinesRenderer
 {
   GtkCellRendererText parent;
 
-  GdDimRendererPrivate *priv;
+  GdTwoLinesRendererPrivate *priv;
 };
 
-struct _GdDimRendererClass
+struct _GdTwoLinesRendererClass
 {
   GtkCellRendererTextClass parent_class;
 };
 
-GType gd_dim_renderer_get_type (void) G_GNUC_CONST;
+GType gd_two_lines_renderer_get_type (void) G_GNUC_CONST;
 
-GdDimRenderer *gd_dim_renderer_new (void);
+GdTwoLinesRenderer *gd_two_lines_renderer_new (void);
 
 G_END_DECLS
 
-#endif /* _GD_DIM_RENDERER_H */
+#endif /* _GD_TWO_LINES_RENDERER_H */
