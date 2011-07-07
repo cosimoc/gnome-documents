@@ -52,6 +52,8 @@ MainWindow.prototype = {
         this.view.margin = _VIEW_MARGIN;
         this.view.set_selection_mode(Gtk.SelectionMode.MULTIPLE);
 
+        this.view.connect('item-activated', Lang.bind(this, this._onViewItemActivated));
+
         this._viewBox.add(this.view);
 
         this._loadMore = new Gtk.Button({ label: 'Load more documents' });
@@ -109,5 +111,16 @@ MainWindow.prototype = {
 
     _onDeleteEvent: function() {
         Main.application.quit();
-    }
+    },
+
+    _onViewItemActivated: function(view, path) {
+        let iter = this._model.model.get_iter(path)[1];
+        let uri = this._model.model.get_value(iter, TrackerModel.ModelColumns.URI);
+
+        try {
+            Gtk.show_uri(null, uri, Gtk.get_current_event_time());
+        } catch (e) {
+            log('Unable to open ' + uri + ': ' + e.toString())
+        }
+    },
 }
