@@ -32,6 +32,7 @@ TrackerModel.prototype = {
         this._initCallback = callback;
 
         this._limit = _LIMIT_STEP;
+        this._filter = '';
         this.model = Gd.create_list_store();
         this._initConnection();
     },
@@ -50,7 +51,7 @@ TrackerModel.prototype = {
         }));
     },
 
-    _buildOverviewQuery: function(limit) {
+    _buildOverviewQuery: function(limit, searchString) {
         let sparql = 
             ('SELECT ?urn ' + // urn
              '?uri ' + // uri
@@ -59,9 +60,13 @@ TrackerModel.prototype = {
              '?mtime ' + // mtime
              'WHERE { ?urn a nfo:PaginatedTextDocument; nie:url ?uri; nfo:fileLastModified ?mtime . ' +
              'OPTIONAL { ?urn nco:creator ?creator . } ' +
-             'OPTIONAL { ?urn nco:publisher ?publisher . } }' +
+             'OPTIONAL { ?urn nco:publisher ?publisher . } ' +
+             'FILTER (fn:contains (fn:lower-case (tracker:coalesce(nie:title(?urn), nfo:fileName(?urn))), "%s"))' +
+             ' } ' +
              'ORDER BY DESC (?mtime)' +
-             'LIMIT %d').format(limit);
+             'LIMIT %d').format(searchString, limit);
+
+        log(sparql);
 
         return sparql;
     },
@@ -190,7 +195,7 @@ TrackerModel.prototype = {
     },
 
     _performCurrentQuery: function() {
-        this._connection.query_async(this._currentQueryBuilder(this._limit), null,
+        this._connection.query_async(this._currentQueryBuilder(this._limit, this._filter), null,
                                      Lang.bind(this, this._onQueryExecuted));
     },
 
@@ -201,6 +206,14 @@ TrackerModel.prototype = {
 
     loadMore: function() {
         this._limit += _LIMIT_STEP;
+        this._performCurrentQuery();
+    },
+
+    setFilter: function(filter) {
+        // FIXME: should use GtkTreeModelFilter
+        this.model.clear();
+
+        this._filter = filter;
         this._performCurrentQuery();
     }
 }

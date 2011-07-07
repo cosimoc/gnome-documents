@@ -52,28 +52,28 @@ MainToolbar.prototype = {
         item.set_expand(true);
         item.add(box);
 
-        this._searchEntry = new Gtk.Entry({ width_request: 260,
-                                            secondary_icon_name: 'edit-find-symbolic',
-                                            secondary_icon_sensitive: false,
-                                            secondary_icon_activatable: false });
+        this.searchEntry = new Gtk.Entry({ width_request: 260,
+                                           secondary_icon_name: 'edit-find-symbolic',
+                                           secondary_icon_sensitive: false,
+                                           secondary_icon_activatable: false });
         let item2 = new Gtk.ToolItem();
-        item2.add(this._searchEntry);
+        item2.add(this.searchEntry);
 
-        this._searchEntry.connect('changed', Lang.bind(this, function() {
-            let text = this._searchEntry.get_text();
+        this.searchEntry.connect('changed', Lang.bind(this, function() {
+            let text = this.searchEntry.get_text();
             if (text && text != '') {
-                this._searchEntry.secondary_icon_name = 'edit-clear-symbolic';
-                this._searchEntry.secondary_icon_sensitive = true;
-                this._searchEntry.secondary_icon_activatable = true;
+                this.searchEntry.secondary_icon_name = 'edit-clear-symbolic';
+                this.searchEntry.secondary_icon_sensitive = true;
+                this.searchEntry.secondary_icon_activatable = true;
             } else {
-                this._searchEntry.secondary_icon_name = 'edit-find-symbolic';
-                this._searchEntry.secondary_icon_sensitive = false;
-                this._searchEntry.secondary_icon_activatable = false;
+                this.searchEntry.secondary_icon_name = 'edit-find-symbolic';
+                this.searchEntry.secondary_icon_sensitive = false;
+                this.searchEntry.secondary_icon_activatable = false;
             }
         }));                
 
-        this._searchEntry.connect('icon-release', Lang.bind(this, function() {
-            this._searchEntry.set_text('');
+        this.searchEntry.connect('icon-release', Lang.bind(this, function() {
+            this.searchEntry.set_text('');
         }));
 
         this.toolbar.insert(item, 0);

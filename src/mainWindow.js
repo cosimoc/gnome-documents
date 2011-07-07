@@ -1,8 +1,10 @@
 const Gd = imports.gi.Gd;
+const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 const Pango = imports.gi.Pango;
 
 const Lang = imports.lang;
+const Mainloop = imports.mainloop;
 
 const Main = imports.main;
 const MainToolbar = imports.mainToolbar;
@@ -17,6 +19,8 @@ const _VIEW_ITEM_WRAP_WIDTH = 140;
 const _VIEW_COLUMN_SPACING = 20;
 const _VIEW_COLUMNS = 4;
 const _VIEW_MARGIN = 16;
+
+const _SEARCH_ENTRY_TIMEOUT = 200;
 
 function MainWindow() {
     this._init();
@@ -71,8 +75,12 @@ MainWindow.prototype = {
                                     vexpand: true });
         this.window.add(this._grid);
 
+        this._searchTimeout = 0;
         this.toolbar = new MainToolbar.MainToolbar();
         this.toolbar.setOverview();
+        this.toolbar.searchEntry.connect('changed', 
+                                         Lang.bind(this, this._onSearchEntryChanged));
+
         this._grid.add(this.toolbar.toolbar);
 
         this._scrolledWin = new Gtk.ScrolledWindow({ hexpand: true,
@@ -123,4 +131,21 @@ MainWindow.prototype = {
             log('Unable to open ' + uri + ': ' + e.toString())
         }
     },
+
+    _onSearchEntryChanged: function() {
+        if (this._searchTimeout != 0) {
+            GLib.source_remove(this._searchTimeout)
+            this._searchTimeout = 0;
+        }
+
+        this._searchTimeout = Mainloop.timeout_add(_SEARCH_ENTRY_TIMEOUT,
+                                                   Lang.bind(this, this._onSearchEntryTimeout));
+    },
+
+    _onSearchEntryTimeout: function() {
+        this._searchTimeout = 0;
+
+        let text = this.toolbar.searchEntry.get_text();
+        this._model.setFilter(text);
+    }
 }
