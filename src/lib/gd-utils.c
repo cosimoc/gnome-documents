@@ -55,6 +55,10 @@ gd_store_update_icon (GtkListStore *store,
                       -1);
 }
 
+#define ATTRIBUTES_FOR_THUMBNAIL \
+  G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE"," \
+  G_FILE_ATTRIBUTE_TIME_MODIFIED
+
 static gboolean
 create_thumbnail (GIOSchedulerJob *job,
                   GCancellable *cancellable,
@@ -69,8 +73,18 @@ create_thumbnail (GIOSchedulerJob *job,
   guint64 mtime;
 
   uri = g_file_get_uri (file);
-  info = g_file_query_info (file, "standard::content-type,time::modified",
-                            0, NULL, NULL);
+  info = g_file_query_info (file, ATTRIBUTES_FOR_THUMBNAIL,
+                            G_FILE_QUERY_INFO_NONE,
+                            NULL, NULL);
+
+  /* we don't care about reporting errors here, just fail the
+   * thumbnail.
+   */
+  if (info == NULL)
+    {
+      g_simple_async_result_set_op_res_gboolean (result, FALSE);
+      goto out;
+    }
 
   mtime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
 
@@ -80,34 +94,48 @@ create_thumbnail (GIOSchedulerJob *job,
      uri, g_file_info_get_content_type (info));
 
   if (pixbuf != NULL)
-    gnome_desktop_thumbnail_factory_save_thumbnail (factory, pixbuf,
-                                                    uri, (time_t) mtime);
-
-  g_simple_async_result_complete_in_idle (result);
+    {
+      gnome_desktop_thumbnail_factory_save_thumbnail (factory, pixbuf,
+                                                      uri, (time_t) mtime);
+      g_simple_async_result_set_op_res_gboolean (result, TRUE);
+    }
+  else
+    {
+      g_simple_async_result_set_op_res_gboolean (result, FALSE);
+    }
 
   g_object_unref (info);
   g_object_unref (file);
   g_object_unref (factory);
-  g_object_unref (result);
+  g_clear_object (&pixbuf);
 
-  if (pixbuf != NULL)
-    g_object_unref (pixbuf);
+ out:
+  g_simple_async_result_complete_in_idle (result);
+  g_object_unref (result);
 
   return FALSE;
 }
 
 void
-gd_queue_thumbnail_job_for_file (GFile *file,
-                                 GAsyncReadyCallback callback,
-                                 gpointer user_data)
+gd_queue_thumbnail_job_for_file_async (GFile *file,
+                                       GAsyncReadyCallback callback,
+                                       gpointer user_data)
 {
   GSimpleAsyncResult *result;
 
   result = g_simple_async_result_new (G_OBJECT (file),
                                       callback, user_data, 
-                                      gd_queue_thumbnail_job_for_file);
+                                      gd_queue_thumbnail_job_for_file_async);
 
   g_io_scheduler_push_job (create_thumbnail,
                            result, NULL,
                            G_PRIORITY_DEFAULT, NULL);
+}
+
+gboolean
+gd_queue_thumbnail_job_for_file_finish (GAsyncResult *res)
+{
+  GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (res);
+
+  return g_simple_async_result_get_op_res_gboolean (simple);
 }

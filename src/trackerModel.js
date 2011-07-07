@@ -88,7 +88,7 @@ TrackerModel.prototype = {
                                       return;
                                   }
 
-                                  let thumbPath = info.get_attribute_byte_string('thumbnail::path');
+                                  let thumbPath = info.get_attribute_byte_string(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH);
                                   if (thumbPath) {
                                       pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(thumbPath,
                                                                                       _ICON_VIEW_SIZE, _ICON_VIEW_SIZE);
@@ -103,8 +103,15 @@ TrackerModel.prototype = {
                                           pixbuf = iconInfo.load_icon();
                                       }
 
-                                      Gd.queue_thumbnail_job_for_file(file, Lang.bind(this, function(object, res) {
-                                          file.query_info_async('thumbnail::path',
+                                      // try to create the thumbnail
+                                      Gd.queue_thumbnail_job_for_file_async(file, Lang.bind(this, function(object, res) {
+                                          let thumbnailed = Gd.queue_thumbnail_job_for_file_finish(res);
+
+                                          if (!thumbnailed)
+                                              return;
+
+                                          // get the new thumbnail path
+                                          file.query_info_async(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH,
                                                                 0, 0, null,
                                                                 Lang.bind(this, function(object, res) {
                                                                     try {
@@ -114,7 +121,7 @@ TrackerModel.prototype = {
                                                                         return;
                                                                     }
 
-                                                                    thumbPath = info.get_attribute_byte_string('thumbnail::path');
+                                                                    thumbPath = info.get_attribute_byte_string(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH);
 
                                                                     if (thumbPath) {
                                                                         pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(thumbPath,

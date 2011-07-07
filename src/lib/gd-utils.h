@@ -18,9 +18,11 @@ void gd_store_update_icon (GtkListStore *store,
                            GtkTreeIter *iter,
                            GdkPixbuf *icon);
 
-void gd_queue_thumbnail_job_for_file (GFile *file,
-                                      GAsyncReadyCallback callback,
-                                      gpointer user_data);
+void gd_queue_thumbnail_job_for_file_async (GFile *file,
+                                            GAsyncReadyCallback callback,
+                                            gpointer user_data);
+
+gboolean gd_queue_thumbnail_job_for_file_finish (GAsyncResult *res);
 
 #endif /* __GD_UTILS_H__ */
                                   
