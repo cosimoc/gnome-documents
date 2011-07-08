@@ -148,6 +148,7 @@ gd_two_lines_renderer_render (GtkCellRenderer      *cell,
   GdTwoLinesRenderer *self = GD_TWO_LINES_RENDERER (cell);
   GtkStyleContext *context;
   gint line_one_height;
+  GtkStateFlags state;
 
   context = gtk_widget_get_style_context (widget);
   gd_two_lines_renderer_prepare_layouts (self, widget);
@@ -166,6 +167,9 @@ gd_two_lines_renderer_render (GtkCellRenderer      *cell,
 
   gtk_style_context_save (context);
   gtk_style_context_add_class (context, "dim-label");
+
+  state = gtk_cell_renderer_get_state (cell, widget, flags);
+  gtk_style_context_set_state (context, state);
 
   gtk_render_layout (context, cr,
                      cell_area->x,
