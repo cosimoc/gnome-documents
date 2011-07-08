@@ -1,5 +1,6 @@
 const Gd = imports.gi.Gd;
 const GLib = imports.gi.GLib;
+const Gdk = imports.gi.Gdk;
 const Gtk = imports.gi.Gtk;
 const Pango = imports.gi.Pango;
 
@@ -97,7 +98,12 @@ MainWindow.prototype = {
 
     _setModelView: function() {
         this.view.set_model(this._model.model);
-        this.view.set_pixbuf_column(TrackerModel.ModelColumns.ICON);
+
+        let pixbufRenderer = new Gd.FramedPixbufRenderer({ xalign: 0.5,
+                                                           yalign: 0.5 });
+        this.view.pack_start(pixbufRenderer, false);
+        this.view.add_attribute(pixbufRenderer,
+                                'pixbuf', TrackerModel.ModelColumns.ICON);
 
         this._renderer = new Gd.TwoLinesRenderer({ alignment: Pango.Alignment.CENTER,
                                                    wrap_mode: Pango.WrapMode.WORD_CHAR,

@@ -8,11 +8,13 @@ gdprivate_cflags = \
 
 gdprivate_source_h = \
     lib/gd-utils.h \
+    lib/gd-framed-pixbuf-renderer.h \
     lib/gd-two-lines-renderer.h \
     $(NULL)
 
 gdprivate_source_c = \
     lib/gd-utils.c \
+    lib/gd-framed-pixbuf-renderer.c \
     lib/gd-two-lines-renderer.c \
     $(NULL)
 
