@@ -66,8 +66,6 @@ TrackerModel.prototype = {
              'ORDER BY DESC (?mtime)' +
              'LIMIT %d').format(searchString, limit);
 
-        log(sparql);
-
         return sparql;
     },
 
