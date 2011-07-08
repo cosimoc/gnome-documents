@@ -42,7 +42,8 @@ static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
 static PangoLayout *
 create_layout_with_attrs (GtkWidget *widget,
-                          GdTwoLinesRenderer *self)
+                          GdTwoLinesRenderer *self,
+                          PangoEllipsizeMode ellipsize)
 {
   PangoLayout *layout;
   gint wrap_width;
@@ -57,7 +58,7 @@ create_layout_with_attrs (GtkWidget *widget,
 
   layout = pango_layout_new (gtk_widget_get_pango_context (widget));
 
-  pango_layout_set_ellipsize (layout, PANGO_ELLIPSIZE_MIDDLE);
+  pango_layout_set_ellipsize (layout, ellipsize);
   pango_layout_set_width (layout, wrap_width * PANGO_SCALE);
   pango_layout_set_wrap (layout, wrap_mode);
   pango_layout_set_alignment (layout, alignment);
@@ -80,11 +81,11 @@ gd_two_lines_renderer_prepare_layouts (GdTwoLinesRenderer *self,
 
   if (self->priv->line_one_layout == NULL)
     self->priv->line_one_layout = 
-      create_layout_with_attrs (widget, self);
+      create_layout_with_attrs (widget, self, PANGO_ELLIPSIZE_MIDDLE);
 
   if (self->priv->line_two_layout == NULL)
     self->priv->line_two_layout = 
-      create_layout_with_attrs (widget, self);
+      create_layout_with_attrs (widget, self, PANGO_ELLIPSIZE_END);
 
   if (self->priv->line_two == NULL ||
       g_strcmp0 (self->priv->line_two, "") == 0)
