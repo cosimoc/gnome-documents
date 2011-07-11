@@ -1,4 +1,5 @@
 const Lang = imports.lang;
+const Signals = imports.signals;
 
 const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
@@ -19,8 +20,18 @@ const ModelColumns = {
     N_COLUMNS: 6
 };
 
+const OFFSET_STEP = 52; // needs to be multiple of four
+
+const TrackerColumns = {
+    URN: 0,
+    URI: 1,
+    TITLE: 2,
+    AUTHOR: 3,
+    MTIME: 4,
+    TOTAL_COUNT: 5
+};
+
 const _ICON_VIEW_SIZE = 128;
-const _LIMIT_STEP = 52; // needs to be multiple of four
 const _FILE_ATTRIBUTES = 'standard::icon,standard::content-type,thumbnail::path,time::modified';
 
 function TrackerModel(callback) {
@@ -31,8 +42,6 @@ TrackerModel.prototype = {
     _init: function(callback) {
         this._initCallback = callback;
 
-        this._limit = _LIMIT_STEP;
-        this._filter = '';
         this.model = Gd.create_list_store();
         this._initConnection();
     },
@@ -51,49 +60,40 @@ TrackerModel.prototype = {
         }));
     },
 
-    _buildOverviewQuery: function(limit, searchString) {
+    _buildOverviewQuery: function(offset, searchString) {
         let sparql = 
             ('SELECT ?urn ' + // urn
              '?uri ' + // uri
              'tracker:coalesce(nie:title(?urn), nfo:fileName(?urn)) ' + // title
              'tracker:coalesce(nco:fullname(?creator), nco:fullname(?publisher)) ' + // author
              '?mtime ' + // mtime
+             '(SELECT COUNT(?doc) WHERE { ?doc a nfo:PaginatedTextDocument . ' +
+             'FILTER (fn:contains (fn:lower-case (tracker:coalesce(nie:title(?doc), nfo:fileName(?doc))), "%s"))' +
+             '}) ' + // total filtered count
              'WHERE { ?urn a nfo:PaginatedTextDocument; nie:url ?uri; nfo:fileLastModified ?mtime . ' +
              'OPTIONAL { ?urn nco:creator ?creator . } ' +
              'OPTIONAL { ?urn nco:publisher ?publisher . } ' +
              'FILTER (fn:contains (fn:lower-case (tracker:coalesce(nie:title(?urn), nfo:fileName(?urn))), "%s"))' +
              ' } ' +
              'ORDER BY DESC (?mtime)' +
-             'LIMIT %d').format(searchString, limit);
+             'LIMIT %d OFFSET %d').format(searchString, searchString, OFFSET_STEP, this._offset);
 
         return sparql;
     },
 
     _addRowFromCursor: function(cursor) {
-        let urn = cursor.get_string(ModelColumns.URN)[0];
-        let uri = cursor.get_string(ModelColumns.URI)[0];
-        let title = cursor.get_string(ModelColumns.TITLE)[0];
-        let author = cursor.get_string(ModelColumns.AUTHOR)[0];
-        let mtime = cursor.get_string(ModelColumns.MTIME)[0];
+        let urn = cursor.get_string(TrackerColumns.URN)[0];
+        let uri = cursor.get_string(TrackerColumns.URI)[0];
+        let title = cursor.get_string(TrackerColumns.TITLE)[0];
+        let author = cursor.get_string(TrackerColumns.AUTHOR)[0];
+        let mtime = cursor.get_string(TrackerColumns.MTIME)[0];
+
+        this._itemCount = cursor.get_integer(TrackerColumns.TOTAL_COUNT);
 
         let found = false;
 
         if (!author)
             author = '';
-
-        this.model.foreach(Lang.bind(this, function(model, path, iter) {
-            let value = this.model.get_value(iter, ModelColumns.URN);
-
-            if (urn == value) {
-                found = true;
-                return true;
-            }
-
-            return false;
-        }));
-
-        if (found)
-            return;
 
         let file = Gio.file_new_for_uri(uri);
         file.query_info_async(_FILE_ATTRIBUTES,
@@ -169,8 +169,11 @@ TrackerModel.prototype = {
         try {
             let valid = cursor.next_finish(res);
 
-            if (!valid)
+            if (!valid) {
+                // signal the total count update and return
+                this._emitCountUpdated();
                 return;
+            }
         } catch (e) {
             // FIXME: error handling
             log('Unable to fetch results from cursor: ' + e.toString());
@@ -193,25 +196,36 @@ TrackerModel.prototype = {
     },
 
     _performCurrentQuery: function() {
-        this._connection.query_async(this._currentQueryBuilder(this._limit, this._filter), null,
+        this._connection.query_async(this._currentQueryBuilder(this._offset, this._filter), null,
                                      Lang.bind(this, this._onQueryExecuted));
+    },
+
+    _emitCountUpdated: function() {
+        this.emit('count-updated', this._itemCount, this._offset);
     },
 
     populateForOverview: function() {
         this._currentQueryBuilder = this._buildOverviewQuery;
+
+        this._offset = 0;
+        this._filter = '';
+
         this._performCurrentQuery();
     },
 
     loadMore: function() {
-        this._limit += _LIMIT_STEP;
+        this._offset += OFFSET_STEP;
         this._performCurrentQuery();
     },
 
     setFilter: function(filter) {
-        // FIXME: should use GtkTreeModelFilter
         this.model.clear();
 
+        this._offset = 0;
         this._filter = filter;
+
         this._performCurrentQuery();
     }
 }
+
+Signals.addSignalMethods(TrackerModel.prototype);

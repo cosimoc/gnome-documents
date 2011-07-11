@@ -61,7 +61,7 @@ MainWindow.prototype = {
 
         this._viewBox.add(this.view);
 
-        this._loadMore = new Gtk.Button({ label: 'Load more documents' });
+        this._loadMore = new Gtk.Button();
         this._viewBox.add(this._loadMore);
 
         this._loadMore.connect('clicked', Lang.bind(this, function() {
@@ -94,6 +94,7 @@ MainWindow.prototype = {
 
     _initModel: function() {
         this._model = new TrackerModel.TrackerModel(Lang.bind(this, this._onModelCreated));
+        this._model.connect('count-updated', Lang.bind(this, this._onModelCountUpdated));
     },
 
     _setModelView: function() {
@@ -153,5 +154,20 @@ MainWindow.prototype = {
 
         let text = this.toolbar.searchEntry.get_text();
         this._model.setFilter(text);
-    }
+    },
+
+    _onModelCountUpdated: function(model, itemCount, offset) {
+        let remainingDocs = itemCount - (offset + TrackerModel.OFFSET_STEP);
+
+        if (remainingDocs <= 0) {
+            this._loadMore.hide();
+            return;
+        }
+
+        if (remainingDocs > TrackerModel.OFFSET_STEP)
+            remainingDocs = TrackerModel.OFFSET_STEP;
+
+        this._loadMore.label = _('Load %d more documents').format(remainingDocs);
+        this._loadMore.show();
+    },
 }
