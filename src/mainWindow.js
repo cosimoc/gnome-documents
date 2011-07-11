@@ -45,6 +45,25 @@ MainWindow.prototype = {
                             Lang.bind(this, this._onDeleteEvent));
     },
 
+    _initTagBar: function() {
+        this._tagBar = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,
+                                      hexpand: true,
+                                      valign: Gtk.Align.END,
+                                      margin_left: 12,
+                                      margin_right: 12,
+                                      margin_bottom: 12,
+                                      column_spacing: 6,
+                                      border_width: 6 });
+
+        this._tagLabel = new Gtk.Label({ halign: Gtk.Align.START });
+        this._tagBar.add(this._tagLabel);
+
+        this._tagEntry = new Gtk.Entry({ hexpand: true });
+        this._tagBar.add(this._tagEntry);
+
+        this._overlay.add_overlay(this._tagBar);
+    },
+
     _initView: function() {
         this._viewBox = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
 
@@ -58,6 +77,7 @@ MainWindow.prototype = {
         this.view.set_selection_mode(Gtk.SelectionMode.MULTIPLE);
 
         this.view.connect('item-activated', Lang.bind(this, this._onViewItemActivated));
+        this.view.connect('selection-changed', Lang.bind(this, this._onViewSelectionChanged));
 
         this._viewBox.add(this.view);
 
@@ -86,10 +106,16 @@ MainWindow.prototype = {
 
         this._scrolledWin = new Gtk.ScrolledWindow({ hexpand: true,
                                                      vexpand: true });
-        this._grid.add(this._scrolledWin);
+        this._overlay = new Gtk.Overlay();
+        this._overlay.add(this._scrolledWin);
+
+        this._initTagBar();
+
+        this._grid.add(this._overlay);
         this._initView();
 
         this._grid.show_all();
+        this._tagBar.hide();
     },
 
     _initModel: function() {
@@ -139,6 +165,11 @@ MainWindow.prototype = {
         }
     },
 
+    _onViewSelectionChanged: function(view) {
+        let selection = this.view.get_selected_items();
+        this._showOrHideTagToolbar(selection);
+    },
+
     _onSearchEntryChanged: function() {
         if (this._searchTimeout != 0) {
             GLib.source_remove(this._searchTimeout)
@@ -169,5 +200,14 @@ MainWindow.prototype = {
 
         this._loadMore.label = _('Load %d more documents').format(remainingDocs);
         this._loadMore.show();
+    },
+
+    _showOrHideTagToolbar: function(selection) {
+        if (selection.length > 0) {
+            this._tagBar.show();
+            this._tagLabel.label = _('%d selected documents').format(selection.length);
+        } else {
+            this._tagBar.hide();
+        }
     },
 }
