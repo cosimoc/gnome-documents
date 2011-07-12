@@ -15,12 +15,12 @@ View.prototype = {
     },
 
     destroy: function() {
-        this.view.destroy();
+        this.widget.destroy();
     },
 
     setModel: function(model) {
         this.model = model;
-        this.view.set_model(model);
+        this.widget.set_model(model);
 
         this.createRenderers();
     },

@@ -13,13 +13,13 @@ MainToolbar.prototype = {
     },
 
     _initGtkToolbar: function() {
-        this.toolbar = new Gtk.Toolbar({ hexpand: true,
-                                         icon_size: Gtk.IconSize.MENU });
-        this.toolbar.get_style_context().add_class('primary-toolbar');
+        this.widget = new Gtk.Toolbar({ hexpand: true,
+                                        icon_size: Gtk.IconSize.MENU });
+        this.widget.get_style_context().add_class('primary-toolbar');
     },
 
     _clearToolbar: function() {
-        this.toolbar.foreach(Lang.bind(this, function(widget) {
+        this.widget.foreach(Lang.bind(this, function(widget) {
             widget.destroy();
         }));
     },
@@ -76,8 +76,8 @@ MainToolbar.prototype = {
             this.searchEntry.set_text('');
         }));
 
-        this.toolbar.insert(item, 0);
-        this.toolbar.insert(item2, 1);
+        this.widget.insert(item, 0);
+        this.widget.insert(item2, 1);
     },
 
     setOverview: function() {

@@ -22,21 +22,21 @@ IconView.prototype = {
     _init: function(window) {
         View.View.prototype._init.call(this, window);
 
-        this.view = new Gtk.IconView({ hexpand: true,
-                                       vexpand: true });
+        this.widget = new Gtk.IconView({ hexpand: true,
+                                         vexpand: true });
 
-        this.view.item_width = _VIEW_ITEM_WIDTH;
-        this.view.column_spacing = _VIEW_COLUMN_SPACING;
-        this.view.columns = _VIEW_COLUMNS;
-        this.view.margin = _VIEW_MARGIN;
-        this.view.set_selection_mode(Gtk.SelectionMode.MULTIPLE);
+        this.widget.item_width = _VIEW_ITEM_WIDTH;
+        this.widget.column_spacing = _VIEW_COLUMN_SPACING;
+        this.widget.columns = _VIEW_COLUMNS;
+        this.widget.margin = _VIEW_MARGIN;
+        this.widget.set_selection_mode(Gtk.SelectionMode.MULTIPLE);
 
-        this.view.connect('item-activated', 
+        this.widget.connect('item-activated', 
                           Lang.bind(this, this._onItemActivated));
-        this.view.connect('selection-changed', 
+        this.widget.connect('selection-changed', 
                           Lang.bind(this, this._onSelectionChanged));
 
-        this.view.show();
+        this.widget.show();
     },
 
     createRenderers: function() {
@@ -44,8 +44,8 @@ IconView.prototype = {
             new Gd.FramedPixbufRenderer({ xalign: 0.5,
                                           yalign: 0.5 });
 
-        this.view.pack_start(pixbufRenderer, false);
-        this.view.add_attribute(pixbufRenderer,
+        this.widget.pack_start(pixbufRenderer, false);
+        this.widget.add_attribute(pixbufRenderer,
                                 'pixbuf', TrackerModel.ModelColumns.ICON);
 
         let textRenderer =
@@ -55,15 +55,15 @@ IconView.prototype = {
                                       xalign: 0.5,
                                       yalign: 0.0,
                                       text_lines: 3 });
-        this.view.pack_start(textRenderer, false);
-        this.view.add_attribute(textRenderer,
-                                'text', TrackerModel.ModelColumns.TITLE);
-        this.view.add_attribute(textRenderer,
-                                'line-two', TrackerModel.ModelColumns.AUTHOR);
+        this.widget.pack_start(textRenderer, false);
+        this.widget.add_attribute(textRenderer,
+                                  'text', TrackerModel.ModelColumns.TITLE);
+        this.widget.add_attribute(textRenderer,
+                                  'line-two', TrackerModel.ModelColumns.AUTHOR);
     },
 
     _onSelectionChanged: function(view) {
-        let selection = this.view.get_selected_items();
+        let selection = this.widget.get_selected_items();
         this.window.tagBar.setSelection(selection);
     },
 

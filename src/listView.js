@@ -16,15 +16,17 @@ ListView.prototype = {
     _init: function(window) {
         View.View.prototype._init.call(this, window);
 
-        this.view = new Gtk.TreeView({ hexpand: true,
-                                       vexpand: true });
+        this.widget = new Gtk.TreeView({ hexpand: true,
+                                         vexpand: true });
 
-        this.view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE);
+        this.widget.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE);
 
-        this.view.connect('row-activated', Lang.bind(this, this._onItemActivated));
-        this.view.get_selection().connect('changed', Lang.bind(this, this._onSelectionChanged));
+        this.widget.connect('row-activated',
+                            Lang.bind(this, this._onItemActivated));
+        this.widget.get_selection().connect('changed', 
+                                            Lang.bind(this, this._onSelectionChanged));
 
-        this.view.show();
+        this.widget.show();
     },
 
     _onItemActivated: function(view, path, column) {
@@ -38,7 +40,7 @@ ListView.prototype = {
 
     createRenderers: function() {
         let col = new Gtk.TreeViewColumn();
-        this.view.append_column(col);
+        this.widget.append_column(col);
 
         let pixbufRenderer = 
             new Gd.FramedPixbufRenderer({ xalign: 0.5,

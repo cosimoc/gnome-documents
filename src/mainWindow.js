@@ -48,7 +48,7 @@ MainWindow.prototype = {
         this.toolbar.searchEntry.connect('changed', 
                                          Lang.bind(this, this._onSearchEntryChanged));
 
-        this._grid.add(this.toolbar.toolbar);
+        this._grid.add(this.toolbar.widget);
 
         this._scrolledWin = new Gtk.ScrolledWindow({ hexpand: true,
                                                      vexpand: true });
@@ -99,7 +99,7 @@ MainWindow.prototype = {
         else
             this.view = new IconView.IconView(this);
 
-        this._viewBox.attach_next_to(this.view.view, this._loadMore,
+        this._viewBox.attach_next_to(this.view.widget, this._loadMore,
                                      Gtk.PositionType.TOP, 1, 1);
     },
 
