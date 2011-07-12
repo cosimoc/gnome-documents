@@ -59,9 +59,11 @@ create_layout_with_attrs (GtkWidget *widget,
   layout = pango_layout_new (gtk_widget_get_pango_context (widget));
 
   pango_layout_set_ellipsize (layout, ellipsize);
-  pango_layout_set_width (layout, wrap_width * PANGO_SCALE);
   pango_layout_set_wrap (layout, wrap_mode);
   pango_layout_set_alignment (layout, alignment);
+
+  if (wrap_width != -1)
+    pango_layout_set_width (layout, wrap_width * PANGO_SCALE);
 
   return layout;
 }
