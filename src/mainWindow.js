@@ -43,6 +43,12 @@ MainWindow.prototype = {
         this.window.set_size_request(_WINDOW_DEFAULT_WIDTH, _WINDOW_DEFAULT_HEIGHT);
         this.window.connect('delete-event',
                             Lang.bind(this, this._onDeleteEvent));
+
+        Main.settings.connect('changed::list-view', Lang.bind(this, function() {
+            this._refreshViewSettings(true)
+        }));
+
+        this._refreshViewSettings(false);
     },
 
     _initTagBar: function() {
@@ -64,8 +70,14 @@ MainWindow.prototype = {
         this._overlay.add_overlay(this._tagBar);
     },
 
-    _initView: function() {
-        this._viewBox = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
+    _destroyView: function() {
+        if (this.view) {
+            this.view.destroy();
+        }
+    },
+
+    _initIconView: function() {
+        this._destroyView();
 
         this.view = new Gtk.IconView({ hexpand: true,
                                        vexpand: true });
@@ -77,18 +89,23 @@ MainWindow.prototype = {
         this.view.set_selection_mode(Gtk.SelectionMode.MULTIPLE);
 
         this.view.connect('item-activated', Lang.bind(this, this._onViewItemActivated));
-        this.view.connect('selection-changed', Lang.bind(this, this._onViewSelectionChanged));
+        this.view.connect('selection-changed', Lang.bind(this, this._onIconViewSelectionChanged));
 
-        this._viewBox.add(this.view);
+        this.view.show();
+    },
 
-        this._loadMore = new Gtk.Button();
-        this._viewBox.add(this._loadMore);
+    _initListView: function() {
+        this._destroyView();
 
-        this._loadMore.connect('clicked', Lang.bind(this, function() {
-            this._model.loadMore();
-        }));
+        this.view = new Gtk.TreeView({ hexpand: true,
+                                       vexpand: true });
 
-        this._scrolledWin.add_with_viewport(this._viewBox);
+        this.view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE);
+
+        this.view.connect('row-activated', Lang.bind(this, this._onViewItemActivated));
+        this.view.get_selection().connect('changed', Lang.bind(this, this._onListViewSelectionChanged));
+
+        this.view.show();
     },
 
     _initUi: function() {
@@ -112,7 +129,18 @@ MainWindow.prototype = {
         this._initTagBar();
 
         this._grid.add(this._overlay);
-        this._initView();
+
+        this._loadMore = new Gtk.Button();
+        this._loadMore.connect('clicked', Lang.bind(this, function() {
+            this._model.loadMore();
+        }));
+
+        this._viewBox = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
+        this._viewBox.add(this._loadMore);
+
+        this._createViewForSettings();
+
+        this._scrolledWin.add_with_viewport(this._viewBox);
 
         this._grid.show_all();
         this._tagBar.hide();
@@ -123,11 +151,30 @@ MainWindow.prototype = {
         this._model.connect('count-updated', Lang.bind(this, this._onModelCountUpdated));
     },
 
-    _setModelView: function() {
-        this.view.set_model(this._model.model);
+    _createViewForSettings: function() {
+        if (this._settingsList)
+            this._initListView();
+        else
+            this._initIconView();
 
+        this._viewBox.attach_next_to(this.view, this._loadMore, Gtk.PositionType.TOP, 1, 1);
+        this._tagBar.hide();
+    },
+
+    _refreshViewSettings: function(reset) {
+        this._settingsList = Main.settings.get_boolean('list-view');
+
+        if (!reset)
+            return;
+
+        this._createViewForSettings();
+        this._setModelView();
+    },
+
+    _createIconViewRenderers: function() {
         let pixbufRenderer = new Gd.FramedPixbufRenderer({ xalign: 0.5,
                                                            yalign: 0.5 });
+
         this.view.pack_start(pixbufRenderer, false);
         this.view.add_attribute(pixbufRenderer,
                                 'pixbuf', TrackerModel.ModelColumns.ICON);
@@ -145,6 +192,39 @@ MainWindow.prototype = {
                                 'line-two', TrackerModel.ModelColumns.AUTHOR);
     },
 
+    _createListViewRenderers: function() {
+        let col = new Gtk.TreeViewColumn();
+        this.view.append_column(col);
+
+        let pixbufRenderer = new Gd.FramedPixbufRenderer({ xalign: 0.5,
+                                                           yalign: 0.5 });
+
+        col.pack_start(pixbufRenderer, false);
+        col.add_attribute(pixbufRenderer,
+                          'pixbuf', TrackerModel.ModelColumns.ICON);
+
+        this._renderer = new Gd.TwoLinesRenderer({ alignment: Pango.Alignment.CENTER,
+                                                   wrap_mode: Pango.WrapMode.WORD_CHAR,
+                                                   wrap_width: _VIEW_ITEM_WRAP_WIDTH,
+                                                   xalign: 0.5,
+                                                   yalign: 0.0,
+                                                   text_lines: 3 });
+        col.pack_start(this._renderer, false);
+        col.add_attribute(this._renderer,
+                          'text', TrackerModel.ModelColumns.TITLE);
+        col.add_attribute(this._renderer,
+                          'line-two', TrackerModel.ModelColumns.AUTHOR);
+    },
+
+    _setModelView: function() {
+        this.view.set_model(this._model.model);
+
+        if (this._settingsList)
+            this._createListViewRenderers();
+        else
+            this._createIconViewRenderers();
+    },
+
     _onModelCreated: function() {
         this._setModelView();
         this._model.populateForOverview();
@@ -154,7 +234,17 @@ MainWindow.prototype = {
         Main.application.quit();
     },
 
-    _onViewItemActivated: function(view, path) {
+    _onListViewSelectionChanged: function(treeSelection) {
+        let selection = treeSelection.get_selected_rows()[0];
+        this._showOrHideTagToolbar(selection);
+    },
+
+    _onIconViewSelectionChanged: function(view) {
+        let selection = this.view.get_selected_items();
+        this._showOrHideTagToolbar(selection);
+    },
+
+    _onViewItemActivated: function(view, path, column) {
         let iter = this._model.model.get_iter(path)[1];
         let uri = this._model.model.get_value(iter, TrackerModel.ModelColumns.URI);
 
@@ -163,11 +253,6 @@ MainWindow.prototype = {
         } catch (e) {
             log('Unable to open ' + uri + ': ' + e.toString())
         }
-    },
-
-    _onViewSelectionChanged: function(view) {
-        let selection = this.view.get_selected_items();
-        this._showOrHideTagToolbar(selection);
     },
 
     _onSearchEntryChanged: function() {
