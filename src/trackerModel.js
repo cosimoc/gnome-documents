@@ -32,6 +32,7 @@ const TrackerColumns = {
 };
 
 const _ICON_VIEW_SIZE = 128;
+const _LIST_VIEW_SIZE = 48;
 const _FILE_ATTRIBUTES = 'standard::icon,standard::content-type,thumbnail::path,time::modified';
 
 function TrackerModel(callback) {
@@ -41,6 +42,7 @@ function TrackerModel(callback) {
 TrackerModel.prototype = {
     _init: function(callback) {
         this._initCallback = callback;
+        Main.settings.connect('changed::list-view', Lang.bind(this, this._onSettingsChanged));
 
         this.model = Gd.create_list_store();
         this._initConnection();
@@ -58,6 +60,15 @@ TrackerModel.prototype = {
                 Main.application.quit();
             }
         }));
+    },
+
+    _onSettingsChanged: function() {
+        this.model.clear();
+        this._performCurrentQuery();
+    },
+
+    _getIconSize: function() {
+        return Main.settings.get_boolean('list-view') ? _LIST_VIEW_SIZE : _ICON_VIEW_SIZE;
     },
 
     _buildOverviewQuery: function(offset, searchString) {
@@ -113,13 +124,13 @@ TrackerModel.prototype = {
                                   let thumbPath = info.get_attribute_byte_string(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH);
                                   if (thumbPath) {
                                       pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(thumbPath,
-                                                                                      _ICON_VIEW_SIZE, _ICON_VIEW_SIZE);
+                                                                                      this._getIconSize(), this._getIconSize());
                                   } else {
                                       let icon = info.get_icon();
 
                                       if (icon) {
                                           let theme = Gtk.IconTheme.get_default();
-                                          let iconInfo = theme.lookup_by_gicon(icon, _ICON_VIEW_SIZE,
+                                          let iconInfo = theme.lookup_by_gicon(icon, this._getIconSize(),
                                                                                Gtk.IconLookupFlags.FORCE_SIZE |
                                                                                Gtk.IconLookupFlags.GENERIC_FALLBACK);
                                           pixbuf = iconInfo.load_icon();
@@ -147,7 +158,7 @@ TrackerModel.prototype = {
 
                                                                     if (thumbPath) {
                                                                         pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(thumbPath,
-                                                                                                                        _ICON_VIEW_SIZE, _ICON_VIEW_SIZE);
+                                                                                                                        this._getIconSize(), this._getIconSize());
 
                                                                         let objectIter = this.model.get_iter(treePath)[1];
                                                                         if (objectIter)
