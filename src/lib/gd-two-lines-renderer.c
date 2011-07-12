@@ -117,6 +117,7 @@ gd_two_lines_renderer_get_size (GtkCellRenderer *cell,
 {
   GdTwoLinesRenderer *self = GD_TWO_LINES_RENDERER (cell);
   gint layout_w, layout_h, total_w, total_h;
+  gint xpad, ypad;
 
   gd_two_lines_renderer_prepare_layouts (self, widget);
 
@@ -131,6 +132,10 @@ gd_two_lines_renderer_get_size (GtkCellRenderer *cell,
       total_w = MAX (total_w, layout_w);
       total_h += layout_h;
     }
+
+  gtk_cell_renderer_get_padding (cell, &xpad, &ypad);
+  total_w += 2 * xpad;
+  total_h += 2 * ypad;
 
   if (width != NULL)
     *width = total_w;
@@ -151,13 +156,19 @@ gd_two_lines_renderer_render (GtkCellRenderer      *cell,
   GtkStyleContext *context;
   gint line_one_height;
   GtkStateFlags state;
+  GdkRectangle render_area = *cell_area;
+  guint xpad, ypad;
 
   context = gtk_widget_get_style_context (widget);
   gd_two_lines_renderer_prepare_layouts (self, widget);
 
+  gtk_cell_renderer_get_padding (cell, &xpad, &ypad);
+  render_area.x += xpad;
+  render_area.y += ypad;
+
   gtk_render_layout (context, cr,
-                     cell_area->x,
-                     cell_area->y,
+                     render_area.x,
+                     render_area.y,
                      self->priv->line_one_layout);
 
   if (self->priv->line_two == NULL ||
@@ -174,8 +185,8 @@ gd_two_lines_renderer_render (GtkCellRenderer      *cell,
   gtk_style_context_set_state (context, state);
 
   gtk_render_layout (context, cr,
-                     cell_area->x,
-                     cell_area->y + line_one_height,
+                     render_area.x,
+                     render_area.y + line_one_height,
                      self->priv->line_two_layout);
 
   gtk_style_context_restore (context);
