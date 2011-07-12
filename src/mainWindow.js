@@ -204,9 +204,9 @@ MainWindow.prototype = {
 
         this._renderer = new Gd.TwoLinesRenderer({ alignment: Pango.Alignment.CENTER,
                                                    wrap_mode: Pango.WrapMode.WORD_CHAR,
-                                                   wrap_width: _VIEW_ITEM_WRAP_WIDTH,
                                                    xalign: 0.5,
                                                    yalign: 0.0,
+                                                   xpad: 12,
                                                    text_lines: 3 });
         col.pack_start(this._renderer, false);
         col.add_attribute(this._renderer,
