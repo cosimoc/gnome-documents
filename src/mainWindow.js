@@ -7,6 +7,7 @@ const Mainloop = imports.mainloop;
 
 const Main = imports.main;
 const MainToolbar = imports.mainToolbar;
+const TagBar = imports.tagBar;
 const TrackerModel = imports.trackerModel;
 const IconView = imports.iconView;
 const ListView = imports.listView;
@@ -54,9 +55,10 @@ MainWindow.prototype = {
         this._overlay = new Gtk.Overlay();
         this._overlay.add(this._scrolledWin);
 
-        this._initTagBar();
-
         this._grid.add(this._overlay);
+
+        this.tagBar = new TagBar.TagBar();
+        this._overlay.add_overlay(this.tagBar.widget);
 
         this._loadMore = new Gtk.Button();
         this._loadMore.connect('clicked', Lang.bind(this, function() {
@@ -71,28 +73,9 @@ MainWindow.prototype = {
         this._scrolledWin.add_with_viewport(this._viewBox);
 
         this._grid.show_all();
-        this._tagBar.hide();
+        this.tagBar.widget.hide();
 
         this._initModel();
-    },
-
-    _initTagBar: function() {
-        this._tagBar = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,
-                                      hexpand: true,
-                                      valign: Gtk.Align.END,
-                                      margin_left: 12,
-                                      margin_right: 12,
-                                      margin_bottom: 12,
-                                      column_spacing: 6,
-                                      border_width: 6 });
-
-        this._tagLabel = new Gtk.Label({ halign: Gtk.Align.START });
-        this._tagBar.add(this._tagLabel);
-
-        this._tagEntry = new Gtk.Entry({ hexpand: true });
-        this._tagBar.add(this._tagEntry);
-
-        this._overlay.add_overlay(this._tagBar);
     },
 
     _initModel: function() {
@@ -164,14 +147,5 @@ MainWindow.prototype = {
 
         this._loadMore.label = _('Load %d more documents').format(remainingDocs);
         this._loadMore.show();
-    },
-
-    showOrHideTagToolbar: function(selection) {
-        if (selection.length > 0) {
-            this._tagBar.show();
-            this._tagLabel.label = _('%d selected documents').format(selection.length);
-        } else {
-            this._tagBar.hide();
-        }
     },
 }

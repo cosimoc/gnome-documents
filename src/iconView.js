@@ -64,7 +64,7 @@ IconView.prototype = {
 
     _onSelectionChanged: function(view) {
         let selection = this.view.get_selected_items();
-        this.window.showOrHideTagToolbar(selection);
+        this.window.tagBar.setSelection(selection);
     },
 
     _onItemActivated: function(view, path, column) {

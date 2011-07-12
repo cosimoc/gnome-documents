@@ -33,7 +33,7 @@ ListView.prototype = {
 
     _onSelectionChanged: function(treeSelection) {
         let selection = treeSelection.get_selected_rows()[0];
-        this.window.showOrHideTagToolbar(selection);
+        this.window.tagBar.setSelection(selection);
     },
 
     createRenderers: function() {
