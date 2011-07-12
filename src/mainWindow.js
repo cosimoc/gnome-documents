@@ -158,7 +158,6 @@ MainWindow.prototype = {
             this._initIconView();
 
         this._viewBox.attach_next_to(this.view, this._loadMore, Gtk.PositionType.TOP, 1, 1);
-        this._tagBar.hide();
     },
 
     _refreshViewSettings: function(reset) {
