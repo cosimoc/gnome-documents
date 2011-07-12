@@ -2,6 +2,7 @@ const Lang = imports.lang;
 const Signals = imports.signals;
 
 const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const Tracker = imports.gi.Tracker;
@@ -71,6 +72,37 @@ TrackerModel.prototype = {
         return Main.settings.get_boolean('list-view') ? _LIST_VIEW_SIZE : _ICON_VIEW_SIZE;
     },
 
+    _buildFilterString: function(subject, searchString) {
+        let path;
+        let desktopURI;
+        let documentsURI;
+
+        path = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DESKTOP);
+        if (path)
+            desktopURI = Gio.file_new_for_path(path).get_uri();
+        else
+            desktopURI = '';
+
+        path = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DOCUMENTS);
+        if (path)
+            documentsURI = Gio.file_new_for_path(path).get_uri();
+        else
+            documentsURI = '';
+
+        let filter = 
+            ('FILTER ' +
+             '(fn:contains ' +
+             '(fn:lower-case (tracker:coalesce(nie:title(%s), nfo:fileName(%s))), ' +
+             '"%s") ' +
+             '&& ' +
+             '((fn:starts-with (nie:url(%s), "%s")) || ' +
+             '(fn:starts-with (nie:url(%s), "%s"))))').format(subject, subject, searchString,
+                                                              subject, desktopURI,
+                                                              subject, documentsURI);
+
+        return filter;
+    },
+
     _buildOverviewQuery: function(offset, searchString) {
         let sparql = 
             ('SELECT ?urn ' + // urn
@@ -79,15 +111,15 @@ TrackerModel.prototype = {
              'tracker:coalesce(nco:fullname(?creator), nco:fullname(?publisher)) ' + // author
              '?mtime ' + // mtime
              '(SELECT COUNT(?doc) WHERE { ?doc a nfo:PaginatedTextDocument . ' +
-             'FILTER (fn:contains (fn:lower-case (tracker:coalesce(nie:title(?doc), nfo:fileName(?doc))), "%s"))' +
+             this._buildFilterString('?doc', searchString) +
              '}) ' + // total filtered count
              'WHERE { ?urn a nfo:PaginatedTextDocument; nie:url ?uri; nfo:fileLastModified ?mtime . ' +
              'OPTIONAL { ?urn nco:creator ?creator . } ' +
              'OPTIONAL { ?urn nco:publisher ?publisher . } ' +
-             'FILTER (fn:contains (fn:lower-case (tracker:coalesce(nie:title(?urn), nfo:fileName(?urn))), "%s"))' +
+             this._buildFilterString('?urn', searchString) +
              ' } ' +
              'ORDER BY DESC (?mtime)' +
-             'LIMIT %d OFFSET %d').format(searchString, searchString, OFFSET_STEP, this._offset);
+             'LIMIT %d OFFSET %d').format(OFFSET_STEP, this._offset);
 
         return sparql;
     },
@@ -100,8 +132,6 @@ TrackerModel.prototype = {
         let mtime = cursor.get_string(TrackerColumns.MTIME)[0];
 
         this._itemCount = cursor.get_integer(TrackerColumns.TOTAL_COUNT);
-
-        let found = false;
 
         if (!author)
             author = '';
