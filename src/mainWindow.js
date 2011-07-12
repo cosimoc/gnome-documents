@@ -75,10 +75,6 @@ MainWindow.prototype = {
         this._grid.show_all();
         this.tagBar.widget.hide();
 
-        this._initModel();
-    },
-
-    _initModel: function() {
         this._model = new TrackerModel.TrackerModel(Lang.bind(this, this._onModelCreated));
         this._model.connect('count-updated', Lang.bind(this, this._onModelCountUpdated));
     },
