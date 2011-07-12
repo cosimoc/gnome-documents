@@ -52,13 +52,13 @@ TrackerModel.prototype = {
         Tracker.SparqlConnection.get_async(null, Lang.bind(this, function(object, res) {
             try {
                 this._connection = Tracker.SparqlConnection.get_finish(res);
-
-                if (this._initCallback)
-                    this._initCallback();
             } catch (e) {
                 log('Unable to connect to the tracker database: ' + e.toString());
                 Main.application.quit();
             }
+
+            if (this._initCallback)
+                this._initCallback();
         }));
     },
 
