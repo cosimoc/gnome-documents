@@ -52,12 +52,23 @@ GLIB_GSETTINGS
 GLIB_MIN_VERSION=2.28.0
 GTK_MIN_VERSION=3.0.0
 GOBJECT_INTROSPECTION_MIN_VERSION=0.9.6
+GDATA_MIN_VERSION=0.9.1
 
 PKG_CHECK_MODULES(DOCUMENTS,
                   glib-2.0 >= $GLIB_MIN_VERSION
                   gobject-introspection-1.0 >= $GOBJECT_INTROSPECTION_MIN_VERSION
                   gtk+-3.0 >= $GTK_MIN_VERSION
-                  gnome-desktop-3.0)
+                  gnome-desktop-3.0
+                  tracker-sparql-0.11)
+
+PKG_CHECK_MODULES(MINER,
+                  tracker-sparql-0.11
+                  tracker-miner-0.11
+                  glib-2.0 >= $GLIB_MIN_VERSION
+                  gio-2.0 >= $GLIB_MIN_VERSION
+                  goa-1.0
+                  libgdata >= $GDATA_MIN_VERSION
+                  oauth)
 
 AC_CONFIG_FILES([
 Makefile

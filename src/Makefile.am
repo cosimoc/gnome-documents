@@ -18,6 +18,7 @@ lib_LTLIBRARIES =
 INTROSPECTION_GIRS =
 gir_DATA =
 typelib_DATA =
+libexec_PROGRAMS =
 
 # convenience command for doing Makefile variable substitutions in non-Makefile
 # files (scripts, service files, etc.)
@@ -32,6 +33,7 @@ do_subst = sed -e 's|@abs_top_srcdir[@]|$(abs_top_srcdir)|g' \
 
 include $(INTROSPECTION_MAKEFILE)
 include Makefile-lib.am
+include Makefile-miner.am
 include Makefile-js.am
 
 gir_DATA += $(INTROSPECTION_GIRS)
