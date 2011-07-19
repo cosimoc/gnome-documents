@@ -457,21 +457,31 @@ gd_gdata_miner_query (GdGDataMiner *self)
 }
 
 static void
-gd_gdata_ensure_tracker_connection (GdGDataMiner *self)
+gd_gdata_ensure_tracker_connection (GdGDataMiner *self,
+                                    GoaObject *object,
+                                    GError **error)
 {
-  GError *error = NULL;
+  GString *datasource_insert;
+  GoaAccount *account;
 
   if (self->priv->connection != NULL)
     return;
 
   self->priv->connection = 
-    tracker_sparql_connection_get (self->priv->cancellable, &error);
+    tracker_sparql_connection_get (self->priv->cancellable, error);
 
-  if (error != NULL)
-    {
-      g_printerr ("Unable to get the tracker SPARQL connection: %s", error->message);
-      g_error_free (error);
-    }
+  if (*error != NULL)
+    return;
+
+  account = goa_object_peek_account (object);
+  datasource_insert = g_string_new (NULL);
+  g_string_append_printf (datasource_insert,
+                          "INSERT { <%s> a nie:DataSource ; nao:identifier \"goa:%s\" }",
+                          DATASOURCE_URN, goa_account_get_id (account));
+
+  tracker_sparql_connection_update (self->priv->connection, datasource_insert->str,
+                                    G_PRIORITY_DEFAULT, self->priv->cancellable,
+                                    error);
 }
 
 static void
@@ -487,7 +497,16 @@ gd_gdata_miner_setup_account (GdGDataMiner *self,
 
   g_object_unref (authorizer);
 
-  gd_gdata_ensure_tracker_connection (self);
+  gd_gdata_ensure_tracker_connection (self, object, &error);
+
+  if (error != NULL)
+    {
+      g_printerr ("Unable to initialize the tracker connection: %s\n", error->message);
+      g_error_free (error);
+
+      return;
+    }
+
   gd_gdata_miner_query (self);
 }
 
