@@ -28,7 +28,6 @@ const Mainloop = imports.mainloop;
 
 const Main = imports.main;
 const MainToolbar = imports.mainToolbar;
-const TagBar = imports.tagBar;
 const TrackerModel = imports.trackerModel;
 const IconView = imports.iconView;
 const ListView = imports.listView;
@@ -46,6 +45,8 @@ function MainWindow() {
 
 MainWindow.prototype = {
     _init: function() {
+        this._searchTimeout = 0;
+
         this.window = new Gtk.Window({ type: Gtk.WindowType.TOPLEVEL,
                                        window_position: Gtk.WindowPosition.CENTER,
                                        resizable: false,
@@ -56,7 +57,7 @@ MainWindow.prototype = {
                             Lang.bind(this, this._onDeleteEvent));
 
         Main.settings.connect('changed::list-view', Lang.bind(this, function() {
-            this._refreshViewSettings(true)
+            this._refreshViewSettings(true);
         }));
 
         this._grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,
@@ -66,7 +67,7 @@ MainWindow.prototype = {
         this._searchTimeout = 0;
         this.toolbar = new MainToolbar.MainToolbar();
         this.toolbar.setOverview();
-        this.toolbar.searchEntry.connect('changed', 
+        this.toolbar.searchEntry.connect('changed',
                                          Lang.bind(this, this._onSearchEntryChanged));
 
         this._grid.add(this.toolbar.widget);
@@ -128,7 +129,7 @@ MainWindow.prototype = {
 
     _onSearchEntryChanged: function() {
         if (this._searchTimeout != 0) {
-            GLib.source_remove(this._searchTimeout)
+            GLib.source_remove(this._searchTimeout);
             this._searchTimeout = 0;
         }
 

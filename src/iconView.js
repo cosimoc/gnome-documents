@@ -52,7 +52,7 @@ IconView.prototype = {
         this.widget.margin = _VIEW_MARGIN;
         this.widget.set_selection_mode(Gtk.SelectionMode.MULTIPLE);
 
-        this.widget.connect('item-activated', 
+        this.widget.connect('item-activated',
                           Lang.bind(this, this._onItemActivated));
 
         this.widget.show();

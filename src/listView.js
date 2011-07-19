@@ -56,7 +56,7 @@ ListView.prototype = {
         let col = new Gtk.TreeViewColumn();
         this.widget.append_column(col);
 
-        let pixbufRenderer = 
+        let pixbufRenderer =
             new Gd.FramedPixbufRenderer({ xalign: 0.5,
                                           yalign: 0.5 });
 
@@ -64,7 +64,7 @@ ListView.prototype = {
         col.add_attribute(pixbufRenderer,
                           'pixbuf', TrackerModel.ModelColumns.ICON);
 
-        let textRenderer = 
+        let textRenderer =
             new Gd.TwoLinesRenderer({ alignment: Pango.Alignment.CENTER,
                                       wrap_mode: Pango.WrapMode.WORD_CHAR,
                                       xalign: 0.5,

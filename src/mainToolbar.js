@@ -91,7 +91,7 @@ MainToolbar.prototype = {
                 this.searchEntry.secondary_icon_sensitive = false;
                 this.searchEntry.secondary_icon_activatable = false;
             }
-        }));                
+        }));
 
         this.searchEntry.connect('icon-release', Lang.bind(this, function() {
             this.searchEntry.set_text('');

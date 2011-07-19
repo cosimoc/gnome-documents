@@ -191,7 +191,7 @@ TrackerModel.prototype = {
         else
             documentsURI = '';
 
-        let filter = 
+        let filter =
             ('(fn:contains ' +
              '(fn:lower-case (tracker:coalesce(nie:title(%s), nfo:fileName(%s))), ' +
              '"%s") ' +
@@ -229,7 +229,7 @@ TrackerModel.prototype = {
     },
 
     _buildOverviewQuery: function(offset, searchString, filterScope) {
-        let sparql = 
+        let sparql =
             ('SELECT DISTINCT ?urn ' + // urn
              'nie:url(?urn) ' + // uri
              'tracker:coalesce(nie:title(?urn), nfo:fileName(?urn)) ' + // title
@@ -302,7 +302,7 @@ TrackerModel.prototype = {
             iconName = 'x-office-spreadsheet';
         else if (type.indexOf('nfo#Presentation') != -1)
             iconName = 'x-office-presentation';
-        else 
+        else
             iconName = 'x-office-document';
 
         iconInfo =
@@ -366,7 +366,7 @@ TrackerModel.prototype = {
             return;
         }
 
-        this._addRowFromCursor(cursor)
+        this._addRowFromCursor(cursor);
         cursor.next_async(null, Lang.bind(this, this._onCursorNext));
     },
 
