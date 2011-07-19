@@ -71,15 +71,8 @@ MainWindow.prototype = {
 
         this._grid.add(this.toolbar.widget);
 
-        this._scrolledWin = new Gtk.ScrolledWindow({ hexpand: true,
-                                                     vexpand: true });
-        this._overlay = new Gtk.Overlay();
-        this._overlay.add(this._scrolledWin);
-
-        this._grid.add(this._overlay);
-
-        this.tagBar = new TagBar.TagBar();
-        this._overlay.add_overlay(this.tagBar.widget);
+        this._scrolledWin = new Gtk.ScrolledWindow();
+        this._grid.add(this._scrolledWin);;
 
         this._loadMore = new Gtk.Button();
         this._loadMore.connect('clicked', Lang.bind(this, function() {
@@ -94,7 +87,6 @@ MainWindow.prototype = {
         this._scrolledWin.add_with_viewport(this._viewBox);
 
         this._grid.show_all();
-        this.tagBar.widget.hide();
 
         this._model = new TrackerModel.TrackerModel(Lang.bind(this, this._onModelCreated));
         this._model.connect('count-updated', Lang.bind(this, this._onModelCountUpdated));

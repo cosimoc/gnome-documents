@@ -54,8 +54,6 @@ IconView.prototype = {
 
         this.widget.connect('item-activated', 
                           Lang.bind(this, this._onItemActivated));
-        this.widget.connect('selection-changed', 
-                          Lang.bind(this, this._onSelectionChanged));
 
         this.widget.show();
     },
@@ -81,11 +79,6 @@ IconView.prototype = {
                                   'text', TrackerModel.ModelColumns.TITLE);
         this.widget.add_attribute(textRenderer,
                                   'line-two', TrackerModel.ModelColumns.AUTHOR);
-    },
-
-    _onSelectionChanged: function(view) {
-        let selection = this.widget.get_selected_items();
-        this.window.tagBar.setSelection(selection);
     },
 
     _onItemActivated: function(view, path, column) {

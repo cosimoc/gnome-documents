@@ -44,19 +44,12 @@ ListView.prototype = {
 
         this.widget.connect('row-activated',
                             Lang.bind(this, this._onItemActivated));
-        this.widget.get_selection().connect('changed', 
-                                            Lang.bind(this, this._onSelectionChanged));
 
         this.widget.show();
     },
 
     _onItemActivated: function(view, path, column) {
         this.activateItem(path);
-    },
-
-    _onSelectionChanged: function(treeSelection) {
-        let selection = treeSelection.get_selected_rows()[0];
-        this.window.tagBar.setSelection(selection);
     },
 
     createRenderers: function() {
