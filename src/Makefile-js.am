@@ -1,5 +1,6 @@
 jsdir = $(pkgdatadir)/js/
 dist_js_DATA = \
+    accountsModel.js \
     application.js \
     iconView.js \
     listView.js \

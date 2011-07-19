@@ -39,6 +39,12 @@ void gd_store_update_icon (GtkListStore *store,
                            GtkTreeIter *iter,
                            GdkPixbuf *icon);
 
+GtkListStore* gd_create_combo_store (void);
+void gd_combo_store_set (GtkListStore *store,
+                         GtkTreeIter *iter,
+                         const gchar *id,
+                         const gchar *name);
+
 void gd_queue_thumbnail_job_for_file_async (GFile *file,
                                             GAsyncReadyCallback callback,
                                             gpointer user_data);

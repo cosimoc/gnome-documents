@@ -76,6 +76,31 @@ gd_store_update_icon (GtkListStore *store,
                       -1);
 }
 
+/**
+ * gd_create_combo_store:
+ * 
+ * Returns: (transfer full):
+ */
+GtkListStore *
+gd_create_combo_store (void)
+{
+  return gtk_list_store_new (2,
+                             G_TYPE_STRING, // ID
+                             G_TYPE_STRING); // NAME
+}
+
+void
+gd_combo_store_set (GtkListStore *store,
+                    GtkTreeIter *iter,
+                    const gchar *id,
+                    const gchar *name)
+{
+  gtk_list_store_set (store, iter,
+                      0, id,
+                      1, name,
+                      -1);
+}
+
 #define ATTRIBUTES_FOR_THUMBNAIL \
   G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE"," \
   G_FILE_ATTRIBUTE_TIME_MODIFIED
