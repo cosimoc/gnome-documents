@@ -50,8 +50,16 @@ const TrackerColumns = {
     TITLE: 2,
     AUTHOR: 3,
     MTIME: 4,
-    TOTAL_COUNT: 5
+    TOTAL_COUNT: 5,
+    IDENTIFIER: 6,
+    TYPE: 7
 };
+
+const FilterScope = {
+    ALL: 0,
+    LOCAL: 1,
+    GOOGLE: 2
+}
 
 const _ICON_VIEW_SIZE = 128;
 const _LIST_VIEW_SIZE = 48;
@@ -93,7 +101,7 @@ TrackerModel.prototype = {
         return Main.settings.get_boolean('list-view') ? _LIST_VIEW_SIZE : _ICON_VIEW_SIZE;
     },
 
-    _buildFilterString: function(subject, searchString) {
+    _buildFilterLocal: function(subject, searchString) {
         let path;
         let desktopURI;
         let documentsURI;
@@ -111,8 +119,7 @@ TrackerModel.prototype = {
             documentsURI = '';
 
         let filter = 
-            ('FILTER ' +
-             '(fn:contains ' +
+            ('(fn:contains ' +
              '(fn:lower-case (tracker:coalesce(nie:title(%s), nfo:fileName(%s))), ' +
              '"%s") ' +
              '&& ' +
@@ -124,20 +131,51 @@ TrackerModel.prototype = {
         return filter;
     },
 
-    _buildOverviewQuery: function(offset, searchString) {
+    _buildFilterGoogle: function(subject, searchString) {
+        let filter =
+            ('fn:starts-with (nao:identifier(%s), "https://docs.google.com")').format(subject);
+
+        return filter;
+    },
+
+    _buildFilterString: function(subject, searchString, filterScope) {
+        let sparql = 'FILTER (';
+
+        if (filterScope == FilterScope.LOCAL || filterScope == FilterScope.ALL)
+            sparql += this._buildFilterLocal(subject, searchString);
+
+        if (filterScope == FilterScope.ALL)
+            sparql += ') || (';
+
+        if (filterScope == FilterScope.GOOGLE || filterScope == FilterScope.ALL)
+            sparql += this._buildFilterGoogle(subject, searchString);
+
+        sparql += ') ';
+
+        return sparql;
+    },
+
+    _buildOverviewQuery: function(offset, searchString, filterScope) {
         let sparql = 
-            ('SELECT ?urn ' + // urn
-             '?uri ' + // uri
+            ('SELECT DISTINCT ?urn ' + // urn
+             'nie:url(?urn) ' + // uri
              'tracker:coalesce(nie:title(?urn), nfo:fileName(?urn)) ' + // title
              'tracker:coalesce(nco:fullname(?creator), nco:fullname(?publisher)) ' + // author
-             '?mtime ' + // mtime
-             '(SELECT COUNT(?doc) WHERE { ?doc a nfo:PaginatedTextDocument . ' +
-             this._buildFilterString('?doc', searchString) +
+             'tracker:coalesce(nfo:fileLastModified(?urn), nie:contentLastModified(?urn)) AS ?mtime ' + // mtime
+             '(SELECT DISTINCT COUNT(?doc) WHERE { ?doc a nfo:PaginatedTextDocument . ' +
+             this._buildFilterString('?doc', searchString, filterScope) +
              '}) ' + // total filtered count
-             'WHERE { ?urn a nfo:PaginatedTextDocument; nie:url ?uri; nfo:fileLastModified ?mtime . ' +
+             'nao:identifier(?urn) ' +
+             'rdf:type(?urn) ' +
+             'WHERE { ' +
+             '{ ?urn a nfo:PaginatedTextDocument } ' +
+             'UNION ' +
+             '{ ?urn a nfo:Spreadsheet } ' +
+             'UNION ' +
+             '{ ?urn a nfo:Presentation } ' +
              'OPTIONAL { ?urn nco:creator ?creator . } ' +
              'OPTIONAL { ?urn nco:publisher ?publisher . } ' +
-             this._buildFilterString('?urn', searchString) +
+             this._buildFilterString('?urn', searchString, filterScope) +
              ' } ' +
              'ORDER BY DESC (?mtime)' +
              'LIMIT %d OFFSET %d').format(OFFSET_STEP, this._offset);
@@ -145,7 +183,12 @@ TrackerModel.prototype = {
         return sparql;
     },
 
-    _addRowFromCursor: function(cursor) {
+    _rowIsGoogle: function(identifier) {
+        return (identifier &&
+                (identifier.indexOf('https://docs.google.com') != -1));
+    },
+
+    _addLocalRowFromCursor: function(cursor) {
         let urn = cursor.get_string(TrackerColumns.URN)[0];
         let uri = cursor.get_string(TrackerColumns.URI)[0];
         let title = cursor.get_string(TrackerColumns.TITLE)[0];
@@ -227,6 +270,67 @@ TrackerModel.prototype = {
                               }));
     },
 
+    _pixbufFromRdfType: function(type) {
+        let iconName;
+        let iconInfo = null;
+        let pixbuf = null;
+
+        if (type.indexOf('nfo#Spreadsheet') != -1)
+            iconName = 'x-office-spreadsheet';
+        else if (type.indexOf('nfo#Presentation') != -1)
+            iconName = 'x-office-presentation';
+        else 
+            iconName = 'x-office-document';
+
+        iconInfo = 
+            Gtk.IconTheme.get_default().lookup_icon(iconName, this._getIconSize(),
+                                                    Gtk.IconLookupFlags.FORCE_SIZE |
+                                                    Gtk.IconLookupFlags.GENERIC_FALLBACK);
+
+        if (iconInfo != null) {
+            try {
+                pixbuf = iconInfo.load_icon();
+            } catch (e) {
+                log('Unable to load pixbuf: ' + e.toString());
+            }
+        }
+
+        return pixbuf;
+    },
+
+    _addGoogleRowFromCursor: function(cursor) {
+        let urn = cursor.get_string(TrackerColumns.URN)[0];
+        let title = cursor.get_string(TrackerColumns.TITLE)[0];
+        let author = cursor.get_string(TrackerColumns.AUTHOR)[0];
+        let mtime = cursor.get_string(TrackerColumns.MTIME)[0];
+        let identifier = cursor.get_string(TrackerColumns.IDENTIFIER)[0];
+        let type = cursor.get_string(TrackerColumns.TYPE)[0];
+
+        log(urn);
+        log(title);
+        log(author);
+
+        this._itemCount = cursor.get_integer(TrackerColumns.TOTAL_COUNT);
+
+        if (!author)
+            author = '';
+
+        let pixbuf = this._pixbufFromRdfType(type);
+
+        let iter = this.model.append();
+        Gd.store_set(this.model, iter,
+                     urn, identifier, title, author, mtime, pixbuf);
+    },
+
+    _addRowFromCursor: function(cursor) {
+        let identifier = cursor.get_string(TrackerColumns.IDENTIFIER)[0];
+
+        if (this._rowIsGoogle(identifier))
+            this._addGoogleRowFromCursor(cursor);
+        else
+            this._addLocalRowFromCursor(cursor);
+    },
+
     _onCursorNext: function(cursor, res) {
         try {
             let valid = cursor.next_finish(res);
@@ -258,7 +362,8 @@ TrackerModel.prototype = {
     },
 
     _performCurrentQuery: function() {
-        this._connection.query_async(this._currentQueryBuilder(this._offset, this._filter), null,
+        this._connection.query_async(this._currentQueryBuilder(this._offset, this._filter, FilterScope.GOOGLE), 
+                                     null,
                                      Lang.bind(this, this._onQueryExecuted));
     },
 
