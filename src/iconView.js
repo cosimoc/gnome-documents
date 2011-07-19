@@ -27,10 +27,9 @@ const TrackerModel = imports.trackerModel;
 const View = imports.view;
 const Lang = imports.lang;
 
-const _VIEW_ITEM_WIDTH = 152;
-const _VIEW_ITEM_WRAP_WIDTH = 140;
+const _VIEW_ITEM_WIDTH = 140;
+const _VIEW_ITEM_WRAP_WIDTH = 128;
 const _VIEW_COLUMN_SPACING = 20;
-const _VIEW_COLUMNS = 4;
 const _VIEW_MARGIN = 16;
 
 function IconView(window) {
@@ -48,7 +47,6 @@ IconView.prototype = {
 
         this.widget.item_width = _VIEW_ITEM_WIDTH;
         this.widget.column_spacing = _VIEW_COLUMN_SPACING;
-        this.widget.columns = _VIEW_COLUMNS;
         this.widget.margin = _VIEW_MARGIN;
         this.widget.set_selection_mode(Gtk.SelectionMode.MULTIPLE);
 

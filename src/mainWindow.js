@@ -35,7 +35,7 @@ const ListView = imports.listView;
 
 const _ = imports.gettext.gettext;
 
-const _WINDOW_DEFAULT_WIDTH = 860;
+const _WINDOW_DEFAULT_WIDTH = 768;
 const _WINDOW_DEFAULT_HEIGHT = 600;
 
 const _SEARCH_ENTRY_TIMEOUT = 200;
@@ -50,10 +50,10 @@ MainWindow.prototype = {
 
         this.window = new Gtk.Window({ type: Gtk.WindowType.TOPLEVEL,
                                        window_position: Gtk.WindowPosition.CENTER,
-                                       resizable: false,
                                        title: _('Documents') });
 
         this.window.set_size_request(_WINDOW_DEFAULT_WIDTH, _WINDOW_DEFAULT_HEIGHT);
+        this.window.maximize();
         this.window.connect('delete-event',
                             Lang.bind(this, this._onDeleteEvent));
 
@@ -61,8 +61,7 @@ MainWindow.prototype = {
             this._refreshViewSettings(true);
         }));
 
-        this._grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,
-                                    vexpand: true });
+        this._grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
         this.window.add(this._grid);
 
         this._searchTimeout = 0;

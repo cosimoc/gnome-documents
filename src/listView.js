@@ -38,7 +38,8 @@ ListView.prototype = {
         View.View.prototype._init.call(this, window);
 
         this.widget = new Gtk.TreeView({ hexpand: true,
-                                         vexpand: true });
+                                         vexpand: true,
+                                         headers_visible: false });
 
         this.widget.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE);
 

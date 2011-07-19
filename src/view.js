@@ -58,7 +58,7 @@ View.prototype = {
         try {
             Gtk.show_uri(null, uri, Gtk.get_current_event_time());
         } catch (e) {
-            log('Unable to open ' + uri + ': ' + e.toString())
+            log('Unable to open ' + uri + ': ' + e.toString());
         }
     }
 }
