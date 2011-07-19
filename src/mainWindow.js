@@ -28,6 +28,7 @@ const Mainloop = imports.mainloop;
 
 const Main = imports.main;
 const MainToolbar = imports.mainToolbar;
+const Sidebar = imports.sidebar;
 const TrackerModel = imports.trackerModel;
 const IconView = imports.iconView;
 const ListView = imports.listView;
@@ -72,8 +73,15 @@ MainWindow.prototype = {
 
         this._grid.add(this.toolbar.widget);
 
+        this._viewContainer = new Gtk.Grid({ orientation: Gtk.Orientation.HORIZONTAL });
+        this._grid.add(this._viewContainer);
+
+        this._sidebar = new Sidebar.Sidebar();
+        this._sidebar.connect('source-filter-changed', Lang.bind(this, this._onSourceFilterChanged));
+        this._viewContainer.add(this._sidebar.widget);
+
         this._scrolledWin = new Gtk.ScrolledWindow();
-        this._grid.add(this._scrolledWin);;
+        this._viewContainer.add(this._scrolledWin);
 
         this._loadMore = new Gtk.Button();
         this._loadMore.connect('clicked', Lang.bind(this, function() {
@@ -158,4 +166,8 @@ MainWindow.prototype = {
         this._loadMore.label = _('Load %d more documents').format(remainingDocs);
         this._loadMore.show();
     },
+
+    _onSourceFilterChanged: function(sidebar, id) {
+        this._model.setAccountFilter(id);
+    }
 }
