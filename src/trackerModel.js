@@ -56,12 +56,6 @@ const TrackerColumns = {
     TYPE: 7
 };
 
-const FilterScope = {
-    ALL: 0,
-    LOCAL: 1,
-    GOOGLE: 2
-}
-
 const _FILE_ATTRIBUTES = 'standard::icon,standard::content-type,thumbnail::path,time::modified';
 
 function LocalFileInfoLoader(uri) {
@@ -204,51 +198,76 @@ TrackerModel.prototype = {
         return filter;
     },
 
-    _buildFilterGoogle: function(subject, searchString) {
+    _buildFilterNotLocal: function(subject, searchString) {
         let filter =
-            ('fn:starts-with (nao:identifier(%s), "https://docs.google.com")').format(subject);
+            ('(fn:contains(rdf:type(%s), \"RemoteDataObject\"))').format(subject);
 
         return filter;
     },
 
-    _buildFilterString: function(subject, searchString, filterScope) {
-        let sparql = 'FILTER (';
+    _buildFilterResource: function(subject, searchString, resourceUrn) {
+        // TODO searchString
+        let filter =
+            ('(nie:dataSource(%s) = "<%s>")').format(subject, resourceUrn);
 
-        if (filterScope == FilterScope.LOCAL || filterScope == FilterScope.ALL)
+        return filter;
+    },
+
+    _buildFilterString: function(subject, searchString, filterId) {
+        let sparql = 'FILTER ((';
+
+        if (filterId == 'local' || filterId == 'all')
             sparql += this._buildFilterLocal(subject, searchString);
 
-        if (filterScope == FilterScope.ALL)
+        if (filterId == 'all')
             sparql += ') || (';
 
-        if (filterScope == FilterScope.GOOGLE || filterScope == FilterScope.ALL)
-            sparql += this._buildFilterGoogle(subject, searchString);
+        if (filterId != 'local' && filterId != 'all')
+            sparql += this._buildFilterResource(subject, searchString, filterId);
+        else if (filterId == 'all')
+            sparql += this._buildFilterNotLocal(subject, searchString);
 
-        sparql += ') ';
+        sparql += ')) ';
 
         return sparql;
     },
 
-    _buildOverviewQuery: function(offset, searchString, filterScope) {
+    _buildTypeFilter: function(subject) {
+        let sparql =
+            ('{ %s a nfo:PaginatedTextDocument } ' +
+             'UNION ' +
+             '{ %s a nfo:Spreadsheet } ' +
+             'UNION ' +
+             '{ %s a nfo:Presentation } ').format(subject, subject, subject);
+
+        return sparql;
+    },
+
+    _buildTotalCounter: function(searchString, filterId) {
+        let sparql =
+            '(SELECT DISTINCT COUNT(?doc) WHERE { ' +
+            this._buildTypeFilter('?doc') +
+            this._buildFilterString('?doc', searchString, filterId) +
+            '}) ';
+
+        return sparql;
+    },
+
+    _buildOverviewQuery: function(offset, searchString, filterId) {
         let sparql =
             ('SELECT DISTINCT ?urn ' + // urn
              'nie:url(?urn) ' + // uri
              'tracker:coalesce(nie:title(?urn), nfo:fileName(?urn)) ' + // title
              'tracker:coalesce(nco:fullname(?creator), nco:fullname(?publisher)) ' + // author
              'tracker:coalesce(nfo:fileLastModified(?urn), nie:contentLastModified(?urn)) AS ?mtime ' + // mtime
-             '(SELECT DISTINCT COUNT(?doc) WHERE { ?doc a nfo:PaginatedTextDocument . ' +
-             this._buildFilterString('?doc', searchString, filterScope) +
-             '}) ' + // total filtered count
+             this._buildTotalCounter(searchString, filterId) +
              'nao:identifier(?urn) ' +
              'rdf:type(?urn) ' +
              'WHERE { ' +
-             '{ ?urn a nfo:PaginatedTextDocument } ' +
-             'UNION ' +
-             '{ ?urn a nfo:Spreadsheet } ' +
-             'UNION ' +
-             '{ ?urn a nfo:Presentation } ' +
+             this._buildTypeFilter('?urn') +
              'OPTIONAL { ?urn nco:creator ?creator . } ' +
              'OPTIONAL { ?urn nco:publisher ?publisher . } ' +
-             this._buildFilterString('?urn', searchString, filterScope) +
+             this._buildFilterString('?urn', searchString, filterId) +
              ' } ' +
              'ORDER BY DESC (?mtime)' +
              'LIMIT %d OFFSET %d').format(OFFSET_STEP, this._offset);
@@ -381,9 +400,8 @@ TrackerModel.prototype = {
     },
 
     _performCurrentQuery: function() {
-        this._connection.query_async(this._currentQueryBuilder(this._offset, this._filter, FilterScope.GOOGLE), 
-                                     null,
-                                     Lang.bind(this, this._onQueryExecuted));
+        this._connection.query_async(this._currentQueryBuilder(this._offset, this._filter, this._sourceId),
+                                     null, Lang.bind(this, this._onQueryExecuted));
     },
 
     _emitCountUpdated: function() {
@@ -393,6 +411,7 @@ TrackerModel.prototype = {
     populateForOverview: function() {
         this._currentQueryBuilder = this._buildOverviewQuery;
 
+        this._sourceId = 'all';
         this._offset = 0;
         this._filter = '';
 
@@ -411,7 +430,48 @@ TrackerModel.prototype = {
         this._filter = filter;
 
         this._performCurrentQuery();
-    }
-}
+    },
 
+    setAccountFilter: function(id) {
+        if (id == 'all' || id == 'local') {
+            this._sourceId = id;
+
+            this.model.clear();
+            this._performCurrentQuery();
+        }
+
+        this._connection.query_async
+            (('SELECT ?urn WHERE { ?urn a nie:DataSource; nao:identifier \"goa:%s\" }').format(id),
+            null, Lang.bind(this,
+                function(object, res) {
+                    let cursor = null;
+                    try {
+                        cursor = object.query_finish(res);
+                    } catch (e) {
+                        log('Unable to resolve account ID -> resource URN: ' + e.toString());
+                    }
+
+                    cursor.next_async(null, Lang.bind(this,
+                        function(object, res) {
+                            try {
+                                let valid = cursor.next_finish(res);
+
+                                if (!valid)
+                                    return;
+                            } catch (e) {
+                                log('Unable to resolve account ID -> resource URN: ' + e.toString());
+                            }
+
+                            let urn = cursor.get_string(0)[0];
+                            if (urn) {
+                                this._sourceId = urn;
+
+                                this.model.clear();
+                                this._performCurrentQuery();
+                            }
+                        }));
+                }
+            ));
+    }
+};
 Signals.addSignalMethods(TrackerModel.prototype);
