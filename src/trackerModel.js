@@ -329,10 +329,6 @@ TrackerModel.prototype = {
         let identifier = cursor.get_string(TrackerColumns.IDENTIFIER)[0];
         let type = cursor.get_string(TrackerColumns.TYPE)[0];
 
-        log(urn);
-        log(title);
-        log(author);
-
         this._itemCount = cursor.get_integer(TrackerColumns.TOTAL_COUNT);
 
         if (!author)
