@@ -8,6 +8,7 @@ dist_js_DATA = \
     mainWindow.js \
     tagBar.js \
     trackerModel.js \
+    utils.js \
     view.js \
     format.js \
     path.js

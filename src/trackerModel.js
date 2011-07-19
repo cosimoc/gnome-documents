@@ -31,6 +31,7 @@ const Gd = imports.gi.Gd;
 const GdkPixbuf = imports.gi.GdkPixbuf;
 
 const Main = imports.main;
+const Utils = imports.utils;
 
 const ModelColumns = {
     URN: 0,
@@ -61,9 +62,85 @@ const FilterScope = {
     GOOGLE: 2
 }
 
-const _ICON_VIEW_SIZE = 128;
-const _LIST_VIEW_SIZE = 48;
 const _FILE_ATTRIBUTES = 'standard::icon,standard::content-type,thumbnail::path,time::modified';
+
+function LocalFileInfoLoader(uri) {
+    this._init(uri);
+}
+
+LocalFileInfoLoader.prototype = {
+    _init: function(uri) {
+        this._file = Gio.file_new_for_uri(uri);
+
+        this._file.query_info_async(_FILE_ATTRIBUTES,
+                                    0, 0, null,
+                                    Lang.bind(this, this._onFileQueryInfo));
+    },
+
+    _onFileQueryInfo: function(object, res) {
+        let info = null;
+        let treePath = null;
+
+        try {
+            info = object.query_info_finish(res);
+        } catch (e) {
+            log('Unable to query info for file at ' + this.file.get_uri() + ': ' + e.toString());
+        }
+
+        let thumbPath = info.get_attribute_byte_string(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH);
+        if (thumbPath) {
+            this.pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(thumbPath,
+                                                                  Utils.getIconSize(),
+                                                                  Utils.getIconSize());
+        } else {
+            let icon = info.get_icon();
+
+            if (icon) {
+                let theme = Gtk.IconTheme.get_default();
+                let iconInfo = theme.lookup_by_gicon(icon, Utils.getIconSize(),
+                                                     Gtk.IconLookupFlags.FORCE_SIZE |
+                                                     Gtk.IconLookupFlags.GENERIC_FALLBACK);
+                this.pixbuf = iconInfo.load_icon();
+            }
+
+            // try to create the thumbnail
+            Gd.queue_thumbnail_job_for_file_async(this._file,
+                                                  Lang.bind(this, this._onQueueThumbnailJob));
+        }
+
+        this.emit('info-loaded');
+    },
+
+    _onQueueThumbnailJob: function(object, res) {
+        let thumbnailed = Gd.queue_thumbnail_job_for_file_finish(res);
+
+        if (!thumbnailed)
+            return;
+
+        // get the new thumbnail path
+        this._file.query_info_async(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH,
+                                    0, 0, null,
+                                    Lang.bind(this, function(object, res) {
+                                        try {
+                                            let info = object.query_info_finish(res);
+                                        } catch (e) {
+                                            log('Unable to query info for file at ' + uri + ': ' + e.toString());
+                                            return;
+                                        }
+
+                                        let thumbPath = info.get_attribute_byte_string(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH);
+
+                                        if (thumbPath) {
+                                            this.pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size
+                                                (thumbPath, Utils.getIconSize(), Utils.getIconSize());
+
+                                            this.emit('icon-updated');
+                                        }
+                                    }));
+    }
+};
+
+Signals.addSignalMethods(LocalFileInfoLoader.prototype);
 
 function TrackerModel(callback) {
     this._init(callback);
@@ -95,10 +172,6 @@ TrackerModel.prototype = {
     _onSettingsChanged: function() {
         this.model.clear();
         this._performCurrentQuery();
-    },
-
-    _getIconSize: function() {
-        return Main.settings.get_boolean('list-view') ? _LIST_VIEW_SIZE : _ICON_VIEW_SIZE;
     },
 
     _buildFilterLocal: function(subject, searchString) {
@@ -200,74 +273,24 @@ TrackerModel.prototype = {
         if (!author)
             author = '';
 
-        let file = Gio.file_new_for_uri(uri);
-        file.query_info_async(_FILE_ATTRIBUTES,
-                              0, 0, null,
-                              Lang.bind(this, function(object, res) {
-                                  let info = {};
-                                  let pixbuf = {};
-                                  let treePath = {};
+        let treePath = null;
+        let loader = new LocalFileInfoLoader(uri);
 
-                                  try {
-                                      info = object.query_info_finish(res);
-                                  } catch (e) {
-                                      log('Unable to query info for file at ' + uri + ': ' + e.toString());
-                                      return;
-                                  }
+        loader.connect('info-loaded', Lang.bind(this,
+            function(loader) {
+                let iter = this.model.append();
+                treePath = this.model.get_path(iter);
 
-                                  let thumbPath = info.get_attribute_byte_string(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH);
-                                  if (thumbPath) {
-                                      pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(thumbPath,
-                                                                                      this._getIconSize(), this._getIconSize());
-                                  } else {
-                                      let icon = info.get_icon();
+                Gd.store_set(this.model, iter,
+                             urn, uri, title, author, mtime, loader.pixbuf);
+            }));
 
-                                      if (icon) {
-                                          let theme = Gtk.IconTheme.get_default();
-                                          let iconInfo = theme.lookup_by_gicon(icon, this._getIconSize(),
-                                                                               Gtk.IconLookupFlags.FORCE_SIZE |
-                                                                               Gtk.IconLookupFlags.GENERIC_FALLBACK);
-                                          pixbuf = iconInfo.load_icon();
-                                      }
-
-                                      // try to create the thumbnail
-                                      Gd.queue_thumbnail_job_for_file_async(file, Lang.bind(this, function(object, res) {
-                                          let thumbnailed = Gd.queue_thumbnail_job_for_file_finish(res);
-
-                                          if (!thumbnailed)
-                                              return;
-
-                                          // get the new thumbnail path
-                                          file.query_info_async(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH,
-                                                                0, 0, null,
-                                                                Lang.bind(this, function(object, res) {
-                                                                    try {
-                                                                        info = object.query_info_finish(res);
-                                                                    } catch (e) {
-                                                                        log('Unable to query info for file at ' + uri + ': ' + e.toString());
-                                                                        return;
-                                                                    }
-
-                                                                    thumbPath = info.get_attribute_byte_string(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH);
-
-                                                                    if (thumbPath) {
-                                                                        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(thumbPath,
-                                                                                                                        this._getIconSize(), this._getIconSize());
-
-                                                                        let objectIter = this.model.get_iter(treePath)[1];
-                                                                        if (objectIter)
-                                                                            Gd.store_update_icon(this.model, objectIter, pixbuf);
-                                                                    }
-                                                                }));
-                                      }));
-                                  }
-
-                                  let iter = this.model.append();
-                                  treePath = this.model.get_path(iter);
-
-                                  Gd.store_set(this.model, iter,
-                                               urn, uri, title, author, mtime, pixbuf);
-                              }));
+        loader.connect('icon-updated', Lang.bind(this,
+            function(loader) {
+                let objectIter = this.model.get_iter(treePath)[1];
+                if (objectIter)
+                    Gd.store_update_icon(this.model, objectIter, loader.pixbuf);
+            }));
     },
 
     _pixbufFromRdfType: function(type) {
@@ -282,8 +305,8 @@ TrackerModel.prototype = {
         else 
             iconName = 'x-office-document';
 
-        iconInfo = 
-            Gtk.IconTheme.get_default().lookup_icon(iconName, this._getIconSize(),
+        iconInfo =
+            Gtk.IconTheme.get_default().lookup_icon(iconName, Utils.getIconSize(),
                                                     Gtk.IconLookupFlags.FORCE_SIZE |
                                                     Gtk.IconLookupFlags.GENERIC_FALLBACK);
 
