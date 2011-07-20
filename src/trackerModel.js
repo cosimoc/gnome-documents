@@ -133,39 +133,14 @@ LocalFileInfoLoader.prototype = {
                                     }));
     }
 };
-
 Signals.addSignalMethods(LocalFileInfoLoader.prototype);
 
-function TrackerModel(callback) {
-    this._init(callback);
+function QueryBuilder() {
+    this._init();
 }
 
-TrackerModel.prototype = {
-    _init: function(callback) {
-        this._initCallback = callback;
-        Main.settings.connect('changed::list-view', Lang.bind(this, this._onSettingsChanged));
-
-        this.model = Gd.create_list_store();
-        this._initConnection();
-    },
-
-    _initConnection: function() {
-        Tracker.SparqlConnection.get_async(null, Lang.bind(this, function(object, res) {
-            try {
-                this._connection = Tracker.SparqlConnection.get_finish(res);
-            } catch (e) {
-                log('Unable to connect to the tracker database: ' + e.toString());
-                Main.application.quit();
-            }
-
-            if (this._initCallback)
-                this._initCallback();
-        }));
-    },
-
-    _onSettingsChanged: function() {
-        this.model.clear();
-        this._performCurrentQuery();
+QueryBuilder.prototype = {
+    _init: function() {
     },
 
     _buildFilterSearch: function(subject, searchString) {
@@ -260,7 +235,7 @@ TrackerModel.prototype = {
         return sparql;
     },
 
-    _buildOverviewQuery: function(offset, searchString, filterId) {
+    buildQuery: function(offset, searchString, filterId) {
         let sparql =
             ('SELECT DISTINCT ?urn ' + // urn
              'nie:url(?urn) ' + // uri
@@ -277,9 +252,43 @@ TrackerModel.prototype = {
              this._buildFilterString('?urn', searchString, filterId) +
              ' } ' +
              'ORDER BY DESC (?mtime)' +
-             'LIMIT %d OFFSET %d').format(OFFSET_STEP, this._offset);
+             'LIMIT %d OFFSET %d').format(OFFSET_STEP, offset);
 
         return sparql;
+    }
+};
+
+function TrackerModel(callback) {
+    this._init(callback);
+}
+
+TrackerModel.prototype = {
+    _init: function(callback) {
+        this._builder = new QueryBuilder();
+        this._initCallback = callback;
+        Main.settings.connect('changed::list-view', Lang.bind(this, this._onSettingsChanged));
+
+        this.model = Gd.create_list_store();
+        this._initConnection();
+    },
+
+    _initConnection: function() {
+        Tracker.SparqlConnection.get_async(null, Lang.bind(this, function(object, res) {
+            try {
+                this._connection = Tracker.SparqlConnection.get_finish(res);
+            } catch (e) {
+                log('Unable to connect to the tracker database: ' + e.toString());
+                Main.application.quit();
+            }
+
+            if (this._initCallback)
+                this._initCallback();
+        }));
+    },
+
+    _onSettingsChanged: function() {
+        this.model.clear();
+        this._performCurrentQuery();
     },
 
     _rowIsGoogle: function(identifier) {
@@ -407,7 +416,7 @@ TrackerModel.prototype = {
     },
 
     _performCurrentQuery: function() {
-        this._connection.query_async(this._currentQueryBuilder(this._offset, this._filter, this._sourceId),
+        this._connection.query_async(this._builder.buildQuery(this._offset, this._filter, this._sourceId),
                                      null, Lang.bind(this, this._onQueryExecuted));
     },
 
@@ -416,8 +425,6 @@ TrackerModel.prototype = {
     },
 
     populateForOverview: function() {
-        this._currentQueryBuilder = this._buildOverviewQuery;
-
         this._sourceId = 'all';
         this._offset = 0;
         this._filter = '';
