@@ -79,7 +79,7 @@ MainWindow.prototype = {
         this._sidebar.connect('source-filter-changed', Lang.bind(this, this._onSourceFilterChanged));
         this._viewContainer.add(this._sidebar.widget);
 
-        this._scrolledWin = new Gtk.ScrolledWindow();
+        this._scrolledWin = new Gtk.ScrolledWindow({ hscrollbar_policy: Gtk.PolicyType.NEVER });
         this._viewContainer.add(this._scrolledWin);
 
         this._loadMore = new Gtk.Button();

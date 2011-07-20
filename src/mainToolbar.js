@@ -34,8 +34,7 @@ MainToolbar.prototype = {
     },
 
     _initGtkToolbar: function() {
-        this.widget = new Gtk.Toolbar({ hexpand: true,
-                                        icon_size: Gtk.IconSize.MENU });
+        this.widget = new Gtk.Toolbar({ icon_size: Gtk.IconSize.MENU });
         this.widget.get_style_context().add_class('primary-toolbar');
     },
 

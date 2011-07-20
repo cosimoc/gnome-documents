@@ -27,6 +27,8 @@ const Signals = imports.signals;
 
 const AccountsModel = imports.accountsModel;
 
+const _SIDEBAR_WIDTH_REQUEST = 240;
+
 function Sidebar() {
     this._init();
 }
@@ -34,16 +36,19 @@ function Sidebar() {
 Sidebar.prototype = {
     _init: function() {
         this._accountsModel = new AccountsModel.AccountsModel();
-        this.widget = new Gtk.ScrolledWindow();
+        this.widget = new Gtk.ScrolledWindow({ hscrollbar_policy: Gtk.PolicyType.NEVER,
+                                               width_request: _SIDEBAR_WIDTH_REQUEST });
+        this.widget.get_style_context().add_class('sidebar');
 
-        this._grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
+        this._grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,
+                                    border_width: 6 });
         this.widget.add_with_viewport(this._grid);
 
         this._combobox = new Gtk.ComboBox();
         this._combobox.set_model(this._accountsModel.model);
 
-        this._comboRenderer = new Gtk.CellRendererText();
-        this._combobox.pack_start(this._comboRenderer, true);
+        this._comboRenderer = new Gtk.CellRendererText({ width: 200 });
+        this._combobox.pack_start(this._comboRenderer, false);
         this._combobox.add_attribute(this._comboRenderer,
                                      "text", AccountsModel.ModelColumns.NAME);
 
