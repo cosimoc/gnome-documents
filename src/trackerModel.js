@@ -303,7 +303,7 @@ TrackerModel.prototype = {
         let author = cursor.get_string(TrackerColumns.AUTHOR)[0];
         let mtime = cursor.get_string(TrackerColumns.MTIME)[0];
 
-        this._itemCount = cursor.get_integer(TrackerColumns.TOTAL_COUNT);
+        this.itemCount = cursor.get_integer(TrackerColumns.TOTAL_COUNT);
 
         if (!author)
             author = '';
@@ -364,7 +364,7 @@ TrackerModel.prototype = {
         let identifier = cursor.get_string(TrackerColumns.IDENTIFIER)[0];
         let type = cursor.get_string(TrackerColumns.TYPE)[0];
 
-        this._itemCount = cursor.get_integer(TrackerColumns.TOTAL_COUNT);
+        this.itemCount = cursor.get_integer(TrackerColumns.TOTAL_COUNT);
 
         if (!author)
             author = '';
@@ -416,31 +416,31 @@ TrackerModel.prototype = {
     },
 
     _performCurrentQuery: function() {
-        this._connection.query_async(this._builder.buildQuery(this._offset, this._filter, this._sourceId),
+        this._connection.query_async(this._builder.buildQuery(this.offset, this._filter, this._sourceId),
                                      null, Lang.bind(this, this._onQueryExecuted));
     },
 
     _emitCountUpdated: function() {
-        this.emit('count-updated', this._itemCount, this._offset);
+        this.emit('count-updated', this.itemCount, this.offset);
     },
 
     populateForOverview: function() {
         this._sourceId = 'all';
-        this._offset = 0;
+        this.offset = 0;
         this._filter = '';
 
         this._performCurrentQuery();
     },
 
     loadMore: function() {
-        this._offset += OFFSET_STEP;
+        this.offset += OFFSET_STEP;
         this._performCurrentQuery();
     },
 
     setFilter: function(filter) {
         this.model.clear();
 
-        this._offset = 0;
+        this.offset = 0;
         this._filter = filter;
 
         this._performCurrentQuery();

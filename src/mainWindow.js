@@ -19,6 +19,7 @@
  *
  */
 
+const EvView = imports.gi.EvinceView;
 const Gd = imports.gi.Gd;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
@@ -32,6 +33,7 @@ const Sidebar = imports.sidebar;
 const TrackerModel = imports.trackerModel;
 const IconView = imports.iconView;
 const ListView = imports.listView;
+const Preview = imports.preview;
 
 const _ = imports.gettext.gettext;
 
@@ -65,12 +67,14 @@ MainWindow.prototype = {
         this.window.add(this._grid);
 
         this._searchTimeout = 0;
-        this.toolbar = new MainToolbar.MainToolbar();
-        this.toolbar.setOverview();
-        this.toolbar.searchEntry.connect('changed',
-                                         Lang.bind(this, this._onSearchEntryChanged));
+        this._toolbar = new MainToolbar.MainToolbar();
+        this._toolbar.setOverview();
+        this._toolbar.searchEntry.connect('changed',
+                                          Lang.bind(this, this._onSearchEntryChanged));
+        this._toolbar.connect('back-clicked',
+                              Lang.bind(this, this._onToolbarBackClicked));
 
-        this._grid.add(this.toolbar.widget);
+        this._grid.add(this._toolbar.widget);
 
         this._viewContainer = new Gtk.Grid({ orientation: Gtk.Orientation.HORIZONTAL });
         this._grid.add(this._viewContainer);
@@ -79,8 +83,27 @@ MainWindow.prototype = {
         this._sidebar.connect('source-filter-changed', Lang.bind(this, this._onSourceFilterChanged));
         this._viewContainer.add(this._sidebar.widget);
 
-        this._scrolledWin = new Gtk.ScrolledWindow({ hscrollbar_policy: Gtk.PolicyType.NEVER });
+        this._scrolledWin = new Gtk.ScrolledWindow({ hexpand: true,
+                                                     vexpand: true});
         this._viewContainer.add(this._scrolledWin);
+
+        this._initView();
+        this._grid.show_all();
+
+        this._model = new TrackerModel.TrackerModel(Lang.bind(this, this._onModelCreated));
+        this._model.connect('count-updated', Lang.bind(this, this._onModelCountUpdated));
+    },
+
+    _destroyView: function() {
+        let child = this._scrolledWin.get_child();
+        if (child)
+            child.destroy();
+    },
+
+    _initView: function() {
+        let isList = Main.settings.get_boolean('list-view');
+
+        this._destroyView();
 
         this._loadMore = new Gtk.Button();
         this._loadMore.connect('clicked', Lang.bind(this, function() {
@@ -89,27 +112,6 @@ MainWindow.prototype = {
 
         this._viewBox = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
         this._viewBox.add(this._loadMore);
-
-        this._initView(this);
-
-        this._scrolledWin.add_with_viewport(this._viewBox);
-
-        this._grid.show_all();
-
-        this._model = new TrackerModel.TrackerModel(Lang.bind(this, this._onModelCreated));
-        this._model.connect('count-updated', Lang.bind(this, this._onModelCountUpdated));
-    },
-
-    _destroyView: function() {
-        if (this.view) {
-            this.view.destroy();
-        }
-    },
-
-    _initView: function() {
-        let isList = Main.settings.get_boolean('list-view');
-
-        this._destroyView();
 
         if (isList)
             this.view = new ListView.ListView(this);
@@ -120,11 +122,30 @@ MainWindow.prototype = {
 
         this._viewBox.attach_next_to(this.view.widget, this._loadMore,
                                      Gtk.PositionType.TOP, 1, 1);
+
+        this._scrolledWin.add_with_viewport(this._viewBox);
+
+        this._viewBox.show();
     },
 
     _refreshViewSettings: function() {
         this._initView();
         this.view.setModel(this._model.model);
+    },
+
+    _updateLoadMoreButton: function(itemCount, offset) {
+        let remainingDocs = itemCount - (offset + TrackerModel.OFFSET_STEP);
+
+        if (remainingDocs <= 0) {
+            this._loadMore.hide();
+            return;
+        }
+
+        if (remainingDocs > TrackerModel.OFFSET_STEP)
+            remainingDocs = TrackerModel.OFFSET_STEP;
+
+        this._loadMore.label = _('Load %d more documents').format(remainingDocs);
+        this._loadMore.show();
     },
 
     _onModelCreated: function() {
@@ -137,11 +158,35 @@ MainWindow.prototype = {
     },
 
     _onViewItemActivated: function(view, uri) {
-        try {
-            Gtk.show_uri(null, uri, Gtk.get_current_event_time());
-        } catch (e) {
-            log('Unable to open ' + uri + ': ' + e.toString());
-        }
+        let loader = new Gd.PdfLoader();
+        loader.connect('notify::document', Lang.bind(this, this._onDocumentLoaded));
+        loader.uri = uri;
+    },
+
+    _onDocumentLoaded: function(loader) {
+        let document = loader.document;
+        let model = EvView.DocumentModel.new_with_document(document);
+
+        this._destroyView();
+        this._sidebar.widget.hide();
+
+        this._preview = new Preview.PreviewView(model, document);
+        this._toolbar.setPreview(model, document);
+
+        this._scrolledWin.add(this._preview.widget);
+    },
+
+    _onToolbarBackClicked: function() {
+        if (this._preview)
+            this._preview.destroy();
+
+        this._sidebar.widget.show();
+        this._toolbar.setOverview();
+
+        this._refreshViewSettings();
+        // needs to be called after _refreshViewSettings(), as that
+        // recreates the button
+        this._updateLoadMoreButton(this._model.itemCount, this._model.offset);
     },
 
     _onSearchEntryChanged: function() {
@@ -157,23 +202,12 @@ MainWindow.prototype = {
     _onSearchEntryTimeout: function() {
         this._searchTimeout = 0;
 
-        let text = this.toolbar.searchEntry.get_text();
+        let text = this._toolbar.searchEntry.get_text();
         this._model.setFilter(text);
     },
 
     _onModelCountUpdated: function(model, itemCount, offset) {
-        let remainingDocs = itemCount - (offset + TrackerModel.OFFSET_STEP);
-
-        if (remainingDocs <= 0) {
-            this._loadMore.hide();
-            return;
-        }
-
-        if (remainingDocs > TrackerModel.OFFSET_STEP)
-            remainingDocs = TrackerModel.OFFSET_STEP;
-
-        this._loadMore.label = _('Load %d more documents').format(remainingDocs);
-        this._loadMore.show();
+        this._updateLoadMoreButton(itemCount, offset);
     },
 
     _onSourceFilterChanged: function(sidebar, id) {

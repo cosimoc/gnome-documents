@@ -22,7 +22,10 @@
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
 
+const _ = imports.gettext.gettext;
+
 const Lang = imports.lang;
+const Signals = imports.signals;
 
 function MainToolbar() {
     this._init();
@@ -98,10 +101,51 @@ MainToolbar.prototype = {
 
         this.widget.insert(item, 0);
         this.widget.insert(item2, 1);
+
+        this.widget.show_all();
+    },
+
+    _populateForPreview: function(model, document) {
+        let back = new Gtk.ToolButton({ icon_name: 'go-previous-symbolic' });
+        back.get_style_context().add_class('raised');
+        this.widget.insert(back, 0);
+
+        back.connect('clicked', Lang.bind(this,
+            function() {
+                this.emit('back-clicked');
+            }));
+
+        let label = new Gtk.Label();
+        let labelItem = new Gtk.ToolItem({ child: label });
+        labelItem.set_expand(true);
+        this.widget.insert(labelItem, 1);
+
+        model.connect('page-changed', Lang.bind(this,
+            function() {
+                this._updatePageLabel(label, model, document);
+            }));
+        this._updatePageLabel(label, model, document);
+
+        this.widget.show_all();
+    },
+
+    _updatePageLabel: function(label, model, document) {
+        let curPage, totPages;
+
+        curPage = model.get_page();
+        totPages = document.get_n_pages();
+
+        label.set_text(_("page %d of %d").format(curPage + 1, totPages));
     },
 
     setOverview: function() {
         this._clearToolbar();
         this._populateForOverview();
+    },
+
+    setPreview: function(model, document) {
+        this._clearToolbar();
+        this._populateForPreview(model, document);
     }
-}
+};
+Signals.addSignalMethods(MainToolbar.prototype);
