@@ -22,6 +22,7 @@
 const Gtk = imports.gi.Gtk;
 
 const Lang = imports.lang;
+const Signals = imports.signals;
 
 const Main = imports.main;
 const TrackerModel = imports.trackerModel;
@@ -55,10 +56,7 @@ View.prototype = {
         let iter = this.model.get_iter(path)[1];
         let uri = this.model.get_value(iter, TrackerModel.ModelColumns.URI);
 
-        try {
-            Gtk.show_uri(null, uri, Gtk.get_current_event_time());
-        } catch (e) {
-            log('Unable to open ' + uri + ': ' + e.toString());
-        }
+        this.emit('item-activated', uri);
     }
-}
+};
+Signals.addSignalMethods(View.prototype);

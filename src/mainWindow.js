@@ -116,6 +116,8 @@ MainWindow.prototype = {
         else
             this.view = new IconView.IconView(this);
 
+        this.view.connect('item-activated', Lang.bind(this, this._onViewItemActivated));
+
         this._viewBox.attach_next_to(this.view.widget, this._loadMore,
                                      Gtk.PositionType.TOP, 1, 1);
     },
@@ -132,6 +134,14 @@ MainWindow.prototype = {
 
     _onDeleteEvent: function() {
         Main.application.quit();
+    },
+
+    _onViewItemActivated: function(view, uri) {
+        try {
+            Gtk.show_uri(null, uri, Gtk.get_current_event_time());
+        } catch (e) {
+            log('Unable to open ' + uri + ': ' + e.toString());
+        }
     },
 
     _onSearchEntryChanged: function() {
