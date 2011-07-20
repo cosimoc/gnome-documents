@@ -476,7 +476,7 @@ gd_gdata_ensure_tracker_connection (GdGDataMiner *self,
   account = goa_object_peek_account (object);
   datasource_insert = g_string_new (NULL);
   g_string_append_printf (datasource_insert,
-                          "INSERT { <%s> a nie:DataSource ; nao:identifier \"goa:%s\" }",
+                          "INSERT { <%s> a nie:DataSource ; nao:identifier \"goa:documents:%s\" }",
                           DATASOURCE_URN, goa_account_get_id (account));
 
   tracker_sparql_connection_update (self->priv->connection, datasource_insert->str,

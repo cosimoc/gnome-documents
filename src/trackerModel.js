@@ -448,7 +448,7 @@ TrackerModel.prototype = {
         }
 
         this._connection.query_async
-            (('SELECT ?urn WHERE { ?urn a nie:DataSource; nao:identifier \"goa:%s\" }').format(id),
+            (('SELECT ?urn WHERE { ?urn a nie:DataSource; nao:identifier \"goa:documents:%s\" }').format(id),
             null, Lang.bind(this,
                 function(object, res) {
                     let cursor = null;
