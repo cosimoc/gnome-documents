@@ -168,6 +168,16 @@ TrackerModel.prototype = {
         this._performCurrentQuery();
     },
 
+    _buildFilterSearch: function(subject, searchString) {
+        let filter =
+            ('fn:contains ' +
+             '(fn:lower-case (tracker:coalesce(nie:title(%s), nfo:fileName(%s))), ' +
+             '"%s") ' +
+             '&& ').format(subject, subject, searchString);
+
+        return filter;
+    },
+
     _buildFilterLocal: function(subject, searchString) {
         let path;
         let desktopURI;
@@ -186,28 +196,25 @@ TrackerModel.prototype = {
             documentsURI = '';
 
         let filter =
-            ('(fn:contains ' +
-             '(fn:lower-case (tracker:coalesce(nie:title(%s), nfo:fileName(%s))), ' +
-             '"%s") ' +
-             '&& ' +
-             '((fn:starts-with (nie:url(%s), "%s")) || ' +
-             '(fn:starts-with (nie:url(%s), "%s"))))').format(subject, subject, searchString,
-                                                              subject, desktopURI,
-                                                              subject, documentsURI);
+            this._buildFilterSearch(subject, searchString) +
+            ('((fn:starts-with (nie:url(%s), "%s")) || ' +
+             '(fn:starts-with (nie:url(%s), "%s")))').format(subject, desktopURI,
+                                                             subject, documentsURI);
 
         return filter;
     },
 
     _buildFilterNotLocal: function(subject, searchString) {
         let filter =
+            this._buildFilterSearch(subject, searchString) +
             ('(fn:contains(rdf:type(%s), \"RemoteDataObject\"))').format(subject);
 
         return filter;
     },
 
     _buildFilterResource: function(subject, searchString, resourceUrn) {
-        // TODO searchString
         let filter =
+            this._buildFilterSearch(subject, searchString) +
             ('(nie:dataSource(%s) = "<%s>")').format(subject, resourceUrn);
 
         return filter;
