@@ -43,7 +43,7 @@ const ModelColumns = {
     N_COLUMNS: 6
 };
 
-const OFFSET_STEP = 52; // needs to be multiple of four
+const OFFSET_STEP = 50;
 
 const TrackerColumns = {
     URN: 0,
