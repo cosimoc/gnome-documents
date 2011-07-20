@@ -55,6 +55,8 @@ GOBJECT_INTROSPECTION_MIN_VERSION=0.9.6
 GDATA_MIN_VERSION=0.9.1
 
 PKG_CHECK_MODULES(DOCUMENTS,
+                  evince-document-3.0
+                  evince-view-3.0
                   glib-2.0 >= $GLIB_MIN_VERSION
                   gobject-introspection-1.0 >= $GOBJECT_INTROSPECTION_MIN_VERSION
                   gtk+-3.0 >= $GTK_MIN_VERSION

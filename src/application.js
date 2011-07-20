@@ -23,6 +23,7 @@ const DBus = imports.dbus;
 const Lang = imports.lang;
 const Gettext = imports.gettext;
 
+const EvDoc = imports.gi.EvinceDocument;
 const Gdk = imports.gi.Gdk;
 const Gtk = imports.gi.Gtk;
 const GLib = imports.gi.GLib;
@@ -94,6 +95,7 @@ Application.prototype = {
 
         GLib.set_prgname('gnome-documents');
         Gtk.init(null, null);
+        EvDoc.init();
     },
 
     _initGtkSettings: function() {
