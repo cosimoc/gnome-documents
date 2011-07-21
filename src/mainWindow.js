@@ -55,6 +55,9 @@ MainWindow.prototype = {
         this._loaderTimeout = 0;
         this._loaderSignal = 0;
 
+        //TODO save this in GSettings?
+        this._currentSourceId = 'all';
+
         this.window = new Gtk.Window({ type: Gtk.WindowType.TOPLEVEL,
                                        window_position: Gtk.WindowPosition.CENTER,
                                        title: _('Documents') });
@@ -162,26 +165,32 @@ MainWindow.prototype = {
 
     _onModelCreated: function() {
         this.view.setModel(this._model.model);
-        this._model.populateForOverview();
+        this._model.populateForOverview(this._currentSourceId);
     },
 
     _onDeleteEvent: function() {
         Main.application.quit();
     },
 
-    _onViewItemActivated: function(view, uri) {
+    _onViewItemActivated: function(view, uri, resource) {
         if (this._loaderTimeout != 0) {
             Mainloop.source_remove(this._loaderTimeout);
             this._loaderTimeout = 0;
         }
 
-        this._pdfLoader = new Gd.PdfLoader();
-        this._loaderSignal =
-            this._pdfLoader.connect('notify::document', Lang.bind(this, this._onDocumentLoaded));
-        this._pdfLoader.uri = uri;
+        log('activated, resource ' + resource);
 
-        this._loaderTimeout = Mainloop.timeout_add(_PDF_LOADER_TIMEOUT,
-                                                   Lang.bind(this, this._onPdfLoaderTimeout));
+        this._model.sourceIdFromResourceUrn(resource, Lang.bind(this,
+            function(sourceId) {
+                log('source ' + sourceId);
+                this._pdfLoader = new Gd.PdfLoader({ source_id: sourceId });
+                this._loaderSignal =
+                    this._pdfLoader.connect('notify::document', Lang.bind(this, this._onDocumentLoaded));
+                this._pdfLoader.uri = uri;
+
+                this._loaderTimeout = Mainloop.timeout_add(_PDF_LOADER_TIMEOUT,
+                                                           Lang.bind(this, this._onPdfLoaderTimeout));
+            }));
     },
 
     _onPdfLoaderTimeout: function() {
@@ -199,7 +208,6 @@ MainWindow.prototype = {
         let document = loader.document;
         let model = EvView.DocumentModel.new_with_document(document);
 
-        this._pdfLoader = null;
         this._loaderSignal = 0;
 
         if (this._loaderTimeout) {
@@ -214,14 +222,18 @@ MainWindow.prototype = {
     },
 
     _onToolbarBackClicked: function() {
-        if (this._pdfLoader && this._loaderSignal) {
+        if (this._loaderSignal) {
             this._pdfLoader.disconnect(this._loaderSignal);
             this._loaderSignal = 0;
-            this._pdfLoader = null;
         }
 
-        if (this._preview)
+        this._pdfLoader.cleanup_document();
+        this._pdfLoader = null;
+
+        if (this._preview) {
             this._preview.destroy();
+            this._preview = null;
+        }
 
         this._sidebar.widget.show();
         this._toolbar.setOverview();
@@ -254,6 +266,7 @@ MainWindow.prototype = {
     },
 
     _onSourceFilterChanged: function(sidebar, id) {
+        this._currentSourceId = id;
         this._model.setAccountFilter(id);
     }
 }

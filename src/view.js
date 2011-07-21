@@ -55,8 +55,9 @@ View.prototype = {
     activateItem: function(path) {
         let iter = this.model.get_iter(path)[1];
         let uri = this.model.get_value(iter, TrackerModel.ModelColumns.URI);
+        let resource = this.model.get_value(iter, TrackerModel.ModelColumns.RESOURCE_URN);
 
-        this.emit('item-activated', uri);
+        this.emit('item-activated', uri, resource);
     }
 };
 Signals.addSignalMethods(View.prototype);
