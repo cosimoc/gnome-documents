@@ -178,11 +178,8 @@ MainWindow.prototype = {
             this._loaderTimeout = 0;
         }
 
-        log('activated, resource ' + resource);
-
         this._model.sourceIdFromResourceUrn(resource, Lang.bind(this,
             function(sourceId) {
-                log('source ' + sourceId);
                 this._pdfLoader = new Gd.PdfLoader({ source_id: sourceId });
                 this._loaderSignal =
                     this._pdfLoader.connect('notify::document', Lang.bind(this, this._onDocumentLoaded));
