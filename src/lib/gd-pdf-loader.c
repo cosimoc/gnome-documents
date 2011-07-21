@@ -22,22 +22,37 @@
 
 #include "gd-pdf-loader.h"
 
+#include "e-gdata-goa-authorizer.h"
+
+#include <string.h>
+#include <gdata/gdata.h>
 #include <evince-document.h>
 #include <evince-view.h>
+
+/* TODO:
+ * - error forwarding to the caller, don't die silently
+ * - possibly better to turn the loader into an explicit
+ *   _load() API passing a GCancellable, so we can control it
+ *   from the application too
+ * - investigate the GDataDocumentsType bug
+ */
 
 G_DEFINE_TYPE (GdPdfLoader, gd_pdf_loader, G_TYPE_OBJECT);
 
 enum {
   PROP_DOCUMENT = 1,
-  PROP_URI
+  PROP_URI,
+  PROP_SOURCE_ID
 };
 
 struct _GdPdfLoaderPrivate {
   EvDocument *document;
   gchar *uri;
   gchar *pdf_path;
+  gchar *source_id;
 
   GPid unoconv_pid;
+  GDataDownloadStream *stream;
 };
 
 static void
@@ -70,6 +85,210 @@ load_pdf (GdPdfLoader *self,
                     G_CALLBACK (load_job_done), self);
 
   ev_job_scheduler_push_job (job, EV_JOB_PRIORITY_NONE);
+}
+
+#define GOA_DOCS_TRACKER_PREFIX "goa:documents:"
+
+static gchar *
+strip_tracker_prefix (const gchar *source_id)
+{
+  if (g_str_has_prefix (source_id, GOA_DOCS_TRACKER_PREFIX))
+    return g_strdup (source_id + strlen (GOA_DOCS_TRACKER_PREFIX));
+
+  return NULL;
+}
+
+static void
+os_splice_ready_cb (GObject *source,
+                    GAsyncResult *res,
+                    gpointer user_data)
+{
+  GdPdfLoader *self = user_data;
+  GError *error = NULL;
+  GFile *file;
+  gchar *uri;
+
+  g_output_stream_splice_finish (G_OUTPUT_STREAM (source), res, &error);
+
+  if (error != NULL) {
+    g_warning ("Unable to download the PDF file from google: %s\n", error->message);
+    g_error_free (error);
+    return;
+  }
+
+  file = g_file_new_for_path (self->priv->pdf_path);
+  uri = g_file_get_uri (file);
+  load_pdf (self, uri);
+
+  g_object_unref (file);
+  g_free (uri);
+}
+
+static void
+file_replace_ready_cb (GObject *source,
+                       GAsyncResult *res,
+                       gpointer user_data)
+{
+  GFileOutputStream *os;
+  GError *error = NULL;
+  GdPdfLoader *self = user_data;
+
+  os = g_file_replace_finish (G_FILE (source), res, &error);
+
+  if (error != NULL) {
+    g_warning ("Unable to open the temp file for writing: %s\n", error->message);
+    g_error_free (error);
+    return;
+  }
+
+  g_output_stream_splice_async (G_OUTPUT_STREAM (os),
+                                G_INPUT_STREAM (self->priv->stream),
+                                G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE |
+                                G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
+                                G_PRIORITY_DEFAULT,
+                                NULL,
+                                os_splice_ready_cb, self);
+
+  g_object_unref (os);
+}
+
+static void
+single_entry_ready_cb (GObject *source,
+                       GAsyncResult *res,
+                       gpointer user_data)
+{
+  GDataEntry *entry;
+  GdPdfLoader *self = user_data;
+  GDataDownloadStream *stream;
+  GError *error = NULL;
+  gchar *tmp_name;
+  gchar *tmp_path, *pdf_path;
+  GFile *pdf_file;
+
+  entry = gdata_service_query_single_entry_finish (GDATA_SERVICE (source), res, &error);
+
+  if (error != NULL) {
+    g_warning ("Unable to query the requested entry from GData: %s\n", error->message);
+    g_error_free (error);
+    return;
+  }
+
+  stream = gdata_documents_document_download (GDATA_DOCUMENTS_DOCUMENT (entry),
+                                              GDATA_DOCUMENTS_SERVICE (source),
+                                              "pdf", NULL, &error);
+
+  if (error != NULL) {
+    g_warning ("Unable to get the download stream for the requested document from GData: %s\n", error->message);
+    g_error_free (error);
+    return;
+  }
+
+  self->priv->stream = stream;
+
+  tmp_name = g_strdup_printf ("gnome-documents-%d.pdf", getpid ());
+  tmp_path = g_build_filename (g_get_user_cache_dir (), "gnome-documents", NULL);
+  self->priv->pdf_path = pdf_path =
+    g_build_filename (tmp_path, tmp_name, NULL);
+  g_mkdir_with_parents (tmp_path, 0700);
+
+  pdf_file = g_file_new_for_path (pdf_path);
+  g_file_replace_async (pdf_file, NULL, FALSE,
+                        G_FILE_CREATE_PRIVATE,
+                        G_PRIORITY_DEFAULT,
+                        NULL, file_replace_ready_cb,
+                        self);
+
+  g_free (tmp_name);
+  g_free (tmp_path);
+  g_object_unref (pdf_file);
+  g_object_unref (entry);
+}
+
+static void
+load_from_google_documents_with_object (GdPdfLoader *self,
+                                        GoaObject *object)
+{
+  EGDataGoaAuthorizer *authorizer;
+  GDataDocumentsService *service;
+
+  authorizer = e_gdata_goa_authorizer_new (object);
+  service = gdata_documents_service_new (GDATA_AUTHORIZER (authorizer));
+
+  /* FIXME: using GDATA_TYPE_DOCUMENTS_TEXT here is plain wrong,
+   * but I can't seem to use a more generic class, or GData segfaults.
+   * OTOH, using this type always works, even for presentations/spreadsheets.
+   *
+   * To be investigated...
+   */
+  gdata_service_query_single_entry_async (GDATA_SERVICE (service),
+                                          gdata_documents_service_get_primary_authorization_domain (),
+                                          self->priv->uri,
+                                          NULL, GDATA_TYPE_DOCUMENTS_TEXT,
+                                          NULL, single_entry_ready_cb, self);
+
+  g_object_unref (service);
+  g_object_unref (authorizer);
+}
+
+static void
+client_ready_cb (GObject *source,
+                 GAsyncResult *res,
+                 gpointer user_data)
+{
+  GoaObject *object, *target = NULL;
+  GoaAccount *account;
+  GoaClient *client;
+  GError *error = NULL;
+  GList *accounts, *l;
+  gchar *stripped_id;
+  GdPdfLoader *self = user_data;
+
+  client = goa_client_new_finish (res, &error);
+
+  if (error != NULL) {
+    g_warning ("Error while getting the GOA client: %s",
+               error->message);
+    g_error_free (error);
+
+    return;
+  }
+
+  stripped_id = strip_tracker_prefix (self->priv->source_id);
+
+  if (stripped_id == NULL) {
+    g_warning ("Wrong source ID; passed in a google URL, but the source ID is not coming from GOA");
+    return;
+  }
+
+  accounts = goa_client_get_accounts (client);
+  for (l = accounts; l != NULL; l = l->next) {
+    object = l->data;
+    account = goa_object_peek_account (object);
+    
+    if (account == NULL)
+      continue;
+
+    if (goa_object_peek_documents (object) == NULL)
+      continue;
+
+    if (g_strcmp0 (goa_account_get_id (account), stripped_id) == 0) {
+      target = object;
+      break;
+    }
+  }
+
+  if (target != NULL)
+    load_from_google_documents_with_object (self, target);
+
+  g_free (stripped_id);
+  g_list_free_full (accounts, g_object_unref);
+  g_object_unref (client);
+}
+
+static void
+load_from_google_documents (GdPdfLoader *self)
+{
+  goa_client_new (NULL, client_ready_cb, self);
 }
 
 static void
@@ -236,6 +455,11 @@ start_loading_document (GdPdfLoader *self)
 {
   GFile *file;
 
+  if (g_str_has_prefix (self->priv->uri, "https://docs.google.com")) {
+    load_from_google_documents (self);
+    return;
+  }
+
   file = g_file_new_for_uri (self->priv->uri);
   g_file_query_info_async (file,
                            G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
@@ -281,7 +505,9 @@ gd_pdf_loader_dispose (GObject *object)
   gd_pdf_loader_cleanup_document (self);
 
   g_clear_object (&self->priv->document);
+  g_clear_object (&self->priv->stream);
   g_free (self->priv->uri);
+  g_free (self->priv->source_id);
 
   G_OBJECT_CLASS (gd_pdf_loader_parent_class)->dispose (object);
 }
@@ -301,6 +527,9 @@ gd_pdf_loader_get_property (GObject *object,
   case PROP_URI:
     g_value_set_string (value, self->priv->uri);
     break;
+  case PROP_SOURCE_ID:
+    g_value_set_string (value, self->priv->source_id);
+    break;
   default:
     G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     break;
@@ -319,6 +548,9 @@ gd_pdf_loader_set_property (GObject *object,
   case PROP_URI:
     gd_pdf_loader_set_uri (self, g_value_get_string (value));
     break;
+  case PROP_SOURCE_ID:
+    self->priv->source_id = g_value_dup_string (value);
+    break;
   default:
     G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     break;
@@ -335,25 +567,34 @@ gd_pdf_loader_class_init (GdPdfLoaderClass *klass)
   oclass->get_property = gd_pdf_loader_get_property;
   oclass->set_property = gd_pdf_loader_set_property;
 
-    g_object_class_install_property
-      (oclass,
-       PROP_DOCUMENT,
-       g_param_spec_object ("document",
-                            "Document",
-                            "The loaded document",
-                            EV_TYPE_DOCUMENT,
-                            G_PARAM_READABLE));
+  g_object_class_install_property
+    (oclass,
+     PROP_DOCUMENT,
+     g_param_spec_object ("document",
+                          "Document",
+                          "The loaded document",
+                          EV_TYPE_DOCUMENT,
+                          G_PARAM_READABLE));
 
-    g_object_class_install_property
-      (oclass,
-       PROP_URI,
-       g_param_spec_string ("uri",
-                            "URI",
-                            "The URI to load",
-                            NULL,
-                            G_PARAM_READWRITE));
+  g_object_class_install_property
+    (oclass,
+     PROP_URI,
+     g_param_spec_string ("uri",
+                          "URI",
+                          "The URI to load",
+                          NULL,
+                          G_PARAM_READWRITE));
 
-    g_type_class_add_private (klass, sizeof (GdPdfLoaderPrivate));
+  g_object_class_install_property
+    (oclass,
+     PROP_SOURCE_ID,
+     g_param_spec_string ("source-id",
+                          "Source ID",
+                          "The ID of the source we're loading from",
+                          NULL,
+                          G_PARAM_READWRITE));
+
+  g_type_class_add_private (klass, sizeof (GdPdfLoaderPrivate));
 }
 
 static void
