@@ -54,10 +54,6 @@ GType    gd_pdf_loader_get_type     (void) G_GNUC_CONST;
 
 GdPdfLoader *gd_pdf_loader_new (const gchar *uri);
 void gd_pdf_loader_cleanup_document (GdPdfLoader *self);
-void gd_pdf_loader_get_max_page_size (GdPdfLoader *self,
-                                         gdouble *width,
-                                         gdouble *height);
-
 
 G_END_DECLS
 
