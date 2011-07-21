@@ -366,6 +366,12 @@ gd_gdata_miner_process_entry (GdGDataMiner *self,
      identifier, resource,
      "nie:description", gdata_entry_get_summary (entry));
 
+  _tracker_sparql_connection_insert_or_replace_triple
+    (self->priv->connection, 
+     self->priv->cancellable, &error,
+     identifier, resource,
+     "nie:title", gdata_entry_get_title (entry));
+
   if (error != NULL)
     goto out;
 
