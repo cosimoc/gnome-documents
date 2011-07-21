@@ -9,6 +9,7 @@ dist_js_DATA = \
     mainWindow.js \
     preview.js \
     sidebar.js \
+    spinnerBox.js \
     trackerModel.js \
     utils.js \
     view.js \

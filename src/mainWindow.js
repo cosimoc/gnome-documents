@@ -34,6 +34,7 @@ const TrackerModel = imports.trackerModel;
 const IconView = imports.iconView;
 const ListView = imports.listView;
 const Preview = imports.preview;
+const SpinnerBox = imports.spinnerBox;
 
 const _ = imports.gettext.gettext;
 
@@ -41,6 +42,7 @@ const _WINDOW_DEFAULT_WIDTH = 768;
 const _WINDOW_DEFAULT_HEIGHT = 600;
 
 const _SEARCH_ENTRY_TIMEOUT = 200;
+const _PDF_LOADER_TIMEOUT = 300;
 
 function MainWindow() {
     this._init();
@@ -49,6 +51,7 @@ function MainWindow() {
 MainWindow.prototype = {
     _init: function() {
         this._searchTimeout = 0;
+        this._loaderTimeout = 0;
 
         this.window = new Gtk.Window({ type: Gtk.WindowType.TOPLEVEL,
                                        window_position: Gtk.WindowPosition.CENTER,
@@ -133,7 +136,7 @@ MainWindow.prototype = {
         this.view.setModel(this._model.model);
     },
 
-    _updateLoadMoreButton: function(itemCount, offset) {
+    _refreshLoadMoreButton: function(itemCount, offset) {
         let remainingDocs = itemCount - (offset + TrackerModel.OFFSET_STEP);
 
         if (remainingDocs <= 0) {
@@ -146,6 +149,13 @@ MainWindow.prototype = {
 
         this._loadMore.label = _('Load %d more documents').format(remainingDocs);
         this._loadMore.show();
+    },
+
+    _prepareForPreview: function(model, document) {
+        this._destroyView();
+        this._sidebar.widget.hide();
+
+        this._toolbar.setPreview(model, document);
     },
 
     _onModelCreated: function() {
@@ -161,17 +171,33 @@ MainWindow.prototype = {
         let loader = new Gd.PdfLoader();
         loader.connect('notify::document', Lang.bind(this, this._onDocumentLoaded));
         loader.uri = uri;
+
+        this._loaderTimeout = Mainloop.timeout_add(_PDF_LOADER_TIMEOUT,
+                                                   Lang.bind(this, this._onPdfLoaderTimeout));
+    },
+
+    _onPdfLoaderTimeout: function() {
+        this._loaderTimeout = 0;
+
+        this._prepareForPreview();
+
+        let spinnerBox = new SpinnerBox.SpinnerBox();
+        this._scrolledWin.add_with_viewport(spinnerBox.widget);
+
+        return false;
     },
 
     _onDocumentLoaded: function(loader) {
         let document = loader.document;
         let model = EvView.DocumentModel.new_with_document(document);
 
-        this._destroyView();
-        this._sidebar.widget.hide();
+        if (this._loaderTimeout) {
+            Mainloop.source_remove(this._loaderTimeout);
+            this._loaderTimeout = 0;
+        }
 
+        this._prepareForPreview(model, document);
         this._preview = new Preview.PreviewView(model, document);
-        this._toolbar.setPreview(model, document);
 
         this._scrolledWin.add(this._preview.widget);
     },
@@ -186,7 +212,7 @@ MainWindow.prototype = {
         this._refreshViewSettings();
         // needs to be called after _refreshViewSettings(), as that
         // recreates the button
-        this._updateLoadMoreButton(this._model.itemCount, this._model.offset);
+        this._refreshLoadMoreButton(this._model.itemCount, this._model.offset);
     },
 
     _onSearchEntryChanged: function() {
@@ -207,7 +233,7 @@ MainWindow.prototype = {
     },
 
     _onModelCountUpdated: function(model, itemCount, offset) {
-        this._updateLoadMoreButton(itemCount, offset);
+        this._refreshLoadMoreButton(itemCount, offset);
     },
 
     _onSourceFilterChanged: function(sidebar, id) {

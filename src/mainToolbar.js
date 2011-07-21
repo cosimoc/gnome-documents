@@ -120,11 +120,14 @@ MainToolbar.prototype = {
         labelItem.set_expand(true);
         this.widget.insert(labelItem, 1);
 
-        model.connect('page-changed', Lang.bind(this,
-            function() {
-                this._updatePageLabel(label, model, document);
-            }));
-        this._updatePageLabel(label, model, document);
+
+        if (model && document) {
+            model.connect('page-changed', Lang.bind(this,
+                function() {
+                    this._updatePageLabel(label, model, document);
+                }));
+            this._updatePageLabel(label, model, document);
+        }
 
         this.widget.show_all();
     },
