@@ -120,6 +120,12 @@ MainToolbar.prototype = {
         labelItem.set_expand(true);
         this.widget.insert(labelItem, 1);
 
+        let rightGroup = new Gtk.ToolItem();
+        this.widget.insert(rightGroup, 2);
+
+        let sizeGroup = new Gtk.SizeGroup();
+        sizeGroup.add_widget(back);
+        sizeGroup.add_widget(rightGroup);
 
         if (model && document) {
             model.connect('page-changed', Lang.bind(this,
