@@ -22,6 +22,7 @@
 const EvView = imports.gi.EvinceView;
 const Gd = imports.gi.Gd;
 const GLib = imports.gi.GLib;
+const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 const Lang = imports.lang;
@@ -52,6 +53,7 @@ MainWindow.prototype = {
     _init: function() {
         this._searchTimeout = 0;
         this._loaderTimeout = 0;
+        this._loaderSignal = 0;
 
         this.window = new Gtk.Window({ type: Gtk.WindowType.TOPLEVEL,
                                        window_position: Gtk.WindowPosition.CENTER,
@@ -168,9 +170,15 @@ MainWindow.prototype = {
     },
 
     _onViewItemActivated: function(view, uri) {
-        let loader = new Gd.PdfLoader();
-        loader.connect('notify::document', Lang.bind(this, this._onDocumentLoaded));
-        loader.uri = uri;
+        if (this._loaderTimeout != 0) {
+            Mainloop.source_remove(this._loaderTimeout);
+            this._loaderTimeout = 0;
+        }
+
+        this._pdfLoader = new Gd.PdfLoader();
+        this._loaderSignal =
+            this._pdfLoader.connect('notify::document', Lang.bind(this, this._onDocumentLoaded));
+        this._pdfLoader.uri = uri;
 
         this._loaderTimeout = Mainloop.timeout_add(_PDF_LOADER_TIMEOUT,
                                                    Lang.bind(this, this._onPdfLoaderTimeout));
@@ -191,6 +199,9 @@ MainWindow.prototype = {
         let document = loader.document;
         let model = EvView.DocumentModel.new_with_document(document);
 
+        this._pdfLoader = null;
+        this._loaderSignal = 0;
+
         if (this._loaderTimeout) {
             Mainloop.source_remove(this._loaderTimeout);
             this._loaderTimeout = 0;
@@ -203,6 +214,12 @@ MainWindow.prototype = {
     },
 
     _onToolbarBackClicked: function() {
+        if (this._pdfLoader && this._loaderSignal) {
+            this._pdfLoader.disconnect(this._loaderSignal);
+            this._loaderSignal = 0;
+            this._pdfLoader = null;
+        }
+
         if (this._preview)
             this._preview.destroy();
 
