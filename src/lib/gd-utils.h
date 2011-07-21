@@ -33,7 +33,8 @@ void gd_store_set (GtkListStore *store,
                    const gchar *title,
                    const gchar *author,
                    const gchar *mtime,
-                   GdkPixbuf *icon);
+                   GdkPixbuf *icon,
+                   const gchar *resource_urn);
 
 void gd_store_update_icon (GtkListStore *store,
                            GtkTreeIter *iter,

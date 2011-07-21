@@ -40,7 +40,8 @@ const ModelColumns = {
     AUTHOR: 3,
     MTIME: 4,
     ICON: 5,
-    N_COLUMNS: 6
+    RESOURCE_URN: 6,
+    N_COLUMNS: 7
 };
 
 const OFFSET_STEP = 50;
@@ -53,7 +54,8 @@ const TrackerColumns = {
     MTIME: 4,
     TOTAL_COUNT: 5,
     IDENTIFIER: 6,
-    TYPE: 7
+    TYPE: 7,
+    RESOURCE_URN: 8
 };
 
 const _FILE_ATTRIBUTES = 'standard::icon,standard::content-type,thumbnail::path,time::modified';
@@ -245,6 +247,7 @@ QueryBuilder.prototype = {
              this._buildTotalCounter(searchString, filterId) +
              'nao:identifier(?urn) ' +
              'rdf:type(?urn) ' +
+             'nie:dataSource(?urn) ' +
              'WHERE { ' +
              this._buildTypeFilter('?urn') +
              'OPTIONAL { ?urn nco:creator ?creator . } ' +
@@ -302,6 +305,7 @@ TrackerModel.prototype = {
         let title = cursor.get_string(TrackerColumns.TITLE)[0];
         let author = cursor.get_string(TrackerColumns.AUTHOR)[0];
         let mtime = cursor.get_string(TrackerColumns.MTIME)[0];
+        let resourceUrn = cursor.get_string(TrackerColumns.RESOURCE_URN)[0];
 
         this.itemCount = cursor.get_integer(TrackerColumns.TOTAL_COUNT);
 
@@ -317,7 +321,7 @@ TrackerModel.prototype = {
                 treePath = this.model.get_path(iter);
 
                 Gd.store_set(this.model, iter,
-                             urn, uri, title, author, mtime, loader.pixbuf);
+                             urn, uri, title, author, mtime, loader.pixbuf, resourceUrn);
             }));
 
         loader.connect('icon-updated', Lang.bind(this,
@@ -363,6 +367,7 @@ TrackerModel.prototype = {
         let mtime = cursor.get_string(TrackerColumns.MTIME)[0];
         let identifier = cursor.get_string(TrackerColumns.IDENTIFIER)[0];
         let type = cursor.get_string(TrackerColumns.TYPE)[0];
+        let resourceUrn = cursor.get_string(TrackerColumns.RESOURCE_URN)[0];
 
         this.itemCount = cursor.get_integer(TrackerColumns.TOTAL_COUNT);
 
@@ -373,7 +378,7 @@ TrackerModel.prototype = {
 
         let iter = this.model.append();
         Gd.store_set(this.model, iter,
-                     urn, identifier, title, author, mtime, pixbuf);
+                     urn, identifier, title, author, mtime, pixbuf, resourceUrn);
     },
 
     _addRowFromCursor: function(cursor) {
@@ -416,7 +421,7 @@ TrackerModel.prototype = {
     },
 
     _performCurrentQuery: function() {
-        this._connection.query_async(this._builder.buildQuery(this.offset, this._filter, this._sourceId),
+        this._connection.query_async(this._builder.buildQuery(this.offset, this._filter, this._resourceUrn),
                                      null, Lang.bind(this, this._onQueryExecuted));
     },
 
@@ -424,8 +429,75 @@ TrackerModel.prototype = {
         this.emit('count-updated', this.itemCount, this.offset);
     },
 
-    populateForOverview: function() {
-        this._sourceId = 'all';
+    sourceIdFromResourceUrn: function(resourceUrn, callback) {
+        //FIXME: is this right?
+        if(resourceUrn[0] != '<')
+            resourceUrn = '<' + resourceUrn + '>';
+
+        this._connection.query_async
+            (('SELECT ?id WHERE { %s a nie:DataSource; nao:identifier ?id }').format(resourceUrn),
+            null, Lang.bind(this,
+                function(object, res) {
+                    let cursor = null;
+                    try {
+                        cursor = object.query_finish(res);
+                    } catch (e) {
+                        log('Unable to resolve resource URN -> account ID: ' + e.toString());
+                        return;
+                    }
+
+                    cursor.next_async(null, Lang.bind(this,
+                        function(object, res) {
+                            try {
+                                let valid = cursor.next_finish(res);
+
+                                if (!valid) {
+                                    callback(null);
+                                    return;
+                                }
+                            } catch (e) {
+                                log('Unable to resolve resource URN -> account ID: ' + e.toString());
+                            }
+
+                            let sourceId = cursor.get_string(0)[0];
+                            callback(sourceId);
+                        }));
+                }));
+    },
+
+    resourceUrnFromSourceId: function(sourceId, callback) {
+        this._connection.query_async
+            (('SELECT ?urn WHERE { ?urn a nie:DataSource; nao:identifier \"goa:documents:%s\" }').format(sourceId),
+            null, Lang.bind(this,
+                function(object, res) {
+                    let cursor = null;
+                    try {
+                        cursor = object.query_finish(res);
+                    } catch (e) {
+                        log('Unable to resolve account ID -> resource URN: ' + e.toString());
+                    }
+
+                    cursor.next_async(null, Lang.bind(this,
+                        function(object, res) {
+                            try {
+                                let valid = cursor.next_finish(res);
+
+                                if (!valid) {
+                                    callback(null);
+                                    return;
+                                }
+                            } catch (e) {
+                                log('Unable to resolve account ID -> resource URN: ' + e.toString());
+                            }
+
+                            let urn = cursor.get_string(0)[0];
+                            callback(urn);
+                        }));
+                }));
+    },
+
+    populateForOverview: function(resourceUrn) {
+        this._resourceUrn = resourceUrn;
         this.offset = 0;
         this._filter = '';
 
@@ -448,44 +520,27 @@ TrackerModel.prototype = {
 
     setAccountFilter: function(id) {
         if (id == 'all' || id == 'local') {
-            this._sourceId = id;
+            this._resourceUrn = id;
 
             this.model.clear();
             this._performCurrentQuery();
+
+            return;
         }
 
-        this._connection.query_async
-            (('SELECT ?urn WHERE { ?urn a nie:DataSource; nao:identifier \"goa:documents:%s\" }').format(id),
-            null, Lang.bind(this,
-                function(object, res) {
-                    let cursor = null;
-                    try {
-                        cursor = object.query_finish(res);
-                    } catch (e) {
-                        log('Unable to resolve account ID -> resource URN: ' + e.toString());
-                    }
+        this.resourceUrnFromSourceId(id, Lang.bind(this,
+            function(resourceUrn) {
+                this.model.clear();
 
-                    cursor.next_async(null, Lang.bind(this,
-                        function(object, res) {
-                            try {
-                                let valid = cursor.next_finish(res);
-
-                                if (!valid)
-                                    return;
-                            } catch (e) {
-                                log('Unable to resolve account ID -> resource URN: ' + e.toString());
-                            }
-
-                            let urn = cursor.get_string(0)[0];
-                            if (urn) {
-                                this._sourceId = urn;
-
-                                this.model.clear();
-                                this._performCurrentQuery();
-                            }
-                        }));
+                if (resourceUrn) {
+                    this._resourceUrn = resourceUrn;
+                    this._performCurrentQuery();
+                } else {
+                    this.offset = 0;
+                    this.itemCount = 0;
+                    this._emitCountUpdated();
                 }
-            ));
+            }));
     }
 };
 Signals.addSignalMethods(TrackerModel.prototype);
