@@ -1,8 +1,6 @@
 libexec_PROGRAMS += gd-tracker-gdata-miner
 
 gd_tracker_gdata_miner_SOURCES = \
-    miner/e-gdata-goa-authorizer.c \
-    miner/e-gdata-goa-authorizer.h \
     miner/gdata-miner-main.c \
     miner/gd-gdata-miner.c \
     miner/gd-gdata-miner.h \
@@ -11,9 +9,11 @@ gd_tracker_gdata_miner_SOURCES = \
 gd_tracker_gdata_miner_CFLAGS = \
     -DG_DISABLE_DEPRECATED \
     -DGOA_API_IS_SUBJECT_TO_CHANGE \
+    -I$(top_srcdir)/src/lib \
     $(MINER_CFLAGS) \
     $(NULL)
 
 gd_tracker_gdata_miner_LDFLAGS = \
+    $(top_builddir)/src/libgdprivate-1.0.la  \
     $(MINER_LIBS) \
     $(NULL)

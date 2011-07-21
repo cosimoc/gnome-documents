@@ -61,7 +61,10 @@ PKG_CHECK_MODULES(DOCUMENTS,
                   gobject-introspection-1.0 >= $GOBJECT_INTROSPECTION_MIN_VERSION
                   gtk+-3.0 >= $GTK_MIN_VERSION
                   gnome-desktop-3.0
-                  tracker-sparql-0.11)
+                  tracker-sparql-0.11
+                  goa-1.0
+                  libgdata >= $GDATA_MIN_VERSION
+                  oauth)
 
 PKG_CHECK_MODULES(MINER,
                   tracker-sparql-0.11
