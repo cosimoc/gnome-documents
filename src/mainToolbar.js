@@ -25,7 +25,10 @@ const Gtk = imports.gi.Gtk;
 const _ = imports.gettext.gettext;
 
 const Lang = imports.lang;
+const Mainloop = imports.mainloop;
 const Signals = imports.signals;
+
+const _SEARCH_ENTRY_TIMEOUT = 200;
 
 function MainToolbar() {
     this._init();
@@ -33,6 +36,7 @@ function MainToolbar() {
 
 MainToolbar.prototype = {
     _init: function() {
+        this._searchEntryTimeout = 0;
         this._initGtkToolbar();
     },
 
@@ -47,7 +51,7 @@ MainToolbar.prototype = {
         }));
     },
 
-    _populateForOverview: function() {
+    _populateForOverview: function(filter) {
         let iconView = new Gtk.ToggleButton({ child: new Gtk.Image({ icon_name: 'view-grid-symbolic',
                                                                      pixel_size: 16 }) });
         iconView.get_style_context().add_class('linked');
@@ -75,34 +79,49 @@ MainToolbar.prototype = {
         item.set_expand(true);
         item.add(box);
 
-        this.searchEntry = new Gtk.Entry({ width_request: 260,
+        this._searchEntry = new Gtk.Entry({ width_request: 260,
                                            secondary_icon_name: 'edit-find-symbolic',
                                            secondary_icon_sensitive: false,
                                            secondary_icon_activatable: false });
         let item2 = new Gtk.ToolItem();
-        item2.add(this.searchEntry);
+        item2.add(this._searchEntry);
 
-        this.searchEntry.connect('changed', Lang.bind(this, function() {
-            let text = this.searchEntry.get_text();
+        this._searchEntry.connect('changed', Lang.bind(this, function() {
+            let text = this._searchEntry.get_text();
             if (text && text != '') {
-                this.searchEntry.secondary_icon_name = 'edit-clear-symbolic';
-                this.searchEntry.secondary_icon_sensitive = true;
-                this.searchEntry.secondary_icon_activatable = true;
+                this._searchEntry.secondary_icon_name = 'edit-clear-symbolic';
+                this._searchEntry.secondary_icon_sensitive = true;
+                this._searchEntry.secondary_icon_activatable = true;
             } else {
-                this.searchEntry.secondary_icon_name = 'edit-find-symbolic';
-                this.searchEntry.secondary_icon_sensitive = false;
-                this.searchEntry.secondary_icon_activatable = false;
+                this._searchEntry.secondary_icon_name = 'edit-find-symbolic';
+                this._searchEntry.secondary_icon_sensitive = false;
+                this._searchEntry.secondary_icon_activatable = false;
             }
+
+            if (this._searchEntryTimeout != 0) {
+                Mainloop.source_remove(this._searchEntryTimeout);
+                this._searchEntryTimeout = 0;
+            }
+
+            this._searchEntryTimeout = Mainloop.timeout_add(_SEARCH_ENTRY_TIMEOUT, Lang.bind(this, function() {
+                this._searchEntryTimeout = 0;
+
+                let currentText = this._searchEntry.get_text();
+                this.emit('search-text-changed', currentText);
+            }));
         }));
 
-        this.searchEntry.connect('icon-release', Lang.bind(this, function() {
-            this.searchEntry.set_text('');
+        this._searchEntry.connect('icon-release', Lang.bind(this, function() {
+            this._searchEntry.set_text('');
         }));
 
         this.widget.insert(item, 0);
         this.widget.insert(item2, 1);
 
         this.widget.show_all();
+
+        if (filter)
+            this._searchEntry.set_text(filter);
     },
 
     _populateForPreview: function(model, document) {
@@ -147,9 +166,9 @@ MainToolbar.prototype = {
         label.set_text(_("page %d of %d").format(curPage + 1, totPages));
     },
 
-    setOverview: function() {
+    setOverview: function(filter) {
         this._clearToolbar();
-        this._populateForOverview();
+        this._populateForOverview(filter);
     },
 
     setPreview: function(model, document) {

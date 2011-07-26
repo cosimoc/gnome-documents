@@ -42,7 +42,6 @@ const _ = imports.gettext.gettext;
 const _WINDOW_DEFAULT_WIDTH = 768;
 const _WINDOW_DEFAULT_HEIGHT = 600;
 
-const _SEARCH_ENTRY_TIMEOUT = 200;
 const _PDF_LOADER_TIMEOUT = 300;
 
 function MainWindow() {
@@ -51,9 +50,9 @@ function MainWindow() {
 
 MainWindow.prototype = {
     _init: function() {
-        this._searchTimeout = 0;
         this._loaderTimeout = 0;
         this._loaderSignal = 0;
+        this._lastFilter = '';
 
         //TODO save this in GSettings?
         this._currentSourceId = 'all';
@@ -75,9 +74,8 @@ MainWindow.prototype = {
         this.window.add(this._grid);
 
         this._toolbar = new MainToolbar.MainToolbar();
-        this._toolbar.setOverview();
-        this._toolbar.searchEntry.connect('changed',
-                                          Lang.bind(this, this._onSearchEntryChanged));
+        this._toolbar.connect('search-text-changed',
+                              Lang.bind(this, this._onToolbarSearchChanged));
         this._toolbar.connect('back-clicked',
                               Lang.bind(this, this._onToolbarBackClicked));
 
@@ -94,7 +92,6 @@ MainWindow.prototype = {
                                                      vexpand: true});
         this._viewContainer.add(this._scrolledWin);
 
-        this._initView();
         this._grid.show_all();
 
         this._model = new TrackerModel.TrackerModel(Lang.bind(this, this._onModelCreated));
@@ -162,9 +159,35 @@ MainWindow.prototype = {
         this._toolbar.setPreview(model, document);
     },
 
+    _prepareForOverview: function() {
+        if (this._loaderSignal) {
+            this._pdfLoader.disconnect(this._loaderSignal);
+            this._loaderSignal = 0;
+        }
+
+        if (this._pdfLodaer) {
+            this._pdfLoader.cleanup_document();
+            this._pdfLoader = null;
+        }
+
+        if (this._preview) {
+            this._preview.destroy();
+            this._preview = null;
+        }
+
+        this._refreshViewSettings();
+
+        // needs to be called after _refreshViewSettings(), as that
+        // recreates the button
+        this._refreshLoadMoreButton(this._model.itemCount, this._model.offset);
+
+        this._sidebar.widget.show();
+        this._toolbar.setOverview(this._lastFilter);
+        this._model.populateForOverview(this._currentSourceId, this._lastFilter);
+    },
+
     _onModelCreated: function() {
-        this.view.setModel(this._model.model);
-        this._model.populateForOverview(this._currentSourceId);
+        this._prepareForOverview();
     },
 
     _onDeleteEvent: function() {
@@ -218,42 +241,11 @@ MainWindow.prototype = {
     },
 
     _onToolbarBackClicked: function() {
-        if (this._loaderSignal) {
-            this._pdfLoader.disconnect(this._loaderSignal);
-            this._loaderSignal = 0;
-        }
-
-        this._pdfLoader.cleanup_document();
-        this._pdfLoader = null;
-
-        if (this._preview) {
-            this._preview.destroy();
-            this._preview = null;
-        }
-
-        this._sidebar.widget.show();
-        this._toolbar.setOverview();
-
-        this._refreshViewSettings();
-        // needs to be called after _refreshViewSettings(), as that
-        // recreates the button
-        this._refreshLoadMoreButton(this._model.itemCount, this._model.offset);
+        this._prepareForOverview();
     },
 
-    _onSearchEntryChanged: function() {
-        if (this._searchTimeout != 0) {
-            Mainloop.source_remove(this._searchTimeout);
-            this._searchTimeout = 0;
-        }
-
-        this._searchTimeout = Mainloop.timeout_add(_SEARCH_ENTRY_TIMEOUT,
-                                                   Lang.bind(this, this._onSearchEntryTimeout));
-    },
-
-    _onSearchEntryTimeout: function() {
-        this._searchTimeout = 0;
-
-        let text = this._toolbar.searchEntry.get_text();
+    _onToolbarSearchChanged: function(toolbar, text) {
+        this._lastFilter = text;
         this._model.setFilter(text);
     },
 
