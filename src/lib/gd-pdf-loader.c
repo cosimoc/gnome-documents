@@ -30,62 +30,31 @@
 #include <evince-view.h>
 
 /* TODO:
- * - error forwarding to the caller, don't die silently
- * - possibly better to turn the loader into an explicit
- *   _load() API passing a GCancellable, so we can control it
- *   from the application too
  * - investigate the GDataDocumentsType bug
  */
 
 G_DEFINE_TYPE (GdPdfLoader, gd_pdf_loader, G_TYPE_OBJECT);
 
 enum {
-  PROP_DOCUMENT = 1,
-  PROP_URI,
-  PROP_SOURCE_ID
+  PROP_SOURCE_ID = 1,
 };
 
-struct _GdPdfLoaderPrivate {
+typedef struct {
+  GSimpleAsyncResult *result;
+  GCancellable *cancellable;
+
   EvDocument *document;
   gchar *uri;
   gchar *pdf_path;
-  gchar *source_id;
-
   GPid unoconv_pid;
   GDataDownloadStream *stream;
+} PdfLoadJob;
+
+struct _GdPdfLoaderPrivate {
+  gchar *source_id;
 };
 
-static void
-load_job_done (EvJob *job,
-               gpointer user_data)
-{
-  GdPdfLoader *self = user_data;
-
-  if (ev_job_is_failed (job)) {
-    g_print ("Failed to load document: %s", job->error->message);
-    g_object_unref (job);
-
-    return;
-  }
-
-  self->priv->document = g_object_ref (job->document);
-  g_object_unref (job);
-
-  g_object_notify (G_OBJECT (self), "document");
-}
-
-static void
-load_pdf (GdPdfLoader *self,
-          const gchar *uri)
-{
-  EvJob *job;
-
-  job = ev_job_load_new (uri);
-  g_signal_connect (job, "finished",
-                    G_CALLBACK (load_job_done), self);
-
-  ev_job_scheduler_push_job (job, EV_JOB_PRIORITY_NONE);
-}
+/* --------------------------- utils -------------------------------- */
 
 #define GOA_DOCS_TRACKER_PREFIX "goa:documents:"
 
@@ -96,279 +65,6 @@ strip_tracker_prefix (const gchar *source_id)
     return g_strdup (source_id + strlen (GOA_DOCS_TRACKER_PREFIX));
 
   return NULL;
-}
-
-static void
-os_splice_ready_cb (GObject *source,
-                    GAsyncResult *res,
-                    gpointer user_data)
-{
-  GdPdfLoader *self = user_data;
-  GError *error = NULL;
-  GFile *file;
-  gchar *uri;
-
-  g_output_stream_splice_finish (G_OUTPUT_STREAM (source), res, &error);
-
-  if (error != NULL) {
-    g_warning ("Unable to download the PDF file from google: %s\n", error->message);
-    g_error_free (error);
-    return;
-  }
-
-  file = g_file_new_for_path (self->priv->pdf_path);
-  uri = g_file_get_uri (file);
-  load_pdf (self, uri);
-
-  g_object_unref (file);
-  g_free (uri);
-}
-
-static void
-file_replace_ready_cb (GObject *source,
-                       GAsyncResult *res,
-                       gpointer user_data)
-{
-  GFileOutputStream *os;
-  GError *error = NULL;
-  GdPdfLoader *self = user_data;
-
-  os = g_file_replace_finish (G_FILE (source), res, &error);
-
-  if (error != NULL) {
-    g_warning ("Unable to open the temp file for writing: %s\n", error->message);
-    g_error_free (error);
-    return;
-  }
-
-  g_output_stream_splice_async (G_OUTPUT_STREAM (os),
-                                G_INPUT_STREAM (self->priv->stream),
-                                G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE |
-                                G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
-                                G_PRIORITY_DEFAULT,
-                                NULL,
-                                os_splice_ready_cb, self);
-
-  g_object_unref (os);
-}
-
-static void
-single_entry_ready_cb (GObject *source,
-                       GAsyncResult *res,
-                       gpointer user_data)
-{
-  GDataEntry *entry;
-  GdPdfLoader *self = user_data;
-  GDataDownloadStream *stream;
-  GError *error = NULL;
-  gchar *tmp_name;
-  gchar *tmp_path, *pdf_path;
-  GFile *pdf_file;
-
-  entry = gdata_service_query_single_entry_finish (GDATA_SERVICE (source), res, &error);
-
-  if (error != NULL) {
-    g_warning ("Unable to query the requested entry from GData: %s\n", error->message);
-    g_error_free (error);
-    return;
-  }
-
-  stream = gdata_documents_document_download (GDATA_DOCUMENTS_DOCUMENT (entry),
-                                              GDATA_DOCUMENTS_SERVICE (source),
-                                              "pdf", NULL, &error);
-
-  if (error != NULL) {
-    g_warning ("Unable to get the download stream for the requested document from GData: %s\n", error->message);
-    g_error_free (error);
-    return;
-  }
-
-  self->priv->stream = stream;
-
-  tmp_name = g_strdup_printf ("gnome-documents-%d.pdf", getpid ());
-  tmp_path = g_build_filename (g_get_user_cache_dir (), "gnome-documents", NULL);
-  self->priv->pdf_path = pdf_path =
-    g_build_filename (tmp_path, tmp_name, NULL);
-  g_mkdir_with_parents (tmp_path, 0700);
-
-  pdf_file = g_file_new_for_path (pdf_path);
-  g_file_replace_async (pdf_file, NULL, FALSE,
-                        G_FILE_CREATE_PRIVATE,
-                        G_PRIORITY_DEFAULT,
-                        NULL, file_replace_ready_cb,
-                        self);
-
-  g_free (tmp_name);
-  g_free (tmp_path);
-  g_object_unref (pdf_file);
-  g_object_unref (entry);
-}
-
-static void
-load_from_google_documents_with_object (GdPdfLoader *self,
-                                        GoaObject *object)
-{
-  EGDataGoaAuthorizer *authorizer;
-  GDataDocumentsService *service;
-
-  authorizer = e_gdata_goa_authorizer_new (object);
-  service = gdata_documents_service_new (GDATA_AUTHORIZER (authorizer));
-
-  /* FIXME: using GDATA_TYPE_DOCUMENTS_TEXT here is plain wrong,
-   * but I can't seem to use a more generic class, or GData segfaults.
-   * OTOH, using this type always works, even for presentations/spreadsheets.
-   *
-   * To be investigated...
-   */
-  gdata_service_query_single_entry_async (GDATA_SERVICE (service),
-                                          gdata_documents_service_get_primary_authorization_domain (),
-                                          self->priv->uri,
-                                          NULL, GDATA_TYPE_DOCUMENTS_TEXT,
-                                          NULL, single_entry_ready_cb, self);
-
-  g_object_unref (service);
-  g_object_unref (authorizer);
-}
-
-static void
-client_ready_cb (GObject *source,
-                 GAsyncResult *res,
-                 gpointer user_data)
-{
-  GoaObject *object, *target = NULL;
-  GoaAccount *account;
-  GoaClient *client;
-  GError *error = NULL;
-  GList *accounts, *l;
-  gchar *stripped_id;
-  GdPdfLoader *self = user_data;
-
-  client = goa_client_new_finish (res, &error);
-
-  if (error != NULL) {
-    g_warning ("Error while getting the GOA client: %s",
-               error->message);
-    g_error_free (error);
-
-    return;
-  }
-
-  stripped_id = strip_tracker_prefix (self->priv->source_id);
-
-  if (stripped_id == NULL) {
-    g_warning ("Wrong source ID; passed in a google URL, but the source ID is not coming from GOA");
-    return;
-  }
-
-  accounts = goa_client_get_accounts (client);
-  for (l = accounts; l != NULL; l = l->next) {
-    object = l->data;
-    account = goa_object_peek_account (object);
-    
-    if (account == NULL)
-      continue;
-
-    if (goa_object_peek_documents (object) == NULL)
-      continue;
-
-    if (g_strcmp0 (goa_account_get_id (account), stripped_id) == 0) {
-      target = object;
-      break;
-    }
-  }
-
-  if (target != NULL)
-    load_from_google_documents_with_object (self, target);
-
-  g_free (stripped_id);
-  g_list_free_full (accounts, g_object_unref);
-  g_object_unref (client);
-}
-
-static void
-load_from_google_documents (GdPdfLoader *self)
-{
-  goa_client_new (NULL, client_ready_cb, self);
-}
-
-static void
-unoconv_child_watch_cb (GPid pid,
-                        gint status,
-                        gpointer user_data)
-{
-  GdPdfLoader *self = user_data;
-  GFile *file;
-  gchar *uri;
-
-  g_spawn_close_pid (pid);
-  self->priv->unoconv_pid = -1;
-
-  file = g_file_new_for_path (self->priv->pdf_path);
-  uri = g_file_get_uri (file);
-  load_pdf (self, uri);
-
-  g_object_unref (file);
-  g_free (uri);
-}
-
-static void
-load_openoffice (GdPdfLoader *self)
-{
-  gchar *doc_path, *pdf_path, *tmp_name, *tmp_path;
-  GFile *file;
-  gboolean res;
-  gchar *cmd;
-
-  gint argc;
-  GPid pid;
-  gchar **argv = NULL;
-  GError *error = NULL;
-
-  file = g_file_new_for_uri (self->priv->uri);
-  doc_path = g_file_get_path (file);
-  g_object_unref (file);
-
-  tmp_name = g_strdup_printf ("gnome-documents-%d.pdf", getpid ());
-  tmp_path = g_build_filename (g_get_user_cache_dir (), "gnome-documents", NULL);
-  self->priv->pdf_path = pdf_path =
-    g_build_filename (tmp_path, tmp_name, NULL);
-  g_mkdir_with_parents (tmp_path, 0700);
-
-  cmd = g_strdup_printf ("unoconv -f pdf -o %s %s", pdf_path, doc_path);
-
-  g_free (doc_path);
-  g_free (tmp_name);
-  g_free (tmp_path);
-
-  res = g_shell_parse_argv (cmd, &argc, &argv, &error);
-  g_free (cmd);
-
-  if (!res) {
-    g_warning ("Error while parsing the unoconv command line: %s",
-               error->message);
-    g_error_free (error);
-
-    return;
-  }
-
-  res = g_spawn_async (NULL, argv, NULL,
-                       G_SPAWN_DO_NOT_REAP_CHILD |
-                       G_SPAWN_SEARCH_PATH,
-                       NULL, NULL,
-                       &pid, &error);
-
-  g_strfreev (argv);
-
-  if (!res) {
-    g_warning ("Error while spawning unoconv: %s",
-               error->message);
-    g_error_free (error);
-
-    return;
-  }
-
-  g_child_watch_add (pid, unoconv_child_watch_cb, self);
-  self->priv->unoconv_pid = pid;
 }
 
 static gchar **
@@ -420,12 +116,385 @@ content_type_is_native (const gchar *content_type)
   return found;
 }
 
+/* ----------------------- load job ------------------------------ */
+
+static void
+pdf_load_job_free (PdfLoadJob *job)
+{
+  g_clear_object (&job->document);
+  g_clear_object (&job->result);
+  g_clear_object (&job->cancellable);
+  g_clear_object (&job->stream);
+
+  g_free (job->uri);
+
+  if (job->pdf_path != NULL) {
+    g_unlink (job->pdf_path);
+    g_free (job->pdf_path);
+  }
+
+  if (job->unoconv_pid != -1) {
+    kill (job->unoconv_pid, SIGKILL);
+    job->unoconv_pid = -1;
+  }
+
+  g_slice_free (PdfLoadJob, job);
+}
+
+static PdfLoadJob *
+pdf_load_job_new (GSimpleAsyncResult *result,
+                  const gchar *uri,
+                  GCancellable *cancellable)
+{
+  PdfLoadJob *retval;
+
+  retval = g_slice_new0 (PdfLoadJob);
+  retval->result = g_object_ref (result);
+  retval->cancellable = g_object_ref (cancellable);
+  retval->uri = g_strdup (uri);
+  retval->unoconv_pid = -1;
+
+  return retval;
+}
+
+static void
+pdf_load_job_complete_error (PdfLoadJob *job,
+                             GError *error)
+{
+    g_simple_async_result_take_error (job->result, error);
+    g_simple_async_result_complete_in_idle (job->result);
+
+    pdf_load_job_free (job);
+}
+
+static void
+pdf_load_job_complete_success (PdfLoadJob *job)
+{
+  g_simple_async_result_set_op_res_gpointer (job->result, g_object_ref (job->document), NULL);
+  g_simple_async_result_complete_in_idle (job->result);
+
+  pdf_load_job_free (job);
+}
+
+static void
+ev_load_job_done (EvJob *ev_job,
+                  gpointer user_data)
+{
+  PdfLoadJob *job = user_data;
+
+  if (ev_job_is_failed (ev_job)) {
+    pdf_load_job_complete_error (job, g_error_copy (ev_job->error));
+    return;
+  }
+
+  job->document = g_object_ref (ev_job->document);
+  g_object_unref (ev_job);
+
+  pdf_load_job_complete_success (job);
+}
+
+static void
+pdf_load_job_from_pdf (PdfLoadJob *job)
+{
+  EvJob *ev_job;
+  gchar *uri = NULL;
+  GFile *file;
+
+  if (job->pdf_path != NULL) {
+    file = g_file_new_for_path (job->pdf_path);
+    uri = g_file_get_uri (file);
+    g_object_unref (file);
+  }
+
+  ev_job = ev_job_load_new ((uri != NULL) ? (uri) : (job->uri));
+  g_signal_connect (ev_job, "finished",
+                    G_CALLBACK (ev_load_job_done), job);
+
+  ev_job_scheduler_push_job (ev_job, EV_JOB_PRIORITY_NONE);
+
+  g_free (uri);
+}
+
+static void
+os_splice_ready_cb (GObject *source,
+                    GAsyncResult *res,
+                    gpointer user_data)
+{
+  GError *error = NULL;
+  GFile *file;
+  gchar *uri;
+  PdfLoadJob *job = user_data;
+
+  g_output_stream_splice_finish (G_OUTPUT_STREAM (source), res, &error);
+
+  if (error != NULL) {
+    pdf_load_job_complete_error (job, error);
+    return;
+  }
+
+  pdf_load_job_from_pdf (job);
+}
+
+static void
+file_replace_ready_cb (GObject *source,
+                       GAsyncResult *res,
+                       gpointer user_data)
+{
+  GFileOutputStream *os;
+  GError *error = NULL;
+  PdfLoadJob *job = user_data;
+
+  os = g_file_replace_finish (G_FILE (source), res, &error);
+
+  if (error != NULL) {
+    pdf_load_job_complete_error (job, error);
+    return;
+  }
+
+  g_output_stream_splice_async (G_OUTPUT_STREAM (os),
+                                G_INPUT_STREAM (job->stream),
+                                G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE |
+                                G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
+                                G_PRIORITY_DEFAULT,
+                                job->cancellable,
+                                os_splice_ready_cb, job);
+
+  g_object_unref (os);
+}
+
+static void
+single_entry_ready_cb (GObject *source,
+                       GAsyncResult *res,
+                       gpointer user_data)
+{
+  GDataEntry *entry;
+  GDataDownloadStream *stream;
+  GError *error = NULL;
+  gchar *tmp_name;
+  gchar *tmp_path, *pdf_path;
+  GFile *pdf_file;
+  PdfLoadJob *job = user_data;
+
+  entry = gdata_service_query_single_entry_finish (GDATA_SERVICE (source), res, &error);
+
+  if (error != NULL) {
+    pdf_load_job_complete_error (job, error);
+    return;
+  }
+
+  stream = gdata_documents_document_download (GDATA_DOCUMENTS_DOCUMENT (entry),
+                                              GDATA_DOCUMENTS_SERVICE (source),
+                                              "pdf", job->cancellable, &error);
+
+  if (error != NULL) {
+    pdf_load_job_complete_error (job, error);
+    return;
+  }
+
+  job->stream = stream;
+
+  tmp_name = g_strdup_printf ("gnome-documents-%d.pdf", getpid ());
+  tmp_path = g_build_filename (g_get_user_cache_dir (), "gnome-documents", NULL);
+  job->pdf_path = pdf_path =
+    g_build_filename (tmp_path, tmp_name, NULL);
+  g_mkdir_with_parents (tmp_path, 0700);
+
+  pdf_file = g_file_new_for_path (pdf_path);
+  g_file_replace_async (pdf_file, NULL, FALSE,
+                        G_FILE_CREATE_PRIVATE,
+                        G_PRIORITY_DEFAULT,
+                        job->cancellable, file_replace_ready_cb,
+                        job);
+
+  g_free (tmp_name);
+  g_free (tmp_path);
+  g_object_unref (pdf_file);
+  g_object_unref (entry);
+}
+
+static void
+pdf_load_job_from_google_documents_with_object (PdfLoadJob *job,
+                                                GoaObject *object)
+{
+  EGDataGoaAuthorizer *authorizer;
+  GDataDocumentsService *service;
+
+  authorizer = e_gdata_goa_authorizer_new (object);
+  service = gdata_documents_service_new (GDATA_AUTHORIZER (authorizer));
+
+  /* FIXME: using GDATA_TYPE_DOCUMENTS_TEXT here is plain wrong,
+   * but I can't seem to use a more generic class, or GData segfaults.
+   * OTOH, using this type always works, even for presentations/spreadsheets.
+   *
+   * To be investigated...
+   */
+  gdata_service_query_single_entry_async (GDATA_SERVICE (service),
+                                          gdata_documents_service_get_primary_authorization_domain (),
+                                          job->uri,
+                                          NULL, GDATA_TYPE_DOCUMENTS_TEXT,
+                                          job->cancellable, single_entry_ready_cb, job);
+
+  g_object_unref (service);
+  g_object_unref (authorizer);
+}
+
+static void
+client_ready_cb (GObject *source,
+                 GAsyncResult *res,
+                 gpointer user_data)
+{
+  GoaObject *object, *target = NULL;
+  GoaAccount *account;
+  GoaClient *client;
+  GError *error = NULL;
+  GList *accounts, *l;
+  gchar *stripped_id;
+  PdfLoadJob *job = user_data;
+  GdPdfLoader *self;
+
+  client = goa_client_new_finish (res, &error);
+
+  if (error != NULL) {
+    pdf_load_job_complete_error (job, error);
+    return;
+  }
+
+  self = GD_PDF_LOADER (g_async_result_get_source_object (G_ASYNC_RESULT (job->result)));
+  stripped_id = strip_tracker_prefix (self->priv->source_id);
+  g_object_unref (self);
+
+  if (stripped_id == NULL) {
+    pdf_load_job_complete_error 
+      (job,
+       g_error_new_literal (G_IO_ERROR, 0,
+                            "Wrong source ID; passed in a google URL, "
+                            "but the source ID is not coming from GOA"));
+    return;
+  }
+
+  accounts = goa_client_get_accounts (client);
+  for (l = accounts; l != NULL; l = l->next) {
+    object = l->data;
+    account = goa_object_peek_account (object);
+    
+    if (account == NULL)
+      continue;
+
+    if (goa_object_peek_documents (object) == NULL)
+      continue;
+
+    if (g_strcmp0 (goa_account_get_id (account), stripped_id) == 0) {
+      target = object;
+      break;
+    }
+  }
+
+  if (target != NULL) {
+    pdf_load_job_from_google_documents_with_object (job, target);
+  } else {
+    pdf_load_job_complete_error 
+      (job,
+       g_error_new_literal (G_IO_ERROR, 0,
+                            "Cannot find the specified GOA account"));
+  }
+
+  g_free (stripped_id);
+  g_list_free_full (accounts, g_object_unref);
+  g_object_unref (client);
+}
+
+static void
+pdf_load_job_from_google_documents (PdfLoadJob *job)
+{
+  goa_client_new (job->cancellable, client_ready_cb, job);
+}
+
+static void
+unoconv_child_watch_cb (GPid pid,
+                        gint status,
+                        gpointer user_data)
+{
+  PdfLoadJob *job = user_data;
+
+  g_spawn_close_pid (pid);
+  job->unoconv_pid = -1;
+
+  if (g_cancellable_is_cancelled (job->cancellable)) {
+    pdf_load_job_complete_error 
+      (job, 
+       g_error_new_literal (G_IO_ERROR, G_IO_ERROR_CANCELLED,
+                            "Operation cancelled"));
+
+    return;
+  }
+
+  pdf_load_job_from_pdf (job);
+}
+
+static void
+pdf_load_job_from_openoffice (PdfLoadJob *job)
+{
+  gchar *doc_path, *pdf_path, *tmp_name, *tmp_path;
+  GFile *file;
+  gchar *cmd;
+
+  gint argc;
+  GPid pid;
+  gchar **argv = NULL;
+  GError *error = NULL;
+
+  /* build the temporary PDF file path */
+  file = g_file_new_for_uri (job->uri);
+  doc_path = g_file_get_path (file);
+  g_object_unref (file);
+
+  tmp_name = g_strdup_printf ("gnome-documents-%d.pdf", getpid ());
+  tmp_path = g_build_filename (g_get_user_cache_dir (), "gnome-documents", NULL);
+  job->pdf_path = pdf_path =
+    g_build_filename (tmp_path, tmp_name, NULL);
+  g_mkdir_with_parents (tmp_path, 0700);
+
+  /* call into the unoconv executable to convert the OpenOffice document
+   * to the temporary PDF.
+   */
+  cmd = g_strdup_printf ("unoconv -f pdf -o %s %s", pdf_path, doc_path);
+
+  g_free (doc_path);
+  g_free (tmp_name);
+  g_free (tmp_path);
+
+  g_shell_parse_argv (cmd, &argc, &argv, &error);
+  g_free (cmd);
+
+  if (error != NULL) {
+    pdf_load_job_complete_error (job, error);
+    return;
+  }
+
+  g_spawn_async (NULL, argv, NULL,
+                 G_SPAWN_DO_NOT_REAP_CHILD |
+                 G_SPAWN_SEARCH_PATH,
+                 NULL, NULL,
+                 &pid, &error);
+
+  g_strfreev (argv);
+
+  if (error != NULL) {
+    pdf_load_job_complete_error (job, error);
+    return;
+  }
+
+  /* now watch when the unoconv child process dies */
+  g_child_watch_add (pid, unoconv_child_watch_cb, job);
+  job->unoconv_pid = pid;
+}
+
 static void
 query_info_ready_cb (GObject *obj,
                      GAsyncResult *res,
                      gpointer user_data)
 {
-  GdPdfLoader *self = user_data;
+  PdfLoadJob *job = user_data;
   GError *error = NULL;
   GFileInfo *info;
   const gchar *content_type;
@@ -434,66 +503,44 @@ query_info_ready_cb (GObject *obj,
                                    res, &error);
 
   if (error != NULL) {
-    g_warning ("Unable to query the mimetype of %s: %s",
-               self->priv->uri, error->message);
-    g_error_free (error);
-
+    pdf_load_job_complete_error (job, error);
     return;
   }
 
   content_type = g_file_info_get_content_type (info);
-  g_object_unref (info);
 
   if (content_type_is_native (content_type))
-    load_pdf (self, self->priv->uri);
+    pdf_load_job_from_pdf (job);
   else
-    load_openoffice (self);
+    pdf_load_job_from_openoffice (job);
+
+  g_object_unref (info);
 }
 
 static void
-start_loading_document (GdPdfLoader *self)
+pdf_load_job_from_regular_file (PdfLoadJob *job)
 {
   GFile *file;
 
-  if (g_str_has_prefix (self->priv->uri, "https://docs.google.com")) {
-    load_from_google_documents (self);
-    return;
-  }
-
-  file = g_file_new_for_uri (self->priv->uri);
+  file = g_file_new_for_uri (job->uri);
   g_file_query_info_async (file,
                            G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
                            G_FILE_QUERY_INFO_NONE,
                            G_PRIORITY_DEFAULT,
-                           NULL,
+                           job->cancellable,
                            query_info_ready_cb,
-                           self);
+                           job);
 
   g_object_unref (file);
 }
 
 static void
-gd_pdf_loader_set_uri (GdPdfLoader *self,
-                       const gchar *uri)
+pdf_load_job_start (PdfLoadJob *job)
 {
-  g_clear_object (&self->priv->document);
-  g_free (self->priv->uri);
-
-  self->priv->uri = g_strdup (uri);
-  start_loading_document (self);
-}
-
-void
-gd_pdf_loader_cleanup_document (GdPdfLoader *self)
-{
-  if (self->priv->pdf_path) {
-    g_unlink (self->priv->pdf_path);
-    g_free (self->priv->pdf_path);
-  }
-
-  if (self->priv->unoconv_pid != -1) {
-    kill (self->priv->unoconv_pid, SIGKILL);
-    self->priv->unoconv_pid = -1;
+  if (g_str_has_prefix (job->uri, "https://docs.google.com")) {
+    pdf_load_job_from_google_documents (job);
+  } else {
+    pdf_load_job_from_regular_file (job);
   }
 }
 
@@ -502,11 +549,6 @@ gd_pdf_loader_dispose (GObject *object)
 {
   GdPdfLoader *self = GD_PDF_LOADER (object);
 
-  gd_pdf_loader_cleanup_document (self);
-
-  g_clear_object (&self->priv->document);
-  g_clear_object (&self->priv->stream);
-  g_free (self->priv->uri);
   g_free (self->priv->source_id);
 
   G_OBJECT_CLASS (gd_pdf_loader_parent_class)->dispose (object);
@@ -521,12 +563,6 @@ gd_pdf_loader_get_property (GObject *object,
   GdPdfLoader *self = GD_PDF_LOADER (object);
 
   switch (prop_id) {
-  case PROP_DOCUMENT:
-    g_value_set_object (value, self->priv->document);
-    break;
-  case PROP_URI:
-    g_value_set_string (value, self->priv->uri);
-    break;
   case PROP_SOURCE_ID:
     g_value_set_string (value, self->priv->source_id);
     break;
@@ -545,9 +581,6 @@ gd_pdf_loader_set_property (GObject *object,
   GdPdfLoader *self = GD_PDF_LOADER (object);
 
   switch (prop_id) {
-  case PROP_URI:
-    gd_pdf_loader_set_uri (self, g_value_get_string (value));
-    break;
   case PROP_SOURCE_ID:
     self->priv->source_id = g_value_dup_string (value);
     break;
@@ -569,30 +602,12 @@ gd_pdf_loader_class_init (GdPdfLoaderClass *klass)
 
   g_object_class_install_property
     (oclass,
-     PROP_DOCUMENT,
-     g_param_spec_object ("document",
-                          "Document",
-                          "The loaded document",
-                          EV_TYPE_DOCUMENT,
-                          G_PARAM_READABLE));
-
-  g_object_class_install_property
-    (oclass,
-     PROP_URI,
-     g_param_spec_string ("uri",
-                          "URI",
-                          "The URI to load",
-                          NULL,
-                          G_PARAM_READWRITE));
-
-  g_object_class_install_property
-    (oclass,
      PROP_SOURCE_ID,
      g_param_spec_string ("source-id",
                           "Source ID",
                           "The ID of the source we're loading from",
                           NULL,
-                          G_PARAM_READWRITE));
+                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
 
   g_type_class_add_private (klass, sizeof (GdPdfLoaderPrivate));
 }
@@ -604,13 +619,56 @@ gd_pdf_loader_init (GdPdfLoader *self)
     G_TYPE_INSTANCE_GET_PRIVATE (self,
                                  GD_TYPE_PDF_LOADER,
                                  GdPdfLoaderPrivate);
-  self->priv->unoconv_pid = -1;
 }
 
 GdPdfLoader *
-gd_pdf_loader_new (const gchar *uri)
+gd_pdf_loader_new (const gchar *source_id)
 {
   return g_object_new (GD_TYPE_PDF_LOADER,
-                       "uri", uri,
+                       "source-id", source_id,
                        NULL);
+}
+
+void
+gd_pdf_loader_load_uri_async (GdPdfLoader *self,
+                              const gchar *uri,
+                              GCancellable *cancellable,
+                              GAsyncReadyCallback callback,
+                              gpointer user_data)
+{
+  PdfLoadJob *job;
+  GSimpleAsyncResult *result;
+
+  result = g_simple_async_result_new (G_OBJECT (self), callback, user_data,
+                                      gd_pdf_loader_load_uri_async);
+
+  job = pdf_load_job_new (result, uri, cancellable);
+
+  pdf_load_job_start (job);
+
+  g_object_unref (result);
+  g_object_unref (cancellable);
+}
+
+/**
+ * gd_pdf_loader_load_uri_finish:
+ * @self:
+ * @res:
+ * @error: (allow-none) (out):
+ *
+ * Returns: (transfer full):
+ */
+EvDocument *
+gd_pdf_loader_load_uri_finish (GdPdfLoader *self,
+                               GAsyncResult *res,
+                               GError **error)
+{
+  gpointer r;
+  EvDocument *retval;
+
+  if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (res), error))
+    return NULL;
+
+  retval = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (res));
+  return retval;
 }

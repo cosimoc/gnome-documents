@@ -21,6 +21,7 @@
 
 const EvView = imports.gi.EvinceView;
 const Gd = imports.gi.Gd;
+const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
@@ -50,8 +51,9 @@ function MainWindow() {
 
 MainWindow.prototype = {
     _init: function() {
+        this._pdfLoader = null;
+        this._loaderCancellable = null;
         this._loaderTimeout = 0;
-        this._loaderSignal = 0;
         this._lastFilter = '';
 
         //TODO save this in GSettings?
@@ -160,15 +162,13 @@ MainWindow.prototype = {
     },
 
     _prepareForOverview: function() {
-        if (this._loaderSignal) {
-            this._pdfLoader.disconnect(this._loaderSignal);
-            this._loaderSignal = 0;
+        if (this._loaderCancellable) {
+            this._loaderCancellable.cancel();
+            this._loaderCancellable = null;
         }
 
-        if (this._pdfLodaer) {
-            this._pdfLoader.cleanup_document();
+        if (this._pdfLodaer)
             this._pdfLoader = null;
-        }
 
         if (this._preview) {
             this._preview.destroy();
@@ -202,10 +202,9 @@ MainWindow.prototype = {
 
         this._model.sourceIdFromResourceUrn(resource, Lang.bind(this,
             function(sourceId) {
+                this._loaderCancellable = new Gio.Cancellable();
                 this._pdfLoader = new Gd.PdfLoader({ source_id: sourceId });
-                this._loaderSignal =
-                    this._pdfLoader.connect('notify::document', Lang.bind(this, this._onDocumentLoaded));
-                this._pdfLoader.uri = uri;
+                this._pdfLoader.load_uri_async(uri, this._loaderCancellable, Lang.bind(this, this._onDocumentLoaded));
 
                 this._loaderTimeout = Mainloop.timeout_add(_PDF_LOADER_TIMEOUT,
                                                            Lang.bind(this, this._onPdfLoaderTimeout));
@@ -223,11 +222,16 @@ MainWindow.prototype = {
         return false;
     },
 
-    _onDocumentLoaded: function(loader) {
-        let document = loader.document;
-        let model = EvView.DocumentModel.new_with_document(document);
+    _onDocumentLoaded: function(loader, res) {
+        let document = null;
+        try {
+            document = loader.load_uri_finish(res);
+        } catch (e) {
+            log("Unable to load the PDF document: " + e.toString());
+            return;
+        }
 
-        this._loaderSignal = 0;
+        let model = EvView.DocumentModel.new_with_document(document);
 
         if (this._loaderTimeout) {
             Mainloop.source_remove(this._loaderTimeout);

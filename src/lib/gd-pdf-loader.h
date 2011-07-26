@@ -24,6 +24,8 @@
 #define __GD_PDF_LOADER_H__
 
 #include <glib-object.h>
+#include <gio/gio.h>
+#include <evince-document.h>
 
 G_BEGIN_DECLS
 
@@ -52,8 +54,16 @@ struct _GdPdfLoaderClass
 
 GType    gd_pdf_loader_get_type     (void) G_GNUC_CONST;
 
-GdPdfLoader *gd_pdf_loader_new (const gchar *uri);
-void gd_pdf_loader_cleanup_document (GdPdfLoader *self);
+GdPdfLoader *gd_pdf_loader_new (const gchar *source_id);
+
+void gd_pdf_loader_load_uri_async (GdPdfLoader *self,
+                                   const gchar *uri,
+                                   GCancellable *cancellable,
+                                   GAsyncReadyCallback callback,
+                                   gpointer user_data);
+EvDocument *gd_pdf_loader_load_uri_finish (GdPdfLoader *self,
+                                           GAsyncResult *res,
+                                           GError **error);
 
 G_END_DECLS
 
