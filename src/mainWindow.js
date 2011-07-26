@@ -74,7 +74,6 @@ MainWindow.prototype = {
         this._grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
         this.window.add(this._grid);
 
-        this._searchTimeout = 0;
         this._toolbar = new MainToolbar.MainToolbar();
         this._toolbar.setOverview();
         this._toolbar.searchEntry.connect('changed',
@@ -243,7 +242,7 @@ MainWindow.prototype = {
 
     _onSearchEntryChanged: function() {
         if (this._searchTimeout != 0) {
-            GLib.source_remove(this._searchTimeout);
+            Mainloop.source_remove(this._searchTimeout);
             this._searchTimeout = 0;
         }
 
