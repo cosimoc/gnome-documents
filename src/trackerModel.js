@@ -117,8 +117,10 @@ LocalFileInfoLoader.prototype = {
         this._file.query_info_async(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH,
                                     0, 0, null,
                                     Lang.bind(this, function(object, res) {
+                                        let info = null;
+
                                         try {
-                                            let info = object.query_info_finish(res);
+                                            info = object.query_info_finish(res);
                                         } catch (e) {
                                             log('Unable to query info for file at ' + uri + ': ' + e.toString());
                                             return;
