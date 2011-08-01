@@ -37,12 +37,7 @@ function MainToolbar() {
 MainToolbar.prototype = {
     _init: function() {
         this._searchEntryTimeout = 0;
-        this._initGtkToolbar();
-    },
-
-    _initGtkToolbar: function() {
         this.widget = new Gtk.Toolbar({ icon_size: Gtk.IconSize.MENU });
-        this.widget.get_style_context().add_class('primary-toolbar');
     },
 
     _clearToolbar: function() {

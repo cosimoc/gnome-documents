@@ -56,8 +56,7 @@ MainWindow.prototype = {
         this._loaderTimeout = 0;
         this._lastFilter = '';
 
-        //TODO save this in GSettings?
-        this._currentSourceId = 'all';
+        this._currentSourceId = Main.settings.get_string('active-source');
 
         this.window = new Gtk.Window({ type: Gtk.WindowType.TOPLEVEL,
                                        window_position: Gtk.WindowPosition.CENTER,
@@ -72,23 +71,22 @@ MainWindow.prototype = {
             this._refreshViewSettings(true);
         }));
 
-        this._grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
+        this._grid = new Gtk.Grid({ orientation: Gtk.Orientation.HORIZONTAL });
         this.window.add(this._grid);
+
+        this._sidebar = new Sidebar.Sidebar();
+        this._sidebar.connect('source-filter-changed', Lang.bind(this, this._onSourceFilterChanged));
+        this._grid.add(this._sidebar.widget);
+
+        this._viewContainer = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
+        this._grid.add(this._viewContainer);
 
         this._toolbar = new MainToolbar.MainToolbar();
         this._toolbar.connect('search-text-changed',
                               Lang.bind(this, this._onToolbarSearchChanged));
         this._toolbar.connect('back-clicked',
                               Lang.bind(this, this._onToolbarBackClicked));
-
-        this._grid.add(this._toolbar.widget);
-
-        this._viewContainer = new Gtk.Grid({ orientation: Gtk.Orientation.HORIZONTAL });
-        this._grid.add(this._viewContainer);
-
-        this._sidebar = new Sidebar.Sidebar();
-        this._sidebar.connect('source-filter-changed', Lang.bind(this, this._onSourceFilterChanged));
-        this._viewContainer.add(this._sidebar.widget);
+        this._viewContainer.add(this._toolbar.widget);
 
         this._scrolledWin = new Gtk.ScrolledWindow({ hexpand: true,
                                                      vexpand: true});
@@ -259,6 +257,8 @@ MainWindow.prototype = {
 
     _onSourceFilterChanged: function(sidebar, id) {
         this._currentSourceId = id;
+        Main.settings.set_string('active-source', id);
+
         this._model.setAccountFilter(id);
     }
 }

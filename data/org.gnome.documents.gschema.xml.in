@@ -5,5 +5,10 @@
       <_summary>List view</_summary>
       <_description>Enable list view</_description>
     </key>
+    <key name="active-source" type="s">
+      <default>'all'</default>
+      <_summary>The active source filter</_summary>
+      <_description>The last active source filter</_description>
+    </key>
   </schema>
 </schemalist>
