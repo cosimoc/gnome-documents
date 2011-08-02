@@ -124,11 +124,12 @@ _tracker_utils_ensure_contact_resource (TrackerSparqlConnection *connection,
   GVariantIter *iter;
   gchar *key = NULL, *val = NULL;
 
+  mail_uri = g_strconcat ("mailto:", email, NULL);
   select = g_string_new (NULL);
   g_string_append_printf (select, 
-                          "SELECT ?urn WHERE { ?urn a nco:EmailAddress . "
-                          "?urn nco:emailAddress ?mail . "
-                          "FILTER ( ?mail = \"%s\" ) }", email);
+                          "SELECT ?urn WHERE { ?urn a nco:Contact . "
+                          "?urn nco:hasEmailAddress ?mail . "
+                          "FILTER (fn:contains(?mail, \"%s\" )) }", mail_uri);
 
   cursor = tracker_sparql_connection_query (connection,
                                             select->str,
@@ -154,7 +155,6 @@ _tracker_utils_ensure_contact_resource (TrackerSparqlConnection *connection,
 
   /* not found, create the resource */
   insert = g_string_new (NULL);
-  mail_uri = g_strconcat ("mailto:", email, NULL);
 
   g_string_append_printf (insert, 
                           "INSERT { <%s> a nco:EmailAddress ; nco:emailAddress \"%s\" . "
