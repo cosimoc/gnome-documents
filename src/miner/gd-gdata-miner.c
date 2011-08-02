@@ -501,6 +501,7 @@ gd_gdata_miner_setup_account (GdGDataMiner *self,
   self->priv->service = 
     gdata_documents_service_new (GDATA_AUTHORIZER (authorizer));
 
+  /* the service takes ownership of the authorizer */
   g_object_unref (authorizer);
 
   gd_gdata_ensure_tracker_connection (self, object, &error);
@@ -541,30 +542,20 @@ client_ready_cb (GObject *source,
   for (l = accounts; l != NULL; l = l->next)
     {
       object = l->data;
-      documents = goa_object_get_documents (object);
 
+      documents = goa_object_peek_documents (object);
       if (documents == NULL)
         continue;
 
-      account = goa_object_get_account (object);
-
+      account = goa_object_peek_account (object);
       if (account == NULL)
-        {
-          g_object_unref (documents);
-          continue;
-        }
+        continue;
 
       provider_type = goa_account_get_provider_type (account);
       if (g_strcmp0 (provider_type, "google") != 0)
-        {
-          g_object_unref (documents);
-          g_object_unref (account);
-          continue;
-        }
+        continue;
 
       gd_gdata_miner_setup_account (self, object);
-      g_object_unref (documents);
-      g_object_unref (account);
     }
 
   g_list_free_full (accounts, g_object_unref);
