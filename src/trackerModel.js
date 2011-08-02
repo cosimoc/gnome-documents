@@ -499,13 +499,10 @@ TrackerModel.prototype = {
     },
 
     populateForOverview: function(resourceUrn, filter) {
-        this.model.clear();
-
-        this._resourceUrn = resourceUrn;
         this.offset = 0;
         this._filter = filter;
 
-        this._performCurrentQuery();
+        this.setAccountFilter(resourceUrn);
     },
 
     loadMore: function() {
