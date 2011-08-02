@@ -89,7 +89,8 @@ MainWindow.prototype = {
         this._viewContainer.add(this._toolbar.widget);
 
         this._scrolledWin = new Gtk.ScrolledWindow({ hexpand: true,
-                                                     vexpand: true});
+                                                     vexpand: true,
+                                                     shadow_type: Gtk.ShadowType.IN });
         this._viewContainer.add(this._scrolledWin);
 
         this._grid.show_all();
