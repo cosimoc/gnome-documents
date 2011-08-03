@@ -647,7 +647,6 @@ gd_pdf_loader_load_uri_async (GdPdfLoader *self,
   pdf_load_job_start (job);
 
   g_object_unref (result);
-  g_object_unref (cancellable);
 }
 
 /**
