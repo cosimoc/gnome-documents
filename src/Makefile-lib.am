@@ -35,6 +35,20 @@ libgdprivate_1_0_la_SOURCES = \
     $(gdprivate_source_h) \
     $(gdprivate_source_c)
 
+noinst_PROGRAMS = \
+    test-pdf-loader
+
+test_pdf_loader_SOURCES = \
+    lib/test-pdf-loader.c
+
+test_pdf_loader_CPPFLAGS = \
+    -I$(top_srcdir)/src \
+    $(DOCUMENTS_CFLAGS)
+
+test_pdf_loader_LDADD = \
+    $(top_builddir)/src/libgdprivate-1.0.la \
+    $(DOCUMENTS_LIBS)
+
 INTROSPECTION_GIRS += Gd-1.0.gir
 
 Gd-1.0.gir: libgdprivate-1.0.la Makefile
