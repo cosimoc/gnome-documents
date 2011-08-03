@@ -61,14 +61,14 @@ PKG_CHECK_MODULES(DOCUMENTS,
                   gobject-introspection-1.0 >= $GOBJECT_INTROSPECTION_MIN_VERSION
                   gtk+-3.0 >= $GTK_MIN_VERSION
                   gnome-desktop-3.0
-                  tracker-sparql-0.11
+                  tracker-sparql-0.12
                   goa-1.0
                   libgdata >= $GDATA_MIN_VERSION
                   oauth)
 
 PKG_CHECK_MODULES(MINER,
-                  tracker-sparql-0.11
-                  tracker-miner-0.11
+                  tracker-sparql-0.12
+                  tracker-miner-0.12
                   glib-2.0 >= $GLIB_MIN_VERSION
                   gio-2.0 >= $GLIB_MIN_VERSION
                   goa-1.0
