@@ -27,10 +27,12 @@ const EvDoc = imports.gi.EvinceDocument;
 const Gdk = imports.gi.Gdk;
 const Gtk = imports.gi.Gtk;
 const GLib = imports.gi.GLib;
+const Tracker = imports.gi.Tracker;
 
 const Format = imports.format;
 const MainWindow = imports.mainWindow;
 const Path = imports.path;
+const TrackerModel = imports.trackerModel;
 
 const _GD_DBUS_PATH = '/org/gnome/Documents';
 
@@ -81,14 +83,6 @@ Application.prototype = {
     },
 
     _initReal: function() {
-        this._initLowlevel();
-        this._initGtkSettings();
-        this._initMainWindow();
-
-        this.activate();
-    },
-
-    _initLowlevel: function() {
         Gettext.bindtextdomain('gnome-documents', Path.LOCALE_DIR);
         Gettext.textdomain('gnome-documents');
         String.prototype.format = Format.format;
@@ -96,18 +90,26 @@ Application.prototype = {
         GLib.set_prgname('gnome-documents');
         Gtk.init(null, null);
         EvDoc.init();
-    },
 
-    _initGtkSettings: function() {
         let provider = new Gtk.CssProvider();
         provider.load_from_path(Path.STYLE_DIR + "gtk-style.css");
         Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(),
                                                  provider,
                                                  600);
-    },
 
-    _initMainWindow: function() {
-        this._mainWindow = new MainWindow.MainWindow();
+        // connect to tracker, then create the main window
+        Tracker.SparqlConnection.get_async(null, Lang.bind(this,
+            function(object, res) {
+                try {
+                    this.connection = Tracker.SparqlConnection.get_finish(res);
+                } catch (e) {
+                    log('Unable to connect to the tracker database: ' + e.toString());
+                    this.quit();
+                }
+
+                this._mainWindow = new MainWindow.MainWindow();
+                this.activate();
+            }));
     },
 
     activate: function() {
@@ -117,4 +119,4 @@ Application.prototype = {
     quit: function() {
         Gtk.main_quit();
     }
-}
+};

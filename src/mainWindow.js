@@ -96,8 +96,10 @@ MainWindow.prototype = {
 
         this._grid.show_all();
 
-        this._model = new TrackerModel.TrackerModel(Lang.bind(this, this._onModelCreated));
+        this._model = new TrackerModel.TrackerModel(Main.application.connection);
         this._model.connect('count-updated', Lang.bind(this, this._onModelCountUpdated));
+
+        this._prepareForOverview();
     },
 
     _destroyView: function() {
@@ -186,10 +188,6 @@ MainWindow.prototype = {
         this._model.populateForOverview(this._currentSourceId, this._lastFilter);
     },
 
-    _onModelCreated: function() {
-        this._prepareForOverview();
-    },
-
     _onDeleteEvent: function() {
         Main.application.quit();
     },
@@ -200,7 +198,7 @@ MainWindow.prototype = {
             this._loaderTimeout = 0;
         }
 
-        TrackerUtils.sourceIdFromResourceUrn(this._model.connection, resource, Lang.bind(this,
+        TrackerUtils.sourceIdFromResourceUrn(Main.application.connection, resource, Lang.bind(this,
             function(sourceId) {
                 this._loaderCancellable = new Gio.Cancellable();
                 this._pdfLoader = new Gd.PdfLoader({ source_id: sourceId });
@@ -263,4 +261,4 @@ MainWindow.prototype = {
 
         this._model.setAccountFilter(id);
     }
-}
+};

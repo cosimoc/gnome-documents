@@ -183,33 +183,18 @@ QueryBuilder.prototype = {
     }
 };
 
-function TrackerModel(callback) {
-    this._init(callback);
+function TrackerModel(connection) {
+    this._init(connection);
 }
 
 TrackerModel.prototype = {
-    _init: function(callback) {
+    _init: function(connection) {
         this._builder = new QueryBuilder();
         this._factory = new DocFactory.DocFactory();
-        this._initCallback = callback;
         Main.settings.connect('changed::list-view', Lang.bind(this, this._onSettingsChanged));
 
         this.model = Gd.create_list_store();
-        this._initConnection();
-    },
-
-    _initConnection: function() {
-        Tracker.SparqlConnection.get_async(null, Lang.bind(this, function(object, res) {
-            try {
-                this.connection = Tracker.SparqlConnection.get_finish(res);
-            } catch (e) {
-                log('Unable to connect to the tracker database: ' + e.toString());
-                Main.application.quit();
-            }
-
-            if (this._initCallback)
-                this._initCallback();
-        }));
+        this._connection = connection;
     },
 
     _onSettingsChanged: function() {
@@ -269,8 +254,8 @@ TrackerModel.prototype = {
     },
 
     _performCurrentQuery: function() {
-        this.connection.query_async(this._builder.buildQuery(this.offset, this._filter, this._resourceUrn),
-                                    null, Lang.bind(this, this._onQueryExecuted));
+        this._connection.query_async(this._builder.buildQuery(this.offset, this._filter, this._resourceUrn),
+                                     null, Lang.bind(this, this._onQueryExecuted));
     },
 
     _emitCountUpdated: function() {
@@ -308,7 +293,7 @@ TrackerModel.prototype = {
             return;
         }
 
-        TrackerUtils.resourceUrnFromSourceId(this.connection, id, Lang.bind(this,
+        TrackerUtils.resourceUrnFromSourceId(this._connection, id, Lang.bind(this,
             function(resourceUrn) {
                 this.model.clear();
 
