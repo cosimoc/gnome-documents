@@ -37,6 +37,7 @@ const IconView = imports.iconView;
 const ListView = imports.listView;
 const Preview = imports.preview;
 const SpinnerBox = imports.spinnerBox;
+const TrackerUtils = imports.trackerUtils;
 
 const _ = imports.gettext.gettext;
 
@@ -199,7 +200,7 @@ MainWindow.prototype = {
             this._loaderTimeout = 0;
         }
 
-        this._model.sourceIdFromResourceUrn(resource, Lang.bind(this,
+        TrackerUtils.sourceIdFromResourceUrn(this._model.connection, resource, Lang.bind(this,
             function(sourceId) {
                 this._loaderCancellable = new Gio.Cancellable();
                 this._pdfLoader = new Gd.PdfLoader({ source_id: sourceId });

@@ -31,6 +31,7 @@ const Gd = imports.gi.Gd;
 
 const DocFactory = imports.docFactory;
 const Main = imports.main;
+const TrackerUtils = imports.trackerUtils;
 const Utils = imports.utils;
 
 const ModelColumns = {
@@ -200,7 +201,7 @@ TrackerModel.prototype = {
     _initConnection: function() {
         Tracker.SparqlConnection.get_async(null, Lang.bind(this, function(object, res) {
             try {
-                this._connection = Tracker.SparqlConnection.get_finish(res);
+                this.connection = Tracker.SparqlConnection.get_finish(res);
             } catch (e) {
                 log('Unable to connect to the tracker database: ' + e.toString());
                 Main.application.quit();
@@ -268,79 +269,12 @@ TrackerModel.prototype = {
     },
 
     _performCurrentQuery: function() {
-        this._connection.query_async(this._builder.buildQuery(this.offset, this._filter, this._resourceUrn),
-                                     null, Lang.bind(this, this._onQueryExecuted));
+        this.connection.query_async(this._builder.buildQuery(this.offset, this._filter, this._resourceUrn),
+                                    null, Lang.bind(this, this._onQueryExecuted));
     },
 
     _emitCountUpdated: function() {
         this.emit('count-updated', this.itemCount, this.offset);
-    },
-
-    sourceIdFromResourceUrn: function(resourceUrn, callback) {
-        //FIXME: is this right?
-        if(resourceUrn[0] != '<')
-            resourceUrn = '<' + resourceUrn + '>';
-
-        this._connection.query_async
-            (('SELECT ?id WHERE { %s a nie:DataSource; nao:identifier ?id }').format(resourceUrn),
-            null, Lang.bind(this,
-                function(object, res) {
-                    let cursor = null;
-                    try {
-                        cursor = object.query_finish(res);
-                    } catch (e) {
-                        log('Unable to resolve resource URN -> account ID: ' + e.toString());
-                        return;
-                    }
-
-                    cursor.next_async(null, Lang.bind(this,
-                        function(object, res) {
-                            try {
-                                let valid = cursor.next_finish(res);
-
-                                if (!valid) {
-                                    callback(null);
-                                    return;
-                                }
-                            } catch (e) {
-                                log('Unable to resolve resource URN -> account ID: ' + e.toString());
-                            }
-
-                            let sourceId = cursor.get_string(0)[0];
-                            callback(sourceId);
-                        }));
-                }));
-    },
-
-    resourceUrnFromSourceId: function(sourceId, callback) {
-        this._connection.query_async
-            (('SELECT ?urn WHERE { ?urn a nie:DataSource; nao:identifier \"goa:documents:%s\" }').format(sourceId),
-            null, Lang.bind(this,
-                function(object, res) {
-                    let cursor = null;
-                    try {
-                        cursor = object.query_finish(res);
-                    } catch (e) {
-                        log('Unable to resolve account ID -> resource URN: ' + e.toString());
-                    }
-
-                    cursor.next_async(null, Lang.bind(this,
-                        function(object, res) {
-                            try {
-                                let valid = cursor.next_finish(res);
-
-                                if (!valid) {
-                                    callback(null);
-                                    return;
-                                }
-                            } catch (e) {
-                                log('Unable to resolve account ID -> resource URN: ' + e.toString());
-                            }
-
-                            let urn = cursor.get_string(0)[0];
-                            callback(urn);
-                        }));
-                }));
     },
 
     populateForOverview: function(resourceUrn, filter) {
@@ -374,7 +308,7 @@ TrackerModel.prototype = {
             return;
         }
 
-        this.resourceUrnFromSourceId(id, Lang.bind(this,
+        TrackerUtils.resourceUrnFromSourceId(this.connection, id, Lang.bind(this,
             function(resourceUrn) {
                 this.model.clear();
 

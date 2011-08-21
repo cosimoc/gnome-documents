@@ -12,6 +12,7 @@ dist_js_DATA = \
     sidebar.js \
     spinnerBox.js \
     trackerModel.js \
+    trackerUtils.js \
     utils.js \
     view.js \
     format.js \
