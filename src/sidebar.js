@@ -20,16 +20,78 @@
  */
 
 const Gd = imports.gi.Gd;
+const Goa = imports.gi.Goa;
 const Gtk = imports.gi.Gtk;
+const Pango = imports.gi.Pango;
 const _ = imports.gettext.gettext;
 
 const Lang = imports.lang;
 const Signals = imports.signals;
 
-const AccountsModel = imports.accountsModel;
 const Main = imports.main;
 
 const _SIDEBAR_WIDTH_REQUEST = 240;
+
+const SidebarModelColumns = {
+    ID: 0,
+    NAME: 1,
+    HEADING: 2
+};
+
+function SidebarModel() {
+    this._init();
+}
+
+SidebarModel.prototype = {
+    _init: function() {
+        this.activeAccounts = [];
+
+        Goa.Client.new(null, Lang.bind(this, this._onGoaClientCreated));
+
+        this.model = Gd.create_sidebar_store();
+
+        let iter = this.model.append();
+        Gd.sidebar_store_set(this.model, iter,
+                             '', _('Sources'), true);
+
+        iter = this.model.append();
+        Gd.sidebar_store_set(this.model, iter,
+                             'all', _('All'), false);
+
+        iter = this.model.append();
+        Gd.sidebar_store_set(this.model, iter,
+                             'local', _('Local'), false);
+    },
+
+    _onGoaClientCreated: function(object, res) {
+        try {
+            this._client = Goa.Client.new_finish(res);
+        } catch (e) {
+            log('Unable to create the GOA client: ' + e.toString());
+            return;
+        }
+
+        let accounts = this._client.get_accounts();
+        accounts.forEach(Lang.bind(this,
+            function(object) {
+                let account = object.get_account();
+                if (!account)
+                    return;
+
+                if (!object.get_documents())
+                    return;
+
+                let id = account.get_id();
+                let name = account.get_provider_name();
+
+                let iter = this.model.append();
+                Gd.sidebar_store_set(this.model, iter,
+                                     id, name, false);
+
+                this.activeAccounts.push(id);
+            }));
+    }
+};
 
 function SourcesPage() {
     this._init();
@@ -37,23 +99,23 @@ function SourcesPage() {
 
 SourcesPage.prototype = {
     _init: function() {
-        this._accountsModel = new AccountsModel.AccountsModel();
+        this._model = new SidebarModel();
         this._currentSourceId = Main.settings.get_string('active-source');
 
         this._treeView = new Gtk.TreeView({ headers_visible: false,
                                             no_show_all: true });
         Gd.gtk_tree_view_set_activate_on_single_click(this._treeView, true);
         this.widget = this._treeView;
-        this._treeView.set_model(this._accountsModel.model);
+        this._treeView.set_model(this._model.model);
 
         let selection = this._treeView.get_selection();
         selection.set_mode(Gtk.SelectionMode.SINGLE);
 
         this._treeView.connect('row-activated', Lang.bind(this,
             function(view, path) {
-                let iter = this._accountsModel.model.get_iter(path)[1];
-                let id = this._accountsModel.model.get_value(iter, AccountsModel.ModelColumns.ID);
-                let name = this._accountsModel.model.get_value(iter, AccountsModel.ModelColumns.NAME);
+                let iter = this._model.model.get_iter(path)[1];
+                let id = this._model.model.get_value(iter, SidebarModelColumns.ID);
+                let name = this._model.model.get_value(iter, SidebarModelColumns.NAME);
 
                 this._currentSourceId = id;
 
@@ -63,27 +125,56 @@ SourcesPage.prototype = {
         let col = new Gtk.TreeViewColumn();
         this._treeView.append_column(col);
 
-        this._rendererRadio = new Gtk.CellRendererToggle({ radio: true });
+        // headings
+        this._rendererHeading = new Gtk.CellRendererText({ weight: Pango.Weight.BOLD,
+                                                           weight_set: true });
+        col.pack_start(this._rendererHeading, false);
+        col.add_attribute(this._rendererHeading,
+                          'text', SidebarModelColumns.NAME);
+        col.set_cell_data_func(this._rendererHeading,
+            Lang.bind(this, this._visibilityForHeading, true));
+
+        // radio selection
+        this._rendererRadio = new Gtk.CellRendererToggle({ radio: true,
+                                                           mode: Gtk.CellRendererMode.INERT });
         col.pack_start(this._rendererRadio, false);
+        col.set_cell_data_func(this._rendererRadio,
+            Lang.bind(this, this._visibilityForHeading, false,
+                      Lang.bind(this,
+                          function(col, cell, model, iter) {
+                              let id = model.get_value(iter, SidebarModelColumns.ID);
+                              if (id == this._currentSourceId)
+                                  cell.active = true;
+                              else
+                                  cell.active = false;
+                          })));
 
-        col.set_cell_data_func(this._rendererRadio, Lang.bind(this,
-            function(col, cell, model, iter) {
-                let id = model.get_value(iter, AccountsModel.ModelColumns.ID);
-
-                if (id == this._currentSourceId)
-                    this._rendererRadio.active = true;
-                else
-                    this._rendererRadio.active = false;
-            },
-            null, null));
-
+        // source name
         this._rendererText = new Gtk.CellRendererText();
         col.pack_start(this._rendererText, true);
         col.add_attribute(this._rendererText,
-                          'text', AccountsModel.ModelColumns.NAME);
+                          'text', SidebarModelColumns.NAME);
+        col.set_cell_data_func(this._rendererText,
+            Lang.bind(this, this._visibilityForHeading, false));
 
-        this._rendererArrow = new Gtk.CellRendererPixbuf({ icon_name: 'go-next-symbolic' });
+        // arrow
+        this._rendererArrow = new Gtk.CellRendererPixbuf({ icon_name: 'go-next-symbolic',
+                                                           follow_state: true });
         col.pack_start(this._rendererArrow, false);
+        col.set_cell_data_func(this._rendererArrow,
+            Lang.bind(this, this._visibilityForHeading, false));
+    },
+
+    _visibilityForHeading: function(col, cell, model, iter, visible, additionalFunc) {
+        let heading = model.get_value(iter, SidebarModelColumns.HEADING);
+
+        if ((visible && heading) || (!visible && !heading))
+            cell.visible = true;
+        else
+            cell.visible = false;
+
+        if (additionalFunc)
+            additionalFunc(col, cell, model, iter);
     }
 };
 Signals.addSignalMethods(SourcesPage.prototype);
@@ -132,7 +223,6 @@ Sidebar.prototype = {
     _onSourceFilterChanged: function(sourcePage, id, name) {
         this._sourcesPage.widget.hide();
         this._sourcesButton.show();
-        this._buttonLabel.label = name;
 
         // forward the signal
         this.emit('source-filter-changed', id);

@@ -80,27 +80,30 @@ gd_store_update_icon (GtkListStore *store,
 }
 
 /**
- * gd_create_combo_store:
+ * gd_create_sidebar_store:
  * 
  * Returns: (transfer full):
  */
 GtkListStore *
-gd_create_combo_store (void)
+gd_create_sidebar_store (void)
 {
-  return gtk_list_store_new (2,
+  return gtk_list_store_new (3,
                              G_TYPE_STRING, // ID
-                             G_TYPE_STRING); // NAME
+                             G_TYPE_STRING, // NAME
+                             G_TYPE_BOOLEAN); // HEADING
 }
 
 void
-gd_combo_store_set (GtkListStore *store,
-                    GtkTreeIter *iter,
-                    const gchar *id,
-                    const gchar *name)
+gd_sidebar_store_set (GtkListStore *store,
+                      GtkTreeIter *iter,
+                      const gchar *id,
+                      const gchar *name,
+                      gboolean heading)
 {
   gtk_list_store_set (store, iter,
                       0, id,
                       1, name,
+                      2, heading,
                       -1);
 }
 
