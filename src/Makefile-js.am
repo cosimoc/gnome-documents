@@ -2,6 +2,7 @@ jsdir = $(pkgdatadir)/js/
 dist_js_DATA = \
     accountsModel.js \
     application.js \
+    docFactory.js \
     iconView.js \
     listView.js \
     main.js \

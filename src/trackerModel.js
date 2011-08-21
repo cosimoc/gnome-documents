@@ -28,8 +28,8 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const Tracker = imports.gi.Tracker;
 const Gd = imports.gi.Gd;
-const GdkPixbuf = imports.gi.GdkPixbuf;
 
+const DocFactory = imports.docFactory;
 const Main = imports.main;
 const Utils = imports.utils;
 
@@ -57,87 +57,6 @@ const TrackerColumns = {
     TYPE: 7,
     RESOURCE_URN: 8
 };
-
-const _FILE_ATTRIBUTES = 'standard::icon,standard::content-type,thumbnail::path,time::modified';
-
-function LocalFileInfoLoader(uri) {
-    this._init(uri);
-}
-
-LocalFileInfoLoader.prototype = {
-    _init: function(uri) {
-        this._file = Gio.file_new_for_uri(uri);
-
-        this._file.query_info_async(_FILE_ATTRIBUTES,
-                                    0, 0, null,
-                                    Lang.bind(this, this._onFileQueryInfo));
-    },
-
-    _onFileQueryInfo: function(object, res) {
-        let info = null;
-        let treePath = null;
-
-        try {
-            info = object.query_info_finish(res);
-        } catch (e) {
-            log('Unable to query info for file at ' + this.file.get_uri() + ': ' + e.toString());
-        }
-
-        let thumbPath = info.get_attribute_byte_string(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH);
-        if (thumbPath) {
-            this.pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(thumbPath,
-                                                                  Utils.getIconSize(),
-                                                                  Utils.getIconSize());
-        } else {
-            let icon = info.get_icon();
-
-            if (icon) {
-                let theme = Gtk.IconTheme.get_default();
-                let iconInfo = theme.lookup_by_gicon(icon, Utils.getIconSize(),
-                                                     Gtk.IconLookupFlags.FORCE_SIZE |
-                                                     Gtk.IconLookupFlags.GENERIC_FALLBACK);
-                this.pixbuf = iconInfo.load_icon();
-            }
-
-            // try to create the thumbnail
-            Gd.queue_thumbnail_job_for_file_async(this._file,
-                                                  Lang.bind(this, this._onQueueThumbnailJob));
-        }
-
-        this.emit('info-loaded');
-    },
-
-    _onQueueThumbnailJob: function(object, res) {
-        let thumbnailed = Gd.queue_thumbnail_job_for_file_finish(res);
-
-        if (!thumbnailed)
-            return;
-
-        // get the new thumbnail path
-        this._file.query_info_async(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH,
-                                    0, 0, null,
-                                    Lang.bind(this, function(object, res) {
-                                        let info = null;
-
-                                        try {
-                                            info = object.query_info_finish(res);
-                                        } catch (e) {
-                                            log('Unable to query info for file at ' + uri + ': ' + e.toString());
-                                            return;
-                                        }
-
-                                        let thumbPath = info.get_attribute_byte_string(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH);
-
-                                        if (thumbPath) {
-                                            this.pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size
-                                                (thumbPath, Utils.getIconSize(), Utils.getIconSize());
-
-                                            this.emit('icon-updated');
-                                        }
-                                    }));
-    }
-};
-Signals.addSignalMethods(LocalFileInfoLoader.prototype);
 
 function QueryBuilder() {
     this._init();
@@ -270,6 +189,7 @@ function TrackerModel(callback) {
 TrackerModel.prototype = {
     _init: function(callback) {
         this._builder = new QueryBuilder();
+        this._factory = new DocFactory.DocFactory();
         this._initCallback = callback;
         Main.settings.connect('changed::list-view', Lang.bind(this, this._onSettingsChanged));
 
@@ -296,100 +216,25 @@ TrackerModel.prototype = {
         this._performCurrentQuery();
     },
 
-    _rowIsGoogle: function(identifier) {
-        return (identifier &&
-                (identifier.indexOf('https://docs.google.com') != -1));
-    },
-
-    _addLocalRowFromCursor: function(cursor) {
-        let urn = cursor.get_string(TrackerColumns.URN)[0];
-        let uri = cursor.get_string(TrackerColumns.URI)[0];
-        let title = cursor.get_string(TrackerColumns.TITLE)[0];
-        let author = cursor.get_string(TrackerColumns.AUTHOR)[0];
-        let mtime = cursor.get_string(TrackerColumns.MTIME)[0];
-        let resourceUrn = cursor.get_string(TrackerColumns.RESOURCE_URN)[0];
-
+    _addRowFromCursor: function(cursor) {
         this.itemCount = cursor.get_integer(TrackerColumns.TOTAL_COUNT);
 
-        if (!author)
-            author = '';
+        let newDoc = this._factory.newDocument(cursor);
+        let iter = this.model.append();
+        let treePath = this.model.get_path(iter);
 
-        let treePath = null;
-        let loader = new LocalFileInfoLoader(uri);
+        Gd.store_set(this.model, iter,
+                     newDoc.urn, newDoc.uri,
+                     newDoc.title, newDoc.author,
+                     newDoc.mtime, newDoc.pixbuf,
+                     newDoc.resourceUrn);
 
-        loader.connect('info-loaded', Lang.bind(this,
-            function(loader) {
-                let iter = this.model.append();
-                treePath = this.model.get_path(iter);
-
-                Gd.store_set(this.model, iter,
-                             urn, uri, title, author, mtime, loader.pixbuf, resourceUrn);
-            }));
-
-        loader.connect('icon-updated', Lang.bind(this,
-            function(loader) {
+        newDoc.connect('icon-updated', Lang.bind(this,
+            function() {
                 let objectIter = this.model.get_iter(treePath)[1];
                 if (objectIter)
-                    Gd.store_update_icon(this.model, objectIter, loader.pixbuf);
+                    Gd.store_update_icon(this.model, objectIter, newDoc.pixbuf);
             }));
-    },
-
-    _pixbufFromRdfType: function(type) {
-        let iconName;
-        let iconInfo = null;
-        let pixbuf = null;
-
-        if (type.indexOf('nfo#Spreadsheet') != -1)
-            iconName = 'x-office-spreadsheet';
-        else if (type.indexOf('nfo#Presentation') != -1)
-            iconName = 'x-office-presentation';
-        else
-            iconName = 'x-office-document';
-
-        iconInfo =
-            Gtk.IconTheme.get_default().lookup_icon(iconName, Utils.getIconSize(),
-                                                    Gtk.IconLookupFlags.FORCE_SIZE |
-                                                    Gtk.IconLookupFlags.GENERIC_FALLBACK);
-
-        if (iconInfo != null) {
-            try {
-                pixbuf = iconInfo.load_icon();
-            } catch (e) {
-                log('Unable to load pixbuf: ' + e.toString());
-            }
-        }
-
-        return pixbuf;
-    },
-
-    _addGoogleRowFromCursor: function(cursor) {
-        let urn = cursor.get_string(TrackerColumns.URN)[0];
-        let title = cursor.get_string(TrackerColumns.TITLE)[0];
-        let author = cursor.get_string(TrackerColumns.AUTHOR)[0];
-        let mtime = cursor.get_string(TrackerColumns.MTIME)[0];
-        let identifier = cursor.get_string(TrackerColumns.IDENTIFIER)[0];
-        let type = cursor.get_string(TrackerColumns.TYPE)[0];
-        let resourceUrn = cursor.get_string(TrackerColumns.RESOURCE_URN)[0];
-
-        this.itemCount = cursor.get_integer(TrackerColumns.TOTAL_COUNT);
-
-        if (!author)
-            author = '';
-
-        let pixbuf = this._pixbufFromRdfType(type);
-
-        let iter = this.model.append();
-        Gd.store_set(this.model, iter,
-                     urn, identifier, title, author, mtime, pixbuf, resourceUrn);
-    },
-
-    _addRowFromCursor: function(cursor) {
-        let identifier = cursor.get_string(TrackerColumns.IDENTIFIER)[0];
-
-        if (this._rowIsGoogle(identifier))
-            this._addGoogleRowFromCursor(cursor);
-        else
-            this._addLocalRowFromCursor(cursor);
     },
 
     _onCursorNext: function(cursor, res) {
