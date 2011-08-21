@@ -38,6 +38,7 @@ MainToolbar.prototype = {
     _init: function() {
         this._searchEntryTimeout = 0;
         this.widget = new Gtk.Toolbar({ icon_size: Gtk.IconSize.MENU });
+        this.widget.get_style_context().add_class(Gtk.STYLE_CLASS_MENUBAR);
     },
 
     _clearToolbar: function() {
