@@ -326,7 +326,8 @@ pdf_load_job_from_google_documents_with_object (PdfLoadJob *job,
    * but I can't seem to use a more generic class, or GData segfaults.
    * OTOH, using this type always works, even for presentations/spreadsheets.
    *
-   * To be investigated...
+   * This needs to be fixed in libgdata, see
+   * https://bugzilla.gnome.org/show_bug.cgi?id=656971
    */
   gdata_service_query_single_entry_async (GDATA_SERVICE (service),
                                           gdata_documents_service_get_primary_authorization_domain (),
