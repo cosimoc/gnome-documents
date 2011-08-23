@@ -211,8 +211,7 @@ TrackerModel.prototype = {
     },
 
     _onSettingsChanged: function() {
-        this.model.clear();
-        this._performCurrentQuery();
+        this._refresh();
     },
 
     _addRowFromCursor: function(cursor) {
@@ -297,20 +296,16 @@ TrackerModel.prototype = {
     },
 
     setFilter: function(filter) {
-        this.model.clear();
-
         this.offset = 0;
         this._filter = filter;
 
-        this._performCurrentQuery();
+        this._refresh();
     },
 
     setAccountFilter: function(id) {
         if (id == 'all' || id == 'local') {
             this._resourceUrn = id;
-
-            this.model.clear();
-            this._performCurrentQuery();
+            this._refresh();
 
             return;
         }
