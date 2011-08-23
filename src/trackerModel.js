@@ -21,6 +21,7 @@
 
 const DBus = imports.dbus;
 const Lang = imports.lang;
+const Mainloop = imports.mainloop;
 const Signals = imports.signals;
 
 const Gio = imports.gi.Gio;
@@ -46,6 +47,7 @@ const ModelColumns = {
 };
 
 const OFFSET_STEP = 50;
+const MINER_REFRESH_TIMEOUT = 60; /* seconds */
 
 const TrackerColumns = {
     URN: 0,
@@ -198,6 +200,14 @@ TrackerModel.prototype = {
 
         // startup a refresh of the gdocs cache
         this._miner = new GDataMiner.GDataMiner();
+        this._refreshMinerNow();
+    },
+
+    _onSettingsChanged: function() {
+        this._refresh();
+    },
+
+    _refreshMinerNow: function() {
         this._miner.RefreshDBRemote(DBus.CALL_FLAG_START, Lang.bind(this,
             function(res, error) {
                 if (error) {
@@ -205,13 +215,18 @@ TrackerModel.prototype = {
                     return;
                 }
 
+                // FIXME: we must have a way to know from the miner if there were
+                // no changes processed, to avoid uselessly refreshing the view.
+                // That requires support for the Changes feed in libgdata, see
+                // https://bugzilla.gnome.org/show_bug.cgi?id=654652
                 this._emitModelUpdatePending();
                 this._refresh();
-            }));
-    },
 
-    _onSettingsChanged: function() {
-        this._refresh();
+                Mainloop.timeout_add_seconds(MINER_REFRESH_TIMEOUT,
+                                             Lang.bind(this, this._refreshMinerNow));
+            }));
+
+        return false;
     },
 
     _addRowFromCursor: function(cursor) {
