@@ -1,0 +1,6 @@
+- sync miner process at startup and periodically
+- implement starred category
+- implement shared category
+- implement device listing
+- figure out behavior for lack of network connection
+- implement opening password-protected PDF files
