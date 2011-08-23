@@ -19,17 +19,17 @@
  *
  */
 
+const DBus = imports.dbus;
 const Lang = imports.lang;
 const Signals = imports.signals;
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
 const Tracker = imports.gi.Tracker;
 const Gd = imports.gi.Gd;
 
 const DocFactory = imports.docFactory;
+const GDataMiner = imports.gDataMiner;
 const Main = imports.main;
 const TrackerUtils = imports.trackerUtils;
 const Utils = imports.utils;
@@ -195,6 +195,19 @@ TrackerModel.prototype = {
 
         this.model = Gd.create_list_store();
         this._connection = connection;
+
+        // startup a refresh of the gdocs cache
+        this._miner = new GDataMiner.GDataMiner();
+        this._miner.RefreshDBRemote(DBus.CALL_FLAG_START, Lang.bind(this,
+            function(res, error) {
+                if (error) {
+                    log('Error updating the GData cache: ' + error.toString());
+                    return;
+                }
+
+                this.model.clear();
+                this._performCurrentQuery();
+            }));
     },
 
     _onSettingsChanged: function() {

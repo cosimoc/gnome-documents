@@ -4,6 +4,15 @@ desktop_in_files = gnome-documents.desktop.in
 
 @INTLTOOL_DESKTOP_RULE@
 
+servicedir = $(datadir)/dbus-1/services
+service_DATA = $(service_in_files:.service.in=.service)
+$(service_DATA): $(service_in_files) Makefile
+	$(AM_V_GEN)	\
+		[ -d $(@D) ] || $(mkdir_p) $(@D) ; \
+		sed -e "s|\@libexecdir\@|$(libexecdir)|" $< > $@.tmp && mv $@.tmp $@
+
+service_in_files = org.gnome.Documents.GDataMiner.service.in
+
 gsettingsschema_in_files = org.gnome.documents.gschema.xml.in
 gsettings_SCHEMAS = $(gsettingsschema_in_files:.xml.in=.xml)
 .PRECIOUS: $(gsettings_SCHEMAS)
@@ -18,9 +27,11 @@ dist_style_DATA = \
 
 EXTRA_DIST= \
     gnome-documents.desktop \
+    $(service_in_files) \
     $(desktop_in_files) \
-    $(gsettingsschame_in_files)
+    $(gsettingsschema_in_files)
 
 CLEANFILES = \
     $(desktop_DATA) \
-    $(gsettings_SCHEMAS)
+    $(gsettings_SCHEMAS) \
+    $(service_DATA)

@@ -28,7 +28,7 @@
 
 #define DATASOURCE_URN "urn:nepomuk:datasource:86ec9bc9-c242-427f-aa19-77b5a2c9b6f0"
 
-G_DEFINE_TYPE (GdGDataMiner, gd_gdata_miner, TRACKER_TYPE_MINER)
+G_DEFINE_TYPE (GdGDataMiner, gd_gdata_miner, G_TYPE_OBJECT)
 
 struct _GdGDataMinerPrivate {
   GoaClient *client;
@@ -36,7 +36,18 @@ struct _GdGDataMinerPrivate {
   TrackerSparqlConnection *connection;
 
   GCancellable *cancellable;
+  GSimpleAsyncResult *result;
 };
+
+static void
+gd_gdata_miner_complete_error (GdGDataMiner *self,
+                               GError *error)
+{
+  g_assert (self->priv->result != NULL);
+
+  g_simple_async_result_take_error (self->priv->result, error);
+  g_simple_async_result_complete_in_idle (self->priv->result);
+}
 
 static gchar *
 _tracker_utils_format_into_graph (const gchar *graph)
@@ -164,7 +175,7 @@ _tracker_utils_ensure_contact_resource (TrackerSparqlConnection *connection,
 
   insert_res = 
     tracker_sparql_connection_update_blank (connection, insert->str,
-                                            G_PRIORITY_DEFAULT, NULL, error);
+                                            G_PRIORITY_DEFAULT, cancellable, error);
 
   g_string_free (insert, TRUE);
 
@@ -318,12 +329,13 @@ _tracker_utils_iso8601_from_timestamp (gint64 timestamp)
 
 static void
 gd_gdata_miner_process_entry (GdGDataMiner *self,
-                              GDataDocumentsEntry *doc_entry)
+                              GDataDocumentsEntry *doc_entry,
+                              GError **error)
 {
   GDataEntry *entry = GDATA_ENTRY (doc_entry);
-  GError *error = NULL;
   gchar *resource;
   gchar *date, *resource_url;
+
   const gchar *path, *identifier, *class;
   GList *authors, *l;
   GDataAuthor *author;
@@ -351,28 +363,31 @@ gd_gdata_miner_process_entry (GdGDataMiner *self,
 
   resource = _tracker_sparql_connection_ensure_resource
     (self->priv->connection, 
-     self->priv->cancellable, &error,
+     self->priv->cancellable, error,
      resource_url, identifier,
      "nfo:RemoteDataObject",
      class,
      NULL);
 
-  if (error != NULL)
+  if (*error != NULL)
     goto out;
 
   _tracker_sparql_connection_insert_or_replace_triple
     (self->priv->connection, 
-     self->priv->cancellable, &error,
+     self->priv->cancellable, error,
      identifier, resource,
      "nie:description", gdata_entry_get_summary (entry));
 
+  if (*error != NULL)
+    goto out;
+
   _tracker_sparql_connection_insert_or_replace_triple
     (self->priv->connection, 
-     self->priv->cancellable, &error,
+     self->priv->cancellable, error,
      identifier, resource,
      "nie:title", gdata_entry_get_title (entry));
 
-  if (error != NULL)
+  if (*error != NULL)
     goto out;
 
   authors = gdata_entry_get_authors (entry);
@@ -383,18 +398,21 @@ gd_gdata_miner_process_entry (GdGDataMiner *self,
       author = l->data;
 
       contact_resource = _tracker_utils_ensure_contact_resource (self->priv->connection,
-                                                                 self->priv->cancellable, &error,
+                                                                 self->priv->cancellable, error,
                                                                  gdata_author_get_email_address (author),
                                                                  gdata_author_get_name (author));
 
-      if (error != NULL)
+      if (*error != NULL)
         goto out;
 
       _tracker_sparql_connection_insert_or_replace_triple
         (self->priv->connection, 
-         self->priv->cancellable, &error,
+         self->priv->cancellable, error,
          identifier, resource,
          "nco:creator", contact_resource);
+
+      if (*error != NULL)
+        goto out;
 
       g_free (contact_resource);
     }
@@ -402,32 +420,26 @@ gd_gdata_miner_process_entry (GdGDataMiner *self,
   date = _tracker_utils_iso8601_from_timestamp (gdata_entry_get_published (entry));
   _tracker_sparql_connection_insert_or_replace_triple
     (self->priv->connection, 
-     self->priv->cancellable, &error,
+     self->priv->cancellable, error,
      identifier, resource,
      "nie:contentCreated", date);
   g_free (date);
 
-  if (error != NULL)
+  if (*error != NULL)
     goto out;
 
   date = _tracker_utils_iso8601_from_timestamp (gdata_entry_get_updated (entry));
   _tracker_sparql_connection_insert_or_replace_triple
     (self->priv->connection, 
-     self->priv->cancellable, &error,
+     self->priv->cancellable, error,
      identifier, resource,
      "nie:contentLastModified", date);
   g_free (date);
 
-  if (error != NULL)
+  if (*error != NULL)
     goto out;
 
  out:
-  if (error != NULL)
-    {
-      g_printerr ("Error updating tracker: %s\n", error->message);
-      g_error_free (error);
-    }
-
   g_free (resource_url);
 }
 
@@ -444,22 +456,30 @@ gd_gdata_miner_query (GdGDataMiner *self)
     (self->priv->service, query, 
      self->priv->cancellable, NULL, NULL, &error);
 
+  g_object_unref (query);
+
   if (error != NULL)
     {
-      g_printerr ("Error executing query: %s\n", error->message);
-
-      g_error_free (error);
-      g_object_unref (query);
-
+      gd_gdata_miner_complete_error (self, error);
       return;
    }
 
   entries = gdata_feed_get_entries (GDATA_FEED (feed));
   for (l = entries; l != NULL; l = l->next)
-    gd_gdata_miner_process_entry (self, l->data);
+    {
+      gd_gdata_miner_process_entry (self, l->data, &error);
 
+      if (error != NULL)
+        {
+          gd_gdata_miner_complete_error (self, error);
+          g_object_unref (feed);
+
+          return;
+        }
+    }
+
+  g_simple_async_result_complete_in_idle (self->priv->result);
   g_object_unref (feed);
-  g_object_unref (query);
 }
 
 static void
@@ -508,9 +528,7 @@ gd_gdata_miner_setup_account (GdGDataMiner *self,
 
   if (error != NULL)
     {
-      g_printerr ("Unable to initialize the tracker connection: %s\n", error->message);
-      g_error_free (error);
-
+      gd_gdata_miner_complete_error (self, error);
       return;
     }
 
@@ -529,13 +547,14 @@ client_ready_cb (GObject *source,
   const gchar *provider_type;
   GError *error = NULL;
   GList *accounts, *l;
+  gboolean found = FALSE;
 
   self->priv->client = goa_client_new_finish (res, &error);
 
   if (error != NULL)
     {
-      g_printerr ("Unable to get the GoaClient object: %s\n", error->message);
-      g_error_free (error);
+      gd_gdata_miner_complete_error (self, error);
+      return;
     }
 
   accounts = goa_client_get_accounts (self->priv->client);
@@ -555,39 +574,20 @@ client_ready_cb (GObject *source,
       if (g_strcmp0 (provider_type, "google") != 0)
         continue;
 
+      found = TRUE;
       gd_gdata_miner_setup_account (self, object);
     }
 
   g_list_free_full (accounts, g_object_unref);
-}
 
-static void
-gd_gdata_miner_started (TrackerMiner *miner)
-{
-  GdGDataMiner *self = GD_GDATA_MINER (miner);
-
-  goa_client_new (self->priv->cancellable, client_ready_cb, self);
-}
-
-static void
-gd_gdata_miner_stopped (TrackerMiner *miner)
-{
-  GdGDataMiner *self = GD_GDATA_MINER (miner);
-
-  g_cancellable_cancel (self->priv->cancellable);
-  g_cancellable_reset (self->priv->cancellable);
-}
-
-static void
-gd_gdata_miner_resumed (TrackerMiner *miner)
-{
-
-}
-
-static void
-gd_gdata_miner_paused (TrackerMiner *miner)
-{
-
+  if (!found)
+    {
+      gd_gdata_miner_complete_error (self,
+                                     g_error_new_literal (G_IO_ERROR,
+                                                          G_IO_ERROR_NOT_FOUND,
+                                                          "No GOA resource found supporting documents"));
+      return;
+    }
 }
 
 static void
@@ -598,6 +598,8 @@ gd_gdata_miner_dispose (GObject *object)
   g_clear_object (&self->priv->service);
   g_clear_object (&self->priv->client);
   g_clear_object (&self->priv->connection);
+  g_clear_object (&self->priv->cancellable);
+  g_clear_object (&self->priv->result);
 
   G_OBJECT_CLASS (gd_gdata_miner_parent_class)->dispose (object);
 }
@@ -612,15 +614,9 @@ gd_gdata_miner_init (GdGDataMiner *self)
 static void
 gd_gdata_miner_class_init (GdGDataMinerClass *klass)
 {
-  TrackerMinerClass *mclass = TRACKER_MINER_CLASS (klass);
   GObjectClass *oclass = G_OBJECT_CLASS (klass);
 
   oclass->dispose = gd_gdata_miner_dispose;
-
-  mclass->started = gd_gdata_miner_started;
-  mclass->stopped = gd_gdata_miner_stopped;
-  mclass->paused = gd_gdata_miner_paused;
-  mclass->resumed = gd_gdata_miner_resumed;
 
   g_type_class_add_private (klass, sizeof (GdGDataMinerPrivate));
 }
@@ -629,4 +625,36 @@ GdGDataMiner *
 gd_gdata_miner_new (void)
 {
   return g_object_new (GD_TYPE_GDATA_MINER, NULL);
+}
+
+void
+gd_gdata_miner_refresh_db_async (GdGDataMiner *self,
+                                 GCancellable *cancellable,
+                                 GAsyncReadyCallback callback,
+                                 gpointer user_data)
+{
+  self->priv->result = 
+    g_simple_async_result_new (G_OBJECT (self),
+                               callback, user_data,
+                               gd_gdata_miner_refresh_db_async);
+  self->priv->cancellable = 
+    (cancellable != NULL) ? g_object_ref (cancellable) : NULL;
+
+  goa_client_new (self->priv->cancellable, client_ready_cb, self);  
+}
+
+gboolean
+gd_gdata_miner_refresh_db_finish (GdGDataMiner *self,
+                                  GAsyncResult *res,
+                                  GError **error)
+{
+  GSimpleAsyncResult *simple_res = G_SIMPLE_ASYNC_RESULT (res);
+
+  g_assert (g_simple_async_result_is_valid (res, G_OBJECT (self),
+                                            gd_gdata_miner_refresh_db_async));
+
+  if (g_simple_async_result_propagate_error (simple_res, error))
+    return FALSE;
+
+  return TRUE;
 }

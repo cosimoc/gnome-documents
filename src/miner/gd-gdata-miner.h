@@ -54,16 +54,24 @@ typedef struct _GdGDataMinerClass GdGDataMinerClass;
 typedef struct _GdGDataMinerPrivate GdGDataMinerPrivate;
 
 struct _GdGDataMiner {
-  TrackerMiner parent;
+  GObject parent;
 
   GdGDataMinerPrivate *priv;
 };
 
 struct _GdGDataMinerClass {
-  TrackerMinerClass parent_class;
+  GObjectClass parent_class;
 };
 
 GdGDataMiner * gd_gdata_miner_new (void);
+
+void           gd_gdata_miner_refresh_db_async (GdGDataMiner *self,
+                                                GCancellable *cancellable,
+                                                GAsyncReadyCallback callback,
+                                                gpointer user_data);
+gboolean       gd_gdata_miner_refresh_db_finish (GdGDataMiner *self,
+                                                 GAsyncResult *res,
+                                                 GError **error);
 
 G_END_DECLS
 

@@ -2,6 +2,7 @@ jsdir = $(pkgdatadir)/js/
 dist_js_DATA = \
     application.js \
     docFactory.js \
+    gDataMiner.js \
     iconView.js \
     listView.js \
     main.js \
