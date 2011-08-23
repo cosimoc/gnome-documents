@@ -33,6 +33,7 @@ function View(window) {
 
 View.prototype = {
     _init: function(window) {
+        this._selectedURNs = null;
         this.window = window;
     },
 
@@ -42,9 +43,33 @@ View.prototype = {
 
     setModel: function(model) {
         this.model = model;
-        this.widget.set_model(model);
+        this.model.connect('model-update-pending', Lang.bind(this,
+            function() {
+                this.preUpdate();
+            }));
+        this.model.connect('model-update-done', Lang.bind(this,
+            function() {
+                this.postUpdate();
+            }));
+
+        this._treeModel = model.model;
+        this.widget.set_model(this._treeModel);
 
         this.createRenderers();
+    },
+
+    preUpdate: function(selection) {
+        this._selectedURNs = selection.map(Lang.bind(this,
+            function(path) {
+                let iter = this._treeModel.get_iter(path)[1];
+                let urn = this._treeModel.get_value(iter, TrackerModel.ModelColumns.URN);
+
+                return urn;
+            }));
+    },
+
+    postUpdate: function() {
+        this._selectedURNs = null;
     },
 
     // this must be overridden by all implementations
@@ -53,9 +78,9 @@ View.prototype = {
     },
 
     activateItem: function(path) {
-        let iter = this.model.get_iter(path)[1];
-        let uri = this.model.get_value(iter, TrackerModel.ModelColumns.URI);
-        let resource = this.model.get_value(iter, TrackerModel.ModelColumns.RESOURCE_URN);
+        let iter = this._treeModel.get_iter(path)[1];
+        let uri = this._treeModel.get_value(iter, TrackerModel.ModelColumns.URI);
+        let resource = this._treeModel.get_value(iter, TrackerModel.ModelColumns.RESOURCE_URN);
 
         this.emit('item-activated', uri, resource);
     }

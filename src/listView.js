@@ -53,6 +53,30 @@ ListView.prototype = {
         this.activateItem(path);
     },
 
+    preUpdate: function() {
+        let treeSelection = this.widget.get_selection();
+        let selection = this.widget.get_selected_rows();
+
+        View.View.prototype.preUpdate.call(this, selection);
+    },
+
+    postUpdate: function() {
+        if (!this._selectedURNs)
+            return;
+
+        let treeSelection = this.widget.get_selection();
+
+        this._treeModel.foreach(Lang.bind(this,
+            function(model, path, iter) {
+                let urn = this._treeModel.get_value(iter, TrackerModel.ModelColumns.URN);
+
+                if (this._selectedURNs.indexOf(urn) != -1)
+                    treeSelection.select_path(path);
+            }));
+
+        View.View.prototype.postUpdate.call(this);
+    },
+
     createRenderers: function() {
         let col = new Gtk.TreeViewColumn();
         this.widget.append_column(col);

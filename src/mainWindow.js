@@ -97,7 +97,7 @@ MainWindow.prototype = {
         this._grid.show_all();
 
         this._model = new TrackerModel.TrackerModel(Main.application.connection);
-        this._model.connect('count-updated', Lang.bind(this, this._onModelCountUpdated));
+        this._model.connect('model-update-done', Lang.bind(this, this._onModelUpdateDone));
 
         this._prepareForOverview();
     },
@@ -138,7 +138,7 @@ MainWindow.prototype = {
 
     _refreshViewSettings: function() {
         this._initView();
-        this.view.setModel(this._model.model);
+        this.view.setModel(this._model);
     },
 
     _refreshLoadMoreButton: function(itemCount, offset) {
@@ -252,7 +252,7 @@ MainWindow.prototype = {
         this._model.setFilter(text);
     },
 
-    _onModelCountUpdated: function(model, itemCount, offset) {
+    _onModelUpdateDone: function(model, itemCount, offset) {
         this._refreshLoadMoreButton(itemCount, offset);
     },
 

@@ -205,8 +205,8 @@ TrackerModel.prototype = {
                     return;
                 }
 
-                this.model.clear();
-                this._performCurrentQuery();
+                this._emitModelUpdatePending();
+                this._refresh();
             }));
     },
 
@@ -242,7 +242,7 @@ TrackerModel.prototype = {
 
             if (!valid) {
                 // signal the total count update and return
-                this._emitCountUpdated();
+                this._emitModelUpdateDone();
                 return;
             }
         } catch (e) {
@@ -271,8 +271,17 @@ TrackerModel.prototype = {
                                      null, Lang.bind(this, this._onQueryExecuted));
     },
 
-    _emitCountUpdated: function() {
-        this.emit('count-updated', this.itemCount, this.offset);
+    _emitModelUpdateDone: function() {
+        this.emit('model-update-done', this.itemCount, this.offset);
+    },
+
+    _emitModelUpdatePending: function() {
+        this.emit('model-update-pending');
+    },
+
+    _refresh: function() {
+        this.model.clear();
+        this._performCurrentQuery();
     },
 
     populateForOverview: function(resourceUrn, filter) {
@@ -316,7 +325,7 @@ TrackerModel.prototype = {
                 } else {
                     this.offset = 0;
                     this.itemCount = 0;
-                    this._emitCountUpdated();
+                    this._emitModelUpdateDone();
                 }
             }));
     }

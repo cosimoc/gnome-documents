@@ -56,6 +56,27 @@ IconView.prototype = {
         this.widget.show();
     },
 
+    preUpdate: function() {
+        let selection = this.widget.get_selected_items();
+
+        View.View.prototype.preUpdate.call(this, selection);
+    },
+
+    postUpdate: function() {
+        if (!this._selectedURNs)
+            return;
+
+        this._treeModel.foreach(Lang.bind(this,
+            function(model, path, iter) {
+                let urn = this._treeModel.get_value(iter, TrackerModel.ModelColumns.URN);
+
+                if (this._selectedURNs.indexOf(urn) != -1)
+                    this.widget.select_path(path);
+            }));
+
+        View.View.prototype.postUpdate.call(this);
+    },
+
     createRenderers: function() {
         let pixbufRenderer =
             new Gd.FramedPixbufRenderer({ xalign: 0.5,
@@ -81,5 +102,5 @@ IconView.prototype = {
 
     _onItemActivated: function(view, path, column) {
         this.activateItem(path);
-    },
-}
+    }
+};
