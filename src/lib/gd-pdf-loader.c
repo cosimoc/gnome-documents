@@ -47,7 +47,10 @@ typedef struct {
   gchar *uri;
   gchar *pdf_path;
   GPid unoconv_pid;
+
   GDataDownloadStream *stream;
+  GDataEntry *gdata_entry;
+  GDataService *gdata_service;
 
   guint64 pdf_cache_mtime;
   guint64 original_file_mtime;
@@ -130,6 +133,8 @@ pdf_load_job_free (PdfLoadJob *job)
   g_clear_object (&job->result);
   g_clear_object (&job->cancellable);
   g_clear_object (&job->stream);
+  g_clear_object (&job->gdata_service);
+  g_clear_object (&job->gdata_entry);
 
   g_free (job->uri);
 
@@ -224,6 +229,61 @@ pdf_load_job_from_pdf (PdfLoadJob *job)
 }
 
 static void
+cache_set_attributes_ready_cb (GObject *source,
+                               GAsyncResult *res,
+                               gpointer user_data)
+{
+  PdfLoadJob *job = user_data;
+  GError *error = NULL;
+  GFileInfo *out_info = NULL;
+
+  g_file_set_attributes_finish (G_FILE (source), res, &out_info, &error);
+
+  if (error != NULL) {
+    /* just emit a warning here; setting the mtime is a precaution
+     * against the cache file being externally modified after it has been
+     * created, which is unlikely. Invalidate the cache immediately after
+     * loading the file in this case.
+     */
+    job->unlink_cache = TRUE;
+
+    g_warning ("Cannot set mtime on the cache file; cache will not be valid "
+               "after the file has been viewed. Error: %s", error->message);
+    g_error_free (error);
+  }
+
+  if (out_info != NULL)
+    g_object_unref (out_info);
+
+  pdf_load_job_from_pdf (job);
+}
+
+static void
+pdf_load_job_cache_set_attributes (PdfLoadJob *job)
+{
+  GFileInfo *info;
+  GFile *file;
+
+  /* make the file private */
+  g_chmod (job->pdf_path, 0600);
+
+  file = g_file_new_for_path (job->pdf_path);
+  info = g_file_info_new ();
+
+  g_file_info_set_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED,
+                                    job->original_file_mtime);
+  g_file_set_attributes_async (file, info,
+                               G_FILE_QUERY_INFO_NONE,
+                               G_PRIORITY_DEFAULT,
+                               job->cancellable,
+                               cache_set_attributes_ready_cb,
+                               job);
+
+  g_object_unref (info);
+  g_object_unref (file);
+}
+
+static void
 os_splice_ready_cb (GObject *source,
                     GAsyncResult *res,
                     gpointer user_data)
@@ -240,7 +300,7 @@ os_splice_ready_cb (GObject *source,
     return;
   }
 
-  pdf_load_job_from_pdf (job);
+  pdf_load_job_cache_set_attributes (job);
 }
 
 static void
@@ -271,27 +331,14 @@ file_replace_ready_cb (GObject *source,
 }
 
 static void
-single_entry_ready_cb (GObject *source,
-                       GAsyncResult *res,
-                       gpointer user_data)
+pdf_load_job_gdata_refresh_cache (PdfLoadJob *job)
 {
-  GDataEntry *entry;
   GDataDownloadStream *stream;
   GError *error = NULL;
-  gchar *tmp_name;
-  gchar *tmp_path, *pdf_path;
   GFile *pdf_file;
-  PdfLoadJob *job = user_data;
 
-  entry = gdata_service_query_single_entry_finish (GDATA_SERVICE (source), res, &error);
-
-  if (error != NULL) {
-    pdf_load_job_complete_error (job, error);
-    return;
-  }
-
-  stream = gdata_documents_document_download (GDATA_DOCUMENTS_DOCUMENT (entry),
-                                              GDATA_DOCUMENTS_SERVICE (source),
+  stream = gdata_documents_document_download (GDATA_DOCUMENTS_DOCUMENT (job->gdata_entry),
+                                              GDATA_DOCUMENTS_SERVICE (job->gdata_service),
                                               "pdf", job->cancellable, &error);
 
   if (error != NULL) {
@@ -300,24 +347,89 @@ single_entry_ready_cb (GObject *source,
   }
 
   job->stream = stream;
+  pdf_file = g_file_new_for_path (job->pdf_path);
 
-  tmp_name = g_strdup_printf ("gnome-documents-%d.pdf", getpid ());
-  tmp_path = g_build_filename (g_get_user_cache_dir (), "gnome-documents", NULL);
-  job->pdf_path = pdf_path =
-    g_build_filename (tmp_path, tmp_name, NULL);
-  g_mkdir_with_parents (tmp_path, 0700);
-
-  pdf_file = g_file_new_for_path (pdf_path);
   g_file_replace_async (pdf_file, NULL, FALSE,
                         G_FILE_CREATE_PRIVATE,
                         G_PRIORITY_DEFAULT,
                         job->cancellable, file_replace_ready_cb,
                         job);
 
+  g_object_unref (pdf_file);
+}
+
+static void
+gdata_cache_query_info_ready_cb (GObject *source,
+                                 GAsyncResult *res,
+                                 gpointer user_data)
+{
+  PdfLoadJob *job = user_data;
+  GError *error = NULL;
+  GFileInfo *info;
+  guint64 cache_mtime;
+
+  info = g_file_query_info_finish (G_FILE (source), res, &error);
+
+  if (error != NULL) {
+    /* create/invalidate cache */
+    pdf_load_job_gdata_refresh_cache (job);
+    g_error_free (error);
+
+    return;
+  }
+
+  job->pdf_cache_mtime = cache_mtime = 
+    g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
+  g_object_unref (info);
+
+  if (job->original_file_mtime > cache_mtime)
+    pdf_load_job_gdata_refresh_cache (job);
+  else
+    /* load the cached file */
+    pdf_load_job_from_pdf (job);
+}
+
+static void
+single_entry_ready_cb (GObject *source,
+                       GAsyncResult *res,
+                       gpointer user_data)
+{
+  GDataEntry *entry;
+  GError *error = NULL;
+  gchar *tmp_name;
+  gchar *tmp_path, *pdf_path;
+  GFile *pdf_file;
+  PdfLoadJob *job = user_data;
+
+  job->gdata_entry = entry = 
+    gdata_service_query_single_entry_finish (GDATA_SERVICE (source), res, &error);
+
+  if (error != NULL) {
+    pdf_load_job_complete_error (job, error);
+    return;
+  }
+
+  job->original_file_mtime = gdata_entry_get_updated (entry);
+
+  tmp_name = g_strdup_printf ("gnome-documents-%d.pdf", g_str_hash (job->uri));
+  tmp_path = g_build_filename (g_get_user_cache_dir (), "gnome-documents", NULL);
+  job->pdf_path = pdf_path =
+    g_build_filename (tmp_path, tmp_name, NULL);
+  g_mkdir_with_parents (tmp_path, 0700);
+
+  pdf_file = g_file_new_for_path (pdf_path);
+
+  g_file_query_info_async (pdf_file,
+                           G_FILE_ATTRIBUTE_TIME_MODIFIED,
+                           G_FILE_QUERY_INFO_NONE,
+                           G_PRIORITY_DEFAULT,
+                           job->cancellable,
+                           gdata_cache_query_info_ready_cb,
+                           job);
+
   g_free (tmp_name);
   g_free (tmp_path);
   g_object_unref (pdf_file);
-  g_object_unref (entry);
 }
 
 static void
@@ -328,7 +440,7 @@ pdf_load_job_from_google_documents_with_object (PdfLoadJob *job,
   GDataDocumentsService *service;
 
   authorizer = e_gdata_goa_authorizer_new (object);
-  service = gdata_documents_service_new (GDATA_AUTHORIZER (authorizer));
+  job->gdata_service = GDATA_SERVICE (gdata_documents_service_new (GDATA_AUTHORIZER (authorizer)));
 
   /* FIXME: using GDATA_TYPE_DOCUMENTS_TEXT here is plain wrong,
    * but I can't seem to use a more generic class, or GData segfaults.
@@ -337,13 +449,12 @@ pdf_load_job_from_google_documents_with_object (PdfLoadJob *job,
    * This needs to be fixed in libgdata, see
    * https://bugzilla.gnome.org/show_bug.cgi?id=656971
    */
-  gdata_service_query_single_entry_async (GDATA_SERVICE (service),
+  gdata_service_query_single_entry_async (job->gdata_service,
                                           gdata_documents_service_get_primary_authorization_domain (),
                                           job->uri,
                                           NULL, GDATA_TYPE_DOCUMENTS_TEXT,
                                           job->cancellable, single_entry_ready_cb, job);
 
-  g_object_unref (service);
   g_object_unref (authorizer);
 }
 
@@ -419,61 +530,6 @@ pdf_load_job_from_google_documents (PdfLoadJob *job)
 }
 
 static void
-openoffice_set_mtime_ready_cb (GObject *source,
-                               GAsyncResult *res,
-                               gpointer user_data)
-{
-  PdfLoadJob *job = user_data;
-  GError *error = NULL;
-  GFileInfo *out_info = NULL;
-
-  g_file_set_attributes_finish (G_FILE (source), res, &out_info, &error);
-
-  if (error != NULL) {
-    /* just emit a warning here; setting the mtime is a precaution
-     * against the cache file being externally modified after it has been
-     * created, which is unlikely. Invalidate the cache immediately after
-     * loading the file in this case.
-     */
-    job->unlink_cache = TRUE;
-
-    g_warning ("Cannot set mtime on the cache file; cache will not be valid "
-               "after the file has been viewed. Error: %s", error->message);
-    g_error_free (error);
-  }
-
-  if (out_info != NULL)
-    g_object_unref (out_info);
-
-  pdf_load_job_from_pdf (job);
-}
-
-static void
-pdf_load_job_openoffice_set_attributes (PdfLoadJob *job)
-{
-  GFileInfo *info;
-  GFile *file;
-
-  /* make the file private */
-  g_chmod (job->pdf_path, 0600);
-
-  file = g_file_new_for_path (job->pdf_path);
-  info = g_file_info_new ();
-
-  g_file_info_set_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED,
-                                    job->original_file_mtime);
-  g_file_set_attributes_async (file, info,
-                               G_FILE_QUERY_INFO_NONE,
-                               G_PRIORITY_DEFAULT,
-                               job->cancellable,
-                               openoffice_set_mtime_ready_cb,
-                               job);
-
-  g_object_unref (info);
-  g_object_unref (file);
-}
-
-static void
 unoconv_child_watch_cb (GPid pid,
                         gint status,
                         gpointer user_data)
@@ -492,7 +548,7 @@ unoconv_child_watch_cb (GPid pid,
     return;
   }
 
-  pdf_load_job_openoffice_set_attributes (job);
+  pdf_load_job_cache_set_attributes (job);
 }
 
 static void
