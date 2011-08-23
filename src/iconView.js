@@ -69,9 +69,17 @@ IconView.prototype = {
         this._treeModel.foreach(Lang.bind(this,
             function(model, path, iter) {
                 let urn = this._treeModel.get_value(iter, TrackerModel.ModelColumns.URN);
+                let urnIndex = this._selectedURNs.indexOf(urn);
 
-                if (this._selectedURNs.indexOf(urn) != -1)
+                if (urnIndex != -1) {
                     this.widget.select_path(path);
+                    this._selectedURNs.splice(urnIndex, 1);
+                }
+
+                if (this._selectedURNs.length == 0)
+                    return true;
+
+                return false;
             }));
 
         View.View.prototype.postUpdate.call(this);
