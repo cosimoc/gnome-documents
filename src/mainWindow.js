@@ -229,6 +229,7 @@ MainWindow.prototype = {
             return;
         }
 
+        this._loaderCancellable = null;
         let model = EvView.DocumentModel.new_with_document(document);
 
         if (this._loaderTimeout) {
