@@ -156,7 +156,6 @@ MainWindow.prototype = {
 
         this._sidebar.widget.show();
         this._toolbar.setOverview();
-        this._model.populateForOverview();
     },
 
     _onDeleteEvent: function() {

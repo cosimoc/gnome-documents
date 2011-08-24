@@ -214,6 +214,8 @@ TrackerModel.prototype = {
         this._filterController = Global.filterController;
         this._filterController.connect('filter-changed',
                                        Lang.bind(this, this._onFilterChanged));
+
+        this._refresh();
     },
 
     _refreshMinerNow: function() {
@@ -305,10 +307,6 @@ TrackerModel.prototype = {
     _refresh: function() {
         this.model.clear();
         this._performCurrentQuery();
-    },
-
-    populateForOverview: function() {
-        this._refresh();
     },
 
     _onFilterChanged: function() {
