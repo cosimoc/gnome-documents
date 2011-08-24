@@ -215,10 +215,5 @@ MainWindow.prototype = {
 
     _onToolbarBackClicked: function() {
         this._prepareForOverview();
-    },
-
-    _onToolbarSearchChanged: function(toolbar, text) {
-        this._lastFilter = text;
-        this._model.setFilter(text);
     }
 };
