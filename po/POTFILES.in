@@ -1,2 +1,7 @@
 [encoding: UTF-8]
-src/main.js
+data/gnome-documents.desktop.in.in
+data/org.gnome.documents.gschema.xml.in
+src/mainToolbar.js
+src/mainWindow.js
+src/sidebar.js
+src/spinnerBox.js
