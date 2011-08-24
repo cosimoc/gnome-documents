@@ -100,7 +100,6 @@ function SourcesPage() {
 SourcesPage.prototype = {
     _init: function() {
         this._model = new SidebarModel();
-        this._currentSourceId = Main.settings.get_string('active-source');
 
         this._treeView = new Gtk.TreeView({ headers_visible: false,
                                             no_show_all: true });
@@ -117,9 +116,7 @@ SourcesPage.prototype = {
                 let id = this._model.model.get_value(iter, SidebarModelColumns.ID);
                 let name = this._model.model.get_value(iter, SidebarModelColumns.NAME);
 
-                this._currentSourceId = id;
-
-                this.emit('source-filter-changed', id, name);
+                Main.sourceManager.setActiveSource(id);
             }));
 
         let col = new Gtk.TreeViewColumn();
@@ -143,7 +140,7 @@ SourcesPage.prototype = {
                       Lang.bind(this,
                           function(col, cell, model, iter) {
                               let id = model.get_value(iter, SidebarModelColumns.ID);
-                              if (id == this._currentSourceId)
+                              if (id == Main.sourceManager.activeSource)
                                   cell.active = true;
                               else
                                   cell.active = false;
@@ -210,7 +207,7 @@ Sidebar.prototype = {
 
         this._sourcesPage = new SourcesPage();
         this._grid.add(this._sourcesPage.widget);
-        this._sourcesPage.connect('source-filter-changed', Lang.bind(this, this._onSourceFilterChanged));
+        Main.sourceManager.connect('active-source-changed', Lang.bind(this, this._onSourceFilterChanged));
 
         this.widget.show_all();
     },
@@ -223,9 +220,5 @@ Sidebar.prototype = {
     _onSourceFilterChanged: function(sourcePage, id, name) {
         this._sourcesPage.widget.hide();
         this._sourcesButton.show();
-
-        // forward the signal
-        this.emit('source-filter-changed', id);
     }
 };
-Signals.addSignalMethods(Sidebar.prototype);

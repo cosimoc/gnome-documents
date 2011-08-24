@@ -57,8 +57,6 @@ MainWindow.prototype = {
         this._loaderTimeout = 0;
         this._lastFilter = '';
 
-        this._currentSourceId = Main.settings.get_string('active-source');
-
         this.window = new Gtk.Window({ type: Gtk.WindowType.TOPLEVEL,
                                        window_position: Gtk.WindowPosition.CENTER,
                                        title: _("Documents") });
@@ -76,7 +74,6 @@ MainWindow.prototype = {
         this.window.add(this._grid);
 
         this._sidebar = new Sidebar.Sidebar();
-        this._sidebar.connect('source-filter-changed', Lang.bind(this, this._onSourceFilterChanged));
         this._grid.add(this._sidebar.widget);
 
         this._viewContainer = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
@@ -185,7 +182,7 @@ MainWindow.prototype = {
 
         this._sidebar.widget.show();
         this._toolbar.setOverview(this._lastFilter);
-        this._model.populateForOverview(this._currentSourceId, this._lastFilter);
+        this._model.populateForOverview(this._lastFilter);
     },
 
     _onDeleteEvent: function() {
@@ -254,12 +251,5 @@ MainWindow.prototype = {
 
     _onModelUpdateDone: function(model, itemCount, offset) {
         this._refreshLoadMoreButton(itemCount, offset);
-    },
-
-    _onSourceFilterChanged: function(sidebar, id) {
-        this._currentSourceId = id;
-        Main.settings.set_string('active-source', id);
-
-        this._model.setAccountFilter(id);
     }
 };

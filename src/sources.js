@@ -19,19 +19,22 @@
  *
  */
 
-const Gtk = imports.gi.Gtk;
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const Application = imports.application;
-const Sources = imports.sources;
+const Signals = imports.signals;
 
-let application = null;
-let settings = null;
-let sourceManager = null;
+function SourceManager() {
+    this._init();
+};
 
-function start() {
-    settings = new Gio.Settings({ schema: 'org.gnome.documents' });
-    sourceManager = new Sources.SourceManager();
-    application = new Application.Application();
-    Gtk.main();
-}
+SourceManager.prototype = {
+    _init: function() {
+        this.activeSource = this._currentSourceId = Main.settings.get_string('active-source');
+    },
+
+    setActiveSource: function(id) {
+        this.activeSource = id;
+        Main.settings.set_string('active-source', id);
+
+        this.emit('active-source-changed');
+    }
+};
+Signals.addSignalMethods(SourceManager.prototype);

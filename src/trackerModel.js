@@ -201,6 +201,8 @@ TrackerModel.prototype = {
         // startup a refresh of the gdocs cache
         this._miner = new GDataMiner.GDataMiner();
         this._refreshMinerNow();
+
+        Main.sourceManager.connect('active-source-changed', Lang.bind(this, this._refreshAccountFilter));
     },
 
     _onSettingsChanged: function() {
@@ -298,11 +300,11 @@ TrackerModel.prototype = {
         this._performCurrentQuery();
     },
 
-    populateForOverview: function(resourceUrn, filter) {
+    populateForOverview: function(filter) {
         this.offset = 0;
         this._filter = filter;
 
-        this.setAccountFilter(resourceUrn);
+        this._refreshAccountFilter(Main.sourceManager.activeSource);
     },
 
     loadMore: function() {
@@ -317,7 +319,9 @@ TrackerModel.prototype = {
         this._refresh();
     },
 
-    setAccountFilter: function(id) {
+    _refreshAccountFilter: function() {
+        let id = Main.sourceManager.activeSource;
+
         if (id == 'all' || id == 'local') {
             this._resourceUrn = id;
             this._refresh();
