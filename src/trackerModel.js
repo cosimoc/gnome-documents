@@ -68,17 +68,17 @@ QueryBuilder.prototype = {
     _init: function() {
     },
 
-    _buildFilterSearch: function(subject, searchString) {
+    _buildFilterSearch: function(subject) {
         let filter =
             ('fn:contains ' +
              '(fn:lower-case (tracker:coalesce(nie:title(%s), nfo:fileName(%s))), ' +
              '"%s") ' +
-             '&& ').format(subject, subject, searchString);
+             '&& ').format(subject, subject, Global.filterController.getFilter());
 
         return filter;
     },
 
-    _buildFilterLocal: function(subject, searchString) {
+    _buildFilterLocal: function(subject) {
         let path;
         let desktopURI;
         let documentsURI;
@@ -96,7 +96,7 @@ QueryBuilder.prototype = {
             documentsURI = '';
 
         let filter =
-            this._buildFilterSearch(subject, searchString) +
+            this._buildFilterSearch(subject) +
             ('((fn:starts-with (nie:url(%s), "%s")) || ' +
              '(fn:starts-with (nie:url(%s), "%s")))').format(subject, desktopURI,
                                                              subject, documentsURI);
@@ -104,36 +104,36 @@ QueryBuilder.prototype = {
         return filter;
     },
 
-    _buildFilterNotLocal: function(subject, searchString) {
+    _buildFilterNotLocal: function(subject) {
         let filter =
-            this._buildFilterSearch(subject, searchString) +
+            this._buildFilterSearch(subject) +
             ('(fn:contains(rdf:type(%s), \"RemoteDataObject\"))').format(subject);
 
         return filter;
     },
 
-    _buildFilterResource: function(subject, searchString, resourceUrn) {
+    _buildFilterResource: function(subject, resourceUrn) {
         let filter =
-            this._buildFilterSearch(subject, searchString) +
+            this._buildFilterSearch(subject) +
             ('(nie:dataSource(%s) = "<%s>")').format(subject, resourceUrn);
 
         return filter;
     },
 
-    _buildFilterString: function(subject, searchString) {
+    _buildFilterString: function(subject) {
         let filterId = Global.sourceManager.getActiveSourceUrn();
         let sparql = 'FILTER ((';
 
         if (filterId == 'local' || filterId == 'all')
-            sparql += this._buildFilterLocal(subject, searchString);
+            sparql += this._buildFilterLocal(subject);
 
         if (filterId == 'all')
             sparql += ') || (';
 
         if (filterId != 'local' && filterId != 'all')
-            sparql += this._buildFilterResource(subject, searchString, filterId);
+            sparql += this._buildFilterResource(subject, filterId);
         else if (filterId == 'all')
-            sparql += this._buildFilterNotLocal(subject, searchString);
+            sparql += this._buildFilterNotLocal(subject);
 
         sparql += ')) ';
 
@@ -151,24 +151,24 @@ QueryBuilder.prototype = {
         return sparql;
     },
 
-    _buildTotalCounter: function(searchString) {
+    _buildTotalCounter: function() {
         let sparql =
             '(SELECT DISTINCT COUNT(?doc) WHERE { ' +
             this._buildTypeFilter('?doc') +
-            this._buildFilterString('?doc', searchString) +
+            this._buildFilterString('?doc') +
             '}) ';
 
         return sparql;
     },
 
-    buildQuery: function(searchString) {
+    buildQuery: function() {
         let sparql =
             ('SELECT DISTINCT ?urn ' + // urn
              'nie:url(?urn) ' + // uri
              'tracker:coalesce(nie:title(?urn), nfo:fileName(?urn)) ' + // title
              'tracker:coalesce(nco:fullname(?creator), nco:fullname(?publisher)) ' + // author
              'tracker:coalesce(nfo:fileLastModified(?urn), nie:contentLastModified(?urn)) AS ?mtime ' + // mtime
-             this._buildTotalCounter(searchString) +
+             this._buildTotalCounter() +
              'nao:identifier(?urn) ' +
              'rdf:type(?urn) ' +
              'nie:dataSource(?urn) ' +
@@ -176,7 +176,7 @@ QueryBuilder.prototype = {
              this._buildTypeFilter('?urn') +
              'OPTIONAL { ?urn nco:creator ?creator . } ' +
              'OPTIONAL { ?urn nco:publisher ?publisher . } ' +
-             this._buildFilterString('?urn', searchString) +
+             this._buildFilterString('?urn') +
              ' } ' +
              'ORDER BY DESC (?mtime)' +
              'LIMIT %d OFFSET %d').format(Global.offsetController.getOffsetStep(),
@@ -210,6 +210,10 @@ TrackerModel.prototype = {
         this._offsetController = Global.offsetController;
         this._offsetController.connect('offset-changed',
                                        Lang.bind(this, this._performCurrentQuery));
+
+        this._filterController = Global.filterController;
+        this._filterController.connect('filter-changed',
+                                       Lang.bind(this, this._onFilterChanged));
     },
 
     _refreshMinerNow: function() {
@@ -286,7 +290,7 @@ TrackerModel.prototype = {
     },
 
     _performCurrentQuery: function() {
-        this._connection.query_async(this._builder.buildQuery(this._filter),
+        this._connection.query_async(this._builder.buildQuery(),
                                      null, Lang.bind(this, this._onQueryExecuted));
     },
 
@@ -303,13 +307,11 @@ TrackerModel.prototype = {
         this._performCurrentQuery();
     },
 
-    populateForOverview: function(filter) {
-        this._filter = filter;
+    populateForOverview: function() {
         this._refresh();
     },
 
-    setFilter: function(filter) {
-        this._filter = filter;
+    _onFilterChanged: function() {
         this._offsetController.resetOffset();
         this._refresh();
     }

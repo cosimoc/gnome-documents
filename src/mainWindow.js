@@ -81,8 +81,6 @@ MainWindow.prototype = {
         this._grid.add(this._viewContainer);
 
         this._toolbar = new MainToolbar.MainToolbar();
-        this._toolbar.connect('search-text-changed',
-                              Lang.bind(this, this._onToolbarSearchChanged));
         this._toolbar.connect('back-clicked',
                               Lang.bind(this, this._onToolbarBackClicked));
         this._viewContainer.add(this._toolbar.widget);
@@ -157,8 +155,8 @@ MainWindow.prototype = {
         this._refreshViewSettings();
 
         this._sidebar.widget.show();
-        this._toolbar.setOverview(this._lastFilter);
-        this._model.populateForOverview(this._lastFilter);
+        this._toolbar.setOverview();
+        this._model.populateForOverview();
     },
 
     _onDeleteEvent: function() {

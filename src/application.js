@@ -30,6 +30,7 @@ const Gtk = imports.gi.Gtk;
 const GLib = imports.gi.GLib;
 const Tracker = imports.gi.Tracker;
 
+const FilterController = imports.filterController;
 const Format = imports.format;
 const Global = imports.global;
 const Main = imports.main;
@@ -105,6 +106,7 @@ Application.prototype = {
         Global.application = this;
         Global.settings = new Gio.Settings({ schema: 'org.gnome.documents' });
         Global.offsetController = new OffsetController.OffsetController();
+        Global.filterController = new FilterController.FilterController();
 
         // connect to tracker
         Tracker.SparqlConnection.get_async(null, Lang.bind(this,

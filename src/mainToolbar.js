@@ -49,7 +49,7 @@ MainToolbar.prototype = {
         }));
     },
 
-    _populateForOverview: function(filter) {
+    _populateForOverview: function() {
         let iconView = new Gtk.ToggleButton({ child: new Gtk.Image({ icon_name: 'view-grid-symbolic',
                                                                      pixel_size: 16 }) });
         iconView.get_style_context().add_class('linked');
@@ -101,11 +101,12 @@ MainToolbar.prototype = {
                 this._searchEntryTimeout = 0;
             }
 
-            this._searchEntryTimeout = Mainloop.timeout_add(_SEARCH_ENTRY_TIMEOUT, Lang.bind(this, function() {
-                this._searchEntryTimeout = 0;
+            this._searchEntryTimeout = Mainloop.timeout_add(_SEARCH_ENTRY_TIMEOUT, Lang.bind(this,
+                function() {
+                    this._searchEntryTimeout = 0;
 
-                let currentText = this._searchEntry.get_text();
-                this.emit('search-text-changed', currentText);
+                    let currentText = this._searchEntry.get_text();
+                    Global.filterController.setFilter(currentText);
             }));
         }));
 
@@ -118,8 +119,7 @@ MainToolbar.prototype = {
 
         this.widget.show_all();
 
-        if (filter)
-            this._searchEntry.set_text(filter);
+        this._searchEntry.set_text(Global.filterController.getFilter());
     },
 
     _populateForPreview: function(model, document) {
@@ -164,9 +164,9 @@ MainToolbar.prototype = {
         label.set_text(_("page %d of %d").format(curPage + 1, totPages));
     },
 
-    setOverview: function(filter) {
+    setOverview: function() {
         this._clearToolbar();
-        this._populateForOverview(filter);
+        this._populateForOverview();
     },
 
     setPreview: function(model, document) {
