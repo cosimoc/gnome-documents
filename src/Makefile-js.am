@@ -6,9 +6,11 @@ dist_js_DATA = \
     global.js \
     iconView.js \
     listView.js \
+    loadMore.js \
     main.js \
     mainToolbar.js \
     mainWindow.js \
+    offsetController.js \
     preview.js \
     sidebar.js \
     sources.js \

@@ -23,3 +23,4 @@ let application = null;
 let sourceManager = null;
 let connection = null;
 let settings = null;
+let offsetController = null;

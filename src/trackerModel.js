@@ -46,7 +46,6 @@ const ModelColumns = {
     N_COLUMNS: 7
 };
 
-const OFFSET_STEP = 50;
 const MINER_REFRESH_TIMEOUT = 60; /* seconds */
 
 const TrackerColumns = {
@@ -161,7 +160,7 @@ QueryBuilder.prototype = {
         return sparql;
     },
 
-    buildQuery: function(offset, searchString, filterId) {
+    buildQuery: function(searchString, filterId) {
         let sparql =
             ('SELECT DISTINCT ?urn ' + // urn
              'nie:url(?urn) ' + // uri
@@ -179,7 +178,8 @@ QueryBuilder.prototype = {
              this._buildFilterString('?urn', searchString, filterId) +
              ' } ' +
              'ORDER BY DESC (?mtime)' +
-             'LIMIT %d OFFSET %d').format(OFFSET_STEP, offset);
+             'LIMIT %d OFFSET %d').format(Global.offsetController.getOffsetStep(),
+                                          Global.offsetController.getOffset());
 
         return sparql;
     }
@@ -205,6 +205,10 @@ TrackerModel.prototype = {
         this._sourceManager = Global.sourceManager;
         this._sourceManager.connect('active-source-changed',
                                     Lang.bind(this, this._refreshAccountFilter));
+
+        this._offsetController = Global.offsetController;
+        this._offsetController.connect('offset-changed',
+                                       Lang.bind(this, this._performCurrentQuery));
     },
 
     _onSettingsChanged: function() {
@@ -234,7 +238,7 @@ TrackerModel.prototype = {
     },
 
     _addRowFromCursor: function(cursor) {
-        this.itemCount = cursor.get_integer(TrackerColumns.TOTAL_COUNT);
+        this._offsetController.setItemCount(cursor.get_integer(TrackerColumns.TOTAL_COUNT));
 
         let newDoc = this._factory.newDocument(cursor);
         let iter = this.model.append();
@@ -285,12 +289,12 @@ TrackerModel.prototype = {
     },
 
     _performCurrentQuery: function() {
-        this._connection.query_async(this._builder.buildQuery(this.offset, this._filter, this._resourceUrn),
+        this._connection.query_async(this._builder.buildQuery(this._filter, this._resourceUrn),
                                      null, Lang.bind(this, this._onQueryExecuted));
     },
 
     _emitModelUpdateDone: function() {
-        this.emit('model-update-done', this.itemCount, this.offset);
+        this.emit('model-update-done');
     },
 
     _emitModelUpdatePending: function() {
@@ -303,21 +307,13 @@ TrackerModel.prototype = {
     },
 
     populateForOverview: function(filter) {
-        this.offset = 0;
         this._filter = filter;
-
         this._refreshAccountFilter(this._sourceManager.getActiveSourceId());
     },
 
-    loadMore: function() {
-        this.offset += OFFSET_STEP;
-        this._performCurrentQuery();
-    },
-
     setFilter: function(filter) {
-        this.offset = 0;
         this._filter = filter;
-
+        this._offsetController.resetOffset();
         this._refresh();
     },
 

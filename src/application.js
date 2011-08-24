@@ -34,6 +34,7 @@ const Format = imports.format;
 const Global = imports.global;
 const Main = imports.main;
 const MainWindow = imports.mainWindow;
+const OffsetController = imports.offsetController;
 const Path = imports.path;
 const Sources = imports.sources;
 const TrackerModel = imports.trackerModel;
@@ -103,6 +104,7 @@ Application.prototype = {
 
         Global.application = this;
         Global.settings = new Gio.Settings({ schema: 'org.gnome.documents' });
+        Global.offsetController = new OffsetController.OffsetController();
 
         // connect to tracker
         Tracker.SparqlConnection.get_async(null, Lang.bind(this,

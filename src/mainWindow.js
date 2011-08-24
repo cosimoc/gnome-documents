@@ -30,6 +30,7 @@ const Lang = imports.lang;
 const Mainloop = imports.mainloop;
 
 const Global = imports.global;
+const LoadMore = imports.loadMore;
 const MainToolbar = imports.mainToolbar;
 const Sidebar = imports.sidebar;
 const TrackerModel = imports.trackerModel;
@@ -94,8 +95,6 @@ MainWindow.prototype = {
         this._grid.show_all();
 
         this._model = new TrackerModel.TrackerModel(Global.connection);
-        this._model.connect('model-update-done', Lang.bind(this, this._onModelUpdateDone));
-
         this._prepareForOverview();
     },
 
@@ -110,13 +109,9 @@ MainWindow.prototype = {
 
         this._destroyView();
 
-        this._loadMore = new Gtk.Button();
-        this._loadMore.connect('clicked', Lang.bind(this, function() {
-            this._model.loadMore();
-        }));
-
+        this._loadMore = new LoadMore.LoadMoreButton();
         this._viewBox = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
-        this._viewBox.add(this._loadMore);
+        this._viewBox.add(this._loadMore.widget);
 
         if (isList)
             this.view = new ListView.ListView(this);
@@ -125,7 +120,7 @@ MainWindow.prototype = {
 
         this.view.connect('item-activated', Lang.bind(this, this._onViewItemActivated));
 
-        this._viewBox.attach_next_to(this.view.widget, this._loadMore,
+        this._viewBox.attach_next_to(this.view.widget, this._loadMore.widget,
                                      Gtk.PositionType.TOP, 1, 1);
 
         this._scrolledWin.add_with_viewport(this._viewBox);
@@ -136,21 +131,6 @@ MainWindow.prototype = {
     _refreshViewSettings: function() {
         this._initView();
         this.view.setModel(this._model);
-    },
-
-    _refreshLoadMoreButton: function(itemCount, offset) {
-        let remainingDocs = itemCount - (offset + TrackerModel.OFFSET_STEP);
-
-        if (remainingDocs <= 0) {
-            this._loadMore.hide();
-            return;
-        }
-
-        if (remainingDocs > TrackerModel.OFFSET_STEP)
-            remainingDocs = TrackerModel.OFFSET_STEP;
-
-        this._loadMore.label = _("Load %d more documents").format(remainingDocs);
-        this._loadMore.show();
     },
 
     _prepareForPreview: function(model, document) {
@@ -175,10 +155,6 @@ MainWindow.prototype = {
         }
 
         this._refreshViewSettings();
-
-        // needs to be called after _refreshViewSettings(), as that
-        // recreates the button
-        this._refreshLoadMoreButton(this._model.itemCount, this._model.offset);
 
         this._sidebar.widget.show();
         this._toolbar.setOverview(this._lastFilter);
@@ -247,9 +223,5 @@ MainWindow.prototype = {
     _onToolbarSearchChanged: function(toolbar, text) {
         this._lastFilter = text;
         this._model.setFilter(text);
-    },
-
-    _onModelUpdateDone: function(model, itemCount, offset) {
-        this._refreshLoadMoreButton(itemCount, offset);
     }
 };
