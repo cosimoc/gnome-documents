@@ -44,62 +44,39 @@ function SidebarModel() {
 
 SidebarModel.prototype = {
     _init: function() {
-        this.activeAccounts = [];
-
-        Goa.Client.new(null, Lang.bind(this, this._onGoaClientCreated));
-
         this.model = Gd.create_sidebar_store();
+
+        this._sourceManager = Main.sourceManager;
+        this._sourceManager.connect('sources-changed', Lang.bind(this, this._refreshModel));
+
+        this._refreshModel();
+    },
+
+    _refreshModel: function() {
+        this.model.clear();
 
         let iter = this.model.append();
         Gd.sidebar_store_set(this.model, iter,
                              '', _("Sources"), true);
 
-        iter = this.model.append();
-        Gd.sidebar_store_set(this.model, iter,
-                             'all', _("All"), false);
-
-        iter = this.model.append();
-        Gd.sidebar_store_set(this.model, iter,
-                             'local', _("Local"), false);
-    },
-
-    _onGoaClientCreated: function(object, res) {
-        try {
-            this._client = Goa.Client.new_finish(res);
-        } catch (e) {
-            log('Unable to create the GOA client: ' + e.toString());
-            return;
-        }
-
-        let accounts = this._client.get_accounts();
-        accounts.forEach(Lang.bind(this,
-            function(object) {
-                let account = object.get_account();
-                if (!account)
-                    return;
-
-                if (!object.get_documents())
-                    return;
-
-                let id = account.get_id();
-                let name = account.get_provider_name();
-
-                let iter = this.model.append();
+        let sources = this._sourceManager.sources;
+        sources.forEach(Lang.bind(this,
+            function(source) {
+                iter = this.model.append();
                 Gd.sidebar_store_set(this.model, iter,
-                                     id, name, false);
-
-                this.activeAccounts.push(id);
+                                     source.id, source.name, false);
             }));
     }
 };
 
-function SourcesPage() {
+function SidebarView() {
     this._init();
 }
 
-SourcesPage.prototype = {
+SidebarView.prototype = {
     _init: function() {
         this._model = new SidebarModel();
+        this._sourceManager = Main.sourceManager;
 
         this._treeView = new Gtk.TreeView({ headers_visible: false,
                                             no_show_all: true });
@@ -116,7 +93,7 @@ SourcesPage.prototype = {
                 let id = this._model.model.get_value(iter, SidebarModelColumns.ID);
                 let name = this._model.model.get_value(iter, SidebarModelColumns.NAME);
 
-                Main.sourceManager.setActiveSource(id);
+                this._sourceManager.setActiveSourceId(id);
             }));
 
         let col = new Gtk.TreeViewColumn();
@@ -140,7 +117,7 @@ SourcesPage.prototype = {
                       Lang.bind(this,
                           function(col, cell, model, iter) {
                               let id = model.get_value(iter, SidebarModelColumns.ID);
-                              if (id == Main.sourceManager.activeSource)
+                              if (id == this._sourceManager.getActiveSourceId())
                                   cell.active = true;
                               else
                                   cell.active = false;
@@ -174,7 +151,7 @@ SourcesPage.prototype = {
             additionalFunc(col, cell, model, iter);
     }
 };
-Signals.addSignalMethods(SourcesPage.prototype);
+Signals.addSignalMethods(SidebarView.prototype);
 
 function Sidebar() {
     this._init();
@@ -182,6 +159,10 @@ function Sidebar() {
 
 Sidebar.prototype = {
     _init: function() {
+        this._sourceManager = Main.sourceManager;
+        this._sourceManager.connect('active-source-changed',
+                                    Lang.bind(this, this._onSourceFilterChanged));
+
         this.widget = new Gtk.ScrolledWindow({ hscrollbar_policy: Gtk.PolicyType.NEVER });
         this.widget.get_style_context().add_class(Gtk.STYLE_CLASS_SIDEBAR);
 
@@ -205,20 +186,19 @@ Sidebar.prototype = {
         this._grid.add(this._sourcesButton);
         this._sourcesButton.connect('clicked', Lang.bind(this, this._onSourcesButtonClicked));
 
-        this._sourcesPage = new SourcesPage();
-        this._grid.add(this._sourcesPage.widget);
-        Main.sourceManager.connect('active-source-changed', Lang.bind(this, this._onSourceFilterChanged));
+        this._sidebarView = new SidebarView();
+        this._grid.add(this._sidebarView.widget);
 
         this.widget.show_all();
     },
 
     _onSourcesButtonClicked: function() {
         this._sourcesButton.hide();
-        this._sourcesPage.widget.show();
+        this._sidebarView.widget.show();
     },
 
     _onSourceFilterChanged: function(sourcePage, id, name) {
-        this._sourcesPage.widget.hide();
+        this._sidebarView.widget.hide();
         this._sourcesButton.show();
     }
 };

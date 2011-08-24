@@ -19,7 +19,22 @@
  *
  */
 
+const Lang = imports.lang;
 const Signals = imports.signals;
+
+const Goa = imports.gi.Goa;
+const _ = imports.gettext.gettext;
+
+function Source(id, name) {
+    this._init(id, name);
+};
+
+Source.prototype = {
+    _init: function(id, name) {
+        this.id = id;
+        this.name = name;
+    }
+};
 
 function SourceManager() {
     this._init();
@@ -27,14 +42,66 @@ function SourceManager() {
 
 SourceManager.prototype = {
     _init: function() {
-        this.activeSource = this._currentSourceId = Main.settings.get_string('active-source');
+        this._client = null;
+        this.sources = [];
+
+        this.sources.push(new Source('all', _("All")));
+        this.sources.push(new Source('local', _("Local")));
+
+        Goa.Client.new(null, Lang.bind(this, this._onGoaClientCreated));
     },
 
-    setActiveSource: function(id) {
-        this.activeSource = id;
-        Main.settings.set_string('active-source', id);
+    _onGoaClientCreated: function(object, res) {
+        try {
+            this._client = Goa.Client.new_finish(res);
+        } catch (e) {
+            log('Unable to create the GOA client: ' + e.toString());
+            return;
+        }
+
+        let accounts = this._client.get_accounts();
+        let modified = false;
+
+        accounts.forEach(Lang.bind(this,
+            function(object) {
+                let account = object.get_account();
+                if (!account)
+                    return;
+
+                if (!object.get_documents())
+                    return;
+
+                let id = account.get_id();
+                let name = account.get_provider_name();
+
+                this.sources.push(new Source(id, name));
+                modified = true;
+            }));
+
+        if (modified)
+            this.emit('sources-changed');
+
+        let activeSourceId = Main.settings.get_string('active-source');
+        this.setActiveSourceId(activeSourceId);
+    },
+
+    setActiveSourceId: function(id) {
+        let matched = this.sources.filter(Lang.bind(this,
+            function(source) {
+                return (source.id == id);
+            }));
+
+        if (!matched.length)
+            return;
+
+        this.activeSource = matched[0];
+        Main.settings.set_string('active-source', this.activeSource.id);
 
         this.emit('active-source-changed');
+    },
+
+    getActiveSourceId: function() {
+        return this.activeSource.id;
     }
 };
 Signals.addSignalMethods(SourceManager.prototype);

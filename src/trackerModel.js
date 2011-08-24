@@ -202,7 +202,9 @@ TrackerModel.prototype = {
         this._miner = new GDataMiner.GDataMiner();
         this._refreshMinerNow();
 
-        Main.sourceManager.connect('active-source-changed', Lang.bind(this, this._refreshAccountFilter));
+        this._sourceManager = Main.sourceManager;
+        this._sourceManager.connect('active-source-changed',
+                                    Lang.bind(this, this._refreshAccountFilter));
     },
 
     _onSettingsChanged: function() {
@@ -304,7 +306,7 @@ TrackerModel.prototype = {
         this.offset = 0;
         this._filter = filter;
 
-        this._refreshAccountFilter(Main.sourceManager.activeSource);
+        this._refreshAccountFilter(this._sourceManager.getActiveSourceId());
     },
 
     loadMore: function() {
@@ -320,7 +322,7 @@ TrackerModel.prototype = {
     },
 
     _refreshAccountFilter: function() {
-        let id = Main.sourceManager.activeSource;
+        let id = this._sourceManager.getActiveSourceId();
 
         if (id == 'all' || id == 'local') {
             this._resourceUrn = id;
