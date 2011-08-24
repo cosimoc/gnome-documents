@@ -59,10 +59,15 @@ function resourceUrnFromSourceId(connection, sourceId, callback) {
         (('SELECT ?urn WHERE { ?urn a nie:DataSource; nao:identifier \"goa:documents:%s\" }').format(sourceId), null,
          function(object, res) {
              let cursor = null;
+             let urn = '';
+
              try {
                  cursor = object.query_finish(res);
              } catch (e) {
                  log('Unable to resolve account ID -> resource URN: ' + e.toString());
+
+                 callback(urn);
+                 return;
              }
 
              cursor.next_async(null,
@@ -71,14 +76,16 @@ function resourceUrnFromSourceId(connection, sourceId, callback) {
                          let valid = cursor.next_finish(res);
 
                          if (!valid) {
-                             callback(null);
+                             callback(urn);
                              return;
                          }
                      } catch (e) {
                          log('Unable to resolve account ID -> resource URN: ' + e.toString());
+                         callback(urn);
+                         return;
                      }
 
-                     let urn = cursor.get_string(0)[0];
+                     urn = cursor.get_string(0)[0];
                      callback(urn);
                  });
          });

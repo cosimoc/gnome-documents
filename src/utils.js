@@ -21,13 +21,13 @@
 
 const Gtk = imports.gi.Gtk;
 
-const Main = imports.main;
+const Global = imports.global;
 
 const _ICON_VIEW_SIZE = 128;
 const _LIST_VIEW_SIZE = 48;
 
 function getIconSize() {
-    return Main.settings.get_boolean('list-view') ? _LIST_VIEW_SIZE : _ICON_VIEW_SIZE;
+    return Global.settings.get_boolean('list-view') ? _LIST_VIEW_SIZE : _ICON_VIEW_SIZE;
 }
 
 function pixbufFromRdfType(type) {

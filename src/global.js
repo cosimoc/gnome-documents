@@ -19,10 +19,7 @@
  *
  */
 
-const Gtk = imports.gi.Gtk;
-const Application = imports.application;
-
-function start() {
-    let application = new Application.Application();
-    Gtk.main();
-}
+let application = null;
+let sourceManager = null;
+let connection = null;
+let settings = null;

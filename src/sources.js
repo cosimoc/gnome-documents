@@ -20,33 +20,58 @@
  */
 
 const Lang = imports.lang;
+const Mainloop = imports.mainloop;
 const Signals = imports.signals;
 
 const Goa = imports.gi.Goa;
 const _ = imports.gettext.gettext;
 
-function Source(id, name) {
-    this._init(id, name);
+const Global = imports.global;
+const TrackerUtils = imports.trackerUtils;
+
+function Source(id, name, initCallback) {
+    this._init(id, name, initCallback);
 };
 
 Source.prototype = {
-    _init: function(id, name) {
+    _init: function(id, name, initCallback) {
         this.id = id;
         this.name = name;
+
+        this._initCallback = initCallback;
+
+        if (id == 'all' || id == 'local') {
+            this.resourceUrn = id;
+            Mainloop.idle_add(Lang.bind(this,
+                function() {
+                    this._initCallback();
+                    return false;
+                }));
+        } else {
+            TrackerUtils.resourceUrnFromSourceId(Global.connection, id, Lang.bind(this,
+                function(resourceUrn) {
+                    this.resourceUrn = resourceUrn;
+                    this._initCallback();
+                }));
+        }
     }
 };
 
-function SourceManager() {
-    this._init();
+function SourceManager(initCallback) {
+    this._init(initCallback);
 };
 
 SourceManager.prototype = {
-    _init: function() {
+    _init: function(initCallback) {
         this._client = null;
         this.sources = [];
 
-        this.sources.push(new Source('all', _("All")));
-        this.sources.push(new Source('local', _("Local")));
+        this._initCallback = initCallback;
+
+        // two outstanding ops for the local sources, and one for the GOA client
+        this._outstandingOps = 3;
+        this.sources.push(new Source('all', _("All"), Lang.bind(this, this._initSourceCollector)));
+        this.sources.push(new Source('local', _("Local"), Lang.bind(this, this._initSourceCollector)));
 
         Goa.Client.new(null, Lang.bind(this, this._onGoaClientCreated));
     },
@@ -74,15 +99,21 @@ SourceManager.prototype = {
                 let id = account.get_id();
                 let name = account.get_provider_name();
 
-                this.sources.push(new Source(id, name));
-                modified = true;
+                this._outstandingOps++;
+                this.sources.push(new Source(id, name, Lang.bind(this, this._initSourceCollector)));
             }));
 
-        if (modified)
-            this.emit('sources-changed');
-
-        let activeSourceId = Main.settings.get_string('active-source');
+        let activeSourceId = Global.settings.get_string('active-source');
         this.setActiveSourceId(activeSourceId);
+
+        this._initSourceCollector();
+    },
+
+    _initSourceCollector: function() {
+        this._outstandingOps--;
+
+        if (this._outstandingOps == 0)
+            this._initCallback();
     },
 
     setActiveSourceId: function(id) {
@@ -95,13 +126,17 @@ SourceManager.prototype = {
             return;
 
         this.activeSource = matched[0];
-        Main.settings.set_string('active-source', this.activeSource.id);
+        Global.settings.set_string('active-source', this.activeSource.id);
 
         this.emit('active-source-changed');
     },
 
     getActiveSourceId: function() {
         return this.activeSource.id;
+    },
+
+    getActiveSourceUrn: function() {
+        return this.activeSource.resourceUrn;
     }
 };
 Signals.addSignalMethods(SourceManager.prototype);

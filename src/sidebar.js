@@ -28,7 +28,7 @@ const _ = imports.gettext.gettext;
 const Lang = imports.lang;
 const Signals = imports.signals;
 
-const Main = imports.main;
+const Global = imports.global;
 
 const _SIDEBAR_WIDTH_REQUEST = 240;
 
@@ -46,13 +46,7 @@ SidebarModel.prototype = {
     _init: function() {
         this.model = Gd.create_sidebar_store();
 
-        this._sourceManager = Main.sourceManager;
-        this._sourceManager.connect('sources-changed', Lang.bind(this, this._refreshModel));
-
-        this._refreshModel();
-    },
-
-    _refreshModel: function() {
+        this._sourceManager = Global.sourceManager;
         this.model.clear();
 
         let iter = this.model.append();
@@ -76,7 +70,7 @@ function SidebarView() {
 SidebarView.prototype = {
     _init: function() {
         this._model = new SidebarModel();
-        this._sourceManager = Main.sourceManager;
+        this._sourceManager = Global.sourceManager;
 
         this._treeView = new Gtk.TreeView({ headers_visible: false,
                                             no_show_all: true });
@@ -159,7 +153,7 @@ function Sidebar() {
 
 Sidebar.prototype = {
     _init: function() {
-        this._sourceManager = Main.sourceManager;
+        this._sourceManager = Global.sourceManager;
         this._sourceManager.connect('active-source-changed',
                                     Lang.bind(this, this._onSourceFilterChanged));
 

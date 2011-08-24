@@ -24,7 +24,6 @@ const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
 const Signals = imports.signals;
 
-const Main = imports.main;
 const TrackerModel = imports.trackerModel;
 
 function View(window) {

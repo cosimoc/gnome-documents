@@ -31,7 +31,7 @@ const Gd = imports.gi.Gd;
 
 const DocFactory = imports.docFactory;
 const GDataMiner = imports.gDataMiner;
-const Main = imports.main;
+const Global = imports.global;
 const TrackerUtils = imports.trackerUtils;
 const Utils = imports.utils;
 
@@ -193,7 +193,7 @@ TrackerModel.prototype = {
     _init: function(connection) {
         this._builder = new QueryBuilder();
         this._factory = new DocFactory.DocFactory();
-        Main.settings.connect('changed::list-view', Lang.bind(this, this._onSettingsChanged));
+        Global.settings.connect('changed::list-view', Lang.bind(this, this._onSettingsChanged));
 
         this.model = Gd.create_list_store();
         this._connection = connection;
@@ -202,7 +202,7 @@ TrackerModel.prototype = {
         this._miner = new GDataMiner.GDataMiner();
         this._refreshMinerNow();
 
-        this._sourceManager = Main.sourceManager;
+        this._sourceManager = Global.sourceManager;
         this._sourceManager.connect('active-source-changed',
                                     Lang.bind(this, this._refreshAccountFilter));
     },
@@ -322,28 +322,8 @@ TrackerModel.prototype = {
     },
 
     _refreshAccountFilter: function() {
-        let id = this._sourceManager.getActiveSourceId();
-
-        if (id == 'all' || id == 'local') {
-            this._resourceUrn = id;
-            this._refresh();
-
-            return;
-        }
-
-        TrackerUtils.resourceUrnFromSourceId(this._connection, id, Lang.bind(this,
-            function(resourceUrn) {
-                this.model.clear();
-
-                if (resourceUrn) {
-                    this._resourceUrn = resourceUrn;
-                    this._performCurrentQuery();
-                } else {
-                    this.offset = 0;
-                    this.itemCount = 0;
-                    this._emitModelUpdateDone();
-                }
-            }));
+        this._resourceUrn = this._sourceManager.getActiveSourceUrn();
+        this._refresh();
     }
 };
 Signals.addSignalMethods(TrackerModel.prototype);

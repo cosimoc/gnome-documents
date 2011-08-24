@@ -25,13 +25,17 @@ const Gettext = imports.gettext;
 
 const EvDoc = imports.gi.EvinceDocument;
 const Gdk = imports.gi.Gdk;
+const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
 const GLib = imports.gi.GLib;
 const Tracker = imports.gi.Tracker;
 
 const Format = imports.format;
+const Global = imports.global;
+const Main = imports.main;
 const MainWindow = imports.mainWindow;
 const Path = imports.path;
+const Sources = imports.sources;
 const TrackerModel = imports.trackerModel;
 
 const _GD_DBUS_PATH = '/org/gnome/Documents';
@@ -97,19 +101,27 @@ Application.prototype = {
                                                  provider,
                                                  600);
 
-        // connect to tracker, then create the main window
+        Global.application = this;
+        Global.settings = new Gio.Settings({ schema: 'org.gnome.documents' });
+
+        // connect to tracker
         Tracker.SparqlConnection.get_async(null, Lang.bind(this,
             function(object, res) {
                 try {
-                    this.connection = Tracker.SparqlConnection.get_finish(res);
+                    Global.connection = Tracker.SparqlConnection.get_finish(res);
                 } catch (e) {
                     log('Unable to connect to the tracker database: ' + e.toString());
                     this.quit();
                 }
 
-                this._mainWindow = new MainWindow.MainWindow();
-                this.activate();
+                // now create the source manager
+                Global.sourceManager = new Sources.SourceManager(Lang.bind(this, this._onSourceManagerCreated));
             }));
+    },
+
+    _onSourceManagerCreated: function() {
+        this._mainWindow = new MainWindow.MainWindow();
+        this.activate();
     },
 
     activate: function() {

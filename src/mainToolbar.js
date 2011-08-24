@@ -28,6 +28,8 @@ const Lang = imports.lang;
 const Mainloop = imports.mainloop;
 const Signals = imports.signals;
 
+const Global = imports.global;
+
 const _SEARCH_ENTRY_TIMEOUT = 200;
 
 function MainToolbar() {
@@ -58,12 +60,12 @@ MainToolbar.prototype = {
         listView.get_style_context().add_class('linked');
         listView.get_style_context().add_class('raised');
 
-        Main.settings.bind('list-view',
-                           iconView, 'active',
-                           Gio.SettingsBindFlags.INVERT_BOOLEAN);
-        Main.settings.bind('list-view',
-                           listView, 'active',
-                           Gio.SettingsBindFlags.DEFAULT);
+        Global.settings.bind('list-view',
+                             iconView, 'active',
+                             Gio.SettingsBindFlags.INVERT_BOOLEAN);
+        Global.settings.bind('list-view',
+                             listView, 'active',
+                             Gio.SettingsBindFlags.DEFAULT);
 
         let box = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL,
                                 spacing: 0,

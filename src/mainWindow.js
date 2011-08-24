@@ -29,7 +29,7 @@ const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
 
-const Main = imports.main;
+const Global = imports.global;
 const MainToolbar = imports.mainToolbar;
 const Sidebar = imports.sidebar;
 const TrackerModel = imports.trackerModel;
@@ -66,7 +66,7 @@ MainWindow.prototype = {
         this.window.connect('delete-event',
                             Lang.bind(this, this._onDeleteEvent));
 
-        Main.settings.connect('changed::list-view', Lang.bind(this, function() {
+        Global.settings.connect('changed::list-view', Lang.bind(this, function() {
             this._refreshViewSettings(true);
         }));
 
@@ -93,7 +93,7 @@ MainWindow.prototype = {
 
         this._grid.show_all();
 
-        this._model = new TrackerModel.TrackerModel(Main.application.connection);
+        this._model = new TrackerModel.TrackerModel(Global.connection);
         this._model.connect('model-update-done', Lang.bind(this, this._onModelUpdateDone));
 
         this._prepareForOverview();
@@ -106,7 +106,7 @@ MainWindow.prototype = {
     },
 
     _initView: function() {
-        let isList = Main.settings.get_boolean('list-view');
+        let isList = Global.settings.get_boolean('list-view');
 
         this._destroyView();
 
@@ -186,7 +186,7 @@ MainWindow.prototype = {
     },
 
     _onDeleteEvent: function() {
-        Main.application.quit();
+        Global.application.quit();
     },
 
     _onViewItemActivated: function(view, uri, resource) {
@@ -195,7 +195,7 @@ MainWindow.prototype = {
             this._loaderTimeout = 0;
         }
 
-        TrackerUtils.sourceIdFromResourceUrn(Main.application.connection, resource, Lang.bind(this,
+        TrackerUtils.sourceIdFromResourceUrn(Global.connection, resource, Lang.bind(this,
             function(sourceId) {
                 this._loaderCancellable = new Gio.Cancellable();
                 this._pdfLoader = new Gd.PdfLoader({ source_id: sourceId });

@@ -3,6 +3,7 @@ dist_js_DATA = \
     application.js \
     docFactory.js \
     gDataMiner.js \
+    global.js \
     iconView.js \
     listView.js \
     main.js \
