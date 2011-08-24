@@ -194,7 +194,7 @@ TrackerModel.prototype = {
     _init: function(connection) {
         this._builder = new QueryBuilder();
         this._factory = new DocFactory.DocFactory();
-        Global.settings.connect('changed::list-view', Lang.bind(this, this._onSettingsChanged));
+        Global.settings.connect('changed::list-view', Lang.bind(this, this._refresh));
 
         this.model = Gd.create_list_store();
         this._connection = connection;
@@ -205,15 +205,11 @@ TrackerModel.prototype = {
 
         this._sourceManager = Global.sourceManager;
         this._sourceManager.connect('active-source-changed',
-                                    Lang.bind(this, this._refreshAccountFilter));
+                                    Lang.bind(this, this._refresh));
 
         this._offsetController = Global.offsetController;
         this._offsetController.connect('offset-changed',
                                        Lang.bind(this, this._performCurrentQuery));
-    },
-
-    _onSettingsChanged: function() {
-        this._refresh();
     },
 
     _refreshMinerNow: function() {
@@ -309,16 +305,12 @@ TrackerModel.prototype = {
 
     populateForOverview: function(filter) {
         this._filter = filter;
-        this._refreshAccountFilter(this._sourceManager.getActiveSourceId());
+        this._refresh();
     },
 
     setFilter: function(filter) {
         this._filter = filter;
         this._offsetController.resetOffset();
-        this._refresh();
-    },
-
-    _refreshAccountFilter: function() {
         this._refresh();
     }
 };
