@@ -27,6 +27,7 @@ const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
 const Signals = imports.signals;
 
+const Global = imports.global;
 const TrackerModel = imports.trackerModel;
 const Utils = imports.utils;
 
@@ -52,6 +53,18 @@ DocCommon.prototype = {
 
         // overridden in subclasses
         this.uri = null;
+
+        this._refreshIconId =
+            Global.settings.connect('changed::list-view',
+                                    Lang.bind(this, this.refreshIcon));
+    },
+
+    refreshIcon: function() {
+        // fallback
+    },
+
+    destroy: function() {
+        Global.settings.disconnect(this._refreshIconId);
     }
 };
 Signals.addSignalMethods(DocCommon.prototype);
@@ -70,7 +83,10 @@ LocalDocument.prototype = {
 
         // overridden
         this.uri = cursor.get_string(TrackerModel.TrackerColumns.URI)[0];
+        this.refreshIcon();
+    },
 
+    refreshIcon: function() {
         this._file = Gio.file_new_for_uri(this.uri);
         this._file.query_info_async(_FILE_ATTRIBUTES,
                                     0, 0, null,

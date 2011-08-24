@@ -22,6 +22,9 @@
 const Gtk = imports.gi.Gtk;
 
 const Global = imports.global;
+const TrackerModel = imports.trackerModel;
+
+const Lang = imports.lang;
 
 const _ICON_VIEW_SIZE = 128;
 const _LIST_VIEW_SIZE = 48;
@@ -56,4 +59,14 @@ function pixbufFromRdfType(type) {
     }
 
     return pixbuf;
+}
+
+function getURNsFromPaths(paths, model) {
+    return paths.map(Lang.bind(this,
+            function(path) {
+                let iter = model.get_iter(path)[1];
+                let urn = model.get_value(iter, TrackerModel.ModelColumns.URN);
+
+                return urn;
+            }));
 }

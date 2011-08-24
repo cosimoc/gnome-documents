@@ -33,13 +33,19 @@ function LoadMoreButton() {
 LoadMoreButton.prototype = {
     _init: function() {
         this._controller = Global.offsetController;
-        this._controller.connect('item-count-changed',
-                                 Lang.bind(this, this._onItemCountChanged));
+        this._controllerId =
+            this._controller.connect('item-count-changed',
+                                     Lang.bind(this, this._onItemCountChanged));
 
         this.widget = new Gtk.Button();
         this.widget.connect('clicked', Lang.bind(this, function() {
             this._controller.increaseOffset();
         }));
+
+        this.widget.connect('destroy', Lang.bind(this,
+            function() {
+                this._controller.disconnect(this._controllerId);
+            }));
 
         this._onItemCountChanged();
     },

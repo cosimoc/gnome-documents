@@ -37,6 +37,7 @@ const Main = imports.main;
 const MainWindow = imports.mainWindow;
 const OffsetController = imports.offsetController;
 const Path = imports.path;
+const SelectionController = imports.selectionController;
 const Sources = imports.sources;
 const TrackerModel = imports.trackerModel;
 
@@ -124,6 +125,8 @@ Application.prototype = {
     },
 
     _onSourceManagerCreated: function() {
+        Global.selectionController = new SelectionController.SelectionController();
+        Global.model = new TrackerModel.TrackerModel(Global.connection);
         this._mainWindow = new MainWindow.MainWindow();
         this.activate();
     },

@@ -27,62 +27,41 @@ const TrackerModel = imports.trackerModel;
 const View = imports.view;
 const Lang = imports.lang;
 
-function ListView(window) {
-    this._init(window);
+function ListView() {
+    this._init();
 }
 
 ListView.prototype = {
     __proto__: View.View.prototype,
 
-    _init: function(window) {
-        View.View.prototype._init.call(this, window);
-
+    _init: function() {
         this.widget = new Gtk.TreeView({ hexpand: true,
                                          vexpand: true,
                                          headers_visible: false });
-
-        this.widget.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE);
 
         this.widget.connect('row-activated',
                             Lang.bind(this, this._onItemActivated));
 
         this.widget.show();
+
+        View.View.prototype._init.call(this);
+
+        let selection = this.widget.get_selection();
+        selection.set_mode(Gtk.SelectionMode.MULTIPLE);
+        selection.connect('changed',
+                          Lang.bind(this, this.onSelectionChanged));
     },
 
     _onItemActivated: function(view, path, column) {
         this.activateItem(path);
     },
 
-    preUpdate: function() {
-        let treeSelection = this.widget.get_selection();
-        let selection = this.widget.get_selected_rows();
-
-        View.View.prototype.preUpdate.call(this, selection);
+    getSelectionObject: function() {
+        return this.widget.get_selection();
     },
 
-    postUpdate: function() {
-        if (!this._selectedURNs)
-            return;
-
-        let treeSelection = this.widget.get_selection();
-
-        this._treeModel.foreach(Lang.bind(this,
-            function(model, path, iter) {
-                let urn = this._treeModel.get_value(iter, TrackerModel.ModelColumns.URN);
-                let urnIndex = this._selectedURNs.indexOf(urn);
-
-                if (urnIndex != -1) {
-                    treeSelection.select_path(path);
-                    this._selectedURNs.splice(urnIndex, 1);
-                }
-
-                if (this._selectedURNs.length == 0)
-                    return true;
-
-                return false;
-            }));
-
-        View.View.prototype.postUpdate.call(this);
+    getSelection: function() {
+        return this.getSelectionObject().get_selected_rows()[0];
     },
 
     createRenderers: function() {

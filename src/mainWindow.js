@@ -33,7 +33,6 @@ const Global = imports.global;
 const LoadMore = imports.loadMore;
 const MainToolbar = imports.mainToolbar;
 const Sidebar = imports.sidebar;
-const TrackerModel = imports.trackerModel;
 const IconView = imports.iconView;
 const ListView = imports.listView;
 const Preview = imports.preview;
@@ -67,9 +66,8 @@ MainWindow.prototype = {
         this.window.connect('delete-event',
                             Lang.bind(this, this._onDeleteEvent));
 
-        Global.settings.connect('changed::list-view', Lang.bind(this, function() {
-            this._refreshViewSettings(true);
-        }));
+        Global.settings.connect('changed::list-view',
+                                Lang.bind(this, this._refreshViewSettings));
 
         this._grid = new Gtk.Grid({ orientation: Gtk.Orientation.HORIZONTAL });
         this.window.add(this._grid);
@@ -91,8 +89,6 @@ MainWindow.prototype = {
         this._viewContainer.add(this._scrolledWin);
 
         this._grid.show_all();
-
-        this._model = new TrackerModel.TrackerModel(Global.connection);
         this._prepareForOverview();
     },
 
@@ -128,7 +124,6 @@ MainWindow.prototype = {
 
     _refreshViewSettings: function() {
         this._initView();
-        this.view.setModel(this._model);
     },
 
     _prepareForPreview: function(model, document) {

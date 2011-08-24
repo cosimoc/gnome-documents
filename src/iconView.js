@@ -32,16 +32,14 @@ const _VIEW_ITEM_WRAP_WIDTH = 128;
 const _VIEW_COLUMN_SPACING = 20;
 const _VIEW_MARGIN = 16;
 
-function IconView(window) {
-    this._init(window);
+function IconView() {
+    this._init();
 }
 
 IconView.prototype = {
     __proto__: View.View.prototype,
 
-    _init: function(window) {
-        View.View.prototype._init.call(this, window);
-
+    _init: function() {
         this.widget = new Gtk.IconView({ hexpand: true,
                                          vexpand: true });
 
@@ -51,38 +49,21 @@ IconView.prototype = {
         this.widget.set_selection_mode(Gtk.SelectionMode.MULTIPLE);
 
         this.widget.connect('item-activated',
-                          Lang.bind(this, this._onItemActivated));
+                            Lang.bind(this, this._onItemActivated));
 
         this.widget.show();
+
+        View.View.prototype._init.call(this);
+        this.widget.connect('selection-changed',
+                            Lang.bind(this, this.onSelectionChanged));
     },
 
-    preUpdate: function() {
-        let selection = this.widget.get_selected_items();
-
-        View.View.prototype.preUpdate.call(this, selection);
+    getSelection: function() {
+        return this.getSelectionObject().get_selected_items();
     },
 
-    postUpdate: function() {
-        if (!this._selectedURNs)
-            return;
-
-        this._treeModel.foreach(Lang.bind(this,
-            function(model, path, iter) {
-                let urn = this._treeModel.get_value(iter, TrackerModel.ModelColumns.URN);
-                let urnIndex = this._selectedURNs.indexOf(urn);
-
-                if (urnIndex != -1) {
-                    this.widget.select_path(path);
-                    this._selectedURNs.splice(urnIndex, 1);
-                }
-
-                if (this._selectedURNs.length == 0)
-                    return true;
-
-                return false;
-            }));
-
-        View.View.prototype.postUpdate.call(this);
+    getSelectionObject: function() {
+        return this.widget;
     },
 
     createRenderers: function() {

@@ -192,9 +192,10 @@ function TrackerModel(connection) {
 
 TrackerModel.prototype = {
     _init: function(connection) {
+        this._docs = [];
+
         this._builder = new QueryBuilder();
         this._factory = new DocFactory.DocFactory();
-        Global.settings.connect('changed::list-view', Lang.bind(this, this._refresh));
 
         this.model = Gd.create_list_store();
         this._connection = connection;
@@ -230,7 +231,6 @@ TrackerModel.prototype = {
                 // no changes processed, to avoid uselessly refreshing the view.
                 // That requires support for the Changes feed in libgdata, see
                 // https://bugzilla.gnome.org/show_bug.cgi?id=654652
-                this._emitModelUpdatePending();
                 this._refresh();
 
                 Mainloop.timeout_add_seconds(MINER_REFRESH_TIMEOUT,
@@ -259,6 +259,12 @@ TrackerModel.prototype = {
                 if (objectIter)
                     Gd.store_update_icon(this.model, objectIter, newDoc.pixbuf);
             }));
+
+        this._docs.push(newDoc);
+    },
+
+    _onQueryFinished: function() {
+        Global.selectionController.freezeSelection(false);
     },
 
     _onCursorNext: function(cursor, res) {
@@ -267,12 +273,13 @@ TrackerModel.prototype = {
 
             if (!valid) {
                 // signal the total count update and return
-                this._emitModelUpdateDone();
+                this._onQueryFinished();
                 return;
             }
         } catch (e) {
             // FIXME: error handling
             log('Unable to fetch results from cursor: ' + e.toString());
+            this._onQueryFinished();
 
             return;
         }
@@ -288,6 +295,7 @@ TrackerModel.prototype = {
         } catch (e) {
             // FIXME: error handling
             log('Unable to execute query: ' + e.toString());
+            this._onQueryFinished();
         }
     },
 
@@ -300,12 +308,15 @@ TrackerModel.prototype = {
         this.emit('model-update-done');
     },
 
-    _emitModelUpdatePending: function() {
-        this.emit('model-update-pending');
-    },
-
     _refresh: function() {
+        Global.selectionController.freezeSelection(true);
         this.model.clear();
+
+        this._docs.forEach(function(doc) {
+            doc.destroy();
+        });
+        this._docs = [];
+
         this._performCurrentQuery();
     },
 

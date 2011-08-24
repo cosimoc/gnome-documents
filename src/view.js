@@ -24,51 +24,64 @@ const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
 const Signals = imports.signals;
 
+const Global = imports.global;
 const TrackerModel = imports.trackerModel;
+const Utils = imports.utils;
 
-function View(window) {
-    this._init(window);
+function View() {
+    this._init();
 }
 
 View.prototype = {
-    _init: function(window) {
+    _init: function() {
         this._selectedURNs = null;
-        this.window = window;
-    },
 
-    destroy: function() {
-        this.widget.destroy();
-    },
-
-    setModel: function(model) {
-        this.model = model;
-        this.model.connect('model-update-pending', Lang.bind(this,
-            function() {
-                this.preUpdate();
-            }));
-        this.model.connect('model-update-done', Lang.bind(this,
-            function() {
-                this.postUpdate();
-            }));
-
-        this._treeModel = model.model;
+        this.model = Global.model;
+        this._treeModel = Global.model.model;
         this.widget.set_model(this._treeModel);
+        this.widget.connect('destroy', Lang.bind(this,
+            function() {
+                Global.selectionController.disconnect(this._selectionControllerId);
+            }));
 
         this.createRenderers();
+
+        this._selectionController = Global.selectionController;
+        this._selectionControllerId =
+            this._selectionController.connect('selection-check',
+                                              Lang.bind(this, this._updateSelection));
+
+        this._updateSelection();
     },
 
-    preUpdate: function(selection) {
-        this._selectedURNs = selection.map(Lang.bind(this,
-            function(path) {
-                let iter = this._treeModel.get_iter(path)[1];
-                let urn = this._treeModel.get_value(iter, TrackerModel.ModelColumns.URN);
+    _updateSelection: function() {
+        let selectionObject = this.getSelectionObject();
+        let selected = this._selectionController.getSelection().slice(0);
 
-                return urn;
+        if (!selected.length)
+            return;
+
+        this._treeModel.foreach(Lang.bind(this,
+            function(model, path, iter) {
+                let urn = this._treeModel.get_value(iter, TrackerModel.ModelColumns.URN);
+                let urnIndex = selected.indexOf(urn);
+
+                if (urnIndex != -1) {
+                    selectionObject.select_path(path);
+                    selected.splice(urnIndex, 1);
+                }
+
+                if (selected.length == 0)
+                    return true;
+
+                return false;
             }));
     },
 
-    postUpdate: function() {
-        this._selectedURNs = null;
+    onSelectionChanged: function() {
+        let selectedURNs = Utils.getURNsFromPaths(this.getSelection(),
+                                                  this._treeModel);
+        Global.selectionController.setSelection(selectedURNs);
     },
 
     // this must be overridden by all implementations
