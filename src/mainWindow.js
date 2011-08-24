@@ -61,7 +61,7 @@ MainWindow.prototype = {
 
         this.window = new Gtk.Window({ type: Gtk.WindowType.TOPLEVEL,
                                        window_position: Gtk.WindowPosition.CENTER,
-                                       title: _('Documents') });
+                                       title: _("Documents") });
 
         this.window.set_size_request(_WINDOW_DEFAULT_WIDTH, _WINDOW_DEFAULT_HEIGHT);
         this.window.maximize();
@@ -152,7 +152,7 @@ MainWindow.prototype = {
         if (remainingDocs > TrackerModel.OFFSET_STEP)
             remainingDocs = TrackerModel.OFFSET_STEP;
 
-        this._loadMore.label = _('Load %d more documents').format(remainingDocs);
+        this._loadMore.label = _("Load %d more documents").format(remainingDocs);
         this._loadMore.show();
     },
 

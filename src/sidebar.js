@@ -52,15 +52,15 @@ SidebarModel.prototype = {
 
         let iter = this.model.append();
         Gd.sidebar_store_set(this.model, iter,
-                             '', _('Sources'), true);
+                             '', _("Sources"), true);
 
         iter = this.model.append();
         Gd.sidebar_store_set(this.model, iter,
-                             'all', _('All'), false);
+                             'all', _("All"), false);
 
         iter = this.model.append();
         Gd.sidebar_store_set(this.model, iter,
-                             'local', _('Local'), false);
+                             'local', _("Local"), false);
     },
 
     _onGoaClientCreated: function(object, res) {
@@ -201,7 +201,7 @@ Sidebar.prototype = {
         buttonContent.add(new Gtk.Image({ icon_size: Gtk.IconSize.MENU,
                                           icon_name: 'go-previous-symbolic',
                                           yalign: 0.75 }));
-        this._buttonLabel = new Gtk.Label({ label: _('Sources') });
+        this._buttonLabel = new Gtk.Label({ label: _("Sources") });
         buttonContent.add(this._buttonLabel);
 
         this._sourcesButton = new Gtk.Button({ child: buttonContent });

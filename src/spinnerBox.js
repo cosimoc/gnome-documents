@@ -44,7 +44,7 @@ SpinnerBox.prototype = {
         this._spinner.start();
         this.widget.add(this._spinner);
 
-        this._label = new Gtk.Label({ label: '<big><b>' + _('Loading...') + '</b></big>',
+        this._label = new Gtk.Label({ label: '<big><b>' + _("Loading...") + '</b></big>',
                                       use_markup: true,
                                       halign: Gtk.Align.CENTER,
                                       valign: Gtk.Align.CENTER });
