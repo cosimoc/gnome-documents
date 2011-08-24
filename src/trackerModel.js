@@ -120,7 +120,8 @@ QueryBuilder.prototype = {
         return filter;
     },
 
-    _buildFilterString: function(subject, searchString, filterId) {
+    _buildFilterString: function(subject, searchString) {
+        let filterId = Global.sourceManager.getActiveSourceUrn();
         let sparql = 'FILTER ((';
 
         if (filterId == 'local' || filterId == 'all')
@@ -150,24 +151,24 @@ QueryBuilder.prototype = {
         return sparql;
     },
 
-    _buildTotalCounter: function(searchString, filterId) {
+    _buildTotalCounter: function(searchString) {
         let sparql =
             '(SELECT DISTINCT COUNT(?doc) WHERE { ' +
             this._buildTypeFilter('?doc') +
-            this._buildFilterString('?doc', searchString, filterId) +
+            this._buildFilterString('?doc', searchString) +
             '}) ';
 
         return sparql;
     },
 
-    buildQuery: function(searchString, filterId) {
+    buildQuery: function(searchString) {
         let sparql =
             ('SELECT DISTINCT ?urn ' + // urn
              'nie:url(?urn) ' + // uri
              'tracker:coalesce(nie:title(?urn), nfo:fileName(?urn)) ' + // title
              'tracker:coalesce(nco:fullname(?creator), nco:fullname(?publisher)) ' + // author
              'tracker:coalesce(nfo:fileLastModified(?urn), nie:contentLastModified(?urn)) AS ?mtime ' + // mtime
-             this._buildTotalCounter(searchString, filterId) +
+             this._buildTotalCounter(searchString) +
              'nao:identifier(?urn) ' +
              'rdf:type(?urn) ' +
              'nie:dataSource(?urn) ' +
@@ -175,7 +176,7 @@ QueryBuilder.prototype = {
              this._buildTypeFilter('?urn') +
              'OPTIONAL { ?urn nco:creator ?creator . } ' +
              'OPTIONAL { ?urn nco:publisher ?publisher . } ' +
-             this._buildFilterString('?urn', searchString, filterId) +
+             this._buildFilterString('?urn', searchString) +
              ' } ' +
              'ORDER BY DESC (?mtime)' +
              'LIMIT %d OFFSET %d').format(Global.offsetController.getOffsetStep(),
@@ -289,7 +290,7 @@ TrackerModel.prototype = {
     },
 
     _performCurrentQuery: function() {
-        this._connection.query_async(this._builder.buildQuery(this._filter, this._resourceUrn),
+        this._connection.query_async(this._builder.buildQuery(this._filter),
                                      null, Lang.bind(this, this._onQueryExecuted));
     },
 
@@ -318,7 +319,6 @@ TrackerModel.prototype = {
     },
 
     _refreshAccountFilter: function() {
-        this._resourceUrn = this._sourceManager.getActiveSourceUrn();
         this._refresh();
     }
 };
