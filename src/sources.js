@@ -66,7 +66,7 @@ Source.prototype = {
             return this._buildFilterLocal(subject);
 
         if (this.id == 'all')
-            return this._buildFilterLocal(subject) + ') || (' + this._buildFilterNotLocal(subject);
+            return this._buildFilterLocal(subject) + ' || ' + this._buildFilterNotLocal(subject);
 
         return this._buildFilterResource(subject);
     },
