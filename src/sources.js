@@ -210,9 +210,7 @@ function SourceModel() {
 SourceModel.prototype = {
     _init: function() {
         this.model = Gd.create_sources_store();
-
         this._sourceManager = Global.sourceManager;
-        this.model.clear();
 
         let iter = this.model.append();
         Gd.sources_store_set(this.model, iter,
@@ -251,7 +249,6 @@ SourceView.prototype = {
             function(view, path) {
                 let iter = this._model.model.get_iter(path)[1];
                 let id = this._model.model.get_value(iter, SourceModelColumns.ID);
-                let name = this._model.model.get_value(iter, SourceModelColumns.NAME);
 
                 this._sourceManager.setActiveSourceId(id);
             }));
