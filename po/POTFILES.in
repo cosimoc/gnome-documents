@@ -1,7 +1,9 @@
 [encoding: UTF-8]
 data/gnome-documents.desktop.in.in
 data/org.gnome.documents.gschema.xml.in
+src/loadMore.js
 src/mainToolbar.js
 src/mainWindow.js
 src/sidebar.js
+src/sources.js
 src/spinnerBox.js
