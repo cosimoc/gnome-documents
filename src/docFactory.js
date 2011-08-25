@@ -43,13 +43,12 @@ DocCommon.prototype = {
         this.mtime = cursor.get_string(TrackerModel.TrackerColumns.MTIME)[0];
         this.resourceUrn = cursor.get_string(TrackerModel.TrackerColumns.RESOURCE_URN)[0];
 
+        this._type = cursor.get_string(TrackerModel.TrackerColumns.TYPE)[0];
+        this.pixbuf = Utils.pixbufFromRdfType(this._type);
+
         // sanitize
         if (!this.author)
             this.author = '';
-
-        // might eventually get updated with a thumbnail by a subclass
-        let type = cursor.get_string(TrackerModel.TrackerColumns.TYPE)[0];
-        this.pixbuf = Utils.pixbufFromRdfType(type);
 
         // overridden in subclasses
         this.uri = null;
@@ -60,7 +59,8 @@ DocCommon.prototype = {
     },
 
     refreshIcon: function() {
-        // fallback
+        this.pixbuf = Utils.pixbufFromRdfType(this._type);
+        this.emit('icon-updated');
     },
 
     destroy: function() {
