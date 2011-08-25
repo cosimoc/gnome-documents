@@ -52,6 +52,8 @@ View.prototype = {
                                               Lang.bind(this, this._updateSelection));
 
         this._updateSelection();
+
+        this.connectToSelectionChanged(Lang.bind(this, this._onSelectionChanged));
     },
 
     _updateSelection: function() {
@@ -78,7 +80,7 @@ View.prototype = {
             }));
     },
 
-    onSelectionChanged: function() {
+    _onSelectionChanged: function() {
         let selectedURNs = Utils.getURNsFromPaths(this.getSelection(),
                                                   this._treeModel);
         Global.selectionController.setSelection(selectedURNs);

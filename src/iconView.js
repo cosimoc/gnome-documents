@@ -53,9 +53,14 @@ IconView.prototype = {
 
         this.widget.show();
 
+        // chain up to the parent
         View.View.prototype._init.call(this);
-        this.widget.connect('selection-changed',
-                            Lang.bind(this, this.onSelectionChanged));
+
+        // now listen to selection changes
+    },
+
+    connectToSelectionChanged: function(callback) {
+        this.getSelectionObject().connect('selection-changed', callback);
     },
 
     getSelection: function() {

@@ -44,16 +44,19 @@ ListView.prototype = {
 
         this.widget.show();
 
-        View.View.prototype._init.call(this);
-
         let selection = this.widget.get_selection();
         selection.set_mode(Gtk.SelectionMode.MULTIPLE);
-        selection.connect('changed',
-                          Lang.bind(this, this.onSelectionChanged));
+
+        // chain up to the parent
+        View.View.prototype._init.call(this);
     },
 
     _onItemActivated: function(view, path, column) {
         this.activateItem(path);
+    },
+
+    connectToSelectionChanged: function(callback) {
+        this.getSelectionObject().connect('changed', callback);
     },
 
     getSelectionObject: function() {
@@ -89,4 +92,4 @@ ListView.prototype = {
         col.add_attribute(textRenderer,
                           'line-two', TrackerModel.ModelColumns.AUTHOR);
     }
-}
+};
