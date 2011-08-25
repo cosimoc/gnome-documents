@@ -55,8 +55,6 @@ IconView.prototype = {
 
         // chain up to the parent
         View.View.prototype._init.call(this);
-
-        // now listen to selection changes
     },
 
     connectToSelectionChanged: function(callback) {
