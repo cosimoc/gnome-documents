@@ -1,0 +1,54 @@
+# Norwegian bokmål translation of gnome-documents.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Kjartan Maraas <kmaraas@gnome.org>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-documents 0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-08-25 13:46+0200\n"
+"PO-Revision-Date: 2011-08-25 13:49+0200\n"
+"Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
+"Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../data/gnome-documents.desktop.in.in.h:1
+msgid "Access, manage and share documents"
+msgstr "Aksesser, håndter og del dokumenter"
+
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:62
+msgid "Documents"
+msgstr "Dokumenter"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1
+msgid "Enable list view"
+msgstr "Slå på listevisning"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
+msgid "List view"
+msgstr "Listevisning"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
+msgid "The active source filter"
+msgstr "Aktivt kildefilter"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "The last active source filter"
+msgstr "Siste aktive kildefilter"
+
+#: ../src/mainToolbar.js:164
+#, c-format
+msgid "page %d of %d"
+msgstr "side %d av %d"
+
+#: ../src/sidebar.js:54 ../src/sidebar.js:176
+msgid "Sources"
+msgstr "Kilder"
+
+#: ../src/spinnerBox.js:47
+msgid "Loading..."
+msgstr "Laster …"
