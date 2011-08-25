@@ -40,8 +40,8 @@ void gd_store_update_icon (GtkListStore *store,
                            GtkTreeIter *iter,
                            GdkPixbuf *icon);
 
-GtkListStore* gd_create_sidebar_store (void);
-void gd_sidebar_store_set (GtkListStore *store,
+GtkListStore* gd_create_sources_store (void);
+void gd_sources_store_set (GtkListStore *store,
                            GtkTreeIter *iter,
                            const gchar *id,
                            const gchar *name,

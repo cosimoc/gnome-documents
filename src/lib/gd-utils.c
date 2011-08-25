@@ -80,12 +80,12 @@ gd_store_update_icon (GtkListStore *store,
 }
 
 /**
- * gd_create_sidebar_store:
+ * gd_create_sources_store:
  * 
  * Returns: (transfer full):
  */
 GtkListStore *
-gd_create_sidebar_store (void)
+gd_create_sources_store (void)
 {
   return gtk_list_store_new (3,
                              G_TYPE_STRING, // ID
@@ -94,7 +94,7 @@ gd_create_sidebar_store (void)
 }
 
 void
-gd_sidebar_store_set (GtkListStore *store,
+gd_sources_store_set (GtkListStore *store,
                       GtkTreeIter *iter,
                       const gchar *id,
                       const gchar *name,

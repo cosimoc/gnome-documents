@@ -32,6 +32,9 @@ const Sources = imports.sources;
 
 const _SIDEBAR_WIDTH_REQUEST = 240;
 
+const _SIDEBAR_SOURCES_PAGE = 0;
+const _SIDEBAR_MAIN_PAGE = 1;
+
 function SidebarView() {
     this._init();
 };
@@ -80,22 +83,22 @@ Sidebar.prototype = {
         this.widget.get_style_context().add_class(Gtk.STYLE_CLASS_SIDEBAR);
 
         this._sourceView = new Sources.SourceView();
-        this.widget.insert_page(this._sourceView.widget, null, 0);
+        this.widget.insert_page(this._sourceView.widget, null, _SIDEBAR_SOURCES_PAGE);
 
         this._sidebarView = new SidebarView();
-        this.widget.insert_page(this._sidebarView.widget, null, 1);
+        this.widget.insert_page(this._sidebarView.widget, null, _SIDEBAR_MAIN_PAGE);
         this._sidebarView.connect('sources-button-clicked',
                                   Lang.bind(this, this._onSourcesButtonClicked));
 
-        this.widget.set_current_page(1);
+        this.widget.set_current_page(_SIDEBAR_MAIN_PAGE);
         this.widget.show_all();
     },
 
     _onSourceFilterChanged: function(sourcePage, id, name) {
-        this.widget.set_current_page(1);
+        this.widget.set_current_page(_SIDEBAR_MAIN_PAGE);
     },
 
     _onSourcesButtonClicked: function() {
-        this.widget.set_current_page(0);
+        this.widget.set_current_page(_SIDEBAR_SOURCES_PAGE);
     }
 };

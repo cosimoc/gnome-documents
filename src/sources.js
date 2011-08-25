@@ -158,20 +158,20 @@ function SourceModel() {
 
 SourceModel.prototype = {
     _init: function() {
-        this.model = Gd.create_sidebar_store();
+        this.model = Gd.create_sources_store();
 
         this._sourceManager = Global.sourceManager;
         this.model.clear();
 
         let iter = this.model.append();
-        Gd.sidebar_store_set(this.model, iter,
+        Gd.sources_store_set(this.model, iter,
                              '', _("Sources"), true);
 
         let sources = this._sourceManager.sources;
         sources.forEach(Lang.bind(this,
             function(source) {
                 iter = this.model.append();
-                Gd.sidebar_store_set(this.model, iter,
+                Gd.sources_store_set(this.model, iter,
                                      source.id, source.name, false);
             }));
     }
