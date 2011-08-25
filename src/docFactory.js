@@ -42,8 +42,8 @@ DocCommon.prototype = {
         this.author = cursor.get_string(TrackerModel.TrackerColumns.AUTHOR)[0];
         this.mtime = cursor.get_string(TrackerModel.TrackerColumns.MTIME)[0];
         this.resourceUrn = cursor.get_string(TrackerModel.TrackerColumns.RESOURCE_URN)[0];
+        this.favorite = cursor.get_boolean(TrackerModel.TrackerColumns.FAVORITE);
 
-        this._favorite = cursor.get_boolean(TrackerModel.TrackerColumns.FAVORITE);
         this._type = cursor.get_string(TrackerModel.TrackerColumns.TYPE)[0];
         this.pixbuf = Utils.pixbufFromRdfType(this._type);
 
@@ -65,7 +65,7 @@ DocCommon.prototype = {
     },
 
     checkEmblemsAndUpdateIcon: function() {
-        if (this._favorite) {
+        if (this.favorite) {
             let emblemIcon = new Gio.ThemedIcon({ name: 'emblem-favorite' });
             let emblem = new Gio.Emblem({ icon: emblemIcon });
             let emblemedIcon = new Gio.EmblemedIcon({ gicon: this.pixbuf });

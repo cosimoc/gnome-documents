@@ -19,14 +19,42 @@
  *
  */
 
+const Gd = imports.gi.Gd;
 const Gtk = imports.gi.Gtk;
+const _ = imports.gettext.gettext;
 
 const Lang = imports.lang;
 const Signals = imports.signals;
 
 const Global = imports.global;
 const TrackerModel = imports.trackerModel;
+const TrackerUtils = imports.trackerUtils;
 const Utils = imports.utils;
+
+function ContextMenu(urn, isFavorite) {
+    this._init(urn, isFavorite);
+}
+
+ContextMenu.prototype = {
+    _init: function(urn, isFavorite) {
+        this._urn = urn;
+        this._isFavorite = isFavorite;
+
+        this.widget = new Gtk.Menu();
+
+        let favoriteLabel = (isFavorite) ? _("Remove from favorites") : _("Add to favorites");
+        let favoriteItem = new Gtk.MenuItem({ label: favoriteLabel });
+        favoriteItem.show();
+        this.widget.append(favoriteItem);
+
+        favoriteItem.connect('activate', Lang.bind(this,
+            function() {
+                TrackerUtils.setFavorite(Global.connection, this._urn, !this._isFavorite, null);
+            }));
+
+        this.widget.show_all();
+    }
+};
 
 function View() {
     this._init();
@@ -43,6 +71,7 @@ View.prototype = {
             function() {
                 Global.selectionController.disconnect(this._selectionControllerId);
             }));
+        this.widget.connect('button-release-event', Lang.bind(this, this._onButtonRelease));
 
         this.createRenderers();
 
@@ -84,6 +113,26 @@ View.prototype = {
         let selectedURNs = Utils.getURNsFromPaths(this.getSelection(),
                                                   this._treeModel);
         Global.selectionController.setSelection(selectedURNs);
+    },
+
+    _onButtonRelease: function(view, event) {
+        let button = Gd.gdk_event_get_button(event);
+        let position = Gd.gdk_event_get_position(event);
+        let timestamp = event.get_time();
+
+        if (button != 3)
+            return false;
+
+        let path = this.getPathAtPos(position);
+        let iter = this._treeModel.get_iter(path)[1];
+
+        let urn = this._treeModel.get_value(iter, TrackerModel.ModelColumns.URN);
+        let isFavorite = this._treeModel.get_value(iter, TrackerModel.ModelColumns.FAVORITE);
+
+        let menu = new ContextMenu(urn, isFavorite);
+        Gd.gtk_menu_popup(menu.widget, button, timestamp);
+
+        return true;
     },
 
     // this must be overridden by all implementations

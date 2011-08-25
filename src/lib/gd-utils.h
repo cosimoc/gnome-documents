@@ -34,7 +34,8 @@ void gd_store_set (GtkListStore *store,
                    const gchar *author,
                    const gchar *mtime,
                    GdkPixbuf *icon,
-                   const gchar *resource_urn);
+                   const gchar *resource_urn,
+                   gboolean favorite);
 
 void gd_store_update_icon (GtkListStore *store,
                            GtkTreeIter *iter,
@@ -54,6 +55,15 @@ void gd_sidebar_store_set (GtkListStore *store,
                            const gchar *name,
                            const gchar *icon_name,
                            gboolean heading);
+
+void gd_gtk_menu_popup (GtkMenu *menu,
+                        guint button,
+                        guint32 timestamp);
+
+guint gd_gdk_event_get_button (GdkEvent *event);
+void  gd_gdk_event_get_position (GdkEvent *event,
+                                 gdouble *x,
+                                 gdouble *y);
 
 void gd_queue_thumbnail_job_for_file_async (GFile *file,
                                             GAsyncReadyCallback callback,

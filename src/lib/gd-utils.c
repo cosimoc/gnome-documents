@@ -37,14 +37,15 @@
 GtkListStore *
 gd_create_list_store (void)
 {
-  return gtk_list_store_new (7,
+  return gtk_list_store_new (8,
                              G_TYPE_STRING, // URN
                              G_TYPE_STRING, // URI
                              G_TYPE_STRING, // TITLE
                              G_TYPE_STRING, // AUTHOR
                              G_TYPE_STRING, // MTIME
                              GDK_TYPE_PIXBUF, // ICON
-                             G_TYPE_STRING); // RESOURCE_URN
+                             G_TYPE_STRING, // RESOURCE_URN
+                             G_TYPE_BOOLEAN); // FAVORITE
 }
 
 void
@@ -56,7 +57,8 @@ gd_store_set (GtkListStore *store,
               const gchar *author,
               const gchar *mtime,
               GdkPixbuf *icon,
-              const gchar *resource_urn)
+              const gchar *resource_urn,
+              gboolean favorite)
 {
   gtk_list_store_set (store, iter,
                       0, urn,
@@ -66,6 +68,7 @@ gd_store_set (GtkListStore *store,
                       4, mtime,
                       5, icon,
                       6, resource_urn,
+                      7, favorite,
                       -1);
 }
 
@@ -272,4 +275,41 @@ gd_gtk_tree_view_set_activate_on_single_click (GtkTreeView *tree_view,
 				   "gd-tree-view-activate", 
 				   GUINT_TO_POINTER (button_press_id));
 	}
+}
+
+guint
+gd_gdk_event_get_button (GdkEvent *event)
+{
+  GdkEventButton *button_ev = (GdkEventButton *) event;
+
+  return button_ev->button;
+}
+
+/**
+ * gd_gdk_event_get_position:
+ * @event:
+ * @x: (out):
+ * @y: (out):
+ *
+ */
+void
+gd_gdk_event_get_position (GdkEvent *event,
+                           gdouble *x,
+                           gdouble *y)
+{
+  GdkEventButton *button_ev = (GdkEventButton *) event;
+
+  if (x)
+    *x = button_ev->x;
+
+  if (y)
+    *y = button_ev->y;
+}
+
+void
+gd_gtk_menu_popup (GtkMenu *menu,
+                   guint button,
+                   guint32 timestamp)
+{
+  gtk_menu_popup (menu, NULL, NULL, NULL, NULL, button, timestamp);
 }

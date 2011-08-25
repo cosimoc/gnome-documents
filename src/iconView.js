@@ -69,6 +69,10 @@ IconView.prototype = {
         return this.widget;
     },
 
+    getPathAtPos: function(position) {
+        return this.widget.get_path_at_pos(position[0], position[1]);
+    },
+
     createRenderers: function() {
         let pixbufRenderer =
             new Gd.FramedPixbufRenderer({ xalign: 0.5,

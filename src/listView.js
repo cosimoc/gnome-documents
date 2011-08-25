@@ -67,6 +67,10 @@ ListView.prototype = {
         return this.getSelectionObject().get_selected_rows()[0];
     },
 
+    getPathAtPos: function(position) {
+        return this.widget.get_path_at_pos(position[0], position[1])[1];
+    },
+
     createRenderers: function() {
         let col = new Gtk.TreeViewColumn();
         this.widget.append_column(col);

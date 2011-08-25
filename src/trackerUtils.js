@@ -19,6 +19,8 @@
  *
  */
 
+const GLib = imports.gi.GLib;
+
 function sourceIdFromResourceUrn(connection, resourceUrn, callback) {
     //FIXME: is this right?
     if(resourceUrn[0] != '<')
@@ -89,4 +91,20 @@ function resourceUrnFromSourceId(connection, sourceId, callback) {
                      callback(urn);
                  });
          });
+}
+
+function setFavorite(connection, urn, isFavorite, callback) {
+    connection.update_async(
+        ('%s { <%s> nao:hasTag nao:predefined-tag-favorite }').format((isFavorite ? 'INSERT OR REPLACE' : 'DELETE'), urn),
+        GLib.PRIORITY_DEFAULT, null,
+        function(object, res) {
+            try {
+                connection.update_finish(res);
+            } catch (e) {
+                log('Unable to set the favorite property on ' + urn + ' to ' + isFavorite + ': ' + e.toString());
+            }
+
+            if (callback)
+                callback();
+        });
 }

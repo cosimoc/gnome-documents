@@ -43,7 +43,7 @@ const ModelColumns = {
     MTIME: 4,
     ICON: 5,
     RESOURCE_URN: 6,
-    N_COLUMNS: 7
+    FAVORITE: 7
 };
 
 const MINER_REFRESH_TIMEOUT = 60; /* seconds */
@@ -207,7 +207,7 @@ TrackerModel.prototype = {
                      newDoc.urn, newDoc.uri,
                      newDoc.title, newDoc.author,
                      newDoc.mtime, newDoc.pixbuf,
-                     newDoc.resourceUrn);
+                     newDoc.resourceUrn, newDoc.favorite);
 
         newDoc.connect('icon-updated', Lang.bind(this,
             function() {
