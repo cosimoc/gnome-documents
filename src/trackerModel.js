@@ -57,7 +57,8 @@ const TrackerColumns = {
     TOTAL_COUNT: 5,
     IDENTIFIER: 6,
     TYPE: 7,
-    RESOURCE_URN: 8
+    RESOURCE_URN: 8,
+    FAVORITE: 9
 };
 
 function QueryBuilder() {
@@ -72,8 +73,7 @@ QueryBuilder.prototype = {
         let filter =
             ('fn:contains ' +
              '(fn:lower-case (tracker:coalesce(nie:title(%s), nfo:fileName(%s))), ' +
-             '"%s") ' +
-             '&& ').format(subject, subject, Global.filterController.getFilter());
+             '"%s")').format(subject, subject, Global.filterController.getFilter());
 
         return filter;
     },
@@ -82,8 +82,10 @@ QueryBuilder.prototype = {
         let sparql = 'FILTER ((';
 
         sparql += this._buildFilterSearch(subject);
+        sparql += ') && (';
         sparql += Global.sourceManager.getActiveSourceFilter(subject);
-        sparql += ')) ';
+
+        sparql += '))';
 
         return sparql;
     },
@@ -116,14 +118,16 @@ QueryBuilder.prototype = {
              'tracker:coalesce(nie:title(?urn), nfo:fileName(?urn)) ' + // title
              'tracker:coalesce(nco:fullname(?creator), nco:fullname(?publisher)) ' + // author
              'tracker:coalesce(nfo:fileLastModified(?urn), nie:contentLastModified(?urn)) AS ?mtime ' + // mtime
-             this._buildTotalCounter() +
-             'nao:identifier(?urn) ' +
-             'rdf:type(?urn) ' +
-             'nie:dataSource(?urn) ' +
+             this._buildTotalCounter() + // totalCount
+             'nao:identifier(?urn) ' + // identifier
+             'rdf:type(?urn) ' + // type
+             'nie:dataSource(?urn) ' + // resource URN
+             '( EXISTS { ?urn nao:hasTag nao:predefined-tag-favorite } )' + // favorite
              'WHERE { ' +
              this._buildTypeFilter('?urn') +
              'OPTIONAL { ?urn nco:creator ?creator . } ' +
              'OPTIONAL { ?urn nco:publisher ?publisher . } ' +
+             Global.categoryManager.getActiveCategoryFilter() +
              this._buildFilterString('?urn') +
              ' } ' +
              'ORDER BY DESC (?mtime)' +
@@ -155,6 +159,10 @@ TrackerModel.prototype = {
         this._sourceManager = Global.sourceManager;
         this._sourceManager.connect('active-source-changed',
                                     Lang.bind(this, this._refresh));
+
+        this._categoryManager = Global.categoryManager;
+        this._categoryManager.connect('active-category-changed',
+                                      Lang.bind(this, this._refresh));
 
         this._offsetController = Global.offsetController;
         this._offsetController.connect('offset-changed',

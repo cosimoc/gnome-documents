@@ -47,6 +47,14 @@ void gd_sources_store_set (GtkListStore *store,
                            const gchar *name,
                            gboolean heading);
 
+GtkListStore * gd_create_sidebar_store (void);
+void gd_sidebar_store_set (GtkListStore *store,
+                           GtkTreeIter *iter,
+                           const gchar *id,
+                           const gchar *name,
+                           const gchar *icon_name,
+                           gboolean heading);
+
 void gd_queue_thumbnail_job_for_file_async (GFile *file,
                                             GAsyncReadyCallback callback,
                                             gpointer user_data);

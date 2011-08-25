@@ -20,9 +20,10 @@
  */
 
 let application = null;
-let sourceManager = null;
+let categoryManager = null;
 let connection = null;
-let settings = null;
+let model = null;
 let offsetController = null;
 let selectionController = null;
-let model = null;
+let settings = null;
+let sourceManager = null;

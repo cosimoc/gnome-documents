@@ -43,6 +43,7 @@ DocCommon.prototype = {
         this.mtime = cursor.get_string(TrackerModel.TrackerColumns.MTIME)[0];
         this.resourceUrn = cursor.get_string(TrackerModel.TrackerColumns.RESOURCE_URN)[0];
 
+        this._favorite = cursor.get_boolean(TrackerModel.TrackerColumns.FAVORITE);
         this._type = cursor.get_string(TrackerModel.TrackerColumns.TYPE)[0];
         this.pixbuf = Utils.pixbufFromRdfType(this._type);
 
@@ -60,6 +61,28 @@ DocCommon.prototype = {
 
     refreshIcon: function() {
         this.pixbuf = Utils.pixbufFromRdfType(this._type);
+        this.checkEmblemsAndUpdateIcon();
+    },
+
+    checkEmblemsAndUpdateIcon: function() {
+        if (this._favorite) {
+            let emblemIcon = new Gio.ThemedIcon({ name: 'emblem-favorite' });
+            let emblem = new Gio.Emblem({ icon: emblemIcon });
+            let emblemedIcon = new Gio.EmblemedIcon({ gicon: this.pixbuf });
+            emblemedIcon.add_emblem(emblem);
+
+            let theme = Gtk.IconTheme.get_default();
+
+            try {
+                let iconInfo = theme.lookup_by_gicon(emblemedIcon,
+                                                     this.pixbuf.get_width(),
+                                                     Gtk.IconLookupFlags.FORCE_SIZE);
+                this.pixbuf = iconInfo.load_icon();
+            } catch (e) {
+                log('Unable to render the emblem: ' + e.toString());
+            }
+        }
+
         this.emit('icon-updated');
     },
 
@@ -133,7 +156,7 @@ LocalDocument.prototype = {
         }
 
         if (haveNewIcon)
-            this.emit('icon-updated');
+            this.checkEmblemsAndUpdateIcon();
     },
 
     _onQueueThumbnailJob: function(object, res) {
@@ -166,7 +189,7 @@ LocalDocument.prototype = {
                                                        Utils.getIconSize(),
                                                        Utils.getIconSize());
 
-            this.emit('icon-updated');
+            this.checkEmblemsAndUpdateIcon();
         }
     }
 };
