@@ -78,63 +78,11 @@ QueryBuilder.prototype = {
         return filter;
     },
 
-    _buildFilterLocal: function(subject) {
-        let path;
-        let desktopURI;
-        let documentsURI;
-
-        path = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DESKTOP);
-        if (path)
-            desktopURI = Gio.file_new_for_path(path).get_uri();
-        else
-            desktopURI = '';
-
-        path = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DOCUMENTS);
-        if (path)
-            documentsURI = Gio.file_new_for_path(path).get_uri();
-        else
-            documentsURI = '';
-
-        let filter =
-            this._buildFilterSearch(subject) +
-            ('((fn:starts-with (nie:url(%s), "%s")) || ' +
-             '(fn:starts-with (nie:url(%s), "%s")))').format(subject, desktopURI,
-                                                             subject, documentsURI);
-
-        return filter;
-    },
-
-    _buildFilterNotLocal: function(subject) {
-        let filter =
-            this._buildFilterSearch(subject) +
-            ('(fn:contains(rdf:type(%s), \"RemoteDataObject\"))').format(subject);
-
-        return filter;
-    },
-
-    _buildFilterResource: function(subject, resourceUrn) {
-        let filter =
-            this._buildFilterSearch(subject) +
-            ('(nie:dataSource(%s) = "<%s>")').format(subject, resourceUrn);
-
-        return filter;
-    },
-
     _buildFilterString: function(subject) {
-        let filterId = Global.sourceManager.getActiveSourceUrn();
         let sparql = 'FILTER ((';
 
-        if (filterId == 'local' || filterId == 'all')
-            sparql += this._buildFilterLocal(subject);
-
-        if (filterId == 'all')
-            sparql += ') || (';
-
-        if (filterId != 'local' && filterId != 'all')
-            sparql += this._buildFilterResource(subject, filterId);
-        else if (filterId == 'all')
-            sparql += this._buildFilterNotLocal(subject);
-
+        sparql += this._buildFilterSearch(subject);
+        sparql += Global.sourceManager.getActiveSourceFilter(subject);
         sparql += ')) ';
 
         return sparql;

@@ -24,6 +24,8 @@ const Mainloop = imports.mainloop;
 const Signals = imports.signals;
 
 const Gd = imports.gi.Gd;
+const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
 const Goa = imports.gi.Goa;
 const Gtk = imports.gi.Gtk;
 const Pango = imports.gi.Pango;
@@ -57,6 +59,55 @@ Source.prototype = {
                     this._initCallback();
                 }));
         }
+    },
+
+    getFilter: function(subject) {
+        if (this.id == 'local')
+            return this._buildFilterLocal(subject);
+
+        if (this.id == 'all')
+            return this._buildFilterLocal(subject) + ') || (' + this._buildFilterNotLocal(subject);
+
+        return this._buildFilterResource(subject);
+    },
+
+    _buildFilterLocal: function(subject) {
+        let path;
+        let desktopURI;
+        let documentsURI;
+
+        path = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DESKTOP);
+        if (path)
+            desktopURI = Gio.file_new_for_path(path).get_uri();
+        else
+            desktopURI = '';
+
+        path = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DOCUMENTS);
+        if (path)
+            documentsURI = Gio.file_new_for_path(path).get_uri();
+        else
+            documentsURI = '';
+
+        let filter =
+            ('((fn:starts-with (nie:url(%s), "%s")) || ' +
+             '(fn:starts-with (nie:url(%s), "%s")))').format(subject, desktopURI,
+                                                             subject, documentsURI);
+
+        return filter;
+    },
+
+    _buildFilterNotLocal: function(subject) {
+        let filter =
+            ('(fn:contains(rdf:type(%s), \"RemoteDataObject\"))').format(subject);
+
+        return filter;
+    },
+
+    _buildFilterResource: function(subject, resourceUrn) {
+        let filter =
+            ('(nie:dataSource(%s) = "<%s>")').format(subject, resourceUrn);
+
+        return filter;
     }
 };
 
@@ -138,8 +189,8 @@ SourceManager.prototype = {
         return this.activeSource.id;
     },
 
-    getActiveSourceUrn: function() {
-        return this.activeSource.resourceUrn;
+    getActiveSourceFilter: function(subject) {
+        return this.activeSource.getFilter(subject);
     }
 };
 Signals.addSignalMethods(SourceManager.prototype);
