@@ -103,9 +103,9 @@ Source.prototype = {
         return filter;
     },
 
-    _buildFilterResource: function(subject, resourceUrn) {
+    _buildFilterResource: function(subject) {
         let filter =
-            ('(nie:dataSource(%s) = "<%s>")').format(subject, resourceUrn);
+            ('(nie:dataSource(%s) = "<%s>")').format(subject, this.resourceUrn);
 
         return filter;
     }
