@@ -163,7 +163,7 @@ MainWindow.prototype = {
             this._loaderTimeout = 0;
         }
 
-        TrackerUtils.sourceIdFromResourceUrn(Global.connection, resource, Lang.bind(this,
+        TrackerUtils.sourceIdFromResourceUrn(resource, Lang.bind(this,
             function(sourceId) {
                 this._loaderCancellable = new Gio.Cancellable();
                 this._pdfLoader = new Gd.PdfLoader({ source_id: sourceId });

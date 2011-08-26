@@ -21,12 +21,14 @@
 
 const GLib = imports.gi.GLib;
 
-function sourceIdFromResourceUrn(connection, resourceUrn, callback) {
+const Global = imports.global;
+
+function sourceIdFromResourceUrn(resourceUrn, callback) {
     //FIXME: is this right?
     if(resourceUrn[0] != '<')
         resourceUrn = '<' + resourceUrn + '>';
 
-    connection.query_async
+    Global.connection.query_async
         (('SELECT ?id WHERE { %s a nie:DataSource; nao:identifier ?id }').format(resourceUrn), null,
          function(object, res) {
              let cursor = null;
@@ -56,8 +58,8 @@ function sourceIdFromResourceUrn(connection, resourceUrn, callback) {
          });
 }
 
-function resourceUrnFromSourceId(connection, sourceId, callback) {
-    connection.query_async
+function resourceUrnFromSourceId(sourceId, callback) {
+    Global.connection.query_async
         (('SELECT ?urn WHERE { ?urn a nie:DataSource; nao:identifier \"goa:documents:%s\" }').format(sourceId), null,
          function(object, res) {
              let cursor = null;
@@ -93,13 +95,13 @@ function resourceUrnFromSourceId(connection, sourceId, callback) {
          });
 }
 
-function setFavorite(connection, urn, isFavorite, callback) {
-    connection.update_async(
+function setFavorite(urn, isFavorite, callback) {
+    Global.connection.update_async(
         ('%s { <%s> nao:hasTag nao:predefined-tag-favorite }').format((isFavorite ? 'INSERT OR REPLACE' : 'DELETE'), urn),
         GLib.PRIORITY_DEFAULT, null,
         function(object, res) {
             try {
-                connection.update_finish(res);
+                object.update_finish(res);
             } catch (e) {
                 log('Unable to set the favorite property on ' + urn + ' to ' + isFavorite + ': ' + e.toString());
             }

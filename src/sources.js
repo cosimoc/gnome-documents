@@ -53,7 +53,7 @@ Source.prototype = {
                     return false;
                 }));
         } else {
-            TrackerUtils.resourceUrnFromSourceId(Global.connection, id, Lang.bind(this,
+            TrackerUtils.resourceUrnFromSourceId(id, Lang.bind(this,
                 function(resourceUrn) {
                     this.resourceUrn = resourceUrn;
                     this._initCallback();
