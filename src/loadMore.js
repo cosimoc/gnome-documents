@@ -32,15 +32,19 @@ function LoadMoreButton() {
 
 LoadMoreButton.prototype = {
     _init: function() {
+        this._block = false;
+
         this._controller = Global.offsetController;
         this._controllerId =
             this._controller.connect('item-count-changed',
                                      Lang.bind(this, this._onItemCountChanged));
 
-        this.widget = new Gtk.Button();
-        this.widget.connect('clicked', Lang.bind(this, function() {
-            this._controller.increaseOffset();
-        }));
+        this.widget = new Gtk.Button({ no_show_all: true,
+                                       name: 'ViewLoadMore' });
+        this.widget.connect('clicked', Lang.bind(this,
+            function() {
+                this._controller.increaseOffset();
+            }));
 
         this.widget.connect('destroy', Lang.bind(this,
             function() {
@@ -50,11 +54,11 @@ LoadMoreButton.prototype = {
         this._onItemCountChanged();
     },
 
-    _onItemCountChanged: function(itemCount) {
+    _onItemCountChanged: function() {
         let remainingDocs = this._controller.getRemainingDocs();
         let offsetStep = this._controller.getOffsetStep();
 
-        if (remainingDocs <= 0) {
+        if (remainingDocs <= 0 || this._block) {
             this.widget.hide();
             return;
         }
@@ -64,5 +68,10 @@ LoadMoreButton.prototype = {
 
         this.widget.label = _("Load %d more documents").format(remainingDocs);
         this.widget.show();
+    },
+
+    setBlock: function(block) {
+        this._block = block;
+        this._onItemCountChanged();
     }
 };

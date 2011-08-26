@@ -52,6 +52,7 @@ function MainWindow() {
 
 MainWindow.prototype = {
     _init: function() {
+        this._adjChangedId = 0;
         this._pdfLoader = null;
         this._loaderCancellable = null;
         this._loaderTimeout = 0;
@@ -86,10 +87,43 @@ MainWindow.prototype = {
         this._scrolledWin = new Gtk.ScrolledWindow({ hexpand: true,
                                                      vexpand: true,
                                                      shadow_type: Gtk.ShadowType.IN });
+        this._scrolledWin.get_style_context().set_junction_sides(Gtk.JunctionSides.BOTTOM);
         this._viewContainer.add(this._scrolledWin);
+
+        this._loadMore = new LoadMore.LoadMoreButton();
+        this._viewContainer.add(this._loadMore.widget);
+
+        this._scrolledWin.vadjustment.connect('value-changed', Lang.bind(this, this._onAdjustmentChange));
+        this._onAdjustmentChange(this._scrolledWin.vadjustment);
 
         this._grid.show_all();
         this._prepareForOverview();
+    },
+
+    _onAdjustmentChange: function(adjustment) {
+        let end = (adjustment.value == (adjustment.upper - adjustment.get_page_size()));
+
+        if (adjustment.value == 0 &&
+            adjustment.upper == 0 &&
+            adjustment.get_page_size() == 0)
+            end = false;
+
+        if (end) {
+            if (!this._adjChangedId) {
+                this._loadMore.setBlock(false);
+
+                //wait for a changed event
+                this._adjChangedId = adjustment.connect('changed', Lang.bind(this,
+                    function(adjustment) {
+                        adjustment.disconnect(this._adjChangedId);
+                        this._adjChangedId = 0;
+
+                        this._loadMore.setBlock(true);
+                    }));
+            }
+        } else {
+            this._loadMore.setBlock(true);
+        }
     },
 
     _destroyView: function() {
@@ -103,23 +137,13 @@ MainWindow.prototype = {
 
         this._destroyView();
 
-        this._loadMore = new LoadMore.LoadMoreButton();
-        this._viewBox = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
-        this._viewBox.add(this._loadMore.widget);
-
         if (isList)
             this.view = new ListView.ListView(this);
         else
             this.view = new IconView.IconView(this);
 
         this.view.connect('item-activated', Lang.bind(this, this._onViewItemActivated));
-
-        this._viewBox.attach_next_to(this.view.widget, this._loadMore.widget,
-                                     Gtk.PositionType.TOP, 1, 1);
-
-        this._scrolledWin.add_with_viewport(this._viewBox);
-
-        this._viewBox.show();
+        this._scrolledWin.add(this.view.widget);
     },
 
     _refreshViewSettings: function() {
