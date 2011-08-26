@@ -289,6 +289,10 @@ DocumentManager.prototype = {
         });
         this._docs = [];
         this.emit('clear');
+    },
+
+    getDocuments: function() {
+        return this._docs;
     }
 };
 Signals.addSignalMethods(DocumentManager.prototype);
@@ -312,8 +316,14 @@ DocumentModel.prototype = {
     _init: function() {
         this.model = Gd.create_list_store();
         this._documentManager = Global.documentManager;
+
         this._documentManager.connect('clear', Lang.bind(this, this._onManagerClear));
         this._documentManager.connect('new-document', Lang.bind(this, this._onNewDocument));
+
+        this._documentManager.getDocuments().forEach(Lang.bind(this,
+            function(document) {
+                this._onNewDocument(this._documentManager, document);
+            }));
     },
 
     _onManagerClear: function() {
