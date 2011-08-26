@@ -27,6 +27,7 @@ const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
 const Signals = imports.signals;
 
+const ChangeMonitor = imports.changeMonitor;
 const Global = imports.global;
 const TrackerModel = imports.trackerModel;
 const Utils = imports.utils;
@@ -37,6 +38,50 @@ function DocCommon(cursor) {
 
 DocCommon.prototype = {
     _init: function(cursor) {
+        this.urn = null;
+        this.title = null;
+        this.author = null;
+        this.mtime = null;
+        this.resourceUrn = null;
+        this.favorite = null;
+        this._type = null;
+        this.pixbuf = null;
+
+        this._populateFromCursor(cursor);
+
+        this._refreshIconId =
+            Global.settings.connect('changed::list-view',
+                                    Lang.bind(this, this.refreshIcon));
+
+        this._changesId =
+            Global.changeMonitor.connect('changes-pending',
+                                         Lang.bind(this, this._onChangesPending));
+    },
+
+    _onChangesPending: function(monitor, changes) {
+        if (changes[0] == this.urn)
+            this._refresh();
+    },
+
+    _refresh: function() {
+        let sparql = Global.queryBuilder.buildSingleQuery(this.urn);
+        Global.connection.query_async(sparql, null, Lang.bind(this,
+            function(object, res) {
+                try {
+                    let cursor = object.query_finish(res);
+                    cursor.next_async(null, Lang.bind(this,
+                        function(object, res) {
+                            let valid = object.next_finish(res);
+                            this._populateFromCursor(object);
+                        }));
+                } catch (e) {
+                    log('Unable to refresh file information: ' + e.toString());
+                    return;
+                }
+            }));
+    },
+
+    _populateFromCursor: function(cursor) {
         this.urn = cursor.get_string(TrackerModel.TrackerColumns.URN)[0];
         this.title = cursor.get_string(TrackerModel.TrackerColumns.TITLE)[0];
         this.author = cursor.get_string(TrackerModel.TrackerColumns.AUTHOR)[0];
@@ -51,20 +96,15 @@ DocCommon.prototype = {
         if (!this.author)
             this.author = '';
 
-        // overridden in subclasses
-        this.uri = null;
-
-        this._refreshIconId =
-            Global.settings.connect('changed::list-view',
-                                    Lang.bind(this, this.refreshIcon));
+        this.refreshIcon();
     },
 
     refreshIcon: function() {
         this.pixbuf = Utils.pixbufFromRdfType(this._type);
-        this.checkEmblemsAndUpdateIcon();
+        this.checkEmblemsAndUpdateInfo();
     },
 
-    checkEmblemsAndUpdateIcon: function() {
+    checkEmblemsAndUpdateInfo: function() {
         if (this.favorite) {
             let emblemIcon = new Gio.ThemedIcon({ name: 'emblem-favorite' });
             let emblem = new Gio.Emblem({ icon: emblemIcon });
@@ -83,11 +123,12 @@ DocCommon.prototype = {
             }
         }
 
-        this.emit('icon-updated');
+        this.emit('info-updated');
     },
 
     destroy: function() {
         Global.settings.disconnect(this._refreshIconId);
+        Global.changeMonitor.disconnect(this._changesId);
     }
 };
 Signals.addSignalMethods(DocCommon.prototype);
@@ -102,11 +143,10 @@ LocalDocument.prototype = {
     __proto__: DocCommon.prototype,
 
     _init: function(cursor) {
-        DocCommon.prototype._init.call(this, cursor);
-
         // overridden
         this.uri = cursor.get_string(TrackerModel.TrackerColumns.URI)[0];
-        this.refreshIcon();
+
+        DocCommon.prototype._init.call(this, cursor);
     },
 
     refreshIcon: function() {
@@ -156,7 +196,7 @@ LocalDocument.prototype = {
         }
 
         if (haveNewIcon)
-            this.checkEmblemsAndUpdateIcon();
+            this.checkEmblemsAndUpdateInfo();
     },
 
     _onQueueThumbnailJob: function(object, res) {
@@ -189,7 +229,7 @@ LocalDocument.prototype = {
                                                        Utils.getIconSize(),
                                                        Utils.getIconSize());
 
-            this.checkEmblemsAndUpdateIcon();
+            this.checkEmblemsAndUpdateInfo();
         }
     }
 };
@@ -202,10 +242,10 @@ GoogleDocument.prototype = {
     __proto__: DocCommon.prototype,
 
     _init: function(cursor) {
-        DocCommon.prototype._init.call(this, cursor);
-
         // overridden
         this.uri = cursor.get_string(TrackerModel.TrackerColumns.IDENTIFIER)[0];
+
+        DocCommon.prototype._init.call(this, cursor);
     }
 };
 
@@ -215,6 +255,7 @@ function DocFactory() {
 
 DocFactory.prototype = {
     _init: function() {
+        this._docs = [];
     },
 
     _identifierIsGoogle: function(identifier) {
@@ -224,10 +265,22 @@ DocFactory.prototype = {
 
     newDocument: function(cursor) {
         let identifier = cursor.get_string(TrackerModel.TrackerColumns.IDENTIFIER)[0];
+        let doc;
 
         if (this._identifierIsGoogle(identifier))
-            return new GoogleDocument(cursor);
+            doc = new GoogleDocument(cursor);
+        else
+            doc = new LocalDocument(cursor);
 
-        return new LocalDocument(cursor);
+        this._docs.push(doc);
+
+        return doc;
+    },
+
+    clear: function() {
+        this._docs.forEach(function(doc) {
+            doc.destroy();
+        });
+        this._docs = [];
     }
 };

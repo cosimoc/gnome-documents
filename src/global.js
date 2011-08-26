@@ -24,6 +24,7 @@ let categoryManager = null;
 let connection = null;
 let model = null;
 let offsetController = null;
+let queryBuilder = null;
 let selectionController = null;
 let settings = null;
 let sourceManager = null;

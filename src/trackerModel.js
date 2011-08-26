@@ -28,10 +28,12 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Tracker = imports.gi.Tracker;
 const Gd = imports.gi.Gd;
+const Gtk = imports.gi.Gtk;
 
 const DocFactory = imports.docFactory;
 const GDataMiner = imports.gDataMiner;
 const Global = imports.global;
+const Query = imports.query;
 const TrackerUtils = imports.trackerUtils;
 const Utils = imports.utils;
 
@@ -54,103 +56,22 @@ const TrackerColumns = {
     TITLE: 2,
     AUTHOR: 3,
     MTIME: 4,
-    TOTAL_COUNT: 5,
-    IDENTIFIER: 6,
-    TYPE: 7,
-    RESOURCE_URN: 8,
-    FAVORITE: 9
+    IDENTIFIER: 5,
+    TYPE: 6,
+    RESOURCE_URN: 7,
+    FAVORITE: 8,
+    TOTAL_COUNT: 9
 };
 
-function QueryBuilder() {
+function TrackerModel() {
     this._init();
 }
 
-QueryBuilder.prototype = {
-    _init: function() {
-    },
-
-    _buildFilterSearch: function(subject) {
-        let filter =
-            ('fn:contains ' +
-             '(fn:lower-case (tracker:coalesce(nie:title(%s), nfo:fileName(%s))), ' +
-             '"%s")').format(subject, subject, Global.filterController.getFilter());
-
-        return filter;
-    },
-
-    _buildFilterString: function(subject) {
-        let sparql = 'FILTER ((';
-
-        sparql += this._buildFilterSearch(subject);
-        sparql += ') && (';
-        sparql += Global.sourceManager.getActiveSourceFilter(subject);
-
-        sparql += '))';
-
-        return sparql;
-    },
-
-    _buildTypeFilter: function(subject) {
-        let sparql =
-            ('{ %s a nfo:PaginatedTextDocument } ' +
-             'UNION ' +
-             '{ %s a nfo:Spreadsheet } ' +
-             'UNION ' +
-             '{ %s a nfo:Presentation } ').format(subject, subject, subject);
-
-        return sparql;
-    },
-
-    _buildTotalCounter: function() {
-        let sparql =
-            '(SELECT DISTINCT COUNT(?doc) WHERE { ' +
-            this._buildTypeFilter('?doc') +
-            this._buildFilterString('?doc') +
-            '}) ';
-
-        return sparql;
-    },
-
-    buildQuery: function() {
-        let sparql =
-            ('SELECT DISTINCT ?urn ' + // urn
-             'nie:url(?urn) ' + // uri
-             'tracker:coalesce(nie:title(?urn), nfo:fileName(?urn)) ' + // title
-             'tracker:coalesce(nco:fullname(?creator), nco:fullname(?publisher)) ' + // author
-             'tracker:coalesce(nfo:fileLastModified(?urn), nie:contentLastModified(?urn)) AS ?mtime ' + // mtime
-             this._buildTotalCounter() + // totalCount
-             'nao:identifier(?urn) ' + // identifier
-             'rdf:type(?urn) ' + // type
-             'nie:dataSource(?urn) ' + // resource URN
-             '( EXISTS { ?urn nao:hasTag nao:predefined-tag-favorite } )' + // favorite
-             'WHERE { ' +
-             this._buildTypeFilter('?urn') +
-             'OPTIONAL { ?urn nco:creator ?creator . } ' +
-             'OPTIONAL { ?urn nco:publisher ?publisher . } ' +
-             Global.categoryManager.getActiveCategoryFilter() +
-             this._buildFilterString('?urn') +
-             ' } ' +
-             'ORDER BY DESC (?mtime)' +
-             'LIMIT %d OFFSET %d').format(Global.offsetController.getOffsetStep(),
-                                          Global.offsetController.getOffset());
-
-        return sparql;
-    }
-};
-
-function TrackerModel(connection) {
-    this._init(connection);
-}
-
 TrackerModel.prototype = {
-    _init: function(connection) {
-        this._docs = [];
-
-        this._builder = new QueryBuilder();
+    _init: function() {
         this._factory = new DocFactory.DocFactory();
 
         this.model = Gd.create_list_store();
-        this._connection = connection;
 
         // startup a refresh of the gdocs cache
         this._miner = new GDataMiner.GDataMiner();
@@ -209,14 +130,16 @@ TrackerModel.prototype = {
                      newDoc.mtime, newDoc.pixbuf,
                      newDoc.resourceUrn, newDoc.favorite);
 
-        newDoc.connect('icon-updated', Lang.bind(this,
+        newDoc.connect('info-updated', Lang.bind(this,
             function() {
                 let objectIter = this.model.get_iter(treePath)[1];
                 if (objectIter)
-                    Gd.store_update_icon(this.model, objectIter, newDoc.pixbuf);
+                    Gd.store_set(this.model, iter,
+                                 newDoc.urn, newDoc.uri,
+                                 newDoc.title, newDoc.author,
+                                 newDoc.mtime, newDoc.pixbuf,
+                                 newDoc.resourceUrn, newDoc.favorite);
             }));
-
-        this._docs.push(newDoc);
     },
 
     _onQueryFinished: function() {
@@ -256,8 +179,8 @@ TrackerModel.prototype = {
     },
 
     _performCurrentQuery: function() {
-        this._connection.query_async(this._builder.buildQuery(),
-                                     null, Lang.bind(this, this._onQueryExecuted));
+        Global.connection.query_async(Global.queryBuilder.buildGlobalQuery(),
+                                      null, Lang.bind(this, this._onQueryExecuted));
     },
 
     _emitModelUpdateDone: function() {
@@ -267,11 +190,7 @@ TrackerModel.prototype = {
     _refresh: function() {
         Global.selectionController.freezeSelection(true);
         this.model.clear();
-
-        this._docs.forEach(function(doc) {
-            doc.destroy();
-        });
-        this._docs = [];
+        this._factory.clear();
 
         this._performCurrentQuery();
     },

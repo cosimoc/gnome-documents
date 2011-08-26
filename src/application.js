@@ -31,6 +31,7 @@ const GLib = imports.gi.GLib;
 const Tracker = imports.gi.Tracker;
 
 const Categories = imports.categories;
+const ChangeMonitor = imports.changeMonitor;
 const FilterController = imports.filterController;
 const Format = imports.format;
 const Global = imports.global;
@@ -38,6 +39,7 @@ const Main = imports.main;
 const MainWindow = imports.mainWindow;
 const OffsetController = imports.offsetController;
 const Path = imports.path;
+const Query = imports.query;
 const SelectionController = imports.selectionController;
 const Sources = imports.sources;
 const TrackerModel = imports.trackerModel;
@@ -128,7 +130,10 @@ Application.prototype = {
 
     _onSourceManagerCreated: function() {
         Global.selectionController = new SelectionController.SelectionController();
-        Global.model = new TrackerModel.TrackerModel(Global.connection);
+        Global.queryBuilder = new Query.QueryBuilder();
+        Global.model = new TrackerModel.TrackerModel();
+        Global.changeMonitor = new ChangeMonitor.TrackerChangeMonitor();
+
         this._mainWindow = new MainWindow.MainWindow();
         this.activate();
     },
