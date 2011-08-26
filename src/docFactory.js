@@ -119,7 +119,8 @@ DocCommon.prototype = {
 
             try {
                 let iconInfo = theme.lookup_by_gicon(emblemedIcon,
-                                                     this.pixbuf.get_height(),
+                                                     Math.max(this.pixbuf.get_width(),
+                                                              this.pixbuf.get_height()),
                                                      Gtk.IconLookupFlags.FORCE_SIZE);
                 this.pixbuf = iconInfo.load_icon();
             } catch (e) {
