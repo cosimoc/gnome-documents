@@ -72,7 +72,11 @@ QueryBuilder.prototype = {
     },
 
     _buildQueryInternal: function(global) {
-        let globalSparql = '{}';
+        let globalSparql =
+            'WHERE { ' +
+            'OPTIONAL { ?urn nco:creator ?creator . } ' +
+            'OPTIONAL { ?urn nco:publisher ?publisher . } ' +
+            '}';
 
         if (global) {
             globalSparql =
@@ -98,7 +102,7 @@ QueryBuilder.prototype = {
              'nao:identifier(?urn) ' + // identifier
              'rdf:type(?urn) ' + // type
              'nie:dataSource(?urn) ' + // resource URN
-             '( EXISTS { ?urn nao:hasTag nao:predefined-tag-favorite } )' + // favorite
+             '( EXISTS { ?urn nao:hasTag nao:predefined-tag-favorite } ) ' + // favorite
              globalSparql;
 
         return sparql;
