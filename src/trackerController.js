@@ -24,16 +24,9 @@ const Lang = imports.lang;
 const Mainloop = imports.mainloop;
 const Signals = imports.signals;
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const Tracker = imports.gi.Tracker;
-const Gd = imports.gi.Gd;
-const Gtk = imports.gi.Gtk;
-
 const GDataMiner = imports.gDataMiner;
 const Global = imports.global;
 const Query = imports.query;
-const TrackerUtils = imports.trackerUtils;
 const Utils = imports.utils;
 
 const MINER_REFRESH_TIMEOUT = 60; /* seconds */
@@ -90,7 +83,7 @@ TrackerController.prototype = {
 
     _addRowFromCursor: function(cursor) {
         this._offsetController.setItemCount(cursor.get_integer(Query.QueryColumns.TOTAL_COUNT));
-        Global.documentManager.newDocument(cursor);
+        Global.documentManager.addDocument(cursor);
     },
 
     _onQueryFinished: function() {
@@ -132,10 +125,6 @@ TrackerController.prototype = {
     _performCurrentQuery: function() {
         Global.connection.query_async(Global.queryBuilder.buildGlobalQuery(),
                                       null, Lang.bind(this, this._onQueryExecuted));
-    },
-
-    _emitModelUpdateDone: function() {
-        this.emit('model-update-done');
     },
 
     _refresh: function() {

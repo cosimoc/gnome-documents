@@ -268,7 +268,7 @@ DocumentManager.prototype = {
                 (identifier.indexOf('https://docs.google.com') != -1));
     },
 
-    newDocument: function(cursor) {
+    addDocument: function(cursor) {
         let identifier = cursor.get_string(Query.QueryColumns.IDENTIFIER)[0];
         let doc;
 
@@ -279,8 +279,6 @@ DocumentManager.prototype = {
 
         this._docs.push(doc);
         this.emit('new-document', doc);
-
-        return doc;
     },
 
     clear: function() {
