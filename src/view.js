@@ -130,7 +130,7 @@ View.prototype = {
         let isFavorite = this._treeModel.get_value(iter, TrackerModel.ModelColumns.FAVORITE);
 
         let menu = new ContextMenu(urn, isFavorite);
-        Gd.gtk_menu_popup(menu.widget, button, timestamp);
+        menu.widget.popup_for_device(null, null, null, null, null, null, button, timestamp);
 
         return true;
     },

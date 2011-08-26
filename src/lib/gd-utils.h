@@ -56,10 +56,6 @@ void gd_sidebar_store_set (GtkListStore *store,
                            const gchar *icon_name,
                            gboolean heading);
 
-void gd_gtk_menu_popup (GtkMenu *menu,
-                        guint button,
-                        guint32 timestamp);
-
 guint gd_gdk_event_get_button (GdkEvent *event);
 void  gd_gdk_event_get_position (GdkEvent *event,
                                  gdouble *x,

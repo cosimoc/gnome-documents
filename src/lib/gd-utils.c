@@ -305,11 +305,3 @@ gd_gdk_event_get_position (GdkEvent *event,
   if (y)
     *y = button_ev->y;
 }
-
-void
-gd_gtk_menu_popup (GtkMenu *menu,
-                   guint button,
-                   guint32 timestamp)
-{
-  gtk_menu_popup (menu, NULL, NULL, NULL, NULL, button, timestamp);
-}
