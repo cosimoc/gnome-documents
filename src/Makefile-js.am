@@ -3,7 +3,7 @@ dist_js_DATA = \
     application.js \
     categories.js \
     changeMonitor.js \
-    docFactory.js \
+    documents.js \
     filterController.js \
     gDataMiner.js \
     global.js \
@@ -20,7 +20,7 @@ dist_js_DATA = \
     sidebar.js \
     sources.js \
     spinnerBox.js \
-    trackerModel.js \
+    trackerController.js \
     trackerUtils.js \
     utils.js \
     view.js \

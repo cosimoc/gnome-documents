@@ -23,7 +23,7 @@ const Gtk = imports.gi.Gtk;
 const Gd = imports.gi.Gd;
 const Pango = imports.gi.Pango;
 
-const TrackerModel = imports.trackerModel;
+const Documents = imports.documents;
 const View = imports.view;
 const Lang = imports.lang;
 
@@ -80,7 +80,7 @@ IconView.prototype = {
 
         this.widget.pack_start(pixbufRenderer, false);
         this.widget.add_attribute(pixbufRenderer,
-                                'pixbuf', TrackerModel.ModelColumns.ICON);
+                                'pixbuf', Documents.ModelColumns.ICON);
 
         let textRenderer =
             new Gd.TwoLinesRenderer({ alignment: Pango.Alignment.CENTER,
@@ -91,9 +91,9 @@ IconView.prototype = {
                                       text_lines: 3 });
         this.widget.pack_start(textRenderer, false);
         this.widget.add_attribute(textRenderer,
-                                  'text', TrackerModel.ModelColumns.TITLE);
+                                  'text', Documents.ModelColumns.TITLE);
         this.widget.add_attribute(textRenderer,
-                                  'line-two', TrackerModel.ModelColumns.AUTHOR);
+                                  'line-two', Documents.ModelColumns.AUTHOR);
     },
 
     _onItemActivated: function(view, path, column) {

@@ -26,8 +26,8 @@ const _ = imports.gettext.gettext;
 const Lang = imports.lang;
 const Signals = imports.signals;
 
+const Documents = imports.documents;
 const Global = imports.global;
-const TrackerModel = imports.trackerModel;
 const TrackerUtils = imports.trackerUtils;
 const Utils = imports.utils;
 
@@ -64,9 +64,10 @@ View.prototype = {
     _init: function() {
         this._selectedURNs = null;
 
-        this.model = Global.model;
-        this._treeModel = Global.model.model;
+        this._model = new Documents.DocumentModel();
+        this._treeModel = this._model.model;
         this.widget.set_model(this._treeModel);
+
         this.widget.connect('destroy', Lang.bind(this,
             function() {
                 Global.selectionController.disconnect(this._selectionControllerId);
@@ -94,7 +95,7 @@ View.prototype = {
 
         this._treeModel.foreach(Lang.bind(this,
             function(model, path, iter) {
-                let urn = this._treeModel.get_value(iter, TrackerModel.ModelColumns.URN);
+                let urn = this._treeModel.get_value(iter, Documents.ModelColumns.URN);
                 let urnIndex = selected.indexOf(urn);
 
                 if (urnIndex != -1) {
@@ -126,8 +127,8 @@ View.prototype = {
         let path = this.getPathAtPos(position);
         let iter = this._treeModel.get_iter(path)[1];
 
-        let urn = this._treeModel.get_value(iter, TrackerModel.ModelColumns.URN);
-        let isFavorite = this._treeModel.get_value(iter, TrackerModel.ModelColumns.FAVORITE);
+        let urn = this._treeModel.get_value(iter, Documents.ModelColumns.URN);
+        let isFavorite = this._treeModel.get_value(iter, Documents.ModelColumns.FAVORITE);
 
         let menu = new ContextMenu(urn, isFavorite);
         menu.widget.popup_for_device(null, null, null, null, null, null, button, timestamp);
@@ -142,8 +143,8 @@ View.prototype = {
 
     activateItem: function(path) {
         let iter = this._treeModel.get_iter(path)[1];
-        let uri = this._treeModel.get_value(iter, TrackerModel.ModelColumns.URI);
-        let resource = this._treeModel.get_value(iter, TrackerModel.ModelColumns.RESOURCE_URN);
+        let uri = this._treeModel.get_value(iter, Documents.ModelColumns.URI);
+        let resource = this._treeModel.get_value(iter, Documents.ModelColumns.RESOURCE_URN);
 
         this.emit('item-activated', uri, resource);
     }

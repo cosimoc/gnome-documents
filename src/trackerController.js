@@ -30,49 +30,20 @@ const Tracker = imports.gi.Tracker;
 const Gd = imports.gi.Gd;
 const Gtk = imports.gi.Gtk;
 
-const DocFactory = imports.docFactory;
 const GDataMiner = imports.gDataMiner;
 const Global = imports.global;
 const Query = imports.query;
 const TrackerUtils = imports.trackerUtils;
 const Utils = imports.utils;
 
-const ModelColumns = {
-    URN: 0,
-    URI: 1,
-    TITLE: 2,
-    AUTHOR: 3,
-    MTIME: 4,
-    ICON: 5,
-    RESOURCE_URN: 6,
-    FAVORITE: 7
-};
-
 const MINER_REFRESH_TIMEOUT = 60; /* seconds */
 
-const TrackerColumns = {
-    URN: 0,
-    URI: 1,
-    TITLE: 2,
-    AUTHOR: 3,
-    MTIME: 4,
-    IDENTIFIER: 5,
-    TYPE: 6,
-    RESOURCE_URN: 7,
-    FAVORITE: 8,
-    TOTAL_COUNT: 9
-};
-
-function TrackerModel() {
+function TrackerController() {
     this._init();
 }
 
-TrackerModel.prototype = {
+TrackerController.prototype = {
     _init: function() {
-        this._factory = new DocFactory.DocFactory();
-
-        this.model = Gd.create_list_store();
-
         // startup a refresh of the gdocs cache
         this._miner = new GDataMiner.GDataMiner();
         this._refreshMinerNow();
@@ -118,28 +89,8 @@ TrackerModel.prototype = {
     },
 
     _addRowFromCursor: function(cursor) {
-        this._offsetController.setItemCount(cursor.get_integer(TrackerColumns.TOTAL_COUNT));
-
-        let newDoc = this._factory.newDocument(cursor);
-        let iter = this.model.append();
-        let treePath = this.model.get_path(iter);
-
-        Gd.store_set(this.model, iter,
-                     newDoc.urn, newDoc.uri,
-                     newDoc.title, newDoc.author,
-                     newDoc.mtime, newDoc.pixbuf,
-                     newDoc.resourceUrn, newDoc.favorite);
-
-        newDoc.connect('info-updated', Lang.bind(this,
-            function() {
-                let objectIter = this.model.get_iter(treePath)[1];
-                if (objectIter)
-                    Gd.store_set(this.model, iter,
-                                 newDoc.urn, newDoc.uri,
-                                 newDoc.title, newDoc.author,
-                                 newDoc.mtime, newDoc.pixbuf,
-                                 newDoc.resourceUrn, newDoc.favorite);
-            }));
+        this._offsetController.setItemCount(cursor.get_integer(Query.QueryColumns.TOTAL_COUNT));
+        Global.documentManager.newDocument(cursor);
     },
 
     _onQueryFinished: function() {
@@ -189,8 +140,7 @@ TrackerModel.prototype = {
 
     _refresh: function() {
         Global.selectionController.freezeSelection(true);
-        this.model.clear();
-        this._factory.clear();
+        Global.documentManager.clear();
 
         this._performCurrentQuery();
     },
@@ -200,4 +150,4 @@ TrackerModel.prototype = {
         this._refresh();
     }
 };
-Signals.addSignalMethods(TrackerModel.prototype);
+Signals.addSignalMethods(TrackerController.prototype);

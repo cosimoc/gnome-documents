@@ -23,7 +23,7 @@ const Gtk = imports.gi.Gtk;
 const Gd = imports.gi.Gd;
 const Pango = imports.gi.Pango;
 
-const TrackerModel = imports.trackerModel;
+const Documents = imports.documents;
 const View = imports.view;
 const Lang = imports.lang;
 
@@ -81,7 +81,7 @@ ListView.prototype = {
 
         col.pack_start(pixbufRenderer, false);
         col.add_attribute(pixbufRenderer,
-                          'pixbuf', TrackerModel.ModelColumns.ICON);
+                          'pixbuf', Documents.ModelColumns.ICON);
 
         let textRenderer =
             new Gd.TwoLinesRenderer({ alignment: Pango.Alignment.CENTER,
@@ -92,8 +92,8 @@ ListView.prototype = {
                                       text_lines: 3 });
         col.pack_start(textRenderer, false);
         col.add_attribute(textRenderer,
-                          'text', TrackerModel.ModelColumns.TITLE);
+                          'text', Documents.ModelColumns.TITLE);
         col.add_attribute(textRenderer,
-                          'line-two', TrackerModel.ModelColumns.AUTHOR);
+                          'line-two', Documents.ModelColumns.AUTHOR);
     }
 };

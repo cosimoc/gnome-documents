@@ -21,8 +21,8 @@
 
 const Gtk = imports.gi.Gtk;
 
+const Documents = imports.documents;
 const Global = imports.global;
-const TrackerModel = imports.trackerModel;
 
 const Lang = imports.lang;
 
@@ -65,7 +65,7 @@ function getURNsFromPaths(paths, model) {
     return paths.map(Lang.bind(this,
             function(path) {
                 let iter = model.get_iter(path)[1];
-                let urn = model.get_value(iter, TrackerModel.ModelColumns.URN);
+                let urn = model.get_value(iter, Documents.ModelColumns.URN);
 
                 return urn;
             }));

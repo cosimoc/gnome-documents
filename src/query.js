@@ -21,6 +21,19 @@
 
 const Global = imports.global;
 
+const QueryColumns = {
+    URN: 0,
+    URI: 1,
+    TITLE: 2,
+    AUTHOR: 3,
+    MTIME: 4,
+    IDENTIFIER: 5,
+    TYPE: 6,
+    RESOURCE_URN: 7,
+    FAVORITE: 8,
+    TOTAL_COUNT: 9 // only in global query
+};
+
 function QueryBuilder() {
     this._init();
 }

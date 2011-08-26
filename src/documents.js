@@ -29,7 +29,7 @@ const Signals = imports.signals;
 
 const ChangeMonitor = imports.changeMonitor;
 const Global = imports.global;
-const TrackerModel = imports.trackerModel;
+const Query = imports.query;
 const Utils = imports.utils;
 
 function DocCommon(cursor) {
@@ -86,14 +86,14 @@ DocCommon.prototype = {
     },
 
     _populateFromCursor: function(cursor) {
-        this.urn = cursor.get_string(TrackerModel.TrackerColumns.URN)[0];
-        this.title = cursor.get_string(TrackerModel.TrackerColumns.TITLE)[0];
-        this.author = cursor.get_string(TrackerModel.TrackerColumns.AUTHOR)[0];
-        this.mtime = cursor.get_string(TrackerModel.TrackerColumns.MTIME)[0];
-        this.resourceUrn = cursor.get_string(TrackerModel.TrackerColumns.RESOURCE_URN)[0];
-        this.favorite = cursor.get_boolean(TrackerModel.TrackerColumns.FAVORITE);
+        this.urn = cursor.get_string(Query.QueryColumns.URN)[0];
+        this.title = cursor.get_string(Query.QueryColumns.TITLE)[0];
+        this.author = cursor.get_string(Query.QueryColumns.AUTHOR)[0];
+        this.mtime = cursor.get_string(Query.QueryColumns.MTIME)[0];
+        this.resourceUrn = cursor.get_string(Query.QueryColumns.RESOURCE_URN)[0];
+        this.favorite = cursor.get_boolean(Query.QueryColumns.FAVORITE);
 
-        this._type = cursor.get_string(TrackerModel.TrackerColumns.TYPE)[0];
+        this._type = cursor.get_string(Query.QueryColumns.TYPE)[0];
         this.pixbuf = Utils.pixbufFromRdfType(this._type);
 
         // sanitize
@@ -149,7 +149,7 @@ LocalDocument.prototype = {
 
     _init: function(cursor) {
         // overridden
-        this.uri = cursor.get_string(TrackerModel.TrackerColumns.URI)[0];
+        this.uri = cursor.get_string(Query.QueryColumns.URI)[0];
 
         DocCommon.prototype._init.call(this, cursor);
     },
@@ -248,17 +248,17 @@ GoogleDocument.prototype = {
 
     _init: function(cursor) {
         // overridden
-        this.uri = cursor.get_string(TrackerModel.TrackerColumns.IDENTIFIER)[0];
+        this.uri = cursor.get_string(Query.QueryColumns.IDENTIFIER)[0];
 
         DocCommon.prototype._init.call(this, cursor);
     }
 };
 
-function DocFactory() {
+function DocumentManager() {
     this._init();
 }
 
-DocFactory.prototype = {
+DocumentManager.prototype = {
     _init: function() {
         this._docs = [];
     },
@@ -269,7 +269,7 @@ DocFactory.prototype = {
     },
 
     newDocument: function(cursor) {
-        let identifier = cursor.get_string(TrackerModel.TrackerColumns.IDENTIFIER)[0];
+        let identifier = cursor.get_string(Query.QueryColumns.IDENTIFIER)[0];
         let doc;
 
         if (this._identifierIsGoogle(identifier))
@@ -278,6 +278,7 @@ DocFactory.prototype = {
             doc = new LocalDocument(cursor);
 
         this._docs.push(doc);
+        this.emit('new-document', doc);
 
         return doc;
     },
@@ -287,5 +288,57 @@ DocFactory.prototype = {
             doc.destroy();
         });
         this._docs = [];
+        this.emit('clear');
+    }
+};
+Signals.addSignalMethods(DocumentManager.prototype);
+
+const ModelColumns = {
+    URN: 0,
+    URI: 1,
+    TITLE: 2,
+    AUTHOR: 3,
+    MTIME: 4,
+    ICON: 5,
+    RESOURCE_URN: 6,
+    FAVORITE: 7
+};
+
+function DocumentModel() {
+    this._init();
+}
+
+DocumentModel.prototype = {
+    _init: function() {
+        this.model = Gd.create_list_store();
+        this._documentManager = Global.documentManager;
+        this._documentManager.connect('clear', Lang.bind(this, this._onManagerClear));
+        this._documentManager.connect('new-document', Lang.bind(this, this._onNewDocument));
+    },
+
+    _onManagerClear: function() {
+        this.model.clear();
+    },
+
+    _onNewDocument: function(manager, doc) {
+        let iter = this.model.append();
+        let treePath = this.model.get_path(iter);
+
+        Gd.store_set(this.model, iter,
+                     doc.urn, doc.uri,
+                     doc.title, doc.author,
+                     doc.mtime, doc.pixbuf,
+                     doc.resourceUrn, doc.favorite);
+
+        doc.connect('info-updated', Lang.bind(this,
+            function() {
+                let objectIter = this.model.get_iter(treePath)[1];
+                if (objectIter)
+                    Gd.store_set(this.model, iter,
+                                 doc.urn, doc.uri,
+                                 doc.title, doc.author,
+                                 doc.mtime, doc.pixbuf,
+                                 doc.resourceUrn, doc.favorite);
+            }));
     }
 };

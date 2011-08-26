@@ -32,6 +32,7 @@ const Tracker = imports.gi.Tracker;
 
 const Categories = imports.categories;
 const ChangeMonitor = imports.changeMonitor;
+const Documents = imports.documents;
 const FilterController = imports.filterController;
 const Format = imports.format;
 const Global = imports.global;
@@ -42,7 +43,7 @@ const Path = imports.path;
 const Query = imports.query;
 const SelectionController = imports.selectionController;
 const Sources = imports.sources;
-const TrackerModel = imports.trackerModel;
+const TrackerController = imports.trackerController;
 
 const _GD_DBUS_PATH = '/org/gnome/Documents';
 
@@ -131,7 +132,8 @@ Application.prototype = {
     _onSourceManagerCreated: function() {
         Global.selectionController = new SelectionController.SelectionController();
         Global.queryBuilder = new Query.QueryBuilder();
-        Global.model = new TrackerModel.TrackerModel();
+        Global.documentManager = new Documents.DocumentManager();
+        Global.trackerController = new TrackerController.TrackerController();
         Global.changeMonitor = new ChangeMonitor.TrackerChangeMonitor();
 
         this._mainWindow = new MainWindow.MainWindow();
