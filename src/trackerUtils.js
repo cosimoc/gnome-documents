@@ -28,8 +28,10 @@ function sourceIdFromResourceUrn(resourceUrn, callback) {
     if(resourceUrn[0] != '<')
         resourceUrn = '<' + resourceUrn + '>';
 
+    let sparql = ('SELECT ?id WHERE { %s a nie:DataSource; nao:identifier ?id }').format(resourceUrn);
+
     Global.connection.query_async
-        (('SELECT ?id WHERE { %s a nie:DataSource; nao:identifier ?id }').format(resourceUrn), null,
+        (sparql, null,
          function(object, res) {
              let cursor = null;
              try {
@@ -59,8 +61,10 @@ function sourceIdFromResourceUrn(resourceUrn, callback) {
 }
 
 function resourceUrnFromSourceId(sourceId, callback) {
+    let sparql = ('SELECT ?urn WHERE { ?urn a nie:DataSource; nao:identifier \"goa:documents:%s\" }').format(sourceId);
+
     Global.connection.query_async
-        (('SELECT ?urn WHERE { ?urn a nie:DataSource; nao:identifier \"goa:documents:%s\" }').format(sourceId), null,
+        (sparql, null,
          function(object, res) {
              let cursor = null;
              let urn = '';
@@ -96,8 +100,9 @@ function resourceUrnFromSourceId(sourceId, callback) {
 }
 
 function setFavorite(urn, isFavorite, callback) {
-    Global.connection.update_async(
-        ('%s { <%s> nao:hasTag nao:predefined-tag-favorite }').format((isFavorite ? 'INSERT OR REPLACE' : 'DELETE'), urn),
+    let sparql = ('%s { <%s> nao:hasTag nao:predefined-tag-favorite }').format((isFavorite ? 'INSERT OR REPLACE' : 'DELETE'), urn);
+
+    Global.connection.update_async(sparql,
         GLib.PRIORITY_DEFAULT, null,
         function(object, res) {
             try {

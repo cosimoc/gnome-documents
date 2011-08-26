@@ -65,14 +65,18 @@ DocCommon.prototype = {
 
     _refresh: function() {
         let sparql = Global.queryBuilder.buildSingleQuery(this.urn);
+
         Global.connection.query_async(sparql, null, Lang.bind(this,
             function(object, res) {
+                let cursor = null;
+
                 try {
-                    let cursor = object.query_finish(res);
+                    cursor = object.query_finish(res);
                     cursor.next_async(null, Lang.bind(this,
                         function(object, res) {
                             let valid = object.next_finish(res);
-                            this._populateFromCursor(object);
+                            if (valid)
+                                this._populateFromCursor(object);
                         }));
                 } catch (e) {
                     log('Unable to refresh file information: ' + e.toString());
