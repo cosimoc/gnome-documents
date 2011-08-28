@@ -56,8 +56,6 @@ void gd_sidebar_store_set (GtkListStore *store,
                            const gchar *icon_name,
                            gboolean heading);
 
-guint gd_gdk_event_get_button (GdkEvent *event);
-
 void gd_queue_thumbnail_job_for_file_async (GFile *file,
                                             GAsyncReadyCallback callback,
                                             gpointer user_data);

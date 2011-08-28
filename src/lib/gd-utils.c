@@ -276,11 +276,3 @@ gd_gtk_tree_view_set_activate_on_single_click (GtkTreeView *tree_view,
 				   GUINT_TO_POINTER (button_press_id));
 	}
 }
-
-guint
-gd_gdk_event_get_button (GdkEvent *event)
-{
-  GdkEventButton *button_ev = (GdkEventButton *) event;
-
-  return button_ev->button;
-}

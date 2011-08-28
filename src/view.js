@@ -127,7 +127,7 @@ View.prototype = {
     },
 
     _onButtonRelease: function(view, event) {
-        let button = Gd.gdk_event_get_button(event);
+        let button = event.get_button()[1];
         let coords = [ event.get_coords()[1] , event.get_coords()[2] ];
         let timestamp = event.get_time();
 
