@@ -118,13 +118,13 @@ View.prototype = {
 
     _onButtonRelease: function(view, event) {
         let button = Gd.gdk_event_get_button(event);
-        let position = Gd.gdk_event_get_position(event);
+        let coords = [ event.get_coords()[1] , event.get_coords()[2] ];
         let timestamp = event.get_time();
 
         if (button != 3)
             return false;
 
-        let path = this.getPathAtPos(position);
+        let path = this.getPathAtPos(coords);
         let iter = this._treeModel.get_iter(path)[1];
 
         let urn = this._treeModel.get_value(iter, Documents.ModelColumns.URN);

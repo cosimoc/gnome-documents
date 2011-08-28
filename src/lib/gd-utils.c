@@ -284,24 +284,3 @@ gd_gdk_event_get_button (GdkEvent *event)
 
   return button_ev->button;
 }
-
-/**
- * gd_gdk_event_get_position:
- * @event:
- * @x: (out):
- * @y: (out):
- *
- */
-void
-gd_gdk_event_get_position (GdkEvent *event,
-                           gdouble *x,
-                           gdouble *y)
-{
-  GdkEventButton *button_ev = (GdkEventButton *) event;
-
-  if (x)
-    *x = button_ev->x;
-
-  if (y)
-    *y = button_ev->y;
-}
