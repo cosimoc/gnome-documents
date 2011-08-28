@@ -39,6 +39,7 @@ function DocCommon(cursor) {
 DocCommon.prototype = {
     _init: function(cursor) {
         this.urn = null;
+        this.uri = null;
         this.title = null;
         this.author = null;
         this.mtime = null;
@@ -86,6 +87,7 @@ DocCommon.prototype = {
     },
 
     _populateFromCursor: function(cursor) {
+        this.uri = cursor.get_string(Query.QueryColumns.URI)[0];
         this.urn = cursor.get_string(Query.QueryColumns.URN)[0];
         this.title = cursor.get_string(Query.QueryColumns.TITLE)[0];
         this.author = cursor.get_string(Query.QueryColumns.AUTHOR)[0];
@@ -99,6 +101,8 @@ DocCommon.prototype = {
         // sanitize
         if (!this.author)
             this.author = '';
+        if (!this.uri)
+            this.uri = '';
 
         this.refreshIcon();
     },
@@ -148,10 +152,10 @@ LocalDocument.prototype = {
     __proto__: DocCommon.prototype,
 
     _init: function(cursor) {
-        // overridden
-        this.uri = cursor.get_string(Query.QueryColumns.URI)[0];
-
         DocCommon.prototype._init.call(this, cursor);
+
+        // overridden
+        this.identifier = cursor.get_string(Query.QueryColumns.URI)[0];
     },
 
     refreshIcon: function() {
@@ -247,10 +251,10 @@ GoogleDocument.prototype = {
     __proto__: DocCommon.prototype,
 
     _init: function(cursor) {
-        // overridden
-        this.uri = cursor.get_string(Query.QueryColumns.IDENTIFIER)[0];
-
         DocCommon.prototype._init.call(this, cursor);
+
+        // overridden
+        this.identifier = cursor.get_string(Query.QueryColumns.IDENTIFIER)[0];
     }
 };
 

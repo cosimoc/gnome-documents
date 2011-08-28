@@ -342,10 +342,8 @@ gd_gdata_miner_process_entry (GdGDataMiner *self,
   TrackerSparqlBuilder *builder;
   gint64 mtime;
 
-  identifier = gdata_entry_get_id (entry);
-  resource_url = g_strdup_printf 
-    ("google:docs:%s", 
-     gdata_documents_entry_get_path (doc_entry));
+  GDataLink *alternate;
+  const gchar *alternate_uri;
 
   if (!GDATA_IS_DOCUMENTS_DOCUMENT (doc_entry))
     {
@@ -353,6 +351,11 @@ gd_gdata_miner_process_entry (GdGDataMiner *self,
       g_print ("found a folder?\n");
       return;
     }
+
+  identifier = gdata_entry_get_id (entry);
+  resource_url = g_strdup_printf 
+    ("google:docs:%s", 
+     gdata_documents_entry_get_path (doc_entry));
 
   if (GDATA_IS_DOCUMENTS_PRESENTATION (doc_entry))
     class = "nfo:Presentation";
@@ -371,6 +374,15 @@ gd_gdata_miner_process_entry (GdGDataMiner *self,
 
   if (*error != NULL)
     goto out;
+
+  alternate = gdata_entry_look_up_link (entry, GDATA_LINK_ALTERNATE);
+  alternate_uri = gdata_link_get_uri (alternate);
+
+  _tracker_sparql_connection_insert_or_replace_triple
+    (self->priv->connection, 
+     self->priv->cancellable, error,
+     identifier, resource,
+     "nie:url", alternate_uri);
 
   _tracker_sparql_connection_insert_or_replace_triple
     (self->priv->connection, 
