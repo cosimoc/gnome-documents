@@ -81,16 +81,11 @@ TrackerController.prototype = {
         return false;
     },
 
-    _addRowFromCursor: function(cursor) {
-        this._offsetController.setItemCount(cursor.get_integer(Query.QueryColumns.TOTAL_COUNT));
-        Global.documentManager.addDocument(cursor);
-    },
-
     _onQueryFinished: function() {
         Global.selectionController.freezeSelection(false);
     },
 
-    _onCursorNext: function(cursor, res) {
+    _onCursorNext: function(cursor, res, addCount) {
         try {
             let valid = cursor.next_finish(res);
 
@@ -107,14 +102,17 @@ TrackerController.prototype = {
             return;
         }
 
-        this._addRowFromCursor(cursor);
-        cursor.next_async(null, Lang.bind(this, this._onCursorNext));
+        if (addCount)
+            this._offsetController.setItemCount(cursor.get_integer(Query.QueryColumns.TOTAL_COUNT));
+
+        Global.documentManager.addDocument(cursor);
+        cursor.next_async(null, Lang.bind(this, this._onCursorNext, false));
     },
 
     _onQueryExecuted: function(object, res) {
         try {
             let cursor = object.query_finish(res);
-            cursor.next_async(null, Lang.bind(this, this._onCursorNext));
+            cursor.next_async(null, Lang.bind(this, this._onCursorNext, true));
         } catch (e) {
             // FIXME: error handling
             log('Unable to execute query: ' + e.toString());
@@ -130,6 +128,7 @@ TrackerController.prototype = {
     _refresh: function() {
         Global.selectionController.freezeSelection(true);
         Global.documentManager.clear();
+        this._offsetController.setItemCount(0);
 
         this._performCurrentQuery();
     },
