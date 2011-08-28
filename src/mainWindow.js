@@ -181,17 +181,19 @@ MainWindow.prototype = {
         Global.application.quit();
     },
 
-    _onViewItemActivated: function(view, uri, resource) {
+    _onViewItemActivated: function(view, urn) {
         if (this._loaderTimeout != 0) {
             Mainloop.source_remove(this._loaderTimeout);
             this._loaderTimeout = 0;
         }
 
-        TrackerUtils.sourceIdFromResourceUrn(resource, Lang.bind(this,
+        let doc = Global.documentManager.lookupDocument(urn);
+
+        TrackerUtils.sourceIdFromResourceUrn(doc.resourceUrn, Lang.bind(this,
             function(sourceId) {
                 this._loaderCancellable = new Gio.Cancellable();
                 this._pdfLoader = new Gd.PdfLoader({ source_id: sourceId });
-                this._pdfLoader.load_uri_async(uri, this._loaderCancellable, Lang.bind(this, this._onDocumentLoaded));
+                this._pdfLoader.load_uri_async(doc.identifier, this._loaderCancellable, Lang.bind(this, this._onDocumentLoaded));
 
                 this._loaderTimeout = Mainloop.timeout_add(_PDF_LOADER_TIMEOUT,
                                                            Lang.bind(this, this._onPdfLoaderTimeout));

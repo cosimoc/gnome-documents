@@ -31,16 +31,26 @@ const Global = imports.global;
 const TrackerUtils = imports.trackerUtils;
 const Utils = imports.utils;
 
-function ContextMenu(urn, isFavorite) {
-    this._init(urn, isFavorite);
+function ContextMenu(urn) {
+    this._init(urn);
 }
 
 ContextMenu.prototype = {
-    _init: function(urn, isFavorite) {
-        this._urn = urn;
-        this._isFavorite = isFavorite;
+    _init: function(urn) {
+        let doc = Global.documentManager.lookupDocument(urn);
+        let isFavorite = doc.favorite;
 
         this.widget = new Gtk.Menu();
+
+        let openLabel = (doc.defaultAppName) ? _("Open with %s").format(doc.defaultAppName) : _("Open");
+        let openItem = new Gtk.MenuItem({ label: openLabel });
+        openItem.show();
+        this.widget.append(openItem);
+
+        openItem.connect('activate', Lang.bind(this,
+            function(item) {
+                doc.open(item.get_screen(), Gtk.get_current_event_time());
+            }));
 
         let favoriteLabel = (isFavorite) ? _("Remove from favorites") : _("Add to favorites");
         let favoriteItem = new Gtk.MenuItem({ label: favoriteLabel });
@@ -49,7 +59,7 @@ ContextMenu.prototype = {
 
         favoriteItem.connect('activate', Lang.bind(this,
             function() {
-                TrackerUtils.setFavorite(this._urn, !this._isFavorite, null);
+                TrackerUtils.setFavorite(urn, !isFavorite, null);
             }));
 
         this.widget.show_all();
@@ -128,9 +138,8 @@ View.prototype = {
         let iter = this._treeModel.get_iter(path)[1];
 
         let urn = this._treeModel.get_value(iter, Documents.ModelColumns.URN);
-        let isFavorite = this._treeModel.get_value(iter, Documents.ModelColumns.FAVORITE);
+        let menu = new ContextMenu(urn);
 
-        let menu = new ContextMenu(urn, isFavorite);
         menu.widget.popup_for_device(null, null, null, null, null, null, button, timestamp);
 
         return true;
@@ -143,10 +152,9 @@ View.prototype = {
 
     activateItem: function(path) {
         let iter = this._treeModel.get_iter(path)[1];
-        let uri = this._treeModel.get_value(iter, Documents.ModelColumns.URI);
-        let resource = this._treeModel.get_value(iter, Documents.ModelColumns.RESOURCE_URN);
+        let urn = this._treeModel.get_value(iter, Documents.ModelColumns.URN);
 
-        this.emit('item-activated', uri, resource);
+        this.emit('item-activated', urn);
     }
 };
 Signals.addSignalMethods(View.prototype);

@@ -23,6 +23,7 @@ const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const Gd = imports.gi.Gd;
 const Gtk = imports.gi.Gtk;
+const _ = imports.gettext.gettext;
 
 const Lang = imports.lang;
 const Signals = imports.signals;
@@ -47,6 +48,7 @@ DocCommon.prototype = {
         this.favorite = null;
         this._type = null;
         this.pixbuf = null;
+        this.defaultAppName = null;
 
         this._populateFromCursor(cursor);
 
@@ -138,6 +140,10 @@ DocCommon.prototype = {
     destroy: function() {
         Global.settings.disconnect(this._refreshIconId);
         Global.changeMonitor.disconnect(this._changesId);
+    },
+
+    open: function(screen, timestamp) {
+        Gtk.show_uri(screen, this.uri, timestamp);
     }
 };
 Signals.addSignalMethods(DocCommon.prototype);
@@ -175,6 +181,9 @@ LocalDocument.prototype = {
             log('Unable to query info for file at ' + this.uri + ': ' + e.toString());
             return;
         }
+
+        let defaultApp = Gio.app_info_get_default_for_type(info.get_content_type(), true);
+        this.defaultAppName = defaultApp.get_name();
 
         let thumbPath = info.get_attribute_byte_string(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH);
         if (thumbPath) {
@@ -255,6 +264,7 @@ GoogleDocument.prototype = {
 
         // overridden
         this.identifier = cursor.get_string(Query.QueryColumns.IDENTIFIER)[0];
+        this.defaultAppName = _("Google Docs");
     }
 };
 
@@ -295,6 +305,18 @@ DocumentManager.prototype = {
 
     getDocuments: function() {
         return this._docs;
+    },
+
+    lookupDocument: function(urn) {
+        let matched = this._docs.filter(
+            function(doc) {
+                return (doc.urn == urn);
+            });
+
+        if (!matched.length)
+            return null;
+
+        return matched[0];
     }
 };
 Signals.addSignalMethods(DocumentManager.prototype);
