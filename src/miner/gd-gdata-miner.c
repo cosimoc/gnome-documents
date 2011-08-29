@@ -388,6 +388,8 @@ gd_gdata_miner_process_entry (GdGDataMiner *self,
   GDataCategory *category;
   gboolean starred = FALSE;
 
+  GDataFeed *access_rules = NULL;
+
   if (!GDATA_IS_DOCUMENTS_DOCUMENT (doc_entry))
     {
       /* TODO: folders */
@@ -499,6 +501,48 @@ gd_gdata_miner_process_entry (GdGDataMiner *self,
       g_free (contact_resource);
     }
 
+  access_rules = gdata_access_handler_get_rules (GDATA_ACCESS_HANDLER (entry),
+                                                 GDATA_SERVICE (self->priv->service),
+                                                 self->priv->cancellable,
+                                                 NULL, NULL, error);
+
+  if (*error != NULL)
+      goto out;
+
+  for (l = gdata_feed_get_entries (access_rules); l != NULL; l = l->next)
+    {
+      GDataAccessRule *rule = l->data;
+      const gchar *scope_type;
+      const gchar *scope_value;
+      gchar *contact_resource;
+
+      gdata_access_rule_get_scope (rule, &scope_type, &scope_value);
+
+      /* default scope access means the document is completely public */
+      if (g_strcmp0 (scope_type, GDATA_ACCESS_SCOPE_DEFAULT) == 0)
+        continue;
+
+      /* skip domain scopes */
+      if (g_strcmp0 (scope_type, GDATA_ACCESS_SCOPE_DOMAIN) == 0)
+        continue;
+
+      contact_resource = _tracker_utils_ensure_contact_resource (self->priv->connection,
+                                                                 self->priv->cancellable, error,
+                                                                 scope_value,
+                                                                 "");
+
+      _tracker_sparql_connection_insert_or_replace_triple
+        (self->priv->connection,
+         self->priv->cancellable, error,
+         identifier, resource,
+         "nco:contributor", contact_resource);
+
+      g_free (contact_resource);
+
+      if (*error != NULL)
+        goto out;
+    }
+
   date = _tracker_utils_iso8601_from_timestamp (gdata_entry_get_published (entry));
   _tracker_sparql_connection_insert_or_replace_triple
     (self->priv->connection, 
@@ -522,6 +566,7 @@ gd_gdata_miner_process_entry (GdGDataMiner *self,
     goto out;
 
  out:
+  g_clear_object (&access_rules);
   g_free (resource_url);
 }
 
