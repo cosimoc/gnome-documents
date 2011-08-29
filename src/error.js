@@ -37,6 +37,13 @@ ErrorHandler.prototype = {
         log('Error caught: ' + message + ' - ' + exception.toString());
 
         this.emit('load-error', message, exception);
+    },
+
+    addQueryError: function(exception) {
+        let message = _("Unable to fetch the list of documents");
+        log('Error caught: ' + message + ' - ' + exception.toString());
+
+        this.emit('query-error', message, exception);
     }
 };
 Signals.addSignalMethods(ErrorHandler.prototype);

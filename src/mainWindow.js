@@ -70,6 +70,8 @@ MainWindow.prototype = {
 
         Global.settings.connect('changed::list-view',
                                 Lang.bind(this, this._refreshViewSettings));
+        Global.errorHandler.connect('query-error',
+                                    Lang.bind(this, this._onQueryError));
         Global.errorHandler.connect('load-error',
                                     Lang.bind(this, this._onLoadError));
 
@@ -237,6 +239,13 @@ MainWindow.prototype = {
 
         this._loaderCancellable = null;
         this._prepareForPreview();
+
+        let errorBox = new ErrorBox.ErrorBox(message, exception.toString());
+        this._scrolledWin.add_with_viewport(errorBox.widget);
+    },
+
+    _onQueryError: function(manager, message, exception) {
+        this._destroyView();
 
         let errorBox = new ErrorBox.ErrorBox(message, exception.toString());
         this._scrolledWin.add_with_viewport(errorBox.widget);

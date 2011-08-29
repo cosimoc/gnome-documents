@@ -81,8 +81,11 @@ TrackerController.prototype = {
         return false;
     },
 
-    _onQueryFinished: function() {
+    _onQueryFinished: function(exception) {
         Global.selectionController.freezeSelection(false);
+
+        if (exception)
+            Global.errorHandler.addQueryError(exception);
     },
 
     _onCursorNext: function(cursor, res, addCount) {
@@ -91,14 +94,11 @@ TrackerController.prototype = {
 
             if (!valid) {
                 // signal the total count update and return
-                this._onQueryFinished();
+                this._onQueryFinished(null);
                 return;
             }
         } catch (e) {
-            // FIXME: error handling
-            log('Unable to fetch results from cursor: ' + e.toString());
-            this._onQueryFinished();
-
+            this._onQueryFinished(e);
             return;
         }
 
@@ -114,9 +114,7 @@ TrackerController.prototype = {
             let cursor = object.query_finish(res);
             cursor.next_async(null, Lang.bind(this, this._onCursorNext, true));
         } catch (e) {
-            // FIXME: error handling
-            log('Unable to execute query: ' + e.toString());
-            this._onQueryFinished();
+            this._onQueryFinished(e);
         }
     },
 
