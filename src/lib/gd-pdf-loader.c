@@ -22,7 +22,7 @@
 
 #include "gd-pdf-loader.h"
 
-#include "e-gdata-goa-authorizer.h"
+#include "gd-gdata-goa-authorizer.h"
 
 #include <string.h>
 #include <gdata/gdata.h>
