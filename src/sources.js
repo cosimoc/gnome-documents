@@ -49,7 +49,7 @@ Source.prototype = {
 
             let account = this.object.get_account();
             this.id = account.get_id();
-            this.name = account.get_name();
+            this.name = account.get_provider_name();
         } else {
             this.id = params.id;
             this.name = params.name;
@@ -117,7 +117,7 @@ Source.prototype = {
 
     _buildFilterResource: function(subject) {
         let filter =
-            ('(nie:dataSource(%s) = "<%s>")').format(subject, this.resourceUrn);
+            ('(nie:dataSource(%s) = "%s")').format(subject, this.resourceUrn);
 
         return filter;
     }
