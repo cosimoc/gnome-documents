@@ -23,7 +23,7 @@
 #include <goa/goa.h>
 #include <unistd.h>
 
-#include "e-gdata-goa-authorizer.h"
+#include "gd-gdata-goa-authorizer.h"
 #include "gd-gdata-miner.h"
 
 #define DATASOURCE_URN "urn:nepomuk:datasource:86ec9bc9-c242-427f-aa19-77b5a2c9b6f0"
@@ -525,10 +525,10 @@ static void
 gd_gdata_miner_setup_account (GdGDataMiner *self,
                               GoaObject *object)
 {
-  EGDataGoaAuthorizer *authorizer;
+  GdGDataGoaAuthorizer *authorizer;
   GError *error = NULL;
 
-  authorizer = e_gdata_goa_authorizer_new (object);
+  authorizer = gd_gdata_goa_authorizer_new (object);
   self->priv->service = 
     gdata_documents_service_new (GDATA_AUTHORIZER (authorizer));
 
