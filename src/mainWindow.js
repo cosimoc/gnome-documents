@@ -199,19 +199,6 @@ MainWindow.prototype = {
         doc.loadPreview(this._loaderCancellable, Lang.bind(this, this._onDocumentLoaded));
     },
 
-    _onLoadError: function(manager, message, exception) {
-        if (this._loaderTimeout != 0) {
-            Mainloop.source_remove(this._loaderTimeout);
-            this._loaderTimeout = 0;
-        }
-
-        this._loaderCancellable = null;
-        this._prepareForPreview();
-
-        let errorBox = new ErrorBox.ErrorBox(message, exception.toString());
-        this._scrolledWin.add_with_viewport(errorBox.widget);
-    },
-
     _onPdfLoaderTimeout: function() {
         this._loaderTimeout = 0;
 
@@ -240,5 +227,18 @@ MainWindow.prototype = {
 
     _onToolbarBackClicked: function() {
         this._prepareForOverview();
+    },
+
+    _onLoadError: function(manager, message, exception) {
+        if (this._loaderTimeout != 0) {
+            Mainloop.source_remove(this._loaderTimeout);
+            this._loaderTimeout = 0;
+        }
+
+        this._loaderCancellable = null;
+        this._prepareForPreview();
+
+        let errorBox = new ErrorBox.ErrorBox(message, exception.toString());
+        this._scrolledWin.add_with_viewport(errorBox.widget);
     }
 };
