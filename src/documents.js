@@ -22,6 +22,8 @@
 const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const Gd = imports.gi.Gd;
+const GData = imports.gi.GData;
+const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const _ = imports.gettext.gettext;
 
@@ -249,6 +251,22 @@ LocalDocument.prototype = {
 
             this.checkEmblemsAndUpdateInfo();
         }
+    },
+
+    loadPreview: function(cancellable, callback) {
+        Gd.pdf_loader_load_uri_async(this.uri, cancellable, Lang.bind(this,
+            function(source, res) {
+                let document = null;
+
+                try {
+                    document = Gd.pdf_loader_load_uri_finish(res);
+                } catch (e) {
+                    log('Unable to load the uri ' + this.uri + ' for preview: ' + e.toString());
+                }
+
+                callback(document);
+            }));
+
     }
 };
 
@@ -265,6 +283,48 @@ GoogleDocument.prototype = {
         // overridden
         this.identifier = cursor.get_string(Query.QueryColumns.IDENTIFIER)[0];
         this.defaultAppName = _("Google Docs");
+    },
+
+    loadPreview: function(cancellable, callback) {
+        let source = Global.sourceManager.getSourceByUrn(this.resourceUrn);
+
+        let authorizer = new Gd.GDataGoaAuthorizer({ goa_object: source.object });
+        let service = new GData.DocumentsService({ authorizer: authorizer });
+
+        // HACK: GJS doesn't support introspecting GTypes, so we need to use
+        // GObject.type_from_name(); but for that to work, we need at least one
+        // instance of the GType in question to have ever been created. Ensure that
+        let temp = new GData.DocumentsText();
+        service.query_single_entry_async
+            (service.get_primary_authorization_domain(),
+             this.identifier, null,
+             GObject.type_from_name('GDataDocumentsText'),
+             cancellable, Lang.bind(this,
+                 function(object, res) {
+                     let entry = null;
+                     try {
+                         entry = object.query_single_entry_finish(res);
+                     } catch (e) {
+                         log('Unable to query the GData entry: ' + e.toString());
+
+                         callback(null);
+                         return;
+                     }
+
+                     Gd.pdf_loader_load_entry_async
+                         (entry, service, cancellable, Lang.bind(this,
+                             function(source, res) {
+                                 let document = null;
+
+                                 try {
+                                     document = Gd.pdf_loader_load_entry_finish(res);
+                                 } catch (e) {
+                                     log('Unable to load the GData entry: ' + e.toString());
+                                 }
+
+                                 callback(document);
+                             }));
+                 }));
     }
 };
 

@@ -188,16 +188,12 @@ MainWindow.prototype = {
         }
 
         let doc = Global.documentManager.lookupDocument(urn);
+        this._loaderCancellable = new Gio.Cancellable();
 
-        TrackerUtils.sourceIdFromResourceUrn(doc.resourceUrn, Lang.bind(this,
-            function(sourceId) {
-                this._loaderCancellable = new Gio.Cancellable();
-                this._pdfLoader = new Gd.PdfLoader({ source_id: sourceId });
-                this._pdfLoader.load_uri_async(doc.identifier, this._loaderCancellable, Lang.bind(this, this._onDocumentLoaded));
+        this._loaderTimeout = Mainloop.timeout_add(_PDF_LOADER_TIMEOUT,
+            Lang.bind(this, this._onPdfLoaderTimeout));
 
-                this._loaderTimeout = Mainloop.timeout_add(_PDF_LOADER_TIMEOUT,
-                                                           Lang.bind(this, this._onPdfLoaderTimeout));
-            }));
+        doc.loadPreview(this._loaderCancellable, Lang.bind(this, this._onDocumentLoaded));
     },
 
     _onPdfLoaderTimeout: function() {
@@ -211,14 +207,9 @@ MainWindow.prototype = {
         return false;
     },
 
-    _onDocumentLoaded: function(loader, res) {
-        let document = null;
-        try {
-            document = loader.load_uri_finish(res);
-        } catch (e) {
-            log("Unable to load the PDF document: " + e.toString());
+    _onDocumentLoaded: function(document) {
+        if (!document)
             return;
-        }
 
         this._loaderCancellable = null;
         let model = EvView.DocumentModel.new_with_document(document);

@@ -44,6 +44,7 @@ Gd_1_0_gir_LIBS = libgdprivate-1.0.la
 Gd_1_0_gir_CFLAGS = $(AM_CPPFLAGS) $(gdprivate_cflags)
 Gd_1_0_gir_SCANNERFLAGS = --warn-all --symbol-prefix=gd --identifier-prefix=Gd
 Gd_1_0_gir_INCLUDES = \
+   GData-0.0 \
    Goa-1.0 \
    Gtk-3.0 \
    EvinceDocument-3.0 \

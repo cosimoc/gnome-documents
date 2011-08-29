@@ -23,43 +23,6 @@ const GLib = imports.gi.GLib;
 
 const Global = imports.global;
 
-function sourceIdFromResourceUrn(resourceUrn, callback) {
-    //FIXME: is this right?
-    if(resourceUrn[0] != '<')
-        resourceUrn = '<' + resourceUrn + '>';
-
-    let sparql = ('SELECT ?id WHERE { %s a nie:DataSource; nao:identifier ?id }').format(resourceUrn);
-
-    Global.connection.query_async
-        (sparql, null,
-         function(object, res) {
-             let cursor = null;
-             try {
-                 cursor = object.query_finish(res);
-             } catch (e) {
-                 log('Unable to resolve resource URN -> account ID: ' + e.toString());
-                 return;
-             }
-
-             cursor.next_async(null,
-                 function(object, res) {
-                     try {
-                         let valid = cursor.next_finish(res);
-
-                         if (!valid) {
-                             callback(null);
-                             return;
-                         }
-                     } catch (e) {
-                         log('Unable to resolve resource URN -> account ID: ' + e.toString());
-                     }
-
-                     let sourceId = cursor.get_string(0)[0];
-                     callback(sourceId);
-                 });
-         });
-}
-
 function resourceUrnFromSourceId(sourceId, callback) {
     let sparql = ('SELECT ?urn WHERE { ?urn a nie:DataSource; nao:identifier \"goa:documents:%s\" }').format(sourceId);
 

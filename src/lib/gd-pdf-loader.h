@@ -26,44 +26,24 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 #include <evince-document.h>
+#include <gdata/gdata.h>
 
 G_BEGIN_DECLS
 
-#define GD_TYPE_PDF_LOADER            (gd_pdf_loader_get_type ())
-#define GD_PDF_LOADER(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GD_TYPE_PDF_LOADER, GdPdfLoader))
-#define GD_IS_PDF_LOADER(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GD_TYPE_PDF_LOADER))
-#define GD_PDF_LOADER_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  GD_TYPE_PDF_LOADER, GdPdfLoaderClass))
-#define GD_IS_PDF_LOADER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass),  GD_TYPE_PDF_LOADER))
-#define GD_PDF_LOADER_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj),  GD_TYPE_PDF_LOADER, GdPdfLoaderClass))
-
-typedef struct _GdPdfLoader          GdPdfLoader;
-typedef struct _GdPdfLoaderPrivate   GdPdfLoaderPrivate;
-typedef struct _GdPdfLoaderClass     GdPdfLoaderClass;
-
-struct _GdPdfLoader
-{
-  GObject parent_instance;
-
-  GdPdfLoaderPrivate *priv;
-};
-
-struct _GdPdfLoaderClass
-{
-  GObjectClass parent_class;
-};
-
-GType    gd_pdf_loader_get_type     (void) G_GNUC_CONST;
-
-GdPdfLoader *gd_pdf_loader_new (const gchar *source_id);
-
-void gd_pdf_loader_load_uri_async (GdPdfLoader *self,
-                                   const gchar *uri,
+void gd_pdf_loader_load_uri_async (const gchar *uri,
                                    GCancellable *cancellable,
                                    GAsyncReadyCallback callback,
                                    gpointer user_data);
-EvDocument *gd_pdf_loader_load_uri_finish (GdPdfLoader *self,
-                                           GAsyncResult *res,
+EvDocument *gd_pdf_loader_load_uri_finish (GAsyncResult *res,
                                            GError **error);
+
+void gd_pdf_loader_load_entry_async (GDataEntry *entry,
+                                     GDataDocumentsService *service,
+                                     GCancellable *cancellable,
+                                     GAsyncReadyCallback callback,
+                                     gpointer user_data);
+EvDocument *gd_pdf_loader_load_entry_finish (GAsyncResult *res,
+                                             GError **error);
 
 G_END_DECLS
 

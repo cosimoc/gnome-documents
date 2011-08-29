@@ -34,26 +34,38 @@ const _ = imports.gettext.gettext;
 const Global = imports.global;
 const TrackerUtils = imports.trackerUtils;
 
-function Source(id, name, initCallback) {
-    this._init(id, name, initCallback);
+function Source(params) {
+    this._init(params);
 };
 
 Source.prototype = {
-    _init: function(id, name, initCallback) {
-        this.id = id;
-        this.name = name;
+    _init: function(params) {
+        this.id = null;
+        this.name = null;
+        this.object = null;
 
-        this._initCallback = initCallback;
+        if (params.object) {
+            this.object = params.object;
 
-        if (id == 'all' || id == 'local') {
-            this.resourceUrn = id;
+            let account = this.object.get_account();
+            this.id = account.get_id();
+            this.name = account.get_name();
+        } else {
+            this.id = params.id;
+            this.name = params.name;
+        }
+
+        this._initCallback = params.initCallback;
+
+        if (this.id == 'all' || this.id == 'local') {
+            this.resourceUrn = null;
             Mainloop.idle_add(Lang.bind(this,
                 function() {
                     this._initCallback();
                     return false;
                 }));
         } else {
-            TrackerUtils.resourceUrnFromSourceId(id, Lang.bind(this,
+            TrackerUtils.resourceUrnFromSourceId(this.id, Lang.bind(this,
                 function(resourceUrn) {
                     this.resourceUrn = resourceUrn;
                     this._initCallback();
@@ -124,8 +136,12 @@ SourceManager.prototype = {
 
         // two outstanding ops for the local sources, and one for the GOA client
         this._outstandingOps = 3;
-        this.sources.push(new Source('all', _("All"), Lang.bind(this, this._initSourceCollector)));
-        this.sources.push(new Source('local', _("Local"), Lang.bind(this, this._initSourceCollector)));
+        this.sources.push(new Source({ id: 'all',
+                                       name: _("All"),
+                                       initCallback: Lang.bind(this, this._initSourceCollector) }));
+        this.sources.push(new Source({ id: 'local',
+                                       name: _("Local"),
+                                       initCallback: Lang.bind(this, this._initSourceCollector) }));
 
         Goa.Client.new(null, Lang.bind(this, this._onGoaClientCreated));
     },
@@ -143,18 +159,15 @@ SourceManager.prototype = {
 
         accounts.forEach(Lang.bind(this,
             function(object) {
-                let account = object.get_account();
-                if (!account)
+                if (!object.get_account())
                     return;
 
                 if (!object.get_documents())
                     return;
 
-                let id = account.get_id();
-                let name = account.get_provider_name();
-
                 this._outstandingOps++;
-                this.sources.push(new Source(id, name, Lang.bind(this, this._initSourceCollector)));
+                this.sources.push(new Source({ object: object,
+                                               initCallback: Lang.bind(this, this._initSourceCollector) }));
             }));
 
         let activeSourceId = Global.settings.get_string('active-source');
@@ -191,6 +204,18 @@ SourceManager.prototype = {
 
     getActiveSourceFilter: function(subject) {
         return this.activeSource.getFilter(subject);
+    },
+
+    getSourceByUrn: function(resourceUrn) {
+        let matched = this.sources.filter(Lang.bind(this,
+            function(source) {
+                return (source.resourceUrn == resourceUrn);
+            }));
+
+        if (!matched.length)
+            return null;
+
+        return matched[0];
     }
 };
 Signals.addSignalMethods(SourceManager.prototype);
