@@ -29,6 +29,7 @@ const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
 
+const ErrorBox = imports.errorBox;
 const Global = imports.global;
 const LoadMore = imports.loadMore;
 const MainToolbar = imports.mainToolbar;
@@ -69,6 +70,8 @@ MainWindow.prototype = {
 
         Global.settings.connect('changed::list-view',
                                 Lang.bind(this, this._refreshViewSettings));
+        Global.errorHandler.connect('load-error',
+                                    Lang.bind(this, this._onLoadError));
 
         this._grid = new Gtk.Grid({ orientation: Gtk.Orientation.HORIZONTAL });
         this.window.add(this._grid);
@@ -196,6 +199,19 @@ MainWindow.prototype = {
         doc.loadPreview(this._loaderCancellable, Lang.bind(this, this._onDocumentLoaded));
     },
 
+    _onLoadError: function(manager, message, exception) {
+        if (this._loaderTimeout != 0) {
+            Mainloop.source_remove(this._loaderTimeout);
+            this._loaderTimeout = 0;
+        }
+
+        this._loaderCancellable = null;
+        this._prepareForPreview();
+
+        let errorBox = new ErrorBox.ErrorBox(message, exception.toString());
+        this._scrolledWin.add_with_viewport(errorBox.widget);
+    },
+
     _onPdfLoaderTimeout: function() {
         this._loaderTimeout = 0;
 
@@ -208,9 +224,6 @@ MainWindow.prototype = {
     },
 
     _onDocumentLoaded: function(document) {
-        if (!document)
-            return;
-
         this._loaderCancellable = null;
         let model = EvView.DocumentModel.new_with_document(document);
 

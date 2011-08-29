@@ -33,6 +33,7 @@ const Tracker = imports.gi.Tracker;
 const Categories = imports.categories;
 const ChangeMonitor = imports.changeMonitor;
 const Documents = imports.documents;
+const Error = imports.error;
 const FilterController = imports.filterController;
 const Format = imports.format;
 const Global = imports.global;
@@ -119,6 +120,7 @@ Application.prototype = {
         Global.offsetController = new OffsetController.OffsetController();
         Global.filterController = new FilterController.FilterController();
         Global.categoryManager = new Categories.CategoryManager();
+        Global.errorHandler = new Error.ErrorHandler();
 
         // connect to tracker
         Tracker.SparqlConnection.get_async(null, Lang.bind(this,

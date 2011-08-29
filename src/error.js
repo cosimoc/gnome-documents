@@ -19,14 +19,24 @@
  *
  */
 
-let application = null;
-let categoryManager = null;
-let connection = null;
-let documentManager = null;
-let errorHandler = null;
-let offsetController = null;
-let queryBuilder = null;
-let selectionController = null;
-let settings = null;
-let sourceManager = null;
-let trackerController = null;
+const Lang = imports.lang;
+const Signals = imports.signals;
+
+const _ = imports.gettext.gettext;
+
+function ErrorHandler() {
+    this._init();
+}
+
+ErrorHandler.prototype = {
+    _init: function() {
+    },
+
+    addLoadError: function(doc, exception) {
+        let message = _("Unable to load \"%s\" for preview").format(doc.title);
+        log('Error caught: ' + message + ' - ' + exception.toString());
+
+        this.emit('load-error', message, exception);
+    }
+};
+Signals.addSignalMethods(ErrorHandler.prototype);

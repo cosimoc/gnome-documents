@@ -4,6 +4,8 @@ dist_js_DATA = \
     categories.js \
     changeMonitor.js \
     documents.js \
+    error.js \
+    errorBox.js \
     filterController.js \
     gDataMiner.js \
     global.js \

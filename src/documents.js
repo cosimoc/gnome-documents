@@ -269,17 +269,13 @@ LocalDocument.prototype = {
     loadPreview: function(cancellable, callback) {
         Gd.pdf_loader_load_uri_async(this.uri, cancellable, Lang.bind(this,
             function(source, res) {
-                let document = null;
-
                 try {
-                    document = Gd.pdf_loader_load_uri_finish(res);
+                    let document = Gd.pdf_loader_load_uri_finish(res);
+                    callback(document);
                 } catch (e) {
-                    log('Unable to load the uri ' + this.uri + ' for preview: ' + e.toString());
+                    Global.errorHandler.addLoadError(this, e);
                 }
-
-                callback(document);
             }));
-
     }
 };
 
@@ -318,34 +314,36 @@ GoogleDocument.prototype = {
              cancellable, Lang.bind(this,
                  function(object, res) {
                      let entry = null;
+                     let exception = null;
+
                      try {
                          entry = object.query_single_entry_finish(res);
                      } catch (e) {
-                         log('Unable to query the GData entry: ' + e.toString());
+                         exception = e;
                      }
-                     callback(entry, service);
+
+                     callback(entry, service, exception);
                  }));
     },
 
     loadPreview: function(cancellable, callback) {
         this._createGDataEntry(cancellable, Lang.bind(this,
-            function(entry, service) {
-                if (!entry)
-                    callback(null);
+            function(entry, service, exception) {
+                if (exception) {
+                    Global.errorHandler.addLoadError(this, exception);
+                    return;
+                }
 
-                Gd.pdf_loader_load_entry_async
-                    (entry, service, cancellable, Lang.bind(this,
-                        function(source, res) {
-                            let document = null;
-
-                            try {
-                                document = Gd.pdf_loader_load_entry_finish(res);
-                            } catch (e) {
-                                log('Unable to load the GData entry: ' + e.toString());
-                            }
-
+            Gd.pdf_loader_load_entry_async
+                (entry, service, cancellable, Lang.bind(this,
+                    function(source, res) {
+                        try {
+                            let document = Gd.pdf_loader_load_entry_finish(res);
                             callback(document);
-                        }));
+                        } catch (e) {
+                            Global.errorHandler.addLoadError(this, e);
+                        }
+                    }));
             }));
     },
 
@@ -357,10 +355,13 @@ GoogleDocument.prototype = {
 
     setFavorite: function(favorite) {
         DocCommon.prototype.setFavorite.call(this, favorite);
+
         this._createGDataEntry(null, Lang.bind(this,
-            function(entry, service) {
-                if (!entry)
+            function(entry, service, exception) {
+                if (!entry) {
+                    log('Unable to call setFavorite on ' + this.title + ': ' + exception.toString());
                     return;
+                }
 
                 let starred = null;
                 let categories = entry.get_categories();
@@ -386,7 +387,7 @@ GoogleDocument.prototype = {
                              try {
                                  service.update_entry_finish(res);
                              } catch (e) {
-                                 log('Unable to update the entry ' + e.toString());
+                                 log('Unable to call setFavorite on ' + this.title + ': ' + e.toString());
                              }
                          }));
             }));
