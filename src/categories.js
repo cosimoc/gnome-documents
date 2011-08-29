@@ -24,6 +24,8 @@ const Signals = imports.signals;
 
 const _ = imports.gettext.gettext;
 
+const Global = imports.global;
+
 function Category(id, name, icon) {
     this._init(id, name, icon);
 };
@@ -35,11 +37,23 @@ Category.prototype = {
         this.icon = icon;
     },
 
-    getFilter: function() {
+    getWhere: function() {
         if (this.id == 'favorites')
             return '{ ?urn nao:hasTag nao:predefined-tag-favorite }';
 
-        return '';
+        // require to have a contributor, and creator, and they should be different
+        if (this.id == 'shared')
+            return '{ ?urn nco:contributor ?contributor . ?urn nco:creator ?creator FILTER (?contributor != ?creator ) }';
+
+        return '{ }';
+    },
+
+    getFilter: function(subject) {
+        // require to be not local
+        if (this.id == 'shared')
+            return Global.queryBuilder.buildFilterNotLocal(subject);
+
+        return '(true)';
     }
 };
 
@@ -54,8 +68,10 @@ CategoryManager.prototype = {
         this.categories.push(new Category('recent', _("New and Recent"), ''));
 
         this.categories.push(new Category('favorites', _("Favorites"), 'emblem-favorite-symbolic'));
-        this.categories.push(new Category('private', _("Private"), 'channel-secure-symbolic'));
         this.categories.push(new Category('shared', _("Shared with you"), 'emblem-shared-symbolic'));
+
+        // unimplemented
+        this.categories.push(new Category('private', _("Private"), 'channel-secure-symbolic'));
 
         this.setActiveCategoryId('recent');
     },
@@ -78,8 +94,12 @@ CategoryManager.prototype = {
         return this.activeCategory.id;
     },
 
-    getActiveCategoryFilter: function() {
-        return this.activeCategory.getFilter();
+    getActiveCategoryWhere: function() {
+        return this.activeCategory.getWhere();
+    },
+
+    getActiveCategoryFilter: function(subject) {
+        return this.activeCategory.getFilter(subject);
     }
 };
 Signals.addSignalMethods(CategoryManager.prototype);

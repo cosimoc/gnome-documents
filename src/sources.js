@@ -75,44 +75,12 @@ Source.prototype = {
 
     getFilter: function(subject) {
         if (this.id == 'local')
-            return this._buildFilterLocal(subject);
+            return Global.queryBuilder.buildFilterLocal(subject);
 
         if (this.id == 'all')
-            return this._buildFilterLocal(subject) + ' || ' + this._buildFilterNotLocal(subject);
+            return Global.queryBuilder.buildFilterLocal(subject) + ' || ' + Global.queryBuilder.buildFilterNotLocal(subject);
 
         return this._buildFilterResource(subject);
-    },
-
-    _buildFilterLocal: function(subject) {
-        let path;
-        let desktopURI;
-        let documentsURI;
-
-        path = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DESKTOP);
-        if (path)
-            desktopURI = Gio.file_new_for_path(path).get_uri();
-        else
-            desktopURI = '';
-
-        path = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DOCUMENTS);
-        if (path)
-            documentsURI = Gio.file_new_for_path(path).get_uri();
-        else
-            documentsURI = '';
-
-        let filter =
-            ('((fn:starts-with (nie:url(%s), "%s")) || ' +
-             '(fn:starts-with (nie:url(%s), "%s")))').format(subject, desktopURI,
-                                                             subject, documentsURI);
-
-        return filter;
-    },
-
-    _buildFilterNotLocal: function(subject) {
-        let filter =
-            ('(fn:contains(rdf:type(%s), \"RemoteDataObject\"))').format(subject);
-
-        return filter;
     },
 
     _buildFilterResource: function(subject) {

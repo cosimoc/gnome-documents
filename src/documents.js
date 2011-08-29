@@ -53,7 +53,10 @@ DocCommon.prototype = {
         this.pixbuf = null;
         this.defaultAppName = null;
 
-        this._populateFromCursor(cursor);
+        this.favorite = false;
+        this.shared = false;
+
+        this.populateFromCursor(cursor);
 
         this._refreshIconId =
             Global.settings.connect('changed::list-view',
@@ -82,7 +85,7 @@ DocCommon.prototype = {
                         function(object, res) {
                             let valid = object.next_finish(res);
                             if (valid)
-                                this._populateFromCursor(object);
+                                this.populateFromCursor(object);
                         }));
                 } catch (e) {
                     log('Unable to refresh file information: ' + e.toString());
@@ -91,7 +94,7 @@ DocCommon.prototype = {
             }));
     },
 
-    _populateFromCursor: function(cursor) {
+    populateFromCursor: function(cursor) {
         this.uri = cursor.get_string(Query.QueryColumns.URI)[0];
         this.urn = cursor.get_string(Query.QueryColumns.URN)[0];
         this.title = cursor.get_string(Query.QueryColumns.TITLE)[0];
@@ -116,11 +119,21 @@ DocCommon.prototype = {
     },
 
     checkEmblemsAndUpdateInfo: function() {
-        if (this.favorite) {
-            let emblemIcon = new Gio.ThemedIcon({ name: 'emblem-favorite' });
-            let emblem = new Gio.Emblem({ icon: emblemIcon });
+        let emblemIcons = [];
+
+        if (this.favorite)
+            emblemIcons.push(new Gio.ThemedIcon({ name: 'emblem-favorite' }));
+        if (this.shared)
+            emblemIcons.push(new Gio.ThemedIcon({ name: 'emblem-shared' }));
+
+        if (emblemIcons.length > 0) {
             let emblemedIcon = new Gio.EmblemedIcon({ gicon: this.pixbuf });
-            emblemedIcon.add_emblem(emblem);
+
+            emblemIcons.forEach(
+                function(emblemIcon) {
+                    let emblem = new Gio.Emblem({ icon: emblemIcon });
+                    emblemedIcon.add_emblem(emblem);
+                });
 
             let theme = Gtk.IconTheme.get_default();
 
@@ -334,6 +347,12 @@ GoogleDocument.prototype = {
                             callback(document);
                         }));
             }));
+    },
+
+    populateFromCursor: function(cursor) {
+        this.shared = cursor.get_boolean(Query.QueryColumns.SHARED);
+
+        DocCommon.prototype.populateFromCursor.call(this, cursor);
     },
 
     setFavorite: function(favorite) {

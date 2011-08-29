@@ -21,6 +21,9 @@
 
 const Global = imports.global;
 
+const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
+
 const QueryColumns = {
     URN: 0,
     URI: 1,
@@ -31,7 +34,8 @@ const QueryColumns = {
     TYPE: 6,
     RESOURCE_URN: 7,
     FAVORITE: 8,
-    TOTAL_COUNT: 9 // only in global query
+    SHARED: 9,
+    TOTAL_COUNT: 10 // only in global query
 };
 
 function QueryBuilder() {
@@ -40,6 +44,38 @@ function QueryBuilder() {
 
 QueryBuilder.prototype = {
     _init: function() {
+    },
+
+    buildFilterLocal: function(subject) {
+        let path;
+        let desktopURI;
+        let documentsURI;
+
+        path = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DESKTOP);
+        if (path)
+            desktopURI = Gio.file_new_for_path(path).get_uri();
+        else
+            desktopURI = '';
+
+        path = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DOCUMENTS);
+        if (path)
+            documentsURI = Gio.file_new_for_path(path).get_uri();
+        else
+            documentsURI = '';
+
+        let filter =
+            ('((fn:starts-with (nie:url(%s), "%s")) || ' +
+             '(fn:starts-with (nie:url(%s), "%s")))').format(subject, desktopURI,
+                                                             subject, documentsURI);
+
+        return filter;
+    },
+
+    buildFilterNotLocal: function(subject) {
+        let filter =
+            ('(fn:contains(rdf:type(%s), \"RemoteDataObject\"))').format(subject);
+
+        return filter;
     },
 
     _buildFilterSearch: function(subject) {
@@ -52,13 +88,15 @@ QueryBuilder.prototype = {
     },
 
     _buildFilterString: function(subject) {
-        let sparql = 'FILTER ((';
+        let sparql = 'FILTER (';
 
-        sparql += this._buildFilterSearch(subject);
-        sparql += ') && (';
-        sparql += Global.sourceManager.getActiveSourceFilter(subject);
+        sparql += '(' + this._buildFilterSearch(subject) + ')';
+        sparql += ' && ';
+        sparql += '(' + Global.sourceManager.getActiveSourceFilter(subject) + ')';
+        sparql += ' && ';
+        sparql += '(' + Global.categoryManager.getActiveCategoryFilter(subject) + ')';
 
-        sparql += '))';
+        sparql += ')';
 
         return sparql;
     },
@@ -84,21 +122,25 @@ QueryBuilder.prototype = {
         return sparql;
     },
 
+    _buildOptional: function() {
+        let sparql =
+            'OPTIONAL { ?urn nco:creator ?creator . } ' +
+            'OPTIONAL { ?urn nco:publisher ?publisher . } ';
+
+        return sparql;
+    },
+
     _buildQueryInternal: function(global) {
         let globalSparql =
-            'WHERE { ' +
-            'OPTIONAL { ?urn nco:creator ?creator . } ' +
-            'OPTIONAL { ?urn nco:publisher ?publisher . } ' +
-            '}';
+            'WHERE { ' + this._buildOptional() + '}';
 
         if (global) {
             globalSparql =
                 (this._buildTotalCounter() + // totalCount
                  'WHERE { ' +
                  this._buildTypeFilter('?urn') +
-                 'OPTIONAL { ?urn nco:creator ?creator . } ' +
-                 'OPTIONAL { ?urn nco:publisher ?publisher . } ' +
-                 Global.categoryManager.getActiveCategoryFilter() +
+                 this._buildOptional() +
+                 Global.categoryManager.getActiveCategoryWhere() +
                  this._buildFilterString('?urn') +
                  ' } ' +
                  'ORDER BY DESC (?mtime)' +
@@ -116,6 +158,7 @@ QueryBuilder.prototype = {
              'rdf:type(?urn) ' + // type
              'nie:dataSource(?urn) ' + // resource URN
              '( EXISTS { ?urn nao:hasTag nao:predefined-tag-favorite } ) ' + // favorite
+             '( EXISTS { ?urn nco:contributor ?contributor FILTER ( ?contributor != ?creator ) } ) ' + // shared
              globalSparql;
 
         return sparql;
