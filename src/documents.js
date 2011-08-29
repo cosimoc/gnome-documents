@@ -33,6 +33,7 @@ const Signals = imports.signals;
 const ChangeMonitor = imports.changeMonitor;
 const Global = imports.global;
 const Query = imports.query;
+const TrackerUtils = imports.trackerUtils;
 const Utils = imports.utils;
 
 function DocCommon(cursor) {
@@ -146,6 +147,10 @@ DocCommon.prototype = {
 
     open: function(screen, timestamp) {
         Gtk.show_uri(screen, this.uri, timestamp);
+    },
+
+    setFavorite: function(favorite) {
+        TrackerUtils.setFavorite(this.urn, favorite, null);
     }
 };
 Signals.addSignalMethods(DocCommon.prototype);
@@ -161,9 +166,6 @@ LocalDocument.prototype = {
 
     _init: function(cursor) {
         DocCommon.prototype._init.call(this, cursor);
-
-        // overridden
-        this.identifier = cursor.get_string(Query.QueryColumns.URI)[0];
     },
 
     refreshIcon: function() {
@@ -270,6 +272,9 @@ LocalDocument.prototype = {
     }
 };
 
+const _GOOGLE_DOCS_SCHEME_LABELS = "http://schemas.google.com/g/2005/labels";
+const _GOOGLE_DOCS_TERM_STARRED = "http://schemas.google.com/g/2005/labels#starred";
+
 function GoogleDocument(cursor) {
     this._init(cursor);
 }
@@ -285,7 +290,7 @@ GoogleDocument.prototype = {
         this.defaultAppName = _("Google Docs");
     },
 
-    loadPreview: function(cancellable, callback) {
+    _createGDataEntry: function(cancellable, callback) {
         let source = Global.sourceManager.getSourceByUrn(this.resourceUrn);
 
         let authorizer = new Gd.GDataGoaAuthorizer({ goa_object: source.object });
@@ -306,25 +311,68 @@ GoogleDocument.prototype = {
                          entry = object.query_single_entry_finish(res);
                      } catch (e) {
                          log('Unable to query the GData entry: ' + e.toString());
-
-                         callback(null);
-                         return;
                      }
-
-                     Gd.pdf_loader_load_entry_async
-                         (entry, service, cancellable, Lang.bind(this,
-                             function(source, res) {
-                                 let document = null;
-
-                                 try {
-                                     document = Gd.pdf_loader_load_entry_finish(res);
-                                 } catch (e) {
-                                     log('Unable to load the GData entry: ' + e.toString());
-                                 }
-
-                                 callback(document);
-                             }));
+                     callback(entry, service);
                  }));
+    },
+
+    loadPreview: function(cancellable, callback) {
+        this._createGDataEntry(cancellable, Lang.bind(this,
+            function(entry, service) {
+                if (!entry)
+                    callback(null);
+
+                Gd.pdf_loader_load_entry_async
+                    (entry, service, cancellable, Lang.bind(this,
+                        function(source, res) {
+                            let document = null;
+
+                            try {
+                                document = Gd.pdf_loader_load_entry_finish(res);
+                            } catch (e) {
+                                log('Unable to load the GData entry: ' + e.toString());
+                            }
+
+                            callback(document);
+                        }));
+            }));
+    },
+
+    setFavorite: function(favorite) {
+        DocCommon.prototype.setFavorite.call(this, favorite);
+        this._createGDataEntry(null, Lang.bind(this,
+            function(entry, service) {
+                if (!entry)
+                    return;
+
+                let starred = null;
+                let categories = entry.get_categories();
+                categories.forEach(
+                    function(category) {
+                        if (category.scheme == _GOOGLE_DOCS_SCHEME_LABELS &&
+                            category.term == _GOOGLE_DOCS_TERM_STARRED)
+                            starred = category;
+                    });
+
+                if (!starred) {
+                    starred = new GData.Category({ scheme: _GOOGLE_DOCS_SCHEME_LABELS,
+                                                   term: _GOOGLE_DOCS_TERM_STARRED });
+                    entry.add_category(starred);
+                }
+
+                starred.set_label(favorite ? 'starred' : '');
+
+                service.update_entry_async
+                    (service.get_primary_authorization_domain(),
+                     entry, null, Lang.bind(this,
+                         function(service, res) {
+                             try {
+                                 service.update_entry_finish(res);
+                             } catch (e) {
+                                 log('Unable to update the entry ' + e.toString());
+                             }
+                         }));
+            }));
     }
 };
 

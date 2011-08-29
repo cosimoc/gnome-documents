@@ -27,6 +27,7 @@
 #include "gd-gdata-miner.h"
 
 #define DATASOURCE_URN "urn:nepomuk:datasource:86ec9bc9-c242-427f-aa19-77b5a2c9b6f0"
+#define STARRED_CATEGORY_TERM "http://schemas.google.com/g/2005/labels#starred"
 
 G_DEFINE_TYPE (GdGDataMiner, gd_gdata_miner, G_TYPE_OBJECT)
 
@@ -53,6 +54,42 @@ static gchar *
 _tracker_utils_format_into_graph (const gchar *graph)
 {
   return (graph != NULL) ? g_strdup_printf ("INTO <%s> ", graph) : NULL;
+}
+
+static gboolean
+_tracker_sparql_connection_toggle_favorite (TrackerSparqlConnection *connection,
+                                            GCancellable *cancellable,
+                                            GError **error,
+                                            const gchar *resource,
+                                            gboolean favorite)
+{
+  GString *update;
+  const gchar *op_str = NULL;
+  gboolean retval = TRUE;
+
+  if (favorite)
+    op_str = "INSERT OR REPLACE";
+  else
+    op_str = "DELETE";
+
+  update = g_string_new (NULL);
+  g_string_append_printf 
+    (update,
+     "%s { <%s> nao:hasTag nao:predefined-tag-favorite }",
+     op_str, resource);
+
+  g_debug ("Toggle favorite: query %s", update->str);
+
+  tracker_sparql_connection_update (connection, update->str, 
+                                    G_PRIORITY_DEFAULT, cancellable,
+                                    error);
+
+  g_string_free (update, TRUE);
+
+  if (*error != NULL)
+    retval = FALSE;
+
+  return retval;
 }
 
 static gboolean
@@ -334,15 +371,17 @@ gd_gdata_miner_process_entry (GdGDataMiner *self,
   GDataEntry *entry = GDATA_ENTRY (doc_entry);
   gchar *resource;
   gchar *date, *resource_url;
+  const gchar *identifier, *class = NULL;
 
-  const gchar *path, *identifier, *class;
   GList *authors, *l;
   GDataAuthor *author;
-  TrackerSparqlBuilder *builder;
-  gint64 mtime;
 
   GDataLink *alternate;
   const gchar *alternate_uri;
+
+  GList *categories;
+  GDataCategory *category;
+  gboolean starred = FALSE;
 
   if (!GDATA_IS_DOCUMENTS_DOCUMENT (doc_entry))
     {
@@ -382,6 +421,28 @@ gd_gdata_miner_process_entry (GdGDataMiner *self,
      self->priv->cancellable, error,
      identifier, resource,
      "nie:url", alternate_uri);
+
+  if (*error != NULL)
+    goto out;
+
+  categories = gdata_entry_get_categories (entry);
+  for (l = categories; l != NULL; l = l->next)
+    {
+      category = l->data;
+      if (g_strcmp0 (gdata_category_get_term (category), STARRED_CATEGORY_TERM) == 0)
+        {
+          starred = TRUE;
+          break;
+        }
+    }
+
+  _tracker_sparql_connection_toggle_favorite
+    (self->priv->connection, 
+     self->priv->cancellable, error,
+     resource, starred);
+
+  if (*error != NULL)
+    goto out;
 
   _tracker_sparql_connection_insert_or_replace_triple
     (self->priv->connection, 

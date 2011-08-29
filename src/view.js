@@ -59,7 +59,7 @@ ContextMenu.prototype = {
 
         favoriteItem.connect('activate', Lang.bind(this,
             function() {
-                TrackerUtils.setFavorite(urn, !isFavorite, null);
+                doc.setFavorite(!isFavorite);
             }));
 
         this.widget.show_all();
