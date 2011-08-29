@@ -104,8 +104,6 @@ DocCommon.prototype = {
         this.pixbuf = Utils.pixbufFromRdfType(this._type);
 
         // sanitize
-        if (!this.author)
-            this.author = '';
         if (!this.uri)
             this.uri = '';
 

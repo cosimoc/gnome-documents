@@ -110,7 +110,7 @@ QueryBuilder.prototype = {
             'SELECT DISTINCT ?urn ' + // urn
              'nie:url(?urn) ' + // uri
              'tracker:coalesce(nie:title(?urn), nfo:fileName(?urn)) ' + // title
-             'tracker:coalesce(nco:fullname(?creator), nco:fullname(?publisher)) ' + // author
+             'tracker:coalesce(nco:fullname(?creator), nco:fullname(?publisher), \'\') ' + // author
              'tracker:coalesce(nfo:fileLastModified(?urn), nie:contentLastModified(?urn)) AS ?mtime ' + // mtime
              'nao:identifier(?urn) ' + // identifier
              'rdf:type(?urn) ' + // type
