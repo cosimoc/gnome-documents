@@ -22,7 +22,7 @@
 const Gtk = imports.gi.Gtk;
 const _ = imports.gettext.gettext;
 
-const _SPINNER_SIZE = 125;
+const _SPINNER_SIZE = 128;
 
 function SpinnerBox() {
     this._init();
