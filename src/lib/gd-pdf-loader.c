@@ -28,6 +28,7 @@
 #include <gdata/gdata.h>
 #include <evince-document.h>
 #include <evince-view.h>
+#include <glib/gstdio.h>
 
 /* TODO:
  * - investigate the GDataDocumentsType bug
@@ -289,8 +290,6 @@ os_splice_ready_cb (GObject *source,
                     gpointer user_data)
 {
   GError *error = NULL;
-  GFile *file;
-  gchar *uri;
   PdfLoadJob *job = user_data;
 
   g_output_stream_splice_finish (G_OUTPUT_STREAM (source), res, &error);
@@ -437,7 +436,6 @@ pdf_load_job_from_google_documents_with_object (PdfLoadJob *job,
                                                 GoaObject *object)
 {
   EGDataGoaAuthorizer *authorizer;
-  GDataDocumentsService *service;
 
   authorizer = e_gdata_goa_authorizer_new (object);
   job->gdata_service = GDATA_SERVICE (gdata_documents_service_new (GDATA_AUTHORIZER (authorizer)));
@@ -868,7 +866,6 @@ gd_pdf_loader_load_uri_finish (GdPdfLoader *self,
                                GAsyncResult *res,
                                GError **error)
 {
-  gpointer r;
   EvDocument *retval;
 
   if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (res), error))

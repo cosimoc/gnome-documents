@@ -63,6 +63,8 @@ struct _GdGDataMinerClass {
   GObjectClass parent_class;
 };
 
+GType gd_gdata_miner_get_type(void);
+
 GdGDataMiner * gd_gdata_miner_new (void);
 
 void           gd_gdata_miner_refresh_db_async (GdGDataMiner *self,

@@ -228,7 +228,6 @@ _tracker_sparql_connection_ensure_resource (TrackerSparqlConnection *connection,
   GVariant *insert_res;
   GVariantIter *iter;
   gchar *key = NULL, *val = NULL;
-  GHashTable *nodes;
 
   /* build the inner query with all the classes */
   va_start (args, class);

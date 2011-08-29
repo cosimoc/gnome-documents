@@ -73,9 +73,6 @@ gd_two_lines_renderer_prepare_layouts (GdTwoLinesRenderer *self,
                                        GtkWidget *widget)
 {
   gchar *text = NULL;
-  gint wrap_width;
-  PangoWrapMode wrap_mode;
-  PangoAlignment alignment;
 
   g_object_get (self,
                 "text", &text,
@@ -157,7 +154,7 @@ gd_two_lines_renderer_render (GtkCellRenderer      *cell,
   gint line_one_height;
   GtkStateFlags state;
   GdkRectangle render_area = *cell_area;
-  guint xpad, ypad;
+  gint xpad, ypad;
 
   context = gtk_widget_get_style_context (widget);
   gd_two_lines_renderer_prepare_layouts (self, widget);

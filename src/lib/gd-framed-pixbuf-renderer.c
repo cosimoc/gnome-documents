@@ -51,7 +51,6 @@ gd_framed_pixbuf_renderer_render (GtkCellRenderer      *cell,
                                   const GdkRectangle   *cell_area,
                                   GtkCellRendererState  flags)
 {
-  GdFramedPixbufRenderer *self = GD_FRAMED_PIXBUF_RENDERER (cell);
   GtkStyleContext *context;
 
   context = gtk_widget_get_style_context (widget);
