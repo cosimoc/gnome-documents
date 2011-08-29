@@ -323,13 +323,9 @@ Signals.addSignalMethods(DocumentManager.prototype);
 
 const ModelColumns = {
     URN: 0,
-    URI: 1,
-    TITLE: 2,
-    AUTHOR: 3,
-    MTIME: 4,
-    ICON: 5,
-    RESOURCE_URN: 6,
-    FAVORITE: 7
+    TITLE: 1,
+    AUTHOR: 2,
+    ICON: 3
 };
 
 function DocumentModel() {
@@ -359,20 +355,18 @@ DocumentModel.prototype = {
         let treePath = this.model.get_path(iter);
 
         Gd.store_set(this.model, iter,
-                     doc.urn, doc.uri,
+                     doc.urn,
                      doc.title, doc.author,
-                     doc.mtime, doc.pixbuf,
-                     doc.resourceUrn, doc.favorite);
+                     doc.pixbuf);
 
         doc.connect('info-updated', Lang.bind(this,
             function() {
                 let objectIter = this.model.get_iter(treePath)[1];
                 if (objectIter)
                     Gd.store_set(this.model, iter,
-                                 doc.urn, doc.uri,
+                                 doc.urn,
                                  doc.title, doc.author,
-                                 doc.mtime, doc.pixbuf,
-                                 doc.resourceUrn, doc.favorite);
+                                 doc.pixbuf);
             }));
     }
 };

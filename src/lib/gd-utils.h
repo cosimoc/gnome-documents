@@ -25,21 +25,12 @@
 #include <gtk/gtk.h>
 
 GtkListStore* gd_create_list_store (void);
-
 void gd_store_set (GtkListStore *store,
                    GtkTreeIter *iter,
                    const gchar *urn,
-                   const gchar *uri,
                    const gchar *title,
                    const gchar *author,
-                   const gchar *mtime,
-                   GdkPixbuf *icon,
-                   const gchar *resource_urn,
-                   gboolean favorite);
-
-void gd_store_update_icon (GtkListStore *store,
-                           GtkTreeIter *iter,
-                           GdkPixbuf *icon);
+                   GdkPixbuf *icon);
 
 GtkListStore* gd_create_sources_store (void);
 void gd_sources_store_set (GtkListStore *store,

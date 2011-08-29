@@ -37,48 +37,26 @@
 GtkListStore *
 gd_create_list_store (void)
 {
-  return gtk_list_store_new (8,
+  return gtk_list_store_new (4,
                              G_TYPE_STRING, // URN
-                             G_TYPE_STRING, // URI
                              G_TYPE_STRING, // TITLE
                              G_TYPE_STRING, // AUTHOR
-                             G_TYPE_STRING, // MTIME
-                             GDK_TYPE_PIXBUF, // ICON
-                             G_TYPE_STRING, // RESOURCE_URN
-                             G_TYPE_BOOLEAN); // FAVORITE
+                             GDK_TYPE_PIXBUF); // ICON
 }
 
 void
 gd_store_set (GtkListStore *store,
               GtkTreeIter *iter,
               const gchar *urn,
-              const gchar *uri,
               const gchar *title,
               const gchar *author,
-              const gchar *mtime,
-              GdkPixbuf *icon,
-              const gchar *resource_urn,
-              gboolean favorite)
+              GdkPixbuf *icon)
 {
   gtk_list_store_set (store, iter,
                       0, urn,
-                      1, uri,
-                      2, title,
-                      3, author,
-                      4, mtime,
-                      5, icon,
-                      6, resource_urn,
-                      7, favorite,
-                      -1);
-}
-
-void
-gd_store_update_icon (GtkListStore *store,
-                      GtkTreeIter *iter,
-                      GdkPixbuf *icon)
-{
-  gtk_list_store_set (store, iter,
-                      5, icon,
+                      1, title,
+                      2, author,
+                      3, icon,
                       -1);
 }
 
