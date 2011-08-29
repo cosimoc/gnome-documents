@@ -1,0 +1,9 @@
+0.1.90 - "Vintage Hardware"
+===========================
+
+- Initial release of GNOME Documents
+- Ships with a GOA/GData/Tracker miner to index Google Docs
+- Support for favorite and shared categories
+- Support for preview
+- Support for grid and list views
+- Support for title search
