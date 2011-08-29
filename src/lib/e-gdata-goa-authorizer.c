@@ -16,16 +16,16 @@
  *
  */
 
-#include "e-gdata-goa-authorizer.h"
+#include "gd-gdata-goa-authorizer.h"
 
 #include <string.h>
 #include <oauth.h>
 
-#define E_GDATA_GOA_AUTHORIZER_GET_PRIVATE(obj) \
+#define GD_GDATA_GOA_AUTHORIZER_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_GDATA_GOA_AUTHORIZER, EGDataGoaAuthorizerPrivate))
+	((obj), GD_TYPE_GDATA_GOA_AUTHORIZER, GdGDataGoaAuthorizerPrivate))
 
-struct _EGDataGoaAuthorizerPrivate {
+struct _GdGDataGoaAuthorizerPrivate {
 
 	/* GDataAuthorizer methods must be thread-safe. */
 	GMutex *mutex;
@@ -45,16 +45,16 @@ enum {
 };
 
 /* Forward Declarations */
-static void	e_gdata_goa_authorizer_interface_init
+static void	gd_gdata_goa_authorizer_interface_init
 					(GDataAuthorizerInterface *interface);
 
 G_DEFINE_TYPE_WITH_CODE (
-	EGDataGoaAuthorizer,
-	e_gdata_goa_authorizer,
+	GdGDataGoaAuthorizer,
+	gd_gdata_goa_authorizer,
 	G_TYPE_OBJECT,
 	G_IMPLEMENT_INTERFACE (
 		GDATA_TYPE_AUTHORIZER,
-		e_gdata_goa_authorizer_interface_init))
+		gd_gdata_goa_authorizer_interface_init))
 
 static GHashTable *
 gdata_goa_authorizer_get_parameters (SoupMessage *message,
@@ -185,7 +185,7 @@ static void
 gdata_goa_authorizer_add_authorization (GDataAuthorizer *authorizer,
                                         SoupMessage *message)
 {
-	EGDataGoaAuthorizerPrivate *priv;
+	GdGDataGoaAuthorizerPrivate *priv;
 	GoaOAuthBased *goa_oauth_based;
 	GHashTable *parameters;
 	GString *authorization;
@@ -205,7 +205,7 @@ gdata_goa_authorizer_add_authorization (GDataAuthorizer *authorizer,
 
 	/* This MUST be called with the mutex already locked. */
 
-	priv = E_GDATA_GOA_AUTHORIZER_GET_PRIVATE (authorizer);
+	priv = GD_GDATA_GOA_AUTHORIZER_GET_PRIVATE (authorizer);
 
 	/* We can't add an Authorization header without an access token.
 	 * Let the request fail.  GData should refresh us if it gets back
@@ -261,21 +261,21 @@ static gboolean
 gdata_goa_authorizer_is_authorized (GDataAuthorizer *authorizer,
                                     GDataAuthorizationDomain *domain)
 {
-	EGDataGoaAuthorizerPrivate *priv;
+	GdGDataGoaAuthorizerPrivate *priv;
 
 	/* This MUST be called with the mutex already locked. */
 
 	if (domain == NULL)
 		return TRUE;
 
-	priv = E_GDATA_GOA_AUTHORIZER_GET_PRIVATE (authorizer);
+	priv = GD_GDATA_GOA_AUTHORIZER_GET_PRIVATE (authorizer);
 	domain = g_hash_table_lookup (priv->authorization_domains, domain);
 
 	return (domain != NULL);
 }
 
 static void
-gdata_goa_authorizer_set_goa_object (EGDataGoaAuthorizer *authorizer,
+gdata_goa_authorizer_set_goa_object (GdGDataGoaAuthorizer *authorizer,
                                      GoaObject *goa_object)
 {
 	g_return_if_fail (GOA_IS_OBJECT (goa_object));
@@ -293,7 +293,7 @@ gdata_goa_authorizer_set_property (GObject *object,
 	switch (property_id) {
 		case PROP_GOA_OBJECT:
 			gdata_goa_authorizer_set_goa_object (
-				E_GDATA_GOA_AUTHORIZER (object),
+				GD_GDATA_GOA_AUTHORIZER (object),
 				g_value_get_object (value));
 			return;
 	}
@@ -311,8 +311,8 @@ gdata_goa_authorizer_get_property (GObject *object,
 		case PROP_GOA_OBJECT:
 			g_value_set_object (
 				value,
-				e_gdata_goa_authorizer_get_goa_object (
-				E_GDATA_GOA_AUTHORIZER (object)));
+				gd_gdata_goa_authorizer_get_goa_object (
+				GD_GDATA_GOA_AUTHORIZER (object)));
 			return;
 	}
 
@@ -322,9 +322,9 @@ gdata_goa_authorizer_get_property (GObject *object,
 static void
 gdata_goa_authorizer_dispose (GObject *object)
 {
-	EGDataGoaAuthorizerPrivate *priv;
+	GdGDataGoaAuthorizerPrivate *priv;
 
-	priv = E_GDATA_GOA_AUTHORIZER_GET_PRIVATE (object);
+	priv = GD_GDATA_GOA_AUTHORIZER_GET_PRIVATE (object);
 
 	if (priv->goa_object != NULL) {
 		g_object_unref (priv->goa_object);
@@ -334,15 +334,15 @@ gdata_goa_authorizer_dispose (GObject *object)
 	g_hash_table_remove_all (priv->authorization_domains);
 
 	/* Chain up to parent's dispose() method. */
-	G_OBJECT_CLASS (e_gdata_goa_authorizer_parent_class)->dispose (object);
+	G_OBJECT_CLASS (gd_gdata_goa_authorizer_parent_class)->dispose (object);
 }
 
 static void
 gdata_goa_authorizer_finalize (GObject *object)
 {
-	EGDataGoaAuthorizerPrivate *priv;
+	GdGDataGoaAuthorizerPrivate *priv;
 
-	priv = E_GDATA_GOA_AUTHORIZER_GET_PRIVATE (object);
+	priv = GD_GDATA_GOA_AUTHORIZER_GET_PRIVATE (object);
 
 	g_mutex_free (priv->mutex);
 	g_free (priv->access_token);
@@ -350,21 +350,21 @@ gdata_goa_authorizer_finalize (GObject *object)
 	g_hash_table_destroy (priv->authorization_domains);
 
 	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (e_gdata_goa_authorizer_parent_class)->finalize (object);
+	G_OBJECT_CLASS (gd_gdata_goa_authorizer_parent_class)->finalize (object);
 }
 
 static void
 gdata_goa_authorizer_constructed (GObject *object)
 {
-	EGDataGoaAuthorizerPrivate *priv;
+	GdGDataGoaAuthorizerPrivate *priv;
 	GType service_type;
 	GList *domains;
 
 	/* Chain up to parent's constructed() method. */
-	G_OBJECT_CLASS (e_gdata_goa_authorizer_parent_class)->
+	G_OBJECT_CLASS (gd_gdata_goa_authorizer_parent_class)->
 		constructed (object);
 
-	priv = E_GDATA_GOA_AUTHORIZER_GET_PRIVATE (object);
+	priv = GD_GDATA_GOA_AUTHORIZER_GET_PRIVATE (object);
 
 	/* XXX We would need to generalize this to make the class
 	 *     reusable for other service types, probably by adding
@@ -386,9 +386,9 @@ gdata_goa_authorizer_process_request (GDataAuthorizer *authorizer,
                                       GDataAuthorizationDomain *domain,
                                       SoupMessage *message)
 {
-	EGDataGoaAuthorizerPrivate *priv;
+	GdGDataGoaAuthorizerPrivate *priv;
 
-	priv = E_GDATA_GOA_AUTHORIZER_GET_PRIVATE (authorizer);
+	priv = GD_GDATA_GOA_AUTHORIZER_GET_PRIVATE (authorizer);
 
 	g_mutex_lock (priv->mutex);
 
@@ -402,10 +402,10 @@ static gboolean
 gdata_goa_authorizer_is_authorized_for_domain (GDataAuthorizer *authorizer,
                                                GDataAuthorizationDomain *domain)
 {
-	EGDataGoaAuthorizerPrivate *priv;
+	GdGDataGoaAuthorizerPrivate *priv;
 	gboolean authorized;
 
-	priv = E_GDATA_GOA_AUTHORIZER_GET_PRIVATE (authorizer);
+	priv = GD_GDATA_GOA_AUTHORIZER_GET_PRIVATE (authorizer);
 
 	g_mutex_lock (priv->mutex);
 
@@ -421,12 +421,12 @@ gdata_goa_authorizer_refresh_authorization (GDataAuthorizer *authorizer,
                                             GCancellable *cancellable,
                                             GError **error)
 {
-	EGDataGoaAuthorizerPrivate *priv;
+	GdGDataGoaAuthorizerPrivate *priv;
 	GoaOAuthBased *goa_oauth_based;
 	GoaAccount *goa_account;
 	gboolean success = TRUE;
 
-	priv = E_GDATA_GOA_AUTHORIZER_GET_PRIVATE (authorizer);
+	priv = GD_GDATA_GOA_AUTHORIZER_GET_PRIVATE (authorizer);
 
 	g_mutex_lock (priv->mutex);
 
@@ -455,11 +455,11 @@ gdata_goa_authorizer_refresh_authorization (GDataAuthorizer *authorizer,
 }
 
 static void
-e_gdata_goa_authorizer_class_init (EGDataGoaAuthorizerClass *class)
+gd_gdata_goa_authorizer_class_init (GdGDataGoaAuthorizerClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (EGDataGoaAuthorizerPrivate));
+	g_type_class_add_private (class, sizeof (GdGDataGoaAuthorizerPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = gdata_goa_authorizer_set_property;
@@ -482,7 +482,7 @@ e_gdata_goa_authorizer_class_init (EGDataGoaAuthorizerClass *class)
 }
 
 static void
-e_gdata_goa_authorizer_interface_init (GDataAuthorizerInterface *interface)
+gd_gdata_goa_authorizer_interface_init (GDataAuthorizerInterface *interface)
 {
 	interface->process_request =
 		gdata_goa_authorizer_process_request;
@@ -493,7 +493,7 @@ e_gdata_goa_authorizer_interface_init (GDataAuthorizerInterface *interface)
 }
 
 static void
-e_gdata_goa_authorizer_init (EGDataGoaAuthorizer *authorizer)
+gd_gdata_goa_authorizer_init (GdGDataGoaAuthorizer *authorizer)
 {
 	GHashTable *authorization_domains;
 
@@ -503,25 +503,25 @@ e_gdata_goa_authorizer_init (EGDataGoaAuthorizer *authorizer)
 		(GDestroyNotify) g_object_unref,
 		(GDestroyNotify) NULL);
 
-	authorizer->priv = E_GDATA_GOA_AUTHORIZER_GET_PRIVATE (authorizer);
+	authorizer->priv = GD_GDATA_GOA_AUTHORIZER_GET_PRIVATE (authorizer);
 	authorizer->priv->mutex = g_mutex_new ();
 	authorizer->priv->authorization_domains = authorization_domains;
 }
 
-EGDataGoaAuthorizer *
-e_gdata_goa_authorizer_new (GoaObject *goa_object)
+GdGDataGoaAuthorizer *
+gd_gdata_goa_authorizer_new (GoaObject *goa_object)
 {
 	g_return_val_if_fail (GOA_IS_OBJECT (goa_object), NULL);
 
 	return g_object_new (
-		E_TYPE_GDATA_GOA_AUTHORIZER,
+		GD_TYPE_GDATA_GOA_AUTHORIZER,
 		"goa-object", goa_object, NULL);
 }
 
 GoaObject *
-e_gdata_goa_authorizer_get_goa_object (EGDataGoaAuthorizer *authorizer)
+gd_gdata_goa_authorizer_get_goa_object (GdGDataGoaAuthorizer *authorizer)
 {
-	g_return_val_if_fail (E_IS_GDATA_GOA_AUTHORIZER (authorizer), NULL);
+	g_return_val_if_fail (GD_IS_GDATA_GOA_AUTHORIZER (authorizer), NULL);
 
 	return authorizer->priv->goa_object;
 }

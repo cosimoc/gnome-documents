@@ -16,51 +16,51 @@
  *
  */
 
-#ifndef E_GDATA_GOA_AUTHORIZER_H
-#define E_GDATA_GOA_AUTHORIZER_H
+#ifndef GD_GDATA_GOA_AUTHORIZER_H
+#define GD_GDATA_GOA_AUTHORIZER_H
 
 #include <gdata/gdata.h>
 #include <goa/goa.h>
 
 /* Standard GObject macros */
-#define E_TYPE_GDATA_GOA_AUTHORIZER \
-	(e_gdata_goa_authorizer_get_type ())
-#define E_GDATA_GOA_AUTHORIZER(obj) \
-	(G_TYPE_CHECK_INSTANCE_CAST \
-	((obj), E_TYPE_GDATA_GOA_AUTHORIZER, EGDataGoaAuthorizer))
-#define E_GDATA_GOA_AUTHORIZER_CLASS(cls) \
-	(G_TYPE_CHECK_CLASS_CAST \
-	((cls), E_TYPE_GDATA_GOA_AUTHORIZER, EGDataGoaAuthorizerClass))
-#define E_IS_GDATA_GOA_AUTHORIZER(obj) \
-	(G_TYPE_CHECK_INSTANCE_TYPE \
-	((obj), E_TYPE_GDATA_GOA_AUTHORIZER))
-#define E_IS_GDATA_GOA_AUTHORIZER_CLASS(cls) \
-	(G_TYPE_CHECK_CLASS_TYPE \
-	((cls), E_TYPE_GDATA_GOA_AUTHORIZER))
-#define E_GDATA_GOA_AUTHORIZER_GET_CLASS(obj) \
-	(G_TYPE_INSTANCE_GET_CLASS \
-	((obj), E_TYPE_GDATA_GOA_AUTHORIZER, EGDataGoaAuthorizerClass))
+#define GD_TYPE_GDATA_GOA_AUTHORIZER \
+	(gd_gdata_goa_authorizer_get_type ())
+#define GD_GDATA_GOA_AUTHORIZER(obj) \
+	(G_TYPGD_CHECK_INSTANCGD_CAST \
+	((obj), GD_TYPE_GDATA_GOA_AUTHORIZER, GdGDataGoaAuthorizer))
+#define GD_GDATA_GOA_AUTHORIZER_CLASS(cls) \
+	(G_TYPGD_CHECK_CLASS_CAST \
+	((cls), GD_TYPE_GDATA_GOA_AUTHORIZER, GdGDataGoaAuthorizerClass))
+#define GD_IS_GDATA_GOA_AUTHORIZER(obj) \
+	(G_TYPGD_CHECK_INSTANCGD_TYPE \
+	((obj), GD_TYPE_GDATA_GOA_AUTHORIZER))
+#define GD_IS_GDATA_GOA_AUTHORIZER_CLASS(cls) \
+	(G_TYPGD_CHECK_CLASS_TYPE \
+	((cls), GD_TYPE_GDATA_GOA_AUTHORIZER))
+#define GD_GDATA_GOA_AUTHORIZER_GET_CLASS(obj) \
+	(G_TYPGD_INSTANCGD_GET_CLASS \
+	((obj), GD_TYPE_GDATA_GOA_AUTHORIZER, GdGDataGoaAuthorizerClass))
 
 G_BEGIN_DECLS
 
-typedef struct _EGDataGoaAuthorizer EGDataGoaAuthorizer;
-typedef struct _EGDataGoaAuthorizerClass EGDataGoaAuthorizerClass;
-typedef struct _EGDataGoaAuthorizerPrivate EGDataGoaAuthorizerPrivate;
+typedef struct _GdGDataGoaAuthorizer GdGDataGoaAuthorizer;
+typedef struct _GdGDataGoaAuthorizerClass GdGDataGoaAuthorizerClass;
+typedef struct _GdGDataGoaAuthorizerPrivate GdGDataGoaAuthorizerPrivate;
 
-struct _EGDataGoaAuthorizer {
+struct _GdGDataGoaAuthorizer {
 	GObject parent;
-	EGDataGoaAuthorizerPrivate *priv;
+	GdGDataGoaAuthorizerPrivate *priv;
 };
 
-struct _EGDataGoaAuthorizerClass {
+struct _GdGDataGoaAuthorizerClass {
 	GObjectClass parent_class;
 };
 
-GType		e_gdata_goa_authorizer_get_type (void);
-EGDataGoaAuthorizer *
-		e_gdata_goa_authorizer_new
+GType		gd_gdata_goa_authorizer_get_type (void);
+GdGDataGoaAuthorizer *
+		gd_gdata_goa_authorizer_new
 					(GoaObject *goa_object);
-GoaObject *	e_gdata_goa_authorizer_get_goa_object
-					(EGDataGoaAuthorizer *authorizer);
+GoaObject *	gd_gdata_goa_authorizer_get_goa_object
+					(GdGDataGoaAuthorizer *authorizer);
 
-#endif /* E_GDATA_GOA_AUTHORIZER_H */
+#endif /* GD_GDATA_GOA_AUTHORIZER_H */

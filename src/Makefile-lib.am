@@ -8,8 +8,8 @@ gdprivate_cflags = \
     $(DOCUMENTS_CFLAGS)
 
 gdprivate_source_h = \
-    lib/e-gdata-goa-authorizer.c \
-    lib/e-gdata-goa-authorizer.h \
+    lib/gd-gdata-goa-authorizer.c \
+    lib/gd-gdata-goa-authorizer.h \
     lib/gd-utils.h \
     lib/gd-framed-pixbuf-renderer.h \
     lib/gd-pdf-loader.h \
@@ -44,6 +44,7 @@ Gd_1_0_gir_LIBS = libgdprivate-1.0.la
 Gd_1_0_gir_CFLAGS = $(AM_CPPFLAGS) $(gdprivate_cflags)
 Gd_1_0_gir_SCANNERFLAGS = --warn-all --symbol-prefix=gd --identifier-prefix=Gd
 Gd_1_0_gir_INCLUDES = \
+   Goa-1.0 \
    Gtk-3.0 \
    EvinceDocument-3.0 \
    EvinceView-3.0
