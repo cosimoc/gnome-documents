@@ -2,6 +2,7 @@
 data/gnome-documents.desktop.in.in
 data/org.gnome.documents.gschema.xml.in
 src/categories.js
+src/documents.js
 src/loadMore.js
 src/mainToolbar.js
 src/mainWindow.js
