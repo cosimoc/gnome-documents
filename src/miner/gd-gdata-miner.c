@@ -130,30 +130,41 @@ _tracker_sparql_connection_insert_or_replace_triple (TrackerSparqlConnection *co
 }
 
 static gboolean
-_tracker_sparql_connection_insert_or_replace_triple_printf (TrackerSparqlConnection *connection,
-                                                            GCancellable *cancellable,
-                                                            GError **error,
-                                                            const gchar *graph,
-                                                            const gchar *resource,
-                                                            const gchar *property_name,
-                                                            const gchar *format,
-                                                            ...)
+_tracker_sparql_connection_set_triple (TrackerSparqlConnection *connection,
+                                       GCancellable *cancellable,
+                                       GError **error,
+                                       const gchar *graph,
+                                       const gchar *resource,
+                                       const gchar *property_name,
+                                       const gchar *property_value)
 {
-  va_list args;
-  gchar *property_value;
-  gboolean retval;
+  GString *delete;
+  gboolean retval = TRUE;
 
-  va_start (args, format);
-  property_value = g_strdup_vprintf (format, args);
-  va_end (args);
+  delete = g_string_new (NULL);
+  g_string_append_printf 
+    (delete,
+     "DELETE { <%s> %s ?val } WHERE { <%s> %s ?val }", resource,
+     property_name, resource, property_name);
+
+  tracker_sparql_connection_update (connection, delete->str, 
+                                    G_PRIORITY_DEFAULT, cancellable,
+                                    error);
+
+  g_string_free (delete, TRUE);
+  if (*error != NULL)
+    {
+      retval = FALSE;
+      goto out;
+    }
 
   retval = 
-    _tracker_sparql_connection_insert_or_replace_triple (connection, cancellable, error,
+    _tracker_sparql_connection_insert_or_replace_triple (connection, 
+                                                         cancellable, error,
                                                          graph, resource,
                                                          property_name, property_value);
 
-  g_free (property_value);
-
+ out:
   return retval;
 }
 
@@ -342,12 +353,6 @@ _tracker_sparql_connection_ensure_resource (TrackerSparqlConnection *connection,
 
   g_debug ("Created a new resource: %s", retval);
 
-  _tracker_sparql_connection_insert_or_replace_triple_printf 
-    (connection, cancellable, error,
-     graph, retval,
-     "nie:dataSource",
-     "<%s>", DATASOURCE_URN);
-
  out:
   g_clear_object (&cursor);
   return retval;
@@ -412,6 +417,11 @@ gd_gdata_miner_process_entry (GdGDataMiner *self,
 
   if (*error != NULL)
     goto out;
+
+  _tracker_sparql_connection_set_triple 
+    (self->priv->connection, self->priv->cancellable, error,
+     identifier, resource,
+     "nie:dataSource", DATASOURCE_URN);
 
   alternate = gdata_entry_look_up_link (entry, GDATA_LINK_ALTERNATE);
   alternate_uri = gdata_link_get_uri (alternate);
