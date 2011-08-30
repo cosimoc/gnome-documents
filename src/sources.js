@@ -140,7 +140,7 @@ SourceManager.prototype = {
                 this._outstandingOps++;
                 let source = new Source({ object: object,
                                           initCallback: Lang.bind(this, this._initSourceCollector) });
-                this._sources.push[source.id] = source;
+                this._sources[source.id] = source;
             }));
 
         let activeSourceId = Global.settings.get_string('active-source');
