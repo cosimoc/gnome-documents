@@ -19,7 +19,10 @@
  *
  */
 
+const Lang = imports.lang;
 const Signals = imports.signals;
+
+const Global = imports.global;
 
 const _OFFSET_STEP = 50;
 
@@ -40,9 +43,28 @@ OffsetController.prototype = {
     },
 
     // to be called by the model
-    setItemCount: function(itemCount) {
-        this._itemCount = itemCount;
-        this.emit('item-count-changed', this._itemCount);
+    resetItemCount: function() {
+        Global.connection.query_async
+            (Global.queryBuilder.buildCountQuery(), null, Lang.bind(this,
+                function(object, res) {
+                    let cursor = null;
+                    try {
+                        cursor = object.query_finish(res);
+                    } catch (e) {
+                        log('Unable to execute count query: ' + e.toString());
+                        return;
+                    }
+
+                    cursor.next_async(null, Lang.bind(this,
+                        function(object, res) {
+                            let valid = object.next_finish(res);
+                            if (!valid)
+                                return;
+
+                            this._itemCount = cursor.get_integer(0);
+                            this.emit('item-count-changed', this._itemCount);
+                        }));
+                }));
     },
 
     // to be called by the model

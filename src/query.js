@@ -34,8 +34,7 @@ const QueryColumns = {
     TYPE: 6,
     RESOURCE_URN: 7,
     FAVORITE: 8,
-    SHARED: 9,
-    TOTAL_COUNT: 10 // only in global query
+    SHARED: 9
 };
 
 function QueryBuilder() {
@@ -46,7 +45,7 @@ QueryBuilder.prototype = {
     _init: function() {
     },
 
-    buildFilterLocal: function(subject) {
+    buildFilterLocal: function() {
         let path;
         let desktopURI;
         let documentsURI;
@@ -64,60 +63,49 @@ QueryBuilder.prototype = {
             documentsURI = '';
 
         let filter =
-            ('((fn:starts-with (nie:url(%s), "%s")) || ' +
-             '(fn:starts-with (nie:url(%s), "%s")))').format(subject, desktopURI,
-                                                             subject, documentsURI);
+            ('((fn:starts-with (nie:url(?urn), "%s")) || ' +
+             '(fn:starts-with (nie:url(?urn), "%s")))').format(desktopURI, documentsURI);
 
         return filter;
     },
 
-    buildFilterNotLocal: function(subject) {
+    buildFilterNotLocal: function() {
         let filter =
-            ('(fn:contains(rdf:type(%s), \"RemoteDataObject\"))').format(subject);
+            '(fn:contains(rdf:type(?urn), \"RemoteDataObject\"))';
 
         return filter;
     },
 
-    _buildFilterSearch: function(subject) {
+    _buildFilterSearch: function() {
         let filter =
             ('fn:contains ' +
-             '(fn:lower-case (tracker:coalesce(nie:title(%s), nfo:fileName(%s))), ' +
-             '"%s")').format(subject, subject, Global.filterController.getFilter());
+             '(fn:lower-case (tracker:coalesce(nie:title(?urn), nfo:fileName(?urn))), ' +
+             '"%s")').format(Global.filterController.getFilter());
 
         return filter;
     },
 
-    _buildFilterString: function(subject) {
+    _buildFilterString: function() {
         let sparql = 'FILTER (';
 
-        sparql += '(' + this._buildFilterSearch(subject) + ')';
+        sparql += '(' + this._buildFilterSearch() + ')';
         sparql += ' && ';
-        sparql += '(' + Global.sourceManager.getActiveSourceFilter(subject) + ')';
+        sparql += '(' + Global.sourceManager.getActiveSourceFilter() + ')';
         sparql += ' && ';
-        sparql += '(' + Global.categoryManager.getActiveCategoryFilter(subject) + ')';
+        sparql += '(' + Global.categoryManager.getActiveCategoryFilter() + ')';
 
         sparql += ')';
 
         return sparql;
     },
 
-    _buildTypeFilter: function(subject) {
+    _buildTypeFilter: function() {
         let sparql =
-            ('{ %s a nfo:PaginatedTextDocument } ' +
-             'UNION ' +
-             '{ %s a nfo:Spreadsheet } ' +
-             'UNION ' +
-             '{ %s a nfo:Presentation } ').format(subject, subject, subject);
-
-        return sparql;
-    },
-
-    _buildTotalCounter: function() {
-        let sparql =
-            '(SELECT DISTINCT COUNT(?doc) WHERE { ' +
-            this._buildTypeFilter('?doc') +
-            this._buildFilterString('?doc') +
-            '}) ';
+            '{ ?urn a nfo:PaginatedTextDocument } ' +
+            'UNION ' +
+            '{ ?urn a nfo:Spreadsheet } ' +
+            'UNION ' +
+            '{ ?urn a nfo:Presentation } ';
 
         return sparql;
     },
@@ -136,12 +124,11 @@ QueryBuilder.prototype = {
 
         if (global) {
             globalSparql =
-                (this._buildTotalCounter() + // totalCount
-                 'WHERE { ' +
-                 this._buildTypeFilter('?urn') +
+                ('WHERE { ' +
+                 this._buildTypeFilter() +
                  this._buildOptional() +
                  Global.categoryManager.getActiveCategoryWhere() +
-                 this._buildFilterString('?urn') +
+                 this._buildFilterString() +
                  ' } ' +
                  'ORDER BY DESC (?mtime)' +
                  'LIMIT %d OFFSET %d').format(Global.offsetController.getOffsetStep(),
@@ -171,5 +158,15 @@ QueryBuilder.prototype = {
 
     buildGlobalQuery: function() {
         return this._buildQueryInternal(true);
+    },
+
+    buildCountQuery: function() {
+        let sparql =
+            'SELECT DISTINCT COUNT(?urn) WHERE { ' +
+            this._buildTypeFilter() +
+            this._buildFilterString() +
+            '}';
+
+        return sparql;
     }
 };

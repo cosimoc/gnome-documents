@@ -73,19 +73,19 @@ Source.prototype = {
         }
     },
 
-    getFilter: function(subject) {
+    getFilter: function() {
         if (this.id == 'local')
-            return Global.queryBuilder.buildFilterLocal(subject);
+            return Global.queryBuilder.buildFilterLocal();
 
         if (this.id == 'all')
-            return Global.queryBuilder.buildFilterLocal(subject) + ' || ' + Global.queryBuilder.buildFilterNotLocal(subject);
+            return Global.queryBuilder.buildFilterLocal() + ' || ' + Global.queryBuilder.buildFilterNotLocal();
 
-        return this._buildFilterResource(subject);
+        return this._buildFilterResource();
     },
 
-    _buildFilterResource: function(subject) {
+    _buildFilterResource: function() {
         let filter =
-            ('(nie:dataSource(%s) = "%s")').format(subject, this.resourceUrn);
+            ('(nie:dataSource(?urn) = "%s")').format(this.resourceUrn);
 
         return filter;
     }
@@ -170,8 +170,8 @@ SourceManager.prototype = {
         return this.activeSource.id;
     },
 
-    getActiveSourceFilter: function(subject) {
-        return this.activeSource.getFilter(subject);
+    getActiveSourceFilter: function() {
+        return this.activeSource.getFilter();
     },
 
     getSourceByUrn: function(resourceUrn) {

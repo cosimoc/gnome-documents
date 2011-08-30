@@ -88,7 +88,7 @@ TrackerController.prototype = {
             Global.errorHandler.addQueryError(exception);
     },
 
-    _onCursorNext: function(cursor, res, addCount) {
+    _onCursorNext: function(cursor, res) {
         try {
             let valid = cursor.next_finish(res);
 
@@ -102,17 +102,14 @@ TrackerController.prototype = {
             return;
         }
 
-        if (addCount)
-            this._offsetController.setItemCount(cursor.get_integer(Query.QueryColumns.TOTAL_COUNT));
-
         Global.documentManager.addDocument(cursor);
-        cursor.next_async(null, Lang.bind(this, this._onCursorNext, false));
+        cursor.next_async(null, Lang.bind(this, this._onCursorNext));
     },
 
     _onQueryExecuted: function(object, res) {
         try {
             let cursor = object.query_finish(res);
-            cursor.next_async(null, Lang.bind(this, this._onCursorNext, true));
+            cursor.next_async(null, Lang.bind(this, this._onCursorNext));
         } catch (e) {
             this._onQueryFinished(e);
         }
@@ -126,7 +123,7 @@ TrackerController.prototype = {
     _refresh: function() {
         Global.selectionController.freezeSelection(true);
         Global.documentManager.clear();
-        this._offsetController.setItemCount(0);
+        this._offsetController.resetItemCount();
 
         this._performCurrentQuery();
     },

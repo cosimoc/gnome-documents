@@ -48,10 +48,10 @@ Category.prototype = {
         return '{ }';
     },
 
-    getFilter: function(subject) {
+    getFilter: function() {
         // require to be not local
         if (this.id == 'shared')
-            return Global.queryBuilder.buildFilterNotLocal(subject);
+            return Global.queryBuilder.buildFilterNotLocal();
 
         return '(true)';
     }
@@ -96,8 +96,8 @@ CategoryManager.prototype = {
         return this.activeCategory.getWhere();
     },
 
-    getActiveCategoryFilter: function(subject) {
-        return this.activeCategory.getFilter(subject);
+    getActiveCategoryFilter: function() {
+        return this.activeCategory.getFilter();
     },
 
     getCategories: function() {
