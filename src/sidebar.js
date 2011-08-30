@@ -53,13 +53,13 @@ SidebarModel.prototype = {
         this.model = Gd.create_sidebar_store();
         this._categoryManager = Global.categoryManager;
 
-        let categories = this._categoryManager.categories;
-        categories.forEach(Lang.bind(this,
-            function(category) {
-                iter = this.model.append();
-                Gd.sidebar_store_set(this.model, iter,
-                                     category.id, category.name, category.icon, false);
-            }));
+        let categories = this._categoryManager.getCategories();
+        for (idx in categories) {
+            let category = categories[idx];
+            iter = this.model.append();
+            Gd.sidebar_store_set(this.model, iter,
+                                 category.id, category.name, category.icon, false);
+        };
     }
 };
 

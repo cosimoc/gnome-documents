@@ -438,7 +438,7 @@ function DocumentManager() {
 
 DocumentManager.prototype = {
     _init: function() {
-        this._docs = [];
+        this._docs = {};
 
         this._pixbufFrame = GdkPixbuf.Pixbuf.new_from_file(Path.ICONS_DIR + 'thumbnail-frame.png');
     },
@@ -461,15 +461,15 @@ DocumentManager.prototype = {
         else
             doc = new LocalDocument(cursor);
 
-        this._docs.push(doc);
+        this._docs[doc.urn] = doc;
         this.emit('new-document', doc);
     },
 
     clear: function() {
-        this._docs.forEach(function(doc) {
-            doc.destroy();
-        });
-        this._docs = [];
+        for (idx in this._docs) {
+            this._docs[idx].destroy();
+        };
+        this._docs = {};
         this.emit('clear');
     },
 
@@ -478,15 +478,12 @@ DocumentManager.prototype = {
     },
 
     lookupDocument: function(urn) {
-        let matched = this._docs.filter(
-            function(doc) {
-                return (doc.urn == urn);
-            });
+        let document = null;
 
-        if (!matched.length)
-            return null;
+        if (this._docs[urn])
+            document = this._docs[urn];
 
-        return matched[0];
+        return document;
     }
 };
 Signals.addSignalMethods(DocumentManager.prototype);
@@ -510,10 +507,9 @@ DocumentModel.prototype = {
         this._documentManager.connect('clear', Lang.bind(this, this._onManagerClear));
         this._documentManager.connect('new-document', Lang.bind(this, this._onNewDocument));
 
-        this._documentManager.getDocuments().forEach(Lang.bind(this,
-            function(document) {
-                this._onNewDocument(this._documentManager, document);
-            }));
+        let documents = this._documentManager.getDocuments();
+        for (idx in this._documentManager.getDocuments())
+            this._onNewDocument(this._documentManager, documents[idx]);
     },
 
     _onManagerClear: function() {

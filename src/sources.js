@@ -98,18 +98,22 @@ function SourceManager(initCallback) {
 SourceManager.prototype = {
     _init: function(initCallback) {
         this._client = null;
-        this.sources = [];
+        this._sources = {};
 
         this._initCallback = initCallback;
 
         // two outstanding ops for the local sources, and one for the GOA client
         this._outstandingOps = 3;
-        this.sources.push(new Source({ id: 'all',
-                                       name: _("All"),
-                                       initCallback: Lang.bind(this, this._initSourceCollector) }));
-        this.sources.push(new Source({ id: 'local',
-                                       name: _("Local"),
-                                       initCallback: Lang.bind(this, this._initSourceCollector) }));
+
+        let source = new Source({ id: 'all',
+                                  name: _("All"),
+                                  initCallback: Lang.bind(this, this._initSourceCollector) });
+        this._sources[source.id] = source;
+
+        source = new Source({ id: 'local',
+                              name: _("Local"),
+                              initCallback: Lang.bind(this, this._initSourceCollector) });
+        this._sources[source.id] = source;
 
         Goa.Client.new(null, Lang.bind(this, this._onGoaClientCreated));
     },
@@ -134,8 +138,9 @@ SourceManager.prototype = {
                     return;
 
                 this._outstandingOps++;
-                this.sources.push(new Source({ object: object,
-                                               initCallback: Lang.bind(this, this._initSourceCollector) }));
+                let source = new Source({ object: object,
+                                          initCallback: Lang.bind(this, this._initSourceCollector) });
+                this._sources.push[source.id] = source;
             }));
 
         let activeSourceId = Global.settings.get_string('active-source');
@@ -152,15 +157,10 @@ SourceManager.prototype = {
     },
 
     setActiveSourceId: function(id) {
-        let matched = this.sources.filter(Lang.bind(this,
-            function(source) {
-                return (source.id == id);
-            }));
-
-        if (!matched.length)
+        if (!this._sources[id])
             return;
 
-        this.activeSource = matched[0];
+        this.activeSource = this._sources[id];
         Global.settings.set_string('active-source', this.activeSource.id);
 
         this.emit('active-source-changed');
@@ -175,15 +175,19 @@ SourceManager.prototype = {
     },
 
     getSourceByUrn: function(resourceUrn) {
-        let matched = this.sources.filter(Lang.bind(this,
-            function(source) {
-                return (source.resourceUrn == resourceUrn);
-            }));
+        let source = null;
+        for (idx in this._sources) {
+            if (this._sources[idx].resourceUrn == resourceUrn) {
+                source = this._sources[idx];
+                break;
+            }
+        }
 
-        if (!matched.length)
-            return null;
+        return source;
+    },
 
-        return matched[0];
+    getSources: function() {
+        return this._sources;
     }
 };
 Signals.addSignalMethods(SourceManager.prototype);
@@ -209,13 +213,13 @@ SourceModel.prototype = {
         Gd.sources_store_set(this.model, iter,
                              '', _("Sources"), true);
 
-        let sources = this._sourceManager.sources;
-        sources.forEach(Lang.bind(this,
-            function(source) {
-                iter = this.model.append();
-                Gd.sources_store_set(this.model, iter,
-                                     source.id, source.name, false);
-            }));
+        let sources = this._sourceManager.getSources();
+        for (idx in sources) {
+            let source = sources[idx];
+            iter = this.model.append();
+            Gd.sources_store_set(this.model, iter,
+                                 source.id, source.name, false);
+        };
     }
 };
 

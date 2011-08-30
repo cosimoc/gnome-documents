@@ -63,30 +63,28 @@ function CategoryManager() {
 
 CategoryManager.prototype = {
     _init: function() {
-        this.categories = [];
+        this._categories = {};
 
-        this.categories.push(new Category('recent', _("New and Recent"), ''));
-
-        this.categories.push(new Category('favorites', _("Favorites"), 'emblem-favorite-symbolic'));
-        this.categories.push(new Category('shared', _("Shared with you"), 'emblem-shared-symbolic'));
+        let category;
+        category = new Category('recent', _("New and Recent"), '');
+        this._categories[category.id] = category;
+        category = new Category('favorites', _("Favorites"), 'emblem-favorite-symbolic');
+        this._categories[category.id] = category;
+        category = new Category('shared', _("Shared with you"), 'emblem-shared-symbolic');
+        this._categories[category.id] = category;
 
         // unimplemented
-        this.categories.push(new Category('private', _("Private"), 'channel-secure-symbolic'));
+        category = new Category('private', _("Private"), 'channel-secure-symbolic');
+        this._categories[category.id] = category;
 
         this.setActiveCategoryId('recent');
     },
 
     setActiveCategoryId: function(id) {
-        let matched = this.categories.filter(Lang.bind(this,
-            function(category) {
-                return (category.id == id);
-            }));
-
-        if (!matched.length)
+        if (!this._categories[id])
             return;
 
-        this.activeCategory = matched[0];
-
+        this.activeCategory = this._categories[id];
         this.emit('active-category-changed');
     },
 
@@ -100,6 +98,10 @@ CategoryManager.prototype = {
 
     getActiveCategoryFilter: function(subject) {
         return this.activeCategory.getFilter(subject);
+    },
+
+    getCategories: function() {
+        return this._categories;
     }
 };
 Signals.addSignalMethods(CategoryManager.prototype);
