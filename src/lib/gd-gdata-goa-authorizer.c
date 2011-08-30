@@ -508,6 +508,12 @@ gd_gdata_goa_authorizer_init (GdGDataGoaAuthorizer *authorizer)
 	authorizer->priv->authorization_domains = authorization_domains;
 }
 
+/**
+ * gd_gdata_goa_authorizer_new:
+ * @goa_object:
+ *
+ * Returns: (transfer full):
+ */
 GdGDataGoaAuthorizer *
 gd_gdata_goa_authorizer_new (GoaObject *goa_object)
 {
@@ -518,6 +524,12 @@ gd_gdata_goa_authorizer_new (GoaObject *goa_object)
 		"goa-object", goa_object, NULL);
 }
 
+/**
+ * gd_gdata_goa_authorizer_get_goa_object:
+  * @authorizer:
+ *
+ * Returns: (transfer none):
+ */
 GoaObject *
 gd_gdata_goa_authorizer_get_goa_object (GdGDataGoaAuthorizer *authorizer)
 {
