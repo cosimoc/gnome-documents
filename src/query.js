@@ -80,7 +80,11 @@ QueryBuilder.prototype = {
         let filter =
             ('fn:contains ' +
              '(fn:lower-case (tracker:coalesce(nie:title(?urn), nfo:fileName(?urn))), ' +
-             '"%s")').format(Global.filterController.getFilter());
+             '"%s") ||' +
+             'fn:contains ' +
+             '(fn:lower-case (tracker:coalesce(nco:fullname(?creator), nco:fullname(?publisher))), ' +
+             '"%s")').format(Global.filterController.getFilter(),
+                             Global.filterController.getFilter());
 
         return filter;
     },
@@ -164,6 +168,7 @@ QueryBuilder.prototype = {
         let sparql =
             'SELECT DISTINCT COUNT(?urn) WHERE { ' +
             this._buildTypeFilter() +
+            this._buildOptional() +
             this._buildFilterString() +
             '}';
 
