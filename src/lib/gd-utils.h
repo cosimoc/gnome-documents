@@ -56,5 +56,12 @@ gboolean gd_queue_thumbnail_job_for_file_finish (GAsyncResult *res);
 void gd_gtk_tree_view_set_activate_on_single_click (GtkTreeView *tree_view,
                                                     gboolean should_activate);
 
+GdkPixbuf * gd_embed_image_in_frame (GdkPixbuf *source_image,
+                                     GdkPixbuf *frame_image,
+                                     int left_offset,
+                                     int top_offset,
+                                     int right_offset,
+                                     int bottom_offset);
+
 #endif /* __GD_UTILS_H__ */
                                   

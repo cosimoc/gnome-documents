@@ -11,14 +11,12 @@ gdprivate_source_h = \
     lib/gd-gdata-goa-authorizer.c \
     lib/gd-gdata-goa-authorizer.h \
     lib/gd-utils.h \
-    lib/gd-framed-pixbuf-renderer.h \
     lib/gd-pdf-loader.h \
     lib/gd-two-lines-renderer.h \
     $(NULL)
 
 gdprivate_source_c = \
     lib/gd-utils.c \
-    lib/gd-framed-pixbuf-renderer.c \
     lib/gd-pdf-loader.c \
     lib/gd-two-lines-renderer.c \
     $(NULL)

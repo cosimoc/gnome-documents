@@ -1,2 +1,3 @@
 let LOCALE_DIR = "@localedir@";
 let STYLE_DIR = "@pkgdatadir@/style/";
+let ICONS_DIR = "@pkgdatadir@/icons/";

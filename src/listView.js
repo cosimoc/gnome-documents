@@ -76,8 +76,8 @@ ListView.prototype = {
         this.widget.append_column(col);
 
         let pixbufRenderer =
-            new Gd.FramedPixbufRenderer({ xalign: 0.5,
-                                          yalign: 0.5 });
+            new Gtk.CellRendererPixbuf({ xalign: 0.5,
+                                         yalign: 0.5 });
 
         col.pack_start(pixbufRenderer, false);
         col.add_attribute(pixbufRenderer,

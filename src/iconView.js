@@ -75,8 +75,8 @@ IconView.prototype = {
 
     createRenderers: function() {
         let pixbufRenderer =
-            new Gd.FramedPixbufRenderer({ xalign: 0.5,
-                                          yalign: 0.5 });
+            new Gtk.CellRendererPixbuf({ xalign: 0.5,
+                                         yalign: 0.5 });
 
         this.widget.pack_start(pixbufRenderer, false);
         this.widget.add_attribute(pixbufRenderer,

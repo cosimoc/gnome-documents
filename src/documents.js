@@ -22,6 +22,7 @@
 const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const Gd = imports.gi.Gd;
+const Gdk = imports.gi.Gdk;
 const GData = imports.gi.GData;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
@@ -32,9 +33,12 @@ const Signals = imports.signals;
 
 const ChangeMonitor = imports.changeMonitor;
 const Global = imports.global;
+const Path = imports.path;
 const Query = imports.query;
 const TrackerUtils = imports.trackerUtils;
 const Utils = imports.utils;
+
+const _THUMBNAIL_FRAME = 3;
 
 function DocCommon(cursor) {
     this._init(cursor);
@@ -55,6 +59,8 @@ DocCommon.prototype = {
 
         this.favorite = false;
         this.shared = false;
+
+        this._thumbnailed = false;
 
         this.populateFromCursor(cursor);
 
@@ -115,16 +121,38 @@ DocCommon.prototype = {
 
     refreshIcon: function() {
         this.pixbuf = Utils.pixbufFromRdfType(this._type);
-        this.checkEmblemsAndUpdateInfo();
+        this.checkEffectsAndUpdateInfo();
     },
 
-    checkEmblemsAndUpdateInfo: function() {
+    _createSymbolicEmblem: function(name) {
+        let symbolicName = name + '-symbolic';
+        let icon = new Gio.ThemedIcon({ name: symbolicName });
+
+        let theme = Gtk.IconTheme.get_default();
+        let info = theme.lookup_by_gicon(icon, 64, Gtk.IconLookupFlags.FORCE_SIZE);
+
+        let rgba = new Gdk.RGBA();
+        rgba.parse("#3465a4");
+
+        let pix = null;
+
+        try {
+            pix = info.load_symbolic(rgba, null, null, null, null)[0];
+        } catch (e) {
+            pix = new Gio.ThemedIcon({ name: name });
+        }
+
+        return pix;
+    },
+
+    checkEffectsAndUpdateInfo: function() {
         let emblemIcons = [];
+        let pixbuf = this.pixbuf;
 
         if (this.favorite)
-            emblemIcons.push(new Gio.ThemedIcon({ name: 'emblem-favorite' }));
+            emblemIcons.push(this._createSymbolicEmblem('emblem-favorite'));
         if (this.shared)
-            emblemIcons.push(new Gio.ThemedIcon({ name: 'emblem-shared' }));
+            emblemIcons.push(this._createSymbolicEmblem('emblem-shared'));
 
         if (emblemIcons.length > 0) {
             let emblemedIcon = new Gio.EmblemedIcon({ gicon: this.pixbuf });
@@ -142,11 +170,20 @@ DocCommon.prototype = {
                                                      Math.max(this.pixbuf.get_width(),
                                                               this.pixbuf.get_height()),
                                                      Gtk.IconLookupFlags.FORCE_SIZE);
-                this.pixbuf = iconInfo.load_icon();
+
+                pixbuf = iconInfo.load_icon();
             } catch (e) {
                 log('Unable to render the emblem: ' + e.toString());
             }
         }
+
+        if (this.thumbnailed)
+            this.pixbuf = Gd.embed_image_in_frame(pixbuf,
+                Global.documentManager.getPixbufFrame(),
+                _THUMBNAIL_FRAME, _THUMBNAIL_FRAME,
+                _THUMBNAIL_FRAME, _THUMBNAIL_FRAME);
+        else
+            this.pixbuf = pixbuf;
 
         this.emit('info-updated');
     },
@@ -202,10 +239,10 @@ LocalDocument.prototype = {
 
         let thumbPath = info.get_attribute_byte_string(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH);
         if (thumbPath) {
-            this.pixbuf =
-                GdkPixbuf.Pixbuf.new_from_file_at_size(thumbPath,
-                                                       Utils.getIconSize(),
-                                                       Utils.getIconSize());
+            this.pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(thumbPath,
+                                                                 Utils.getIconSize(),
+                                                                 Utils.getIconSize());
+            this.thumbnailed = true;
             haveNewIcon = true;
         } else {
             let icon = info.get_icon();
@@ -217,6 +254,7 @@ LocalDocument.prototype = {
                                                      Gtk.IconLookupFlags.GENERIC_FALLBACK);
                 try {
                     this.pixbuf = iconInfo.load_icon();
+                    this.thumbnailed = false;
                     haveNewIcon = true;
                 } catch (e) {
                     log('Unable to load an icon from theme for file at ' + this.uri + ': ' + e.toString());
@@ -229,7 +267,7 @@ LocalDocument.prototype = {
         }
 
         if (haveNewIcon)
-            this.checkEmblemsAndUpdateInfo();
+            this.checkEffectsAndUpdateInfo();
     },
 
     _onQueueThumbnailJob: function(object, res) {
@@ -254,15 +292,15 @@ LocalDocument.prototype = {
             return;
         }
 
-        let thumbPath = info.get_attribute_byte_string(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH);
-
-        if (thumbPath) {
+        this._thumbPath = info.get_attribute_byte_string(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH);
+        if (this._thumbPath) {
             this.pixbuf =
-                GdkPixbuf.Pixbuf.new_from_file_at_size(thumbPath,
+                GdkPixbuf.Pixbuf.new_from_file_at_size(this._thumbPath,
                                                        Utils.getIconSize(),
                                                        Utils.getIconSize());
+            this.thumbnailed = true;
 
-            this.checkEmblemsAndUpdateInfo();
+            this.checkEffectsAndUpdateInfo();
         }
     },
 
@@ -401,11 +439,17 @@ function DocumentManager() {
 DocumentManager.prototype = {
     _init: function() {
         this._docs = [];
+
+        this._pixbufFrame = GdkPixbuf.Pixbuf.new_from_file(Path.ICONS_DIR + 'thumbnail-frame.png');
     },
 
     _identifierIsGoogle: function(identifier) {
         return (identifier &&
                 (identifier.indexOf('https://docs.google.com') != -1));
+    },
+
+    getPixbufFrame: function() {
+        return this._pixbufFrame;
     },
 
     addDocument: function(cursor) {
