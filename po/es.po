@@ -1,0 +1,115 @@
+# Spanish translation for gnome-documents.
+# Copyright (C) 2011 gnome-documents's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-documents package.
+# Jorge González <jorgegonz@svn.gnome.org>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-documents master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"documents&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-08-30 18:06+0000\n"
+"PO-Revision-Date: 2011-08-30 21:34+0200\n"
+"Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
+"Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+#: ../data/gnome-documents.desktop.in.in.h:1
+msgid "Access, manage and share documents"
+msgstr "Acceder, gestionar y compartir documentos"
+
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:64
+msgid "Documents"
+msgstr "Documentos"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1
+msgid "Enable list view"
+msgstr "Activar la vista de lista"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
+msgid "List view"
+msgstr "Vista de lista"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
+msgid "The active source filter"
+msgstr "El filtro de archivo fuente"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "The last active source filter"
+msgstr "El último filtro de fuente activo"
+
+#: ../src/categories.js:69
+msgid "New and Recent"
+msgstr "Nuevos y recientes"
+
+#: ../src/categories.js:71
+msgid "Favorites"
+msgstr "Marcadores"
+
+#: ../src/categories.js:73
+msgid "Shared with you"
+msgstr "Compartidos con usted"
+
+#. unimplemented
+#: ../src/categories.js:77
+msgid "Private"
+msgstr "Privado"
+
+#: ../src/documents.js:335
+msgid "Google Docs"
+msgstr "Google Docs"
+
+#: ../src/error.js:36
+#, c-format
+msgid "Unable to load \"%s\" for preview"
+msgstr "No se pudo cargar «%s» para su vista previa"
+
+#: ../src/error.js:43
+msgid "Unable to fetch the list of documents"
+msgstr "No se pudo obtener la lista de documentos"
+
+#: ../src/loadMore.js:69
+#, c-format
+msgid "Load %d more documents"
+msgstr "Cargar %d documentos más"
+
+#: ../src/mainToolbar.js:164
+#, c-format
+msgid "page %d of %d"
+msgstr "página %d de %d"
+
+#: ../src/sidebar.js:130 ../src/sources.js:214
+msgid "Sources"
+msgstr "Fuentes"
+
+#: ../src/sources.js:109
+msgid "All"
+msgstr "Todos"
+
+#: ../src/sources.js:114
+msgid "Local"
+msgstr "Locales"
+
+#: ../src/spinnerBox.js:47
+msgid "Loading..."
+msgstr "Cargando…"
+
+#: ../src/view.js:45
+#, c-format
+msgid "Open with %s"
+msgstr "Abrir con %s"
+
+#: ../src/view.js:45
+msgid "Open"
+msgstr "Abrir"
+
+#: ../src/view.js:55
+msgid "Remove from favorites"
+msgstr "Quitar de los marcadores"
+
+#: ../src/view.js:55
+msgid "Add to favorites"
+msgstr "Añadir a los marcadores"
