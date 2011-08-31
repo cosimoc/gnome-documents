@@ -62,9 +62,11 @@ MainWindow.prototype = {
     _init: function() {
         this._adjChangedId = 0;
         this._pdfLoader = null;
+        this._fullscreen = false;
         this._loaderCancellable = null;
         this._loaderTimeout = 0;
         this._lastFilter = '';
+        this._scrolledWindowId = 0;
         this._windowMode = WindowMode.NONE;
 
         this.window = new Gtk.Window({ type: Gtk.WindowType.TOPLEVEL,
@@ -108,9 +110,6 @@ MainWindow.prototype = {
         this._loadMore = new LoadMore.LoadMoreButton();
         this._viewContainer.add(this._loadMore.widget);
 
-        this._scrolledWin.vadjustment.connect('value-changed', Lang.bind(this, this._onAdjustmentChange));
-        this._onAdjustmentChange(this._scrolledWin.vadjustment);
-
         this._grid.show_all();
         this._setWindowMode(WindowMode.OVERVIEW);
     },
@@ -125,15 +124,22 @@ MainWindow.prototype = {
             return true;
         }
 
+        if ((keyval == Gdk.KEY_f) &&
+            this._windowMode == WindowMode.PREVIEW) {
+            this._setFullscreen(!this._fullscreen);
+            return true;
+        }
+
         return false;
     },
 
     _onAdjustmentChange: function(adjustment) {
         let end = (adjustment.value == (adjustment.upper - adjustment.get_page_size()));
 
+        // special case this values which happen at construction
         if (adjustment.value == 0 &&
-            adjustment.upper == 0 &&
-            adjustment.get_page_size() == 0)
+            adjustment.upper == 1 &&
+            adjustment.get_page_size() == 1)
             end = false;
 
         if (end) {
@@ -195,6 +201,8 @@ MainWindow.prototype = {
     _prepareForPreview: function(model, document) {
         this._destroyView();
         this._sidebar.widget.hide();
+
+        this._scrolledWin.vadjustment.disconnect(this._scrolledWindowId);
     },
 
     _prepareForOverview: function() {
@@ -211,9 +219,29 @@ MainWindow.prototype = {
             this._preview = null;
         }
 
+        this._setFullscreen(false);
+
         this._refreshViewSettings();
+        this._scrolledWindowId =
+            this._scrolledWin.vadjustment.connect('value-changed',
+                                                  Lang.bind(this, this._onAdjustmentChange));
+        this._onAdjustmentChange(this._scrolledWin.vadjustment);
 
         this._sidebar.widget.show();
+    },
+
+    _setFullscreen: function(fullscreen) {
+        if (this._fullscreen == fullscreen)
+            return;
+
+        this._fullscreen = fullscreen;
+
+        Gtk.Settings.get_default().gtk_application_prefer_dark_theme = this._fullscreen;
+
+        if (this._fullscreen)
+            this.window.fullscreen();
+        else
+            this.window.unfullscreen();
     },
 
     _onDeleteEvent: function() {
@@ -259,7 +287,22 @@ MainWindow.prototype = {
         this._preview = new Preview.PreviewView(model, document);
         this._toolbar.setModel(model, document);
 
+        this._preview.widget.connect('button-press-event',
+                                     Lang.bind(this, this._onPreviewButtonPressEvent));
+
         this._scrolledWin.add(this._preview.widget);
+    },
+
+    _onPreviewButtonPressEvent: function(widget, event) {
+        let button = event.get_button()[1];
+        let clickCount = event.get_click_count()[1];
+
+        if (button == 1 && clickCount == 2) {
+            this._setFullscreen(!this._fullscreen);
+            return true;
+        }
+
+        return false;
     },
 
     _onToolbarBackClicked: function() {
