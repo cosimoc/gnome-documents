@@ -382,3 +382,54 @@ gd_embed_image_in_frame (GdkPixbuf *source_image,
 
 	return result_pixbuf;
 }
+
+static char *
+gd_filename_get_extension_offset (const char *filename)
+{
+	char *end, *end2;
+
+	end = strrchr (filename, '.');
+
+	if (end && end != filename) {
+		if (strcmp (end, ".gz") == 0 ||
+		    strcmp (end, ".bz2") == 0 ||
+		    strcmp (end, ".sit") == 0 ||
+		    strcmp (end, ".Z") == 0) {
+			end2 = end - 1;
+			while (end2 > filename &&
+			       *end2 != '.') {
+				end2--;
+			}
+			if (end2 != filename) {
+				end = end2;
+			}
+		}
+	}
+
+	return end;
+}
+
+/**
+ * gd_filename_strip_extension:
+ * @filename_with_extension:
+ *
+ * Returns: (transfer full):
+ */
+char *
+gd_filename_strip_extension (const char * filename_with_extension)
+{
+	char *filename, *end;
+
+	if (filename_with_extension == NULL) {
+		return NULL;
+	}
+
+	filename = g_strdup (filename_with_extension);
+	end = gd_filename_get_extension_offset (filename);
+
+	if (end && end != filename) {
+		*end = '\0';
+	}
+
+	return filename;
+}

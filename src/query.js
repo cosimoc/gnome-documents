@@ -27,14 +27,15 @@ const GLib = imports.gi.GLib;
 const QueryColumns = {
     URN: 0,
     URI: 1,
-    TITLE: 2,
-    AUTHOR: 3,
-    MTIME: 4,
-    IDENTIFIER: 5,
-    TYPE: 6,
-    RESOURCE_URN: 7,
-    FAVORITE: 8,
-    SHARED: 9
+    FILENAME: 2,
+    TITLE: 3,
+    AUTHOR: 4,
+    MTIME: 5,
+    IDENTIFIER: 6,
+    TYPE: 7,
+    RESOURCE_URN: 8,
+    FAVORITE: 9,
+    SHARED: 10
 };
 
 function QueryBuilder() {
@@ -141,16 +142,17 @@ QueryBuilder.prototype = {
 
         let sparql =
             'SELECT DISTINCT ?urn ' + // urn
-             'nie:url(?urn) ' + // uri
-             'tracker:coalesce(nie:title(?urn), nfo:fileName(?urn)) ' + // title
-             'tracker:coalesce(nco:fullname(?creator), nco:fullname(?publisher), \'\') ' + // author
-             'tracker:coalesce(nfo:fileLastModified(?urn), nie:contentLastModified(?urn)) AS ?mtime ' + // mtime
-             'nao:identifier(?urn) ' + // identifier
-             'rdf:type(?urn) ' + // type
-             'nie:dataSource(?urn) ' + // resource URN
-             '( EXISTS { ?urn nao:hasTag nao:predefined-tag-favorite } ) ' + // favorite
-             '( EXISTS { ?urn nco:contributor ?contributor FILTER ( ?contributor != ?creator ) } ) ' + // shared
-             globalSparql;
+            'nie:url(?urn) ' + // uri
+            'nfo:fileName(?urn)' + // filename
+            'nie:title(?urn) ' + // title
+            'tracker:coalesce(nco:fullname(?creator), nco:fullname(?publisher), \'\') ' + // author
+            'tracker:coalesce(nfo:fileLastModified(?urn), nie:contentLastModified(?urn)) AS ?mtime ' + // mtime
+            'nao:identifier(?urn) ' + // identifier
+            'rdf:type(?urn) ' + // type
+            'nie:dataSource(?urn) ' + // resource URN
+            '( EXISTS { ?urn nao:hasTag nao:predefined-tag-favorite } ) ' + // favorite
+            '( EXISTS { ?urn nco:contributor ?contributor FILTER ( ?contributor != ?creator ) } ) ' + // shared
+            globalSparql;
 
         return sparql;
     },

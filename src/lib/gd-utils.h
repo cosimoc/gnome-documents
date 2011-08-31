@@ -63,5 +63,7 @@ GdkPixbuf * gd_embed_image_in_frame (GdkPixbuf *source_image,
                                      int right_offset,
                                      int bottom_offset);
 
+char *gd_filename_strip_extension (const char * filename_with_extension);
+
 #endif /* __GD_UTILS_H__ */
                                   

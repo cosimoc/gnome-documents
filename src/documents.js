@@ -100,10 +100,13 @@ DocCommon.prototype = {
             }));
     },
 
+    _sanitizeTitle: function() {
+        this.title = this.title.replace('Microsoft Word - ', '', 'g');
+    },
+
     populateFromCursor: function(cursor) {
         this.uri = cursor.get_string(Query.QueryColumns.URI)[0];
         this.urn = cursor.get_string(Query.QueryColumns.URN)[0];
-        this.title = cursor.get_string(Query.QueryColumns.TITLE)[0];
         this.author = cursor.get_string(Query.QueryColumns.AUTHOR)[0];
         this.mtime = cursor.get_string(Query.QueryColumns.MTIME)[0];
         this.resourceUrn = cursor.get_string(Query.QueryColumns.RESOURCE_URN)[0];
@@ -115,6 +118,15 @@ DocCommon.prototype = {
         // sanitize
         if (!this.uri)
             this.uri = '';
+
+        let title = cursor.get_string(Query.QueryColumns.TITLE)[0];
+        if (title && title != '')
+            this.title = title;
+        else
+            this.title = Gd.filename_strip_extension(
+                cursor.get_string(Query.QueryColumns.FILENAME)[0]);
+
+        this._sanitizeTitle();
 
         this.refreshIcon();
     },
