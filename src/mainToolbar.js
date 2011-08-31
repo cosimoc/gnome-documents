@@ -29,6 +29,7 @@ const Mainloop = imports.mainloop;
 const Signals = imports.signals;
 
 const Global = imports.global;
+const MainWindow = imports.mainWindow;
 
 const _SEARCH_ENTRY_TIMEOUT = 200;
 
@@ -132,8 +133,8 @@ MainToolbar.prototype = {
                 this.emit('back-clicked');
             }));
 
-        let label = new Gtk.Label();
-        let labelItem = new Gtk.ToolItem({ child: label });
+        this._modelLabel = new Gtk.Label();
+        let labelItem = new Gtk.ToolItem({ child: this._modelLabel });
         labelItem.set_expand(true);
         this.widget.insert(labelItem, 1);
 
@@ -143,14 +144,6 @@ MainToolbar.prototype = {
         let sizeGroup = new Gtk.SizeGroup();
         sizeGroup.add_widget(back);
         sizeGroup.add_widget(rightGroup);
-
-        if (model && document) {
-            model.connect('page-changed', Lang.bind(this,
-                function() {
-                    this._updatePageLabel(label, model, document);
-                }));
-            this._updatePageLabel(label, model, document);
-        }
 
         this.widget.show_all();
     },
@@ -164,14 +157,22 @@ MainToolbar.prototype = {
         label.set_text(_("page %d of %d").format(curPage + 1, totPages));
     },
 
-    setOverview: function() {
+    setWindowMode: function(windowMode) {
         this._clearToolbar();
-        this._populateForOverview();
+
+        if (windowMode == MainWindow.WindowMode.OVERVIEW)
+            this._populateForOverview();
+        else
+            this._populateForPreview();
     },
 
-    setPreview: function(model, document) {
-        this._clearToolbar();
-        this._populateForPreview(model, document);
+    setModel: function(model, document) {
+        model.connect('page-changed', Lang.bind(this,
+            function() {
+                this._updatePageLabel(this._modelLabel, model, document);
+            }));
+
+        this._updatePageLabel(this._modelLabel, model, document);
     }
 };
 Signals.addSignalMethods(MainToolbar.prototype);

@@ -48,6 +48,12 @@ const _WINDOW_DEFAULT_HEIGHT = 600;
 
 const _PDF_LOADER_TIMEOUT = 300;
 
+const WindowMode = {
+    NONE: 0,
+    OVERVIEW: 1,
+    PREVIEW: 2
+};
+
 function MainWindow() {
     this._init();
 }
@@ -59,6 +65,7 @@ MainWindow.prototype = {
         this._loaderCancellable = null;
         this._loaderTimeout = 0;
         this._lastFilter = '';
+        this._windowMode = WindowMode.NONE;
 
         this.window = new Gtk.Window({ type: Gtk.WindowType.TOPLEVEL,
                                        window_position: Gtk.WindowPosition.CENTER,
@@ -105,7 +112,7 @@ MainWindow.prototype = {
         this._onAdjustmentChange(this._scrolledWin.vadjustment);
 
         this._grid.show_all();
-        this._prepareForOverview();
+        this._setWindowMode(WindowMode.OVERVIEW);
     },
 
     _onKeyPressEvent: function(widget, event) {
@@ -171,11 +178,23 @@ MainWindow.prototype = {
         this._initView();
     },
 
+    _setWindowMode: function(windowMode) {
+        if (windowMode == this._windowMode)
+            return;
+
+        this._windowMode = windowMode;
+
+        if (this._windowMode == WindowMode.OVERVIEW)
+            this._prepareForOverview();
+        else
+            this._prepareForPreview();
+
+        this._toolbar.setWindowMode(this._windowMode);
+    },
+
     _prepareForPreview: function(model, document) {
         this._destroyView();
         this._sidebar.widget.hide();
-
-        this._toolbar.setPreview(model, document);
     },
 
     _prepareForOverview: function() {
@@ -195,7 +214,6 @@ MainWindow.prototype = {
         this._refreshViewSettings();
 
         this._sidebar.widget.show();
-        this._toolbar.setOverview();
     },
 
     _onDeleteEvent: function() {
@@ -220,7 +238,7 @@ MainWindow.prototype = {
     _onPdfLoaderTimeout: function() {
         this._loaderTimeout = 0;
 
-        this._prepareForPreview();
+        this._setWindowMode(WindowMode.PREVIEW);
 
         let spinnerBox = new SpinnerBox.SpinnerBox();
         this._scrolledWin.add_with_viewport(spinnerBox.widget);
@@ -237,14 +255,15 @@ MainWindow.prototype = {
             this._loaderTimeout = 0;
         }
 
-        this._prepareForPreview(model, document);
+        this._setWindowMode(WindowMode.PREVIEW);
         this._preview = new Preview.PreviewView(model, document);
+        this._toolbar.setModel(model, document);
 
         this._scrolledWin.add(this._preview.widget);
     },
 
     _onToolbarBackClicked: function() {
-        this._prepareForOverview();
+        this._setWindowMode(WindowMode.OVERVIEW);
     },
 
     _onLoadError: function(manager, message, exception) {
@@ -254,7 +273,7 @@ MainWindow.prototype = {
         }
 
         this._loaderCancellable = null;
-        this._prepareForPreview();
+        this._setWindowMode(WindowMode.PREVIEW);
 
         let errorBox = new ErrorBox.ErrorBox(message, exception.toString());
         this._scrolledWin.add_with_viewport(errorBox.widget);
