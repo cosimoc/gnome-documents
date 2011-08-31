@@ -1,0 +1,119 @@
+# Persian translation for gnome-documents.
+# Copyright (C) 2011 gnome-documents's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-documents package.
+# Arash Mousavi <mousavi.arash@gmail.com>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-documents master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-documents&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-08-31 05:57+0000\n"
+"PO-Revision-Date: 2011-08-31 15:20+0330\n"
+"Last-Translator: Arash Mousavi <mousavi.arash@gmail.com>\n"
+"Language-Team: Persian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Persian\n"
+"X-Poedit-Country: IRAN, ISLAMIC REPUBLIC OF\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: ../data/gnome-documents.desktop.in.in.h:1
+msgid "Access, manage and share documents"
+msgstr "دسترسی، مدیریت و اشتراک‌گذاری سندها"
+
+#: ../data/gnome-documents.desktop.in.in.h:2
+#: ../src/mainWindow.js:74
+msgid "Documents"
+msgstr "سندها"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1
+msgid "Enable list view"
+msgstr "فعال‌سازی نمای فهرستی"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
+msgid "List view"
+msgstr "نما فهرستی"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
+msgid "The active source filter"
+msgstr "فیلتر فعال منبع"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "The last active source filter"
+msgstr "آخرین فیلتر فعال منبع"
+
+#: ../src/categories.js:69
+msgid "New and Recent"
+msgstr "جدید و اخیر"
+
+#: ../src/categories.js:71
+msgid "Favorites"
+msgstr "علاقه‌مندی‌ها"
+
+#: ../src/categories.js:73
+msgid "Shared with you"
+msgstr "اشتراک‌شده با شما"
+
+#. unimplemented
+#: ../src/categories.js:77
+msgid "Private"
+msgstr "خصوصی"
+
+#: ../src/documents.js:335
+msgid "Google Docs"
+msgstr "اسناد گوگل"
+
+#: ../src/error.js:36
+#, c-format
+msgid "Unable to load \"%s\" for preview"
+msgstr "نمی‌توان «%s» را برای پیش‌نمایش بارگیری کرد"
+
+#: ../src/error.js:43
+msgid "Unable to fetch the list of documents"
+msgstr "نمی‌توان فهرست اسناد را دریافت کرد"
+
+#: ../src/loadMore.js:69
+#, c-format
+msgid "Load %d more documents"
+msgstr "بارگیری %Id سند بیشتر"
+
+#: ../src/mainToolbar.js:157
+#, c-format
+msgid "page %d of %d"
+msgstr "صفحه %Id از %Id"
+
+#: ../src/sidebar.js:130
+#: ../src/sources.js:214
+msgid "Sources"
+msgstr "منابع"
+
+#: ../src/sources.js:109
+msgid "All"
+msgstr "همه"
+
+#: ../src/sources.js:114
+msgid "Local"
+msgstr "محلی"
+
+#: ../src/spinnerBox.js:47
+msgid "Loading..."
+msgstr "در حال بارگیری..."
+
+#: ../src/view.js:45
+#, c-format
+msgid "Open with %s"
+msgstr "باز کردن با %s"
+
+#: ../src/view.js:45
+msgid "Open"
+msgstr "باز کردن"
+
+#: ../src/view.js:55
+msgid "Remove from favorites"
+msgstr "حذف از علاقه‌مندی‌ها"
+
+#: ../src/view.js:55
+msgid "Add to favorites"
+msgstr "اضافه‌کردن به علاقه‌مندی‌ها"
+
