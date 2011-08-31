@@ -85,12 +85,10 @@ ListView.prototype = {
                           'pixbuf', Documents.ModelColumns.ICON);
 
         let textRenderer =
-            new Gd.TwoLinesRenderer({ alignment: Pango.Alignment.CENTER,
+            new Gd.TwoLinesRenderer({ alignment: Pango.Alignment.LEFT,
                                       wrap_mode: Pango.WrapMode.WORD_CHAR,
-                                      xalign: 0.5,
-                                      yalign: 0.0,
                                       xpad: 12,
-                                      text_lines: 3 });
+                                      text_lines: 2 });
         col.pack_start(textRenderer, false);
         col.add_attribute(textRenderer,
                           'text', Documents.ModelColumns.TITLE);
@@ -98,7 +96,7 @@ ListView.prototype = {
                           'line-two', Documents.ModelColumns.AUTHOR);
 
         let typeRenderer =
-            new Gtk.CellRendererText({ xpad: 24 });
+            new Gtk.CellRendererText({ xpad: 16 });
         col.pack_start(typeRenderer, false);
         col.set_cell_data_func(typeRenderer, Lang.bind(this,
             function(col, cell, model, iter) {
@@ -109,7 +107,7 @@ ListView.prototype = {
             }));
 
         let whereRenderer =
-            new Gtk.CellRendererText({ xpad: 16 });
+            new Gtk.CellRendererText({ xpad: 8 });
         col.pack_start(whereRenderer, false);
         col.set_cell_data_func(whereRenderer, Lang.bind(this,
             function(col, cell, model, iter) {
