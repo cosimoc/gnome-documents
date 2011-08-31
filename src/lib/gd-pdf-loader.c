@@ -158,6 +158,7 @@ pdf_load_job_complete_error (PdfLoadJob *job,
     g_simple_async_result_take_error (job->result, error);
     g_simple_async_result_complete_in_idle (job->result);
 
+    job->unlink_cache = TRUE;
     pdf_load_job_free (job);
 }
 
