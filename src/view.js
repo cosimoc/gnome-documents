@@ -42,6 +42,7 @@ ContextMenu.prototype = {
 
         this.widget = new Gtk.Menu();
 
+        // Translators: this is the Open action in a context menu
         let openLabel = (doc.defaultAppName) ? _("Open with %s").format(doc.defaultAppName) : _("Open");
         let openItem = new Gtk.MenuItem({ label: openLabel });
         openItem.show();

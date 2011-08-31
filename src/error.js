@@ -33,6 +33,7 @@ ErrorHandler.prototype = {
     },
 
     addLoadError: function(doc, exception) {
+        // Translators: %s is the title of a document
         let message = _("Unable to load \"%s\" for preview").format(doc.title);
         log('Error caught: ' + message + ' - ' + exception.toString());
 

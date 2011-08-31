@@ -66,10 +66,13 @@ CategoryManager.prototype = {
         this._categories = {};
 
         let category;
+        // Translators: this refers to new and recent documents
         category = new Category('recent', _("New and Recent"), '');
         this._categories[category.id] = category;
+        // Translators: this refers to favorite documents
         category = new Category('favorites', _("Favorites"), 'emblem-favorite-symbolic');
         this._categories[category.id] = category;
+        // Translators: this refers to shared documents
         category = new Category('shared', _("Shared with you"), 'emblem-shared-symbolic');
         this._categories[category.id] = category;
 

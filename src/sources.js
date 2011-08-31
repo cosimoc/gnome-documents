@@ -105,11 +105,13 @@ SourceManager.prototype = {
         // two outstanding ops for the local sources, and one for the GOA client
         this._outstandingOps = 3;
 
+        // Translators: this refers to documents
         let source = new Source({ id: 'all',
                                   name: _("All"),
                                   initCallback: Lang.bind(this, this._initSourceCollector) });
         this._sources[source.id] = source;
 
+        // Translators: this refers to local documents
         source = new Source({ id: 'local',
                               name: _("Local"),
                               initCallback: Lang.bind(this, this._initSourceCollector) });
