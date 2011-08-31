@@ -25,9 +25,6 @@
 G_DEFINE_TYPE (GdTwoLinesRenderer, gd_two_lines_renderer, GTK_TYPE_CELL_RENDERER_TEXT)
 
 struct _GdTwoLinesRendererPrivate {
-  PangoLayout *line_one_layout;
-  PangoLayout *line_two_layout;
-
   gchar *line_two;
   gint text_lines;
 };
@@ -70,38 +67,41 @@ create_layout_with_attrs (GtkWidget *widget,
 
 static void
 gd_two_lines_renderer_prepare_layouts (GdTwoLinesRenderer *self,
-                                       GtkWidget *widget)
+                                       GtkWidget *widget,
+                                       PangoLayout **layout_one,
+                                       PangoLayout **layout_two)
 {
+  PangoLayout *line_one;
+  PangoLayout *line_two = NULL;
   gchar *text = NULL;
 
   g_object_get (self,
                 "text", &text,
                 NULL);
 
-  if (self->priv->line_one_layout == NULL)
-    self->priv->line_one_layout = 
-      create_layout_with_attrs (widget, self, PANGO_ELLIPSIZE_MIDDLE);
-
-  if (self->priv->line_two_layout == NULL)
-    self->priv->line_two_layout = 
-      create_layout_with_attrs (widget, self, PANGO_ELLIPSIZE_END);
+  line_one = create_layout_with_attrs (widget, self, PANGO_ELLIPSIZE_MIDDLE);
 
   if (self->priv->line_two == NULL ||
       g_strcmp0 (self->priv->line_two, "") == 0)
     {
-      pango_layout_set_height (self->priv->line_one_layout, - (self->priv->text_lines));
-
-      pango_layout_set_text (self->priv->line_one_layout, text, -1);
-      pango_layout_set_text (self->priv->line_two_layout, "", -1);
+      pango_layout_set_height (line_one, - (self->priv->text_lines));
+      pango_layout_set_text (line_one, text, -1);
     }
   else
     {
-      pango_layout_set_height (self->priv->line_one_layout, - (self->priv->text_lines - 1));
-      pango_layout_set_height (self->priv->line_two_layout, -1);
+      line_two = create_layout_with_attrs (widget, self, PANGO_ELLIPSIZE_END);
 
-      pango_layout_set_text (self->priv->line_one_layout, text, -1);
-      pango_layout_set_text (self->priv->line_two_layout, self->priv->line_two, -1);
+      pango_layout_set_height (line_one, - (self->priv->text_lines - 1));
+      pango_layout_set_height (line_two, -1);
+
+      pango_layout_set_text (line_one, text, -1);
+      pango_layout_set_text (line_two, self->priv->line_two, -1);
     }
+
+  if (layout_one)
+    *layout_one = line_one;
+  if (layout_two)
+    *layout_two = line_two;
 
   g_free (text);
 }
@@ -109,6 +109,8 @@ gd_two_lines_renderer_prepare_layouts (GdTwoLinesRenderer *self,
 static void
 gd_two_lines_renderer_get_size (GtkCellRenderer *cell,
                                 GtkWidget *widget,
+                                PangoLayout *layout_1,
+                                PangoLayout *layout_2,
                                 gint *width,
                                 gint *height,
                                 const GdkRectangle *cell_area,
@@ -118,16 +120,40 @@ gd_two_lines_renderer_get_size (GtkCellRenderer *cell,
   GdTwoLinesRenderer *self = GD_TWO_LINES_RENDERER (cell);
   gint layout_w, layout_h;
   gint xpad, ypad;
+  PangoLayout *layout_one, *layout_two;
   GdkRectangle layout_one_rect, layout_two_rect, layout_union;
 
-  gd_two_lines_renderer_prepare_layouts (self, widget);
+  if (layout_1 == NULL)
+    {
+      gd_two_lines_renderer_prepare_layouts (self, widget, &layout_one, &layout_two);
+    }
+  else
+    {
+      layout_one = g_object_ref (layout_1);
+
+      if (layout_2 != NULL)
+        layout_two = g_object_ref (layout_2);
+      else
+        layout_two = NULL;
+    }
+
   gtk_cell_renderer_get_padding (cell, &xpad, &ypad);
+  pango_layout_get_pixel_extents (layout_one, NULL, (PangoRectangle *) &layout_one_rect);
 
-  pango_layout_get_pixel_extents (self->priv->line_one_layout, NULL, (PangoRectangle *) &layout_one_rect);
-  pango_layout_get_pixel_extents (self->priv->line_one_layout, NULL, (PangoRectangle *) &layout_two_rect);
+  if (layout_two != NULL)
+    {
+      pango_layout_get_pixel_extents (layout_two, NULL, (PangoRectangle *) &layout_two_rect);
 
-  gdk_rectangle_union (&layout_one_rect, &layout_two_rect,
-                       &layout_union);
+      layout_union.width = MAX(layout_one_rect.width, layout_two_rect.width);
+      layout_union.height = layout_one_rect.height + layout_two_rect.height;
+    }
+  else
+    {
+      layout_union = layout_one_rect;
+    }
+
+  g_clear_object (&layout_one);
+  g_clear_object (&layout_two);
 
   if (cell_area)
     {
@@ -179,9 +205,12 @@ gd_two_lines_renderer_render (GtkCellRenderer      *cell,
   GtkStateFlags state;
   GdkRectangle render_area = *cell_area;
   gint xpad, ypad, x_offset, y_offset;
+  PangoLayout *layout_one, *layout_two;
 
   context = gtk_widget_get_style_context (widget);
+  gd_two_lines_renderer_prepare_layouts (self, widget, &layout_one, &layout_two);
   gd_two_lines_renderer_get_size (cell, widget,
+                                  layout_one, layout_two,
                                   NULL, NULL,
                                   cell_area, &x_offset, &y_offset);
 
@@ -189,33 +218,38 @@ gd_two_lines_renderer_render (GtkCellRenderer      *cell,
   render_area.x += xpad + x_offset;
   render_area.y += ypad;
 
-  pango_layout_set_width (self->priv->line_one_layout,
+  pango_layout_set_width (layout_one,
                           (cell_area->width - x_offset - 2 * xpad) * PANGO_SCALE);
 
   gtk_render_layout (context, cr,
                      render_area.x,
                      render_area.y,
-                     self->priv->line_one_layout);
+                     layout_one);
 
-  if (self->priv->line_two == NULL ||
-      g_strcmp0 (self->priv->line_two, "") == 0)
-    return;
+  if (layout_two != NULL)
+    {
+      pango_layout_get_pixel_size (layout_one,
+                                   NULL, &line_one_height);
 
-  pango_layout_get_pixel_size (self->priv->line_one_layout,
-                               NULL, &line_one_height);
+      gtk_style_context_save (context);
+      gtk_style_context_add_class (context, "dim-label");
 
-  gtk_style_context_save (context);
-  gtk_style_context_add_class (context, "dim-label");
+      state = gtk_cell_renderer_get_state (cell, widget, flags);
+      gtk_style_context_set_state (context, state);
 
-  state = gtk_cell_renderer_get_state (cell, widget, flags);
-  gtk_style_context_set_state (context, state);
+      pango_layout_set_width (layout_two,
+                              (cell_area->width - x_offset - 2 * xpad) * PANGO_SCALE);
 
-  gtk_render_layout (context, cr,
-                     render_area.x,
-                     render_area.y + line_one_height,
-                     self->priv->line_two_layout);
+      gtk_render_layout (context, cr,
+                         render_area.x,
+                         render_area.y + line_one_height,
+                         layout_two);
 
-  gtk_style_context_restore (context);
+      gtk_style_context_restore (context);
+    }
+
+  g_clear_object (&layout_one);
+  g_clear_object (&layout_two);
 }
 
 static void
@@ -241,6 +275,7 @@ gd_two_lines_renderer_get_preferred_width (GtkCellRenderer *cell,
   gtk_cell_renderer_get_padding (cell, &xpad, NULL);
 
   gd_two_lines_renderer_get_size (cell, widget,
+                                  NULL, NULL,
                                   &text_width, NULL,
                                   NULL, NULL, NULL);
 
@@ -291,6 +326,7 @@ gd_two_lines_renderer_get_preferred_height_for_width (GtkCellRenderer *cell,
   gint ypad;
 
   gd_two_lines_renderer_get_size (cell, widget,
+                                  NULL, NULL,
                                   NULL, &text_height,
                                   NULL, NULL, NULL);
 
@@ -327,6 +363,7 @@ gd_two_lines_renderer_get_aligned_area (GtkCellRenderer      *cell,
   gint x_offset, y_offset;
 
   gd_two_lines_renderer_get_size (cell, widget,
+                                  NULL, NULL,
                                   &aligned_area->width, &aligned_area->height,
                                   cell_area, &x_offset, &y_offset);
 
@@ -403,17 +440,6 @@ gd_two_lines_renderer_get_property (GObject    *object,
 }
 
 static void
-gd_two_lines_renderer_dispose (GObject *object)
-{
-  GdTwoLinesRenderer *self = GD_TWO_LINES_RENDERER (object);
-
-  g_clear_object (&self->priv->line_one_layout);
-  g_clear_object (&self->priv->line_two_layout);
-
-  G_OBJECT_CLASS (gd_two_lines_renderer_parent_class)->dispose (object);
-}
-
-static void
 gd_two_lines_renderer_finalize (GObject *object)
 {
   GdTwoLinesRenderer *self = GD_TWO_LINES_RENDERER (object);
@@ -437,7 +463,6 @@ gd_two_lines_renderer_class_init (GdTwoLinesRendererClass *klass)
 
   oclass->set_property = gd_two_lines_renderer_set_property;
   oclass->get_property = gd_two_lines_renderer_get_property;
-  oclass->dispose = gd_two_lines_renderer_dispose;
   oclass->finalize = gd_two_lines_renderer_finalize;
   
   properties[PROP_TEXT_LINES] =
