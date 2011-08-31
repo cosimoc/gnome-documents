@@ -185,9 +185,6 @@ MainWindow.prototype = {
     },
 
     _setWindowMode: function(windowMode) {
-        if (windowMode == this._windowMode)
-            return;
-
         this._windowMode = windowMode;
 
         if (this._windowMode == WindowMode.OVERVIEW)
