@@ -121,7 +121,7 @@ DocCommon.prototype = {
 
         this.mimeType = cursor.get_string(Query.QueryColumns.MIMETYPE)[0];
         this.rdfType = cursor.get_string(Query.QueryColumns.RDFTYPE)[0];
-        this._updateIconFromType();
+        this.updateIconFromType();
 
         this.updateTypeDescription();
 
@@ -141,7 +141,7 @@ DocCommon.prototype = {
         this.refreshIcon();
     },
 
-    _updateIconFromType: function() {
+    updateIconFromType: function() {
         let icon = null;
 
         if (this.mimeType)
@@ -162,11 +162,12 @@ DocCommon.prototype = {
                 log('Unable to load pixbuf: ' + e.toString());
             }
         }
+
+        this.checkEffectsAndUpdateInfo();
     },
 
     refreshIcon: function() {
-        this._updateIconFromType();
-        this.checkEffectsAndUpdateInfo();
+        this.updateIconFromType();
     },
 
     _createSymbolicEmblem: function(name) {
@@ -250,7 +251,7 @@ DocCommon.prototype = {
 };
 Signals.addSignalMethods(DocCommon.prototype);
 
-const _FILE_ATTRIBUTES = 'standard::icon,standard::content-type,thumbnail::path,time::modified';
+const _FILE_ATTRIBUTES = 'thumbnail::path';
 
 function LocalDocument(cursor) {
     this._init(cursor);
@@ -260,16 +261,40 @@ LocalDocument.prototype = {
     __proto__: DocCommon.prototype,
 
     _init: function(cursor) {
+        this._thumbPath = null;
+        this._failedThumbnailing = false;
+
         DocCommon.prototype._init.call(this, cursor);
 
         this.sourceName = _("Local");
+        let defaultApp = Gio.app_info_get_default_for_type(this.mimeType, true);
+        this.defaultAppName = defaultApp.get_name();
     },
 
     updateTypeDescription: function() {
         this.typeDescription = Gio.content_type_get_description(this.mimeType);
     },
 
+    _refreshThumbPath: function() {
+        this.pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(this._thumbPath,
+                                                             Utils.getIconSize(),
+                                                             Utils.getIconSize());
+        this.thumbnailed = true;
+        this.checkEffectsAndUpdateInfo();
+        return;
+    },
+
     refreshIcon: function() {
+        if (this._thumbPath) {
+            this._refreshThumbPath();
+            return;
+        }
+
+        if (this._failedThumbnailing) {
+            this.updateIconFromType();
+            return;
+        }
+
         this._file = Gio.file_new_for_uri(this.uri);
         this._file.query_info_async(_FILE_ATTRIBUTES,
                                     0, 0, null,
@@ -284,50 +309,29 @@ LocalDocument.prototype = {
             info = object.query_info_finish(res);
         } catch (e) {
             log('Unable to query info for file at ' + this.uri + ': ' + e.toString());
+            this._failedThumbnailing = true;
             return;
         }
 
-        let defaultApp = Gio.app_info_get_default_for_type(info.get_content_type(), true);
-        this.defaultAppName = defaultApp.get_name();
-
-        let thumbPath = info.get_attribute_byte_string(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH);
-        if (thumbPath) {
-            this.pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(thumbPath,
-                                                                 Utils.getIconSize(),
-                                                                 Utils.getIconSize());
-            this.thumbnailed = true;
-            haveNewIcon = true;
+        this._thumbPath = info.get_attribute_byte_string(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH);
+        if (this._thumbPath) {
+            this._refreshThumbPath();
         } else {
-            let icon = info.get_icon();
-
-            if (icon) {
-                let theme = Gtk.IconTheme.get_default();
-                let iconInfo = theme.lookup_by_gicon(icon, Utils.getIconSize(),
-                                                     Gtk.IconLookupFlags.FORCE_SIZE |
-                                                     Gtk.IconLookupFlags.GENERIC_FALLBACK);
-                try {
-                    this.pixbuf = iconInfo.load_icon();
-                    this.thumbnailed = false;
-                    haveNewIcon = true;
-                } catch (e) {
-                    log('Unable to load an icon from theme for file at ' + this.uri + ': ' + e.toString());
-                }
-            }
+            this.thumbnailed = false;
 
             // try to create the thumbnail
             Gd.queue_thumbnail_job_for_file_async(this._file,
                                                   Lang.bind(this, this._onQueueThumbnailJob));
         }
-
-        if (haveNewIcon)
-            this.checkEffectsAndUpdateInfo();
     },
 
     _onQueueThumbnailJob: function(object, res) {
         let thumbnailed = Gd.queue_thumbnail_job_for_file_finish(res);
 
-        if (!thumbnailed)
+        if (!thumbnailed) {
+            this._failedThumbnailing = true;
             return;
+        }
 
         // get the new thumbnail path
         this._file.query_info_async(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH,
@@ -342,19 +346,15 @@ LocalDocument.prototype = {
             info = object.query_info_finish(res);
         } catch (e) {
             log('Unable to query info for file at ' + this.uri + ': ' + e.toString());
+            this._failedThumbnailing = true;
             return;
         }
 
         this._thumbPath = info.get_attribute_byte_string(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH);
-        if (this._thumbPath) {
-            this.pixbuf =
-                GdkPixbuf.Pixbuf.new_from_file_at_size(this._thumbPath,
-                                                       Utils.getIconSize(),
-                                                       Utils.getIconSize());
-            this.thumbnailed = true;
-
-            this.checkEffectsAndUpdateInfo();
-        }
+        if (this._thumbPath)
+            this._refreshThumbPath();
+        else
+            this._failedThumbnailing = true;
     },
 
     loadPreview: function(cancellable, callback) {
