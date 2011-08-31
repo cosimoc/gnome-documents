@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-25 13:46+0200\n"
-"PO-Revision-Date: 2011-08-25 13:49+0200\n"
+"POT-Creation-Date: 2011-08-31 21:36+0200\n"
+"PO-Revision-Date: 2011-08-31 21:38+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: \n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "Access, manage and share documents"
 msgstr "Aksesser, håndter og del dokumenter"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:62
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:81
 msgid "Documents"
 msgstr "Dokumenter"
 
@@ -40,15 +40,96 @@ msgstr "Aktivt kildefilter"
 msgid "The last active source filter"
 msgstr "Siste aktive kildefilter"
 
-#: ../src/mainToolbar.js:164
-#, c-format
-msgid "page %d of %d"
-msgstr "side %d av %d"
+#. Translators: this refers to new and recent documents
+#: ../src/categories.js:77
+msgid "New and Recent"
+msgstr "Nye og nylig brukte"
 
-#: ../src/sidebar.js:54 ../src/sidebar.js:176
+#. Translators: this refers to favorite documents
+#: ../src/categories.js:80
+msgid "Favorites"
+msgstr "Favoritter"
+
+#. Translators: this refers to shared documents
+#: ../src/categories.js:83
+msgid "Shared with you"
+msgstr "Delt med deg"
+
+#. unimplemented
+#: ../src/categories.js:87
+msgid "Private"
+msgstr "Privat"
+
+#: ../src/documents.js:265 ../src/sources.js:116
+msgid "Local"
+msgstr "Lokalt"
+
+#: ../src/documents.js:388
+msgid "Google Docs"
+msgstr "Google Docs"
+
+#: ../src/documents.js:389
+msgid "Google"
+msgstr "Google"
+
+#: ../src/documents.js:446
+msgid "Spreadsheet"
+msgstr "Regneark"
+
+#: ../src/documents.js:448
+msgid "Presentation"
+msgstr "Presentasjon"
+
+#: ../src/documents.js:450
+msgid "Document"
+msgstr "Dokument"
+
+#. Translators: %s is the title of a document
+#: ../src/error.js:37
+#, c-format
+msgid "Unable to load \"%s\" for preview"
+msgstr "Kan ikke laste «%s» for forhåndsvisning"
+
+#: ../src/error.js:44
+msgid "Unable to fetch the list of documents"
+msgstr "Kan ikke hente listen med dokumenter"
+
+#: ../src/loadMore.js:69
+#, c-format
+msgid "Load %d more documents"
+msgstr "Last %d flere dokumenter"
+
+#: ../src/mainToolbar.js:182
+#, c-format
+msgid "(%d of %d)"
+msgstr "[%d av %d]"
+
+#: ../src/sidebar.js:130 ../src/sources.js:216
 msgid "Sources"
 msgstr "Kilder"
+
+#: ../src/sources.js:110
+msgid "All"
+msgstr "Alle"
 
 #: ../src/spinnerBox.js:47
 msgid "Loading..."
 msgstr "Laster …"
+
+#. Translators: this is the Open action in a context menu
+#: ../src/view.js:46
+#, c-format
+msgid "Open with %s"
+msgstr "Åpne med %s"
+
+#: ../src/view.js:46
+msgid "Open"
+msgstr "Åpne"
+
+#: ../src/view.js:56
+msgid "Remove from favorites"
+msgstr "Fjern fra favoritter"
+
+#: ../src/view.js:56
+msgid "Add to favorites"
+msgstr "Legg til i favoritter"
