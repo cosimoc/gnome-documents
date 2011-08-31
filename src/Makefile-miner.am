@@ -13,7 +13,7 @@ gd_tracker_gdata_miner_CFLAGS = \
     $(MINER_CFLAGS) \
     $(NULL)
 
-gd_tracker_gdata_miner_LDFLAGS = \
-    $(top_builddir)/src/libgdprivate-1.0.la  \
+gd_tracker_gdata_miner_LDADD = \
+    libgdprivate-1.0.la  \
     $(MINER_LIBS) \
     $(NULL)
