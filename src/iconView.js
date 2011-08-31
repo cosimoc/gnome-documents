@@ -86,8 +86,6 @@ IconView.prototype = {
             new Gd.TwoLinesRenderer({ alignment: Pango.Alignment.CENTER,
                                       wrap_mode: Pango.WrapMode.WORD_CHAR,
                                       wrap_width: _VIEW_ITEM_WRAP_WIDTH,
-                                      xalign: 0.5,
-                                      yalign: 0.0,
                                       text_lines: 3 });
         this.widget.pack_start(textRenderer, false);
         this.widget.add_attribute(textRenderer,
