@@ -54,8 +54,10 @@ GTK_MIN_VERSION=3.1.13
 GOBJECT_INTROSPECTION_MIN_VERSION=0.9.6
 GDATA_MIN_VERSION=0.9.1
 GOA_MIN_VERSION=3.1.90
+CLUTTER_GTK_MIN_VERSION=1.0.1
 
 PKG_CHECK_MODULES(DOCUMENTS,
+                  clutter-gtk-1.0 >= $CLUTTER_GTK_MIN_VERSION
                   evince-document-3.0
                   evince-view-3.0
                   glib-2.0 >= $GLIB_MIN_VERSION

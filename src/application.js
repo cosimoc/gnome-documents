@@ -23,6 +23,7 @@ const DBus = imports.dbus;
 const Lang = imports.lang;
 const Gettext = imports.gettext;
 
+const GtkClutter = imports.gi.GtkClutter;
 const EvDoc = imports.gi.EvinceDocument;
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
@@ -45,6 +46,7 @@ const Query = imports.query;
 const SelectionController = imports.selectionController;
 const Sources = imports.sources;
 const TrackerController = imports.trackerController;
+const Tweener = imports.util.tweener;
 
 const _GD_DBUS_PATH = '/org/gnome/Documents';
 
@@ -106,8 +108,9 @@ Application.prototype = {
         GLib.setenv('TRACKER_SPARQL_BACKEND', 'bus', true);
 
         GLib.set_prgname('gnome-documents');
-        Gtk.init(null, null);
+        GtkClutter.init(null, null);
         EvDoc.init();
+        Tweener.init();
 
         let provider = new Gtk.CssProvider();
         provider.load_from_path(Path.STYLE_DIR + "gtk-style.css");

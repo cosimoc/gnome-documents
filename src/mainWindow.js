@@ -19,6 +19,7 @@
  *
  */
 
+const Clutter = imports.gi.Clutter;
 const EvView = imports.gi.EvinceView;
 const Gd = imports.gi.Gd;
 const Gdk = imports.gi.Gdk;
@@ -26,6 +27,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
+const GtkClutter = imports.gi.GtkClutter;
 
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
@@ -40,6 +42,7 @@ const ListView = imports.listView;
 const Preview = imports.preview;
 const SpinnerBox = imports.spinnerBox;
 const TrackerUtils = imports.trackerUtils;
+const Tweener = imports.util.tweener;
 
 const _ = imports.gettext.gettext;
 
@@ -47,6 +50,8 @@ const _WINDOW_DEFAULT_WIDTH = 768;
 const _WINDOW_DEFAULT_HEIGHT = 600;
 
 const _PDF_LOADER_TIMEOUT = 300;
+
+const _FULLSCREEN_TOOLBAR_TIMEOUT = 2;
 
 const WindowMode = {
     NONE: 0,
@@ -61,6 +66,8 @@ function MainWindow() {
 MainWindow.prototype = {
     _init: function() {
         this._adjChangedId = 0;
+        this._docModel = null;
+        this._document = null;
         this._pdfLoader = null;
         this._fullscreen = false;
         this._loaderCancellable = null;
@@ -69,7 +76,7 @@ MainWindow.prototype = {
         this._scrolledWindowId = 0;
         this._windowMode = WindowMode.NONE;
 
-        this.window = new Gtk.Window({ type: Gtk.WindowType.TOPLEVEL,
+        this.window = new GtkClutter.Window({ type: Gtk.WindowType.TOPLEVEL,
                                        window_position: Gtk.WindowPosition.CENTER,
                                        title: _("Documents") });
 
@@ -96,7 +103,7 @@ MainWindow.prototype = {
         this._viewContainer = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
         this._grid.add(this._viewContainer);
 
-        this._toolbar = new MainToolbar.MainToolbar();
+        this._toolbar = new MainToolbar.MainToolbar(this._windowMode);
         this._toolbar.connect('back-clicked',
                               Lang.bind(this, this._onToolbarBackClicked));
         this._viewContainer.add(this._toolbar.widget);
@@ -216,6 +223,9 @@ MainWindow.prototype = {
             this._preview = null;
         }
 
+        this._docModel = null;
+        this._document = null;
+
         this._setFullscreen(false);
 
         this._refreshViewSettings();
@@ -227,18 +237,43 @@ MainWindow.prototype = {
         this._sidebar.widget.show();
     },
 
+    _createFullscreenToolbar: function() {
+        this._fsToolbar = new MainToolbar.MainToolbar(this._windowMode);
+        this._fsToolbar.setModel(this._docModel, this._document);
+
+        this._fsToolbar.connect('back-clicked',
+                                Lang.bind(this, this._onToolbarBackClicked));
+
+        this._fsToolbarActor = new GtkClutter.Actor({ contents: this._fsToolbar.widget,
+                                                      opacity: 0 });
+        this._fsToolbarActor.add_constraint(
+            new Clutter.BindConstraint({ coordinate: Clutter.BindCoordinate.WIDTH,
+                                         source: this.window.get_stage(),
+                                         offset: - (this._scrolledWin.get_vscrollbar().get_preferred_width()[1]) }));
+        this.window.get_stage().add_actor(this._fsToolbarActor);
+    },
+
+    _destroyFullscreenToolbar: function() {
+        this._fsToolbar.widget.destroy();
+    },
+
     _setFullscreen: function(fullscreen) {
         if (this._fullscreen == fullscreen)
             return;
 
         this._fullscreen = fullscreen;
+        this._motionTimeoutId = 0;
 
         Gtk.Settings.get_default().gtk_application_prefer_dark_theme = this._fullscreen;
+        this._toolbar.widget.visible = !this._fullscreen;
 
-        if (this._fullscreen)
+        if (this._fullscreen) {
             this.window.fullscreen();
-        else
+            this._createFullscreenToolbar();
+        } else {
+            this._destroyFullscreenToolbar();
             this.window.unfullscreen();
+        }
     },
 
     _onDeleteEvent: function() {
@@ -284,8 +319,13 @@ MainWindow.prototype = {
         this._preview = new Preview.PreviewView(model, document);
         this._toolbar.setModel(model, document);
 
+        this._docModel = model;
+        this._document = document;
+
         this._preview.widget.connect('button-press-event',
                                      Lang.bind(this, this._onPreviewButtonPressEvent));
+        this._preview.widget.connect('motion-notify-event',
+                                     Lang.bind(this, this._onPreviewMotionNotifyEvent));
 
         this._scrolledWin.add(this._preview.widget);
     },
@@ -298,6 +338,37 @@ MainWindow.prototype = {
             this._setFullscreen(!this._fullscreen);
             return true;
         }
+
+        return false;
+    },
+
+    _onPreviewMotionNotifyEvent: function(widget, event) {
+        if (!this._fullscreen)
+            return false;
+
+        // if we were idle fade in the toolbar, otherwise reset
+        // the timeout
+        if (this._motionTimeoutId == 0) {
+                Tweener.addTween(this._fsToolbarActor,
+                                 { opacity: 255,
+                                   time: 0.20,
+                                   transition: 'easeOutQuad' });
+        } else {
+            Mainloop.source_remove(this._motionTimeoutId);
+        }
+
+        this._motionTimeoutId = Mainloop.timeout_add_seconds
+            (_FULLSCREEN_TOOLBAR_TIMEOUT, Lang.bind(this,
+                function() {
+                    this._motionTimeoutId = 0;
+
+                    // fade out the toolbar
+                    Tweener.addTween(this._fsToolbarActor,
+                                     { opacity: 0,
+                                       time: 0.20,
+                                       transition: 'easeOutQuad' });
+                return false;
+            }));
 
         return false;
     },

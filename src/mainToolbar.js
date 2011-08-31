@@ -33,15 +33,20 @@ const MainWindow = imports.mainWindow;
 
 const _SEARCH_ENTRY_TIMEOUT = 200;
 
-function MainToolbar() {
-    this._init();
+function MainToolbar(windowMode) {
+    this._init(windowMode);
 }
 
 MainToolbar.prototype = {
-    _init: function() {
+    _init: function(windowMode) {
+        this._model = null;
+        this._document = null;
         this._searchEntryTimeout = 0;
+
         this.widget = new Gtk.Toolbar({ icon_size: Gtk.IconSize.MENU });
         this.widget.get_style_context().add_class(Gtk.STYLE_CLASS_MENUBAR);
+
+        this.setWindowMode(windowMode);
     },
 
     _clearToolbar: function() {
@@ -162,7 +167,7 @@ MainToolbar.prototype = {
 
         if (windowMode == MainWindow.WindowMode.OVERVIEW)
             this._populateForOverview();
-        else
+        else if (windowMode == MainWindow.WindowMode.PREVIEW)
             this._populateForPreview();
     },
 

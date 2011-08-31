@@ -29,6 +29,10 @@ dist_js_DATA = \
     format.js \
     path.js
 
+jsutildir = $(pkgdatadir)/js/util/
+dist_jsutil_DATA = \
+    util/tweener.js
+
 BUILT_SOURCES += path.js
 
 path.js: Makefile path.js.in
