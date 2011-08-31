@@ -31,6 +31,7 @@ const _ = imports.gettext.gettext;
 const Lang = imports.lang;
 const Signals = imports.signals;
 
+const Categories = imports.categories;
 const ChangeMonitor = imports.changeMonitor;
 const Global = imports.global;
 const Path = imports.path;
@@ -67,10 +68,12 @@ DocCommon.prototype = {
         this._refreshIconId =
             Global.settings.connect('changed::list-view',
                                     Lang.bind(this, this.refreshIcon));
-
         this._changesId =
             Global.changeMonitor.connect('changes-pending',
                                          Lang.bind(this, this._onChangesPending));
+        this._categoryId =
+            Global.categoryManager.connect('active-category-changed',
+                                           Lang.bind(this, this.refreshIcon));
     },
 
     _onChangesPending: function(monitor, changes) {
@@ -161,9 +164,10 @@ DocCommon.prototype = {
         let emblemIcons = [];
         let pixbuf = this.pixbuf;
 
-        if (this.favorite)
+        if (this.favorite &&
+            (Global.categoryManager.getActiveCategoryId() != Categories.StockCategories.FAVORITES))
             emblemIcons.push(this._createSymbolicEmblem('emblem-favorite'));
-        if (this.shared)
+        if (this.shared && (Global.categoryManager.getActiveCategoryId() != Categories.StockCategories.SHARED))
             emblemIcons.push(this._createSymbolicEmblem('emblem-shared'));
 
         if (emblemIcons.length > 0) {
@@ -203,6 +207,7 @@ DocCommon.prototype = {
     destroy: function() {
         Global.settings.disconnect(this._refreshIconId);
         Global.changeMonitor.disconnect(this._changesId);
+        Global.categoryManager.disconnect(this._categoryId);
     },
 
     open: function(screen, timestamp) {

@@ -26,6 +26,13 @@ const _ = imports.gettext.gettext;
 
 const Global = imports.global;
 
+const StockCategories = {
+    RECENT: 'recent',
+    FAVORITES: 'favorites',
+    SHARED: 'shared',
+    PRIVATE: 'private'
+};
+
 function Category(id, name, icon) {
     this._init(id, name, icon);
 };
@@ -38,11 +45,11 @@ Category.prototype = {
     },
 
     getWhere: function() {
-        if (this.id == 'favorites')
+        if (this.id == StockCategories.FAVORITES)
             return '{ ?urn nao:hasTag nao:predefined-tag-favorite }';
 
         // require to have a contributor, and creator, and they should be different
-        if (this.id == 'shared')
+        if (this.id == StockCategories.SHARED)
             return '{ ?urn nco:contributor ?contributor . ?urn nco:creator ?creator FILTER (?contributor != ?creator ) }';
 
         return '{ }';
@@ -50,7 +57,7 @@ Category.prototype = {
 
     getFilter: function() {
         // require to be not local
-        if (this.id == 'shared')
+        if (this.id == StockCategories.SHARED)
             return Global.queryBuilder.buildFilterNotLocal();
 
         return '(true)';
@@ -67,20 +74,20 @@ CategoryManager.prototype = {
 
         let category;
         // Translators: this refers to new and recent documents
-        category = new Category('recent', _("New and Recent"), '');
+        category = new Category(StockCategories.RECENT, _("New and Recent"), '');
         this._categories[category.id] = category;
         // Translators: this refers to favorite documents
-        category = new Category('favorites', _("Favorites"), 'emblem-favorite-symbolic');
+        category = new Category(StockCategories.FAVORITES, _("Favorites"), 'emblem-favorite-symbolic');
         this._categories[category.id] = category;
         // Translators: this refers to shared documents
-        category = new Category('shared', _("Shared with you"), 'emblem-shared-symbolic');
+        category = new Category(StockCategories.SHARED, _("Shared with you"), 'emblem-shared-symbolic');
         this._categories[category.id] = category;
 
         // unimplemented
-        category = new Category('private', _("Private"), 'channel-secure-symbolic');
+        category = new Category(StockCategories.PRIVATE, _("Private"), 'channel-secure-symbolic');
         this._categories[category.id] = category;
 
-        this.setActiveCategoryId('recent');
+        this.setActiveCategoryId(StockCategories.RECENT);
     },
 
     setActiveCategoryId: function(id) {
