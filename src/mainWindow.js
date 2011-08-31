@@ -316,6 +316,10 @@ MainWindow.prototype = {
         }
 
         this._loaderCancellable = null;
+        // FIXME: we need support for error codes in GJS
+        if (exception.toString().indexOf('Operation was cancelled') != -1)
+            return;
+
         this._setWindowMode(WindowMode.PREVIEW);
 
         let errorBox = new ErrorBox.ErrorBox(message, exception.toString());
