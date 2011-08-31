@@ -24,6 +24,7 @@ const Gd = imports.gi.Gd;
 const Pango = imports.gi.Pango;
 
 const Documents = imports.documents;
+const Global = imports.global;
 const View = imports.view;
 const Lang = imports.lang;
 
@@ -95,5 +96,27 @@ ListView.prototype = {
                           'text', Documents.ModelColumns.TITLE);
         col.add_attribute(textRenderer,
                           'line-two', Documents.ModelColumns.AUTHOR);
+
+        let typeRenderer =
+            new Gtk.CellRendererText({ xpad: 24 });
+        col.pack_start(typeRenderer, false);
+        col.set_cell_data_func(typeRenderer, Lang.bind(this,
+            function(col, cell, model, iter) {
+                let urn = model.get_value(iter, Documents.ModelColumns.URN);
+                let doc = Global.documentManager.lookupDocument(urn);
+
+                typeRenderer.text = doc.typeDescription;
+            }));
+
+        let whereRenderer =
+            new Gtk.CellRendererText({ xpad: 16 });
+        col.pack_start(whereRenderer, false);
+        col.set_cell_data_func(whereRenderer, Lang.bind(this,
+            function(col, cell, model, iter) {
+                let urn = model.get_value(iter, Documents.ModelColumns.URN);
+                let doc = Global.documentManager.lookupDocument(urn);
+
+                whereRenderer.text = doc.sourceName;
+            }));
     }
 };
