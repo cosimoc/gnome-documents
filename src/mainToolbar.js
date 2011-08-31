@@ -20,6 +20,7 @@
  */
 
 const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 
 const _ = imports.gettext.gettext;
@@ -138,10 +139,22 @@ MainToolbar.prototype = {
                 this.emit('back-clicked');
             }));
 
-        this._modelLabel = new Gtk.Label();
-        let labelItem = new Gtk.ToolItem({ child: this._modelLabel });
+        let grid = new Gtk.Grid({ orientation: Gtk.Orientation.HORIZONTAL,
+                                  halign: Gtk.Align.CENTER,
+                                  valign: Gtk.Align.CENTER });
+
+        this._titleLabel = new Gtk.Label();
+        grid.add(this._titleLabel);
+
+        this._pageLabel = new Gtk.Label({ margin_left: 12 });
+        this._pageLabel.get_style_context().add_class('dim-label');
+        grid.add(this._pageLabel);
+
+        let labelItem = new Gtk.ToolItem({ child: grid });
         labelItem.set_expand(true);
         this.widget.insert(labelItem, 1);
+
+        this._updateModelLabels();
 
         let rightGroup = new Gtk.ToolItem();
         this.widget.insert(rightGroup, 2);
@@ -153,13 +166,28 @@ MainToolbar.prototype = {
         this.widget.show_all();
     },
 
-    _updatePageLabel: function(label, model, document) {
-        let curPage, totPages;
+    _updateModelLabels: function() {
+        let pageLabel = null;
+        let doc = Global.documentManager.getActiveDocument();
 
-        curPage = model.get_page();
-        totPages = document.get_n_pages();
+        let titleLabel = ('<b>%s</b>').format(GLib.markup_escape_text(doc.title, -1));
+        this._titleLabel.set_markup(titleLabel);
 
-        label.set_text(_("page %d of %d").format(curPage + 1, totPages));
+        if (this._model && this._document) {
+            let curPage, totPages;
+
+            curPage = this._model.get_page();
+            totPages = this._document.get_n_pages();
+
+            pageLabel = _("(%d of %d)").format(curPage + 1, totPages);
+        }
+
+        if (pageLabel) {
+            this._pageLabel.show();
+            this._pageLabel.set_text(pageLabel);
+        } else {
+            this._pageLabel.hide();
+        }
     },
 
     setWindowMode: function(windowMode) {
@@ -172,12 +200,15 @@ MainToolbar.prototype = {
     },
 
     setModel: function(model, document) {
-        model.connect('page-changed', Lang.bind(this,
+        this._model = model;
+        this._document = document;
+
+        this._model.connect('page-changed', Lang.bind(this,
             function() {
-                this._updatePageLabel(this._modelLabel, model, document);
+                this._updateModelLabels();
             }));
 
-        this._updatePageLabel(this._modelLabel, model, document);
+        this._updateModelLabels();
     }
 };
 Signals.addSignalMethods(MainToolbar.prototype);

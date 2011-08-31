@@ -451,6 +451,7 @@ function DocumentManager() {
 DocumentManager.prototype = {
     _init: function() {
         this._docs = {};
+        this._activeDocument = null;
 
         this._pixbufFrame = GdkPixbuf.Pixbuf.new_from_file(Path.ICONS_DIR + 'thumbnail-frame.png');
     },
@@ -496,6 +497,17 @@ DocumentManager.prototype = {
             document = this._docs[urn];
 
         return document;
+    },
+
+    setActiveDocument: function(doc) {
+        if (doc == this._activeDocument)
+            return;
+
+        this._activeDocument = doc;
+    },
+
+    getActiveDocument: function() {
+        return this._activeDocument;
     }
 };
 Signals.addSignalMethods(DocumentManager.prototype);

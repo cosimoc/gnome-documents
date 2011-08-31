@@ -226,6 +226,8 @@ MainWindow.prototype = {
         this._docModel = null;
         this._document = null;
 
+        Global.documentManager.setActiveDocument(null);
+
         this._setFullscreen(false);
 
         this._refreshViewSettings();
@@ -287,11 +289,12 @@ MainWindow.prototype = {
         }
 
         let doc = Global.documentManager.lookupDocument(urn);
-        this._loaderCancellable = new Gio.Cancellable();
+        Global.documentManager.setActiveDocument(doc);
 
         this._loaderTimeout = Mainloop.timeout_add(_PDF_LOADER_TIMEOUT,
             Lang.bind(this, this._onPdfLoaderTimeout));
 
+        this._loaderCancellable = new Gio.Cancellable();
         doc.loadPreview(this._loaderCancellable, Lang.bind(this, this._onDocumentLoaded));
     },
 
