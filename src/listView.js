@@ -72,6 +72,10 @@ ListView.prototype = {
         return this.widget.get_path_at_pos(position[0], position[1])[1];
     },
 
+    scrollToPath: function(path) {
+        this.widget.scroll_to_cell(path, null, false, 0, 0);
+    },
+
     createRenderers: function() {
         let col = new Gtk.TreeViewColumn();
         this.widget.append_column(col);

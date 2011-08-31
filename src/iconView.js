@@ -73,6 +73,10 @@ IconView.prototype = {
         return this.widget.get_path_at_pos(position[0], position[1]);
     },
 
+    scrollToPath: function(path) {
+        this.widget.scroll_to_path(path, false, 0, 0);
+    },
+
     createRenderers: function() {
         let pixbufRenderer =
             new Gtk.CellRendererPixbuf({ xalign: 0.5,

@@ -92,18 +92,19 @@ View.prototype = {
             this._selectionController.connect('selection-check',
                                               Lang.bind(this, this._updateSelection));
 
-        this._updateSelection();
+        this._updateSelection(true);
 
         this.connectToSelectionChanged(Lang.bind(this, this._onSelectionChanged));
     },
 
-    _updateSelection: function() {
+    _updateSelection: function(scroll) {
         let selectionObject = this.getSelectionObject();
         let selected = this._selectionController.getSelection().slice(0);
 
         if (!selected.length)
             return;
 
+        let first = true;
         this._treeModel.foreach(Lang.bind(this,
             function(model, path, iter) {
                 let urn = this._treeModel.get_value(iter, Documents.ModelColumns.URN);
@@ -112,6 +113,11 @@ View.prototype = {
                 if (urnIndex != -1) {
                     selectionObject.select_path(path);
                     selected.splice(urnIndex, 1);
+
+                    if (first && scroll) {
+                        this.scrollToPath(path);
+                        first = false;
+                    }
                 }
 
                 if (selected.length == 0)
