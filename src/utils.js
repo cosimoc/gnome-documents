@@ -19,6 +19,7 @@
  *
  */
 
+const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
 
 const Documents = imports.documents;
@@ -33,32 +34,17 @@ function getIconSize() {
     return Global.settings.get_boolean('list-view') ? _LIST_VIEW_SIZE : _ICON_VIEW_SIZE;
 }
 
-function pixbufFromRdfType(type) {
+function iconFromRdfType(type) {
     let iconName;
-    let iconInfo = null;
-    let pixbuf = null;
 
     if (type.indexOf('nfo#Spreadsheet') != -1)
         iconName = 'x-office-spreadsheet';
     else if (type.indexOf('nfo#Presentation') != -1)
-    iconName = 'x-office-presentation';
+        iconName = 'x-office-presentation';
     else
         iconName = 'x-office-document';
 
-    iconInfo =
-        Gtk.IconTheme.get_default().lookup_icon(iconName, getIconSize(),
-                                                Gtk.IconLookupFlags.FORCE_SIZE |
-                                                Gtk.IconLookupFlags.GENERIC_FALLBACK);
-
-    if (iconInfo != null) {
-        try {
-            pixbuf = iconInfo.load_icon();
-        } catch (e) {
-            log('Unable to load pixbuf: ' + e.toString());
-        }
-    }
-
-    return pixbuf;
+    return new Gio.ThemedIcon({ name: iconName });
 }
 
 function getURNsFromPaths(paths, model) {

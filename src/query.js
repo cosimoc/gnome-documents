@@ -28,14 +28,15 @@ const QueryColumns = {
     URN: 0,
     URI: 1,
     FILENAME: 2,
-    TITLE: 3,
-    AUTHOR: 4,
-    MTIME: 5,
-    IDENTIFIER: 6,
-    TYPE: 7,
-    RESOURCE_URN: 8,
-    FAVORITE: 9,
-    SHARED: 10
+    MIMETYPE: 3,
+    TITLE: 4,
+    AUTHOR: 5,
+    MTIME: 6,
+    IDENTIFIER: 7,
+    RDFTYPE: 8,
+    RESOURCE_URN: 9,
+    FAVORITE: 10,
+    SHARED: 11
 };
 
 function QueryBuilder() {
@@ -144,6 +145,7 @@ QueryBuilder.prototype = {
             'SELECT DISTINCT ?urn ' + // urn
             'nie:url(?urn) ' + // uri
             'nfo:fileName(?urn)' + // filename
+            'nie:mimeType(?urn)' + // mimetype
             'nie:title(?urn) ' + // title
             'tracker:coalesce(nco:fullname(?creator), nco:fullname(?publisher), \'\') ' + // author
             'tracker:coalesce(nfo:fileLastModified(?urn), nie:contentLastModified(?urn)) AS ?mtime ' + // mtime

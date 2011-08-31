@@ -54,9 +54,13 @@ DocCommon.prototype = {
         this.mtime = null;
         this.resourceUrn = null;
         this.favorite = null;
-        this._type = null;
         this.pixbuf = null;
         this.defaultAppName = null;
+
+        this.mimeType = null;
+        this.rdfType = null;
+        this.typeDescription = null;
+        this.sourceName = null;
 
         this.favorite = false;
         this.shared = false;
@@ -115,8 +119,11 @@ DocCommon.prototype = {
         this.resourceUrn = cursor.get_string(Query.QueryColumns.RESOURCE_URN)[0];
         this.favorite = cursor.get_boolean(Query.QueryColumns.FAVORITE);
 
-        this._type = cursor.get_string(Query.QueryColumns.TYPE)[0];
-        this.pixbuf = Utils.pixbufFromRdfType(this._type);
+        this.mimeType = cursor.get_string(Query.QueryColumns.MIMETYPE)[0];
+        this.rdfType = cursor.get_string(Query.QueryColumns.RDFTYPE)[0];
+        this._updateIconFromType();
+
+        this.updateTypeDescription();
 
         // sanitize
         if (!this.uri)
@@ -134,8 +141,31 @@ DocCommon.prototype = {
         this.refreshIcon();
     },
 
+    _updateIconFromType: function() {
+        let icon = null;
+
+        if (this.mimeType)
+            icon = Gio.content_type_get_icon(this.mimeType);
+
+        if (!icon)
+            icon = Utils.iconFromRdfType(this.rdfType);
+
+        let iconInfo =
+            Gtk.IconTheme.get_default().lookup_by_gicon(icon, Utils.getIconSize(),
+                                                        Gtk.IconLookupFlags.FORCE_SIZE |
+                                                        Gtk.IconLookupFlags.GENERIC_FALLBACK);
+
+        if (iconInfo != null) {
+            try {
+                this.pixbuf = iconInfo.load_icon();
+            } catch (e) {
+                log('Unable to load pixbuf: ' + e.toString());
+            }
+        }
+    },
+
     refreshIcon: function() {
-        this.pixbuf = Utils.pixbufFromRdfType(this._type);
+        this._updateIconFromType();
         this.checkEffectsAndUpdateInfo();
     },
 
@@ -231,6 +261,12 @@ LocalDocument.prototype = {
 
     _init: function(cursor) {
         DocCommon.prototype._init.call(this, cursor);
+
+        this.sourceName = _("Local");
+    },
+
+    updateTypeDescription: function() {
+        this.typeDescription = Gio.content_type_get_description(this.mimeType);
     },
 
     refreshIcon: function() {
@@ -350,6 +386,7 @@ GoogleDocument.prototype = {
         // overridden
         this.identifier = cursor.get_string(Query.QueryColumns.IDENTIFIER)[0];
         this.defaultAppName = _("Google Docs");
+        this.sourceName = _("Google");
     },
 
     _createGDataEntry: function(cancellable, callback) {
@@ -400,6 +437,19 @@ GoogleDocument.prototype = {
                         }
                     }));
             }));
+    },
+
+    updateTypeDescription: function() {
+        let description;
+
+        if (this.rdfType.indexOf('nfo#Spreadsheet') != -1)
+            description = _("Spreadsheet");
+        else if (this.rdfType.indexOf('nfo#Presentation') != -1)
+            description = _("Presentation");
+        else
+            description = _("Document");
+
+        this.typeDescription = description;
     },
 
     populateFromCursor: function(cursor) {
