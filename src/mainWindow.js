@@ -21,6 +21,7 @@
 
 const EvView = imports.gi.EvinceView;
 const Gd = imports.gi.Gd;
+const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -67,6 +68,8 @@ MainWindow.prototype = {
         this.window.maximize();
         this.window.connect('delete-event',
                             Lang.bind(this, this._onDeleteEvent));
+        this.window.connect('key-press-event',
+                            Lang.bind(this, this._onKeyPressEvent));
 
         Global.settings.connect('changed::list-view',
                                 Lang.bind(this, this._refreshViewSettings));
@@ -103,6 +106,19 @@ MainWindow.prototype = {
 
         this._grid.show_all();
         this._prepareForOverview();
+    },
+
+    _onKeyPressEvent: function(widget, event) {
+        let keyval = event.get_keyval()[1];
+        let state = event.get_state()[1];
+
+        if ((keyval == Gdk.KEY_q) &&
+            ((state & Gdk.ModifierType.CONTROL_MASK) != 0)) {
+            Global.application.quit();
+            return true;
+        }
+
+        return false;
     },
 
     _onAdjustmentChange: function(adjustment) {
