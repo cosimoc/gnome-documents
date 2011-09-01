@@ -246,12 +246,24 @@ MainWindow.prototype = {
         this._fsToolbar.connect('back-clicked',
                                 Lang.bind(this, this._onToolbarBackClicked));
 
+        let vScrollbar = this._scrolledWin.get_vscrollbar();
+
+        let sizeConstraint = new Clutter.BindConstraint
+            ({ coordinate: Clutter.BindCoordinate.WIDTH,
+               source: this.window.get_stage(),
+               offset: (vScrollbar.get_visible() ?
+                        (- (vScrollbar.get_preferred_width()[1])) : 0 ) });
+        // update the constraint size when the scrollbar changes visibility
+        vScrollbar.connect('notify::visible',
+            function() {
+                sizeConstraint.offset = (vScrollbar.get_visible() ?
+                                         (- (vScrollbar.get_preferred_width()[1])) : 0 );
+            });
+
         this._fsToolbarActor = new GtkClutter.Actor({ contents: this._fsToolbar.widget,
                                                       opacity: 0 });
-        this._fsToolbarActor.add_constraint(
-            new Clutter.BindConstraint({ coordinate: Clutter.BindCoordinate.WIDTH,
-                                         source: this.window.get_stage(),
-                                         offset: - (this._scrolledWin.get_vscrollbar().get_preferred_width()[1]) }));
+        this._fsToolbarActor.add_constraint(sizeConstraint);
+
         this.window.get_stage().add_actor(this._fsToolbarActor);
     },
 
