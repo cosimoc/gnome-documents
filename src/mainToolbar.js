@@ -201,6 +201,9 @@ MainToolbar.prototype = {
     },
 
     setModel: function(model, document) {
+        if (!this._model || !this._document)
+            return;
+
         this._model = model;
         this._document = document;
 
