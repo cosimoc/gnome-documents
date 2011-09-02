@@ -171,14 +171,14 @@ main (int argc,
   g_type_init ();
   loop = g_main_loop_new (NULL, FALSE);
 
-  g_unix_signal_add_watch_full (SIGTERM,
-                                G_PRIORITY_DEFAULT,
-                                signal_handler_cb,
-                                loop, NULL);
-  g_unix_signal_add_watch_full (SIGINT,
-                                G_PRIORITY_DEFAULT,
-                                signal_handler_cb,
-                                loop, NULL);
+  g_unix_signal_add_full (G_PRIORITY_DEFAULT,
+			  SIGTERM,
+			  signal_handler_cb,
+			  loop, NULL);
+  g_unix_signal_add_full (G_PRIORITY_DEFAULT,
+			  SIGINT,
+			  signal_handler_cb,
+			  loop, NULL);
 
   introspection_data = g_dbus_node_info_new_for_xml (introspection_xml, NULL);
   g_assert (introspection_data != NULL);
