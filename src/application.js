@@ -27,6 +27,7 @@ const GtkClutter = imports.gi.GtkClutter;
 const EvDoc = imports.gi.EvinceDocument;
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
+const Goa = imports.gi.Goa;
 const Gtk = imports.gi.Gtk;
 const GLib = imports.gi.GLib;
 const Tracker = imports.gi.Tracker;
@@ -135,20 +136,26 @@ Application.prototype = {
                     this.quit();
                 }
 
-                // now create the source manager
-                Global.sourceManager = new Sources.SourceManager(Lang.bind(this, this._onSourceManagerCreated));
+                Goa.Client.new(null, Lang.bind(this,
+                    function(object, res) {
+                        try {
+                            Global.goaClient = Goa.Client.new_finish(res);
+                        } catch (e) {
+                            log('Unable to create the GOA client: ' + e.toString());
+                            this.quit();
+                        }
+
+                        Global.sourceManager = new Sources.SourceManager();
+                        Global.selectionController = new SelectionController.SelectionController();
+                        Global.queryBuilder = new Query.QueryBuilder();
+                        Global.documentManager = new Documents.DocumentManager();
+                        Global.trackerController = new TrackerController.TrackerController();
+                        Global.changeMonitor = new ChangeMonitor.TrackerChangeMonitor();
+
+                        this._mainWindow = new MainWindow.MainWindow();
+                        this.activate();
+                    }));
             }));
-    },
-
-    _onSourceManagerCreated: function() {
-        Global.selectionController = new SelectionController.SelectionController();
-        Global.queryBuilder = new Query.QueryBuilder();
-        Global.documentManager = new Documents.DocumentManager();
-        Global.trackerController = new TrackerController.TrackerController();
-        Global.changeMonitor = new ChangeMonitor.TrackerChangeMonitor();
-
-        this._mainWindow = new MainWindow.MainWindow();
-        this.activate();
     },
 
     activate: function() {

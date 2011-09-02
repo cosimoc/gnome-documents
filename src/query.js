@@ -72,10 +72,15 @@ QueryBuilder.prototype = {
     },
 
     buildFilterNotLocal: function() {
-        let filter =
-            '(fn:contains(rdf:type(?urn), \"RemoteDataObject\"))';
+        let sparql = '(';
+        let remoteSources = Global.sourceManager.getRemoteSources();
 
-        return filter;
+        for (idx in remoteSources)
+            sparql += ('(nie:dataSource(?urn) = "%s") || ').format(remoteSources[idx].resourceUrn);
+
+        sparql += 'false)';
+
+        return sparql;
     },
 
     _buildFilterSearch: function() {

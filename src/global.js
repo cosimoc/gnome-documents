@@ -24,6 +24,7 @@ let categoryManager = null;
 let connection = null;
 let documentManager = null;
 let errorHandler = null;
+let goaClient = null;
 let offsetController = null;
 let queryBuilder = null;
 let selectionController = null;

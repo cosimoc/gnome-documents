@@ -42,6 +42,8 @@ TrackerController.prototype = {
         this._refreshMinerNow();
 
         this._sourceManager = Global.sourceManager;
+        this._sourceManager.connect('sources-changed',
+                                    Lang.bind(this, this._refresh));
         this._sourceManager.connect('active-source-changed',
                                     Lang.bind(this, this._refresh));
 
@@ -56,8 +58,6 @@ TrackerController.prototype = {
         this._filterController = Global.filterController;
         this._filterController.connect('filter-changed',
                                        Lang.bind(this, this._onFilterChanged));
-
-        this._refresh();
     },
 
     _refreshMinerNow: function() {
