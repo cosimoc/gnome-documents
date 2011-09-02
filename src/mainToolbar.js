@@ -209,6 +209,10 @@ MainToolbar.prototype = {
             }));
 
         this._updateModelLabels();
+    },
+
+    getSearchEntry: function() {
+        return this._searchEntry;
     }
 };
 Signals.addSignalMethods(MainToolbar.prototype);

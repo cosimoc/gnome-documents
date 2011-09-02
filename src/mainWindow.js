@@ -131,9 +131,37 @@ MainWindow.prototype = {
             return true;
         }
 
-        if ((keyval == Gdk.KEY_f) &&
-            this._windowMode == WindowMode.PREVIEW) {
+        if (this._windowMode == WindowMode.PREVIEW)
+            return this._handleKeyPreview(keyval, state);
+        else
+            return this._handleKeyOverview(keyval, state);
+    },
+
+    _handleKeyPreview: function(keyval, state) {
+        if (keyval == Gdk.KEY_f) {
             this._setFullscreen(!this._fullscreen);
+            return true;
+        }
+
+        if (keyval == Gdk.KEY_Escape && this._fullscreen) {
+            this._setFullscreen(false);
+            return true;
+        }
+
+        if (keyval == Gdk.KEY_Escape) {
+            this._setWindowMode(WindowMode.OVERVIEW);
+            return true;
+        }
+
+        return false;
+    },
+
+    _handleKeyOverview: function(keyval, state) {
+        if (((keyval == Gdk.KEY_f) &&
+            ((state & Gdk.ModifierType.CONTROL_MASK) != 0)) ||
+            ((keyval == Gdk.KEY_s) &&
+            ((state & Gdk.ModifierType.CONTROL_MASK) != 0))) {
+            this._toolbar.getSearchEntry().grab_focus();
             return true;
         }
 
