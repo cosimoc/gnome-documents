@@ -153,15 +153,13 @@ function Sidebar() {
 
 Sidebar.prototype = {
     _init: function() {
-        this._sourceManager = Global.sourceManager;
-        this._sourceManager.connect('active-source-changed',
-                                    Lang.bind(this, this._onSourceFilterChanged));
-
         this.widget = new Gtk.Notebook({ show_tabs: false });
         this.widget.get_style_context().add_class(Gtk.STYLE_CLASS_SIDEBAR);
 
         this._sourceView = new Sources.SourceView();
         this.widget.insert_page(this._sourceView.widget, null, _SIDEBAR_SOURCES_PAGE);
+        this._sourceView.connect('source-clicked',
+                                 Lang.bind(this, this._onSourceClicked));
 
         this._sidebarView = new SidebarMainPage();
         this.widget.insert_page(this._sidebarView.widget, null, _SIDEBAR_MAIN_PAGE);
@@ -172,7 +170,7 @@ Sidebar.prototype = {
         this.widget.show_all();
     },
 
-    _onSourceFilterChanged: function(sourcePage, id, name) {
+    _onSourceClicked: function() {
         this.widget.set_current_page(_SIDEBAR_MAIN_PAGE);
     },
 

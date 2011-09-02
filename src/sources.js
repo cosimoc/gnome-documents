@@ -289,6 +289,7 @@ SourceView.prototype = {
                 let id = this._model.model.get_value(iter, SourceModelColumns.ID);
 
                 this._sourceManager.setActiveSourceId(id);
+                this.emit('source-clicked');
             }));
 
         let col = new Gtk.TreeViewColumn();
