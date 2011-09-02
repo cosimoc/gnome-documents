@@ -22,6 +22,7 @@
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
+const GtkClutter = imports.gi.GtkClutter;
 
 const _ = imports.gettext.gettext;
 
@@ -216,3 +217,22 @@ MainToolbar.prototype = {
     }
 };
 Signals.addSignalMethods(MainToolbar.prototype);
+
+function FullscreenToolbar() {
+    this._init();
+};
+
+FullscreenToolbar.prototype = {
+    __proto__: MainToolbar.prototype,
+
+    _init: function() {
+        MainToolbar.prototype._init.call(this, MainWindow.WindowMode.PREVIEW);
+
+        this.actor = new GtkClutter.Actor({ contents: this.widget,
+                                            opacity: 0 });
+    },
+
+    destroy: function() {
+        this.widget.destroy();
+    }
+};

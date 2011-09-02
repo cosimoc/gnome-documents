@@ -68,6 +68,7 @@ MainWindow.prototype = {
         this._adjChangedId = 0;
         this._docModel = null;
         this._document = null;
+        this._fsToolbar = null;
         this._pdfLoader = null;
         this._fullscreen = false;
         this._loaderCancellable = null;
@@ -268,7 +269,7 @@ MainWindow.prototype = {
     },
 
     _createFullscreenToolbar: function() {
-        this._fsToolbar = new MainToolbar.MainToolbar(this._windowMode);
+        this._fsToolbar = new MainToolbar.FullscreenToolbar();
         this._fsToolbar.setModel(this._docModel, this._document);
 
         this._fsToolbar.connect('back-clicked',
@@ -288,15 +289,14 @@ MainWindow.prototype = {
                                          (- (vScrollbar.get_preferred_width()[1])) : 0 );
             });
 
-        this._fsToolbarActor = new GtkClutter.Actor({ contents: this._fsToolbar.widget,
-                                                      opacity: 0 });
-        this._fsToolbarActor.add_constraint(sizeConstraint);
+        this._fsToolbar.actor.add_constraint(sizeConstraint);
 
-        this.window.get_stage().add_actor(this._fsToolbarActor);
+        this.window.get_stage().add_actor(this._fsToolbar.actor);
     },
 
     _destroyFullscreenToolbar: function() {
-        this._fsToolbar.widget.destroy();
+        this._fsToolbar.destroy();
+        this._fsToolbar = null;
     },
 
     _setFullscreen: function(fullscreen) {
@@ -360,6 +360,10 @@ MainWindow.prototype = {
 
         this._setWindowMode(WindowMode.PREVIEW);
         this._preview = new Preview.PreviewView(model, document);
+
+        if (this._fsToolbar)
+            this._fsToolbar.setModel(model, document);
+
         this._toolbar.setModel(model, document);
 
         this._docModel = model;
@@ -392,7 +396,7 @@ MainWindow.prototype = {
         // if we were idle fade in the toolbar, otherwise reset
         // the timeout
         if (this._motionTimeoutId == 0) {
-                Tweener.addTween(this._fsToolbarActor,
+                Tweener.addTween(this._fsToolbar.actor,
                                  { opacity: 255,
                                    time: 0.20,
                                    transition: 'easeOutQuad' });
@@ -405,12 +409,13 @@ MainWindow.prototype = {
                 function() {
                     this._motionTimeoutId = 0;
 
-                    // fade out the toolbar
-                    Tweener.addTween(this._fsToolbarActor,
-                                     { opacity: 0,
-                                       time: 0.20,
-                                       transition: 'easeOutQuad' });
-                return false;
+                    if (this._fsToolbar)
+                        // fade out the toolbar
+                        Tweener.addTween(this._fsToolbar.actor,
+                                         { opacity: 0,
+                                         time: 0.20,
+                                         transition: 'easeOutQuad' });
+                    return false;
             }));
 
         return false;
