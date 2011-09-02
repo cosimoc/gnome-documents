@@ -87,6 +87,8 @@ MainWindow.prototype = {
                             Lang.bind(this, this._onDeleteEvent));
         this.window.connect('key-press-event',
                             Lang.bind(this, this._onKeyPressEvent));
+        this.window.connect('motion-notify-event',
+                            Lang.bind(this, this._fullscreenMotionHandler));
 
         Global.settings.connect('changed::list-view',
                                 Lang.bind(this, this._refreshViewSettings));
@@ -372,7 +374,7 @@ MainWindow.prototype = {
         this._preview.widget.connect('button-press-event',
                                      Lang.bind(this, this._onPreviewButtonPressEvent));
         this._preview.widget.connect('motion-notify-event',
-                                     Lang.bind(this, this._onPreviewMotionNotifyEvent));
+                                     Lang.bind(this, this._fullscreenMotionHandler));
 
         this._scrolledWin.add(this._preview.widget);
     },
@@ -389,7 +391,7 @@ MainWindow.prototype = {
         return false;
     },
 
-    _onPreviewMotionNotifyEvent: function(widget, event) {
+    _fullscreenMotionHandler: function(widget, event) {
         if (!this._fullscreen)
             return false;
 
