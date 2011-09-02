@@ -223,14 +223,16 @@ MainWindow.prototype = {
     },
 
     _setWindowMode: function(windowMode) {
+        if (this._windowMode == windowMode)
+            return;
+
         this._windowMode = windowMode;
+        this._toolbar.setWindowMode(this._windowMode);
 
         if (this._windowMode == WindowMode.OVERVIEW)
             this._prepareForOverview();
         else
             this._prepareForPreview();
-
-        this._toolbar.setWindowMode(this._windowMode);
     },
 
     _prepareForPreview: function(model, document) {
@@ -376,6 +378,7 @@ MainWindow.prototype = {
         this._preview.widget.connect('motion-notify-event',
                                      Lang.bind(this, this._fullscreenMotionHandler));
 
+        this._destroyView();
         this._scrolledWin.add(this._preview.widget);
     },
 
