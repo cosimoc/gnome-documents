@@ -1,0 +1,135 @@
+# Chinese (Taiwan) translation for gnome-documents.
+# Copyright (C) 2011 gnome-documents's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-documents package.
+# Cheng-Chia Tseng <pswo10680@gmail.com>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-documents master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-09-03 19:04+0800\n"
+"PO-Revision-Date: 2011-09-02 22:38+0800\n"
+"Last-Translator: Cheng-Chia Tseng <pswo10680@gmail.com>\n"
+"Language-Team: Chinese (Taiwan) <chinese-l10n@googlegroups.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../data/gnome-documents.desktop.in.in.h:1
+msgid "Access, manage and share documents"
+msgstr "存取、管理、分享文件"
+
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:82
+msgid "Documents"
+msgstr "文件"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1
+msgid "Enable list view"
+msgstr "啟用清單檢視"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
+msgid "List view"
+msgstr "清單檢視"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
+msgid "The active source filter"
+msgstr "使用中來源過濾器"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "The last active source filter"
+msgstr "上個使用中來源過濾器"
+
+#. Translators: this refers to new and recent documents
+#: ../src/categories.js:77
+msgid "New and Recent"
+msgstr "新增與最近使用"
+
+#. Translators: this refers to favorite documents
+#: ../src/categories.js:80
+msgid "Favorites"
+msgstr "喜好"
+
+#. Translators: this refers to shared documents
+#: ../src/categories.js:83
+msgid "Shared with you"
+msgstr "與您分享"
+
+#. unimplemented
+#: ../src/categories.js:87
+msgid "Private"
+msgstr "私人"
+
+#: ../src/documents.js:269 ../src/sources.js:116
+msgid "Local"
+msgstr "本地端"
+
+#: ../src/documents.js:388
+msgid "Google Docs"
+msgstr "Google 文件"
+
+#: ../src/documents.js:389
+msgid "Google"
+msgstr "Google"
+
+#: ../src/documents.js:446
+msgid "Spreadsheet"
+msgstr "試算表"
+
+#: ../src/documents.js:448
+msgid "Presentation"
+msgstr "簡報"
+
+#: ../src/documents.js:450
+msgid "Document"
+msgstr "文件"
+
+#. Translators: %s is the title of a document
+#: ../src/error.js:37
+#, c-format
+msgid "Unable to load \"%s\" for preview"
+msgstr "無法載入「%s」以預覽"
+
+#: ../src/error.js:44
+msgid "Unable to fetch the list of documents"
+msgstr "無法擷取文件清單"
+
+#: ../src/loadMore.js:69
+#, c-format
+msgid "Load %d more documents"
+msgstr "載入 %d 份其他文件"
+
+#: ../src/mainToolbar.js:183
+#, c-format
+msgid "(%d of %d)"
+msgstr "(%d / %d)"
+
+#: ../src/sidebar.js:130 ../src/sources.js:255
+msgid "Sources"
+msgstr "來源"
+
+#: ../src/sources.js:110
+msgid "All"
+msgstr "全部"
+
+#: ../src/spinnerBox.js:47
+msgid "Loading..."
+msgstr "正在載入..."
+
+#. Translators: this is the Open action in a context menu
+#: ../src/view.js:46
+#, c-format
+msgid "Open with %s"
+msgstr "以 %s 開啟"
+
+#: ../src/view.js:46
+msgid "Open"
+msgstr "開啟"
+
+#: ../src/view.js:56
+msgid "Remove from favorites"
+msgstr "自喜好移除"
+
+#: ../src/view.js:56
+msgid "Add to favorites"
+msgstr "加入喜好"
