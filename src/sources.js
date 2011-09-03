@@ -48,8 +48,8 @@ Source.prototype = {
             this.object = params.object;
 
             let account = this.object.get_account();
-            this.id = account.get_id();
-            this.name = account.get_provider_name();
+            this.id = account.id;
+            this.name = account.provider_name;
         } else {
             this.id = params.id;
             this.name = params.name;
