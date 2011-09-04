@@ -1,16 +1,15 @@
-# Czech translation for cogl.
-# Copyright (C) 2011 cogl's COPYRIGHT HOLDER
-# This file is distributed under the same license as the cogl package.
-#
+# Czech translation for gnome-documents.
+# Copyright (C) 2011 gnome-documents's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-documents package.
 # Marek Černocký <marek@manet.cz>, 2011.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: cogl master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=cogl&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-02 18:20+0000\n"
-"PO-Revision-Date: 2011-09-02 22:42+0200\n"
+"Project-Id-Version: gnome-documents master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"documents&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-09-02 23:16+0000\n"
+"PO-Revision-Date: 2011-09-03 08:33+0200\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,18 +18,120 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: ../cogl/cogl-debug.c:206
-msgid "Cogl debugging flags to set"
-msgstr "Ladicí příznaky Cogl, které se mají nastavit"
+#: ../data/gnome-documents.desktop.in.in.h:1
+msgid "Access, manage and share documents"
+msgstr "Přístup k dokumentům, jejich správa a sdílení"
 
-#: ../cogl/cogl-debug.c:208
-msgid "Cogl debugging flags to unset"
-msgstr "Ladicí příznaky Cogl, jejichž nastavení se má zrušit"
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:82
+msgid "Documents"
+msgstr "Dokumenty"
 
-#: ../cogl/cogl-debug.c:257
-msgid "Cogl Options"
-msgstr "Přepínače Cogl"
+#: ../data/org.gnome.documents.gschema.xml.in.h:1
+msgid "Enable list view"
+msgstr "Zapnout zobrazení v podobě seznamu"
 
-#: ../cogl/cogl-debug.c:258
-msgid "Show Cogl options"
-msgstr "Zobrazit přepínače Cogl"
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
+msgid "List view"
+msgstr "Seznamové zobrazení"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
+msgid "The active source filter"
+msgstr "Aktivní filtr zdrojů"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "The last active source filter"
+msgstr "Poslední aktivní filtr zdrojů"
+
+#. Translators: this refers to new and recent documents
+#: ../src/categories.js:77
+msgid "New and Recent"
+msgstr "Nové a nedávné"
+
+#. Translators: this refers to favorite documents
+#: ../src/categories.js:80
+msgid "Favorites"
+msgstr "Oblíbené"
+
+#. Translators: this refers to shared documents
+#: ../src/categories.js:83
+msgid "Shared with you"
+msgstr "Sdílené s vámi"
+
+#. unimplemented
+#: ../src/categories.js:87
+msgid "Private"
+msgstr "Soukromé"
+
+#: ../src/documents.js:269 ../src/sources.js:116
+msgid "Local"
+msgstr "Místní"
+
+#: ../src/documents.js:388
+msgid "Google Docs"
+msgstr "Dokumenty Google"
+
+#: ../src/documents.js:389
+msgid "Google"
+msgstr "Google"
+
+#: ../src/documents.js:446
+msgid "Spreadsheet"
+msgstr "Sešit s tabulkami"
+
+#: ../src/documents.js:448
+msgid "Presentation"
+msgstr "Prezentace"
+
+#: ../src/documents.js:450
+msgid "Document"
+msgstr "Dokument"
+
+#. Translators: %s is the title of a document
+#: ../src/error.js:37
+#, c-format
+msgid "Unable to load \"%s\" for preview"
+msgstr "Nelze načíst „%s“ pro náhled"
+
+#: ../src/error.js:44
+msgid "Unable to fetch the list of documents"
+msgstr "Nelze získat seznam dokumentů"
+
+#: ../src/loadMore.js:69
+#, c-format
+msgid "Load %d more documents"
+msgstr "Načíst dalších %d dokumentů"
+
+#: ../src/mainToolbar.js:183
+#, c-format
+msgid "(%d of %d)"
+msgstr "(%d z %d)"
+
+#: ../src/sidebar.js:130 ../src/sources.js:255
+msgid "Sources"
+msgstr "Zdroje"
+
+#: ../src/sources.js:110
+msgid "All"
+msgstr "Vše"
+
+#: ../src/spinnerBox.js:47
+msgid "Loading..."
+msgstr "Načítá se…"
+
+#. Translators: this is the Open action in a context menu
+#: ../src/view.js:46
+#, c-format
+msgid "Open with %s"
+msgstr "Otevřít pomocí %s"
+
+#: ../src/view.js:46
+msgid "Open"
+msgstr "Otevřít"
+
+#: ../src/view.js:56
+msgid "Remove from favorites"
+msgstr "Odebrat z oblíbených"
+
+#: ../src/view.js:56
+msgid "Add to favorites"
+msgstr "Přidat do oblíbených"
