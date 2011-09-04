@@ -1,0 +1,139 @@
+# Punjabi translation for gnome-documents.
+# Copyright (C) 2011 gnome-documents's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-documents package.
+#
+# A S Alam <aalam@users.sf.net>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-documents master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"documents&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-09-04 09:32+0000\n"
+"PO-Revision-Date: 2011-09-04 17:07+0530\n"
+"Last-Translator: A S Alam <aalam@users.sf.net>\n"
+"Language-Team: Punjabi/Panjabi <punjabi-users@lists.sf.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pa\n"
+"X-Generator: Lokalize 1.2\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: ../data/gnome-documents.desktop.in.in.h:1
+msgid "Access, manage and share documents"
+msgstr "ਡੌਕੂਮੈਂਟ ਵਰਤੋਂ, ਪਰਬੰਧ ਕਰੋ ਅਤੇ ਸਾਂਝੇ ਕਰੋ"
+
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:82
+msgid "Documents"
+msgstr "ਡੌਕੂਮੈਂਟ"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1
+msgid "Enable list view"
+msgstr "ਲਿਸਟ ਝਲਕ ਚਾਲੂ"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
+msgid "List view"
+msgstr "ਲਿਸਟ ਝਲਕ"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
+msgid "The active source filter"
+msgstr "ਸਰਗਰਮ ਸਰੋਤ ਫਿਲਟਰ"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "The last active source filter"
+msgstr "ਆਖਰੀ ਸਰਗਰਮ ਸਰੋਤ ਫਿਲਟਰ"
+
+#. Translators: this refers to new and recent documents
+#: ../src/categories.js:77
+msgid "New and Recent"
+msgstr "ਨਵੇਂ ਅਤੇ ਤਾਜ਼ਾ"
+
+#. Translators: this refers to favorite documents
+#: ../src/categories.js:80
+msgid "Favorites"
+msgstr "ਪਸੰਦੀਦਾ"
+
+#. Translators: this refers to shared documents
+#: ../src/categories.js:83
+msgid "Shared with you"
+msgstr "ਤੁਹਾਡੇ ਨਾਲ ਸਾਂਝਾ ਕੀਤਾ"
+
+#. unimplemented
+#: ../src/categories.js:87
+msgid "Private"
+msgstr "ਪ੍ਰਾਈਵੇਟ"
+
+#: ../src/documents.js:269 ../src/sources.js:116
+msgid "Local"
+msgstr "ਲੋਕਲ"
+
+#: ../src/documents.js:388
+msgid "Google Docs"
+msgstr "ਗੂਗਲ ਡੌਕਸ"
+
+#: ../src/documents.js:389
+msgid "Google"
+msgstr "ਗੂਗਲ"
+
+#: ../src/documents.js:446
+msgid "Spreadsheet"
+msgstr "ਸਪਰੈਡਸ਼ੀਟ"
+
+#: ../src/documents.js:448
+msgid "Presentation"
+msgstr "ਪਰਿਜ਼ੈੱਨਟੇਸ਼ਨ"
+
+#: ../src/documents.js:450
+msgid "Document"
+msgstr "ਡੌਕੂਮੈਂਟ"
+
+#. Translators: %s is the title of a document
+#: ../src/error.js:37
+#, c-format
+msgid "Unable to load \"%s\" for preview"
+msgstr "\"%s\" ਦੀ ਝਲਕ ਲੋਡ ਕਰਨ ਲਈ ਅਸਮਰੱਥ"
+
+#: ../src/error.js:44
+msgid "Unable to fetch the list of documents"
+msgstr "ਡੌਕੂਮੈਂਟ ਦੀ ਲਿਸਟ ਲੈਣ ਲਈ ਅਸਮਰੱਥ"
+
+#: ../src/loadMore.js:69
+#, c-format
+msgid "Load %d more documents"
+msgstr "%d ਹੋਰ ਡੌਕੂਮੈਂਟ ਲੋਡ ਕਰੋ"
+
+#: ../src/mainToolbar.js:183
+#, c-format
+msgid "(%d of %d)"
+msgstr "(%2$d ਵਿੱਚੋਂ %1$d)"
+
+#: ../src/sidebar.js:130 ../src/sources.js:255
+msgid "Sources"
+msgstr "ਸਰੋਤ"
+
+#: ../src/sources.js:110
+msgid "All"
+msgstr "ਸਭ"
+
+#: ../src/spinnerBox.js:47
+msgid "Loading..."
+msgstr "ਲੋਡ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ..."
+
+#. Translators: this is the Open action in a context menu
+#: ../src/view.js:46
+#, c-format
+msgid "Open with %s"
+msgstr "%s ਨਾਲ ਖੋਲ੍ਹੋ"
+
+#: ../src/view.js:46
+msgid "Open"
+msgstr "ਖੋਲ੍ਹੋ"
+
+#: ../src/view.js:56
+msgid "Remove from favorites"
+msgstr "ਪਸੰਦ ਵਿੱਚੋਂ ਹਟਾਓ"
+
+#: ../src/view.js:56
+msgid "Add to favorites"
+msgstr "ਪਸੰਦ ਵਿੱਚ ਸ਼ਾਮਲ ਕਰੋ"
+
