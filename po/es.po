@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-08-31 18:32+0000\n"
-"PO-Revision-Date: 2011-09-01 08:17+0200\n"
+"POT-Creation-Date: 2011-09-06 13:42+0000\n"
+"PO-Revision-Date: 2011-09-06 20:00+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Access, manage and share documents"
 msgstr "Acceder, gestionar y compartir documentos"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:81
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:82
 msgid "Documents"
 msgstr "Documentos"
 
@@ -61,7 +61,7 @@ msgstr "Compartidos con usted"
 msgid "Private"
 msgstr "Privado"
 
-#: ../src/documents.js:265 ../src/sources.js:116
+#: ../src/documents.js:269 ../src/sources.js:116
 msgid "Local"
 msgstr "Locales"
 
@@ -70,7 +70,6 @@ msgid "Google Docs"
 msgstr "Google Docs"
 
 #: ../src/documents.js:389
-#| msgid "Google Docs"
 msgid "Google"
 msgstr "Google"
 
@@ -83,7 +82,6 @@ msgid "Presentation"
 msgstr "Presentación"
 
 #: ../src/documents.js:450
-#| msgid "Documents"
 msgid "Document"
 msgstr "Documento"
 
@@ -97,17 +95,20 @@ msgstr "No se pudo cargar «%s» para su vista previa"
 msgid "Unable to fetch the list of documents"
 msgstr "No se pudo obtener la lista de documentos"
 
-#: ../src/loadMore.js:69
+#: ../src/loadMore.js:70
 #, c-format
+#| msgid "Load %d more documents"
 msgid "Load %d more documents"
-msgstr "Cargar %d documentos más"
+msgid_plural "Load %d more documents"
+msgstr[0] "Cargar %d documento más"
+msgstr[1] "Cargar %d documentos más"
 
-#: ../src/mainToolbar.js:182
+#: ../src/mainToolbar.js:183
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d de %d)"
 
-#: ../src/sidebar.js:130 ../src/sources.js:216
+#: ../src/sidebar.js:130 ../src/sources.js:255
 msgid "Sources"
 msgstr "Fuentes"
 
