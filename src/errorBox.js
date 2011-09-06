@@ -32,7 +32,7 @@ function ErrorBox(primary, secondary) {
 ErrorBox.prototype = {
     _init: function(primary, secondary) {
         this.widget = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,
-                                     column_spacing: 12,
+                                     row_spacing: 12,
                                      hexpand: true,
                                      vexpand: true,
                                      halign: Gtk.Align.CENTER,

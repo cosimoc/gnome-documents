@@ -31,7 +31,7 @@ function SpinnerBox() {
 SpinnerBox.prototype = {
     _init: function() {
         this.widget = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,
-                                     column_spacing: 24,
+                                     row_spacing: 24,
                                      hexpand: true,
                                      vexpand: true,
                                      halign: Gtk.Align.CENTER,

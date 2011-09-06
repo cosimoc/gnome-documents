@@ -118,11 +118,11 @@ SidebarMainPage.prototype = {
                                      border_width: 6,
                                      width_request: _SIDEBAR_WIDTH_REQUEST,
                                      column_homogeneous: true,
-                                     column_spacing: 12 });
+                                     row_spacing: 12 });
 
         // sources button
         let buttonContent = new Gtk.Grid({ orientation: Gtk.Orientation.HORIZONTAL,
-                                           row_spacing: 6 });
+                                           column_spacing: 6 });
         // FIXME: setting yalign here seems wrong, but why are those not aligned
         // otherwise?
         buttonContent.add(new Gtk.Image({ icon_size: Gtk.IconSize.MENU,
