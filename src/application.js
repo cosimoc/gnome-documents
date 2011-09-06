@@ -153,6 +153,7 @@ Application.prototype = {
                         Global.trackerController = new TrackerController.TrackerController();
                         Global.changeMonitor = new ChangeMonitor.TrackerChangeMonitor();
                         Global.modeController = new WindowMode.ModeController();
+                        Global.focusController = new WindowMode.FocusController();
 
                         this._mainWindow = new MainWindow.MainWindow();
                         this.activate();

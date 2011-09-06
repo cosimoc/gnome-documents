@@ -29,6 +29,7 @@ const Signals = imports.signals;
 
 const Global = imports.global;
 const Sources = imports.sources;
+const WindowMode = imports.windowMode;
 
 const _SIDEBAR_WIDTH_REQUEST = 240;
 
@@ -167,7 +168,9 @@ Sidebar.prototype = {
                                   Lang.bind(this, this._onSourcesButtonClicked));
 
         this.widget.set_current_page(_SIDEBAR_MAIN_PAGE);
-        this.widget.show_all();
+
+        Global.modeController.connect('window-mode-changed',
+                                      Lang.bind(this, this._onWindowModeChanged));
     },
 
     _onSourceClicked: function() {
@@ -176,5 +179,9 @@ Sidebar.prototype = {
 
     _onSourcesButtonClicked: function() {
         this.widget.set_current_page(_SIDEBAR_SOURCES_PAGE);
+    },
+
+    _onWindowModeChanged: function(controller, mode) {
+        this.widget.set_visible(mode == WindowMode.WindowMode.OVERVIEW);
     }
 };

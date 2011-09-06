@@ -30,6 +30,7 @@ const Lang = imports.lang;
 const Mainloop = imports.mainloop;
 
 const Global = imports.global;
+const Tweener = imports.util.tweener;
 const WindowMode = imports.windowMode;
 
 const _SEARCH_ENTRY_TIMEOUT = 200;
@@ -42,6 +43,7 @@ MainToolbar.prototype = {
     _init: function() {
         this._model = null;
         this._document = null;
+        this._searchFocusId = 0;
         this._searchEntryTimeout = 0;
 
         this.widget = new Gtk.Toolbar({ icon_size: Gtk.IconSize.MENU });
@@ -54,9 +56,17 @@ MainToolbar.prototype = {
     },
 
     _clearToolbar: function() {
+        if (this._searchFocusId != 0) {
+            Global.focusController.disconnect(this._searchFocusId);
+            this._searchFocusId = 0;
+        }
+
         this.widget.foreach(Lang.bind(this, function(widget) {
             widget.destroy();
         }));
+
+        this._model = null;
+        this._document = null;
     },
 
     _populateForOverview: function() {
@@ -123,6 +133,12 @@ MainToolbar.prototype = {
         this._searchEntry.connect('icon-release', Lang.bind(this, function() {
             this._searchEntry.set_text('');
         }));
+
+        this._searchFocusId =
+            Global.focusController.connect('focus-search', Lang.bind(this,
+                function() {
+                    this._searchEntry.grab_focus();
+                }));
 
         this.widget.insert(item, 0);
         this.widget.insert(item2, 1);
@@ -205,7 +221,7 @@ MainToolbar.prototype = {
     },
 
     setModel: function(model, document) {
-        if (!this._model || !this._document)
+        if (!model || !document)
             return;
 
         this._model = model;
@@ -243,7 +259,17 @@ FullscreenToolbar.prototype = {
                                             opacity: 0 });
     },
 
-    destroy: function() {
-        this.widget.destroy();
+    show: function() {
+        Tweener.addTween(this.actor,
+                         { opacity: 255,
+                           time: 0.20,
+                           transition: 'easeOutQuad' });
+    },
+
+    hide: function() {
+        Tweener.addTween(this.actor,
+                         { opacity: 0,
+                           time: 0.20,
+                           transition: 'easeOutQuad' });
     }
 };

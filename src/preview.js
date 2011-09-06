@@ -24,6 +24,8 @@ const Gtk = imports.gi.Gtk;
 
 const Lang = imports.lang;
 
+const Global = imports.global;
+
 function PreviewView(model, document) {
     this._init(model, document);
 }
@@ -36,6 +38,21 @@ PreviewView.prototype = {
         this.widget = EvView.View.new();
         this.widget.set_model(this._model);
         this.widget.show();
+
+        this.widget.connect('button-press-event',
+                            Lang.bind(this, this._onButtonPressEvent));
+    },
+
+    _onButtonPressEvent: function(widget, event) {
+        let button = event.get_button()[1];
+        let clickCount = event.get_click_count()[1];
+
+        if (button == 1 && clickCount == 2) {
+            Global.modeController.toggleFullscreen();
+            return true;
+        }
+
+        return false;
     },
 
     destroy: function() {
