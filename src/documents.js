@@ -438,16 +438,16 @@ GoogleDocument.prototype = {
                     return;
                 }
 
-            Gd.pdf_loader_load_entry_async
-                (entry, service, cancellable, Lang.bind(this,
-                    function(source, res) {
-                        try {
-                            let document = Gd.pdf_loader_load_entry_finish(res);
-                            callback(document);
-                        } catch (e) {
-                            Global.errorHandler.addLoadError(this, e);
-                        }
-                    }));
+                Gd.pdf_loader_load_entry_async
+                    (entry, service, cancellable, Lang.bind(this,
+                        function(source, res) {
+                            try {
+                                let document = Gd.pdf_loader_load_entry_finish(res);
+                                callback(document);
+                            } catch (e) {
+                                Global.errorHandler.addLoadError(this, e);
+                            }
+                        }));
             }));
     },
 
