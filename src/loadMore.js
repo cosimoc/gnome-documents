@@ -21,6 +21,7 @@
 
 const Global = imports.global;
 
+const Gettext = imports.gettext;
 const Gtk = imports.gi.Gtk;
 const _ = imports.gettext.gettext;
 
@@ -66,7 +67,9 @@ LoadMoreButton.prototype = {
         if (remainingDocs > offsetStep)
             remainingDocs = offsetStep;
 
-        this.widget.label = _("Load %d more documents").format(remainingDocs);
+        this.widget.label = Gettext.ngettext("Load %d more documents",
+                                             "Load %d more documents",
+                                             remainingDocs).format(remainingDocs);
         this.widget.show();
     },
 
