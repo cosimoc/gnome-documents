@@ -304,7 +304,7 @@ ViewEmbed.prototype  = {
     _onQueryError: function(manager, message, exception) {
         this._destroyScrollChild();
 
-        let errorBox = new ErrorBox.ErrorBox(message, exception.toString());
+        let errorBox = new ErrorBox.ErrorBox(message, exception.message);
         this._scrolledWin.add_with_viewport(errorBox.widget);
     },
 
@@ -355,7 +355,7 @@ ViewEmbed.prototype  = {
 
         Global.modeController.setWindowMode(WindowMode.WindowMode.PREVIEW);
 
-        let errorBox = new ErrorBox.ErrorBox(message, exception.toString());
+        let errorBox = new ErrorBox.ErrorBox(message, exception.message);
         this._scrolledWin.add_with_viewport(errorBox.widget);
     }
 };

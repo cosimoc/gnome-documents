@@ -35,14 +35,14 @@ ErrorHandler.prototype = {
     addLoadError: function(doc, exception) {
         // Translators: %s is the title of a document
         let message = _("Unable to load \"%s\" for preview").format(doc.title);
-        log('Error caught: ' + message + ' - ' + exception.toString());
+        log('Error caught: ' + message + ' - ' + exception.message);
 
         this.emit('load-error', message, exception);
     },
 
     addQueryError: function(exception) {
         let message = _("Unable to fetch the list of documents");
-        log('Error caught: ' + message + ' - ' + exception.toString());
+        log('Error caught: ' + message + ' - ' + exception.message);
 
         this.emit('query-error', message, exception);
     }
