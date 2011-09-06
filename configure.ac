@@ -82,6 +82,7 @@ AC_CONFIG_FILES([
 Makefile
 src/Makefile
 data/Makefile
+data/icons/Makefile
 data/gnome-documents.desktop.in
 po/Makefile.in
 ])
