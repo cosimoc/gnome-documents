@@ -41,6 +41,7 @@ typedef struct {
   GDataDownloadStream *stream;
   GDataEntry *gdata_entry;
   GDataService *gdata_service;
+  gchar *document_id;
 
   guint64 pdf_cache_mtime;
   guint64 original_file_mtime;
@@ -112,6 +113,7 @@ pdf_load_job_free (PdfLoadJob *job)
   g_clear_object (&job->gdata_entry);
 
   g_free (job->uri);
+  g_free (job->document_id);
 
   if (job->pdf_path != NULL) {
     if (job->unlink_cache)
@@ -377,8 +379,8 @@ pdf_load_job_from_google_documents (PdfLoadJob *job)
 
   job->original_file_mtime = gdata_entry_get_updated (job->gdata_entry);
 
-  tmp_name = g_strdup_printf ("gnome-documents-%d.pdf", 
-                              g_str_hash (gdata_entry_get_id (job->gdata_entry)));
+  tmp_name = g_strdup_printf ("gnome-documents-%u.pdf", 
+                              g_str_hash (gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (job->gdata_entry))));
   tmp_path = g_build_filename (g_get_user_cache_dir (), "gnome-documents", NULL);
   job->pdf_path = pdf_path =
     g_build_filename (tmp_path, tmp_name, NULL);
@@ -397,6 +399,24 @@ pdf_load_job_from_google_documents (PdfLoadJob *job)
   g_free (tmp_name);
   g_free (tmp_path);
   g_object_unref (pdf_file);
+}
+
+static void
+pdf_load_job_from_gdata_cache (PdfLoadJob *job)
+{
+  gchar *tmp_name;
+  gchar *tmp_path;
+  GFile *pdf_file;
+
+  tmp_name = g_strdup_printf ("gnome-documents-%u.pdf", 
+                              g_str_hash (job->document_id));
+  tmp_path = g_build_filename (g_get_user_cache_dir (), "gnome-documents", NULL);
+  job->pdf_path = g_build_filename (tmp_path, tmp_name, NULL);
+
+  pdf_load_job_from_pdf (job);
+
+  g_free (tmp_path);
+  g_free (tmp_name);
 }
 
 static void
@@ -544,7 +564,7 @@ pdf_load_job_from_openoffice (PdfLoadJob *job)
   gchar *pdf_path, *tmp_name, *tmp_path;
   GFile *cache_file;
 
-  tmp_name = g_strdup_printf ("gnome-documents-%d.pdf", g_str_hash (job->uri));
+  tmp_name = g_strdup_printf ("gnome-documents-%u.pdf", g_str_hash (job->uri));
   tmp_path = g_build_filename (g_get_user_cache_dir (), "gnome-documents", NULL);
   job->pdf_path = pdf_path =
     g_build_filename (tmp_path, tmp_name, NULL);
@@ -593,10 +613,29 @@ query_info_ready_cb (GObject *obj,
   g_object_unref (info);
 }
 
+static gchar *
+document_id_from_entry_id (const gchar *entry_id)
+{
+  const gchar *ptr;
+
+  ptr = g_strrstr (entry_id, "%3A");
+
+  if (ptr)
+    return g_strdup (ptr + 3);
+
+  return g_strdup (entry_id);
+}
+
 static void
 pdf_load_job_from_regular_file (PdfLoadJob *job)
 {
   GFile *file;
+
+  if (g_str_has_prefix (job->uri, "https://docs.google.com")) {
+    job->document_id = document_id_from_entry_id (job->uri);
+    pdf_load_job_from_gdata_cache (job);
+    return;
+  }
 
   file = g_file_new_for_uri (job->uri);
   g_file_query_info_async (file,
@@ -613,11 +652,10 @@ pdf_load_job_from_regular_file (PdfLoadJob *job)
 static void
 pdf_load_job_start (PdfLoadJob *job)
 {
-  if (job->gdata_entry != NULL) {
+  if (job->gdata_entry != NULL)
     pdf_load_job_from_google_documents (job);
-  } else {
+  else
     pdf_load_job_from_regular_file (job);
-  }
 }
 
 void

@@ -422,7 +422,19 @@ GoogleDocument.prototype = {
         this._createGDataEntry(cancellable, Lang.bind(this,
             function(entry, service, exception) {
                 if (exception) {
-                    Global.errorHandler.addLoadError(this, exception);
+                    // try loading from the most recent cache, if any
+                    Gd.pdf_loader_load_uri_async(this.identifier, cancellable, Lang.bind(this,
+                        function(source, res) {
+                            try {
+                                let document = Gd.pdf_loader_load_uri_finish(res);
+                                callback(document);
+                            } catch (e) {
+                                // report the outmost error only
+                                Global.errorHandler.addLoadError(this, exception);
+                                return;
+                            }
+                        }));
+
                     return;
                 }
 
