@@ -28,19 +28,18 @@ const _ = imports.gettext.gettext;
 
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
-const Signals = imports.signals;
 
 const Global = imports.global;
-const MainWindow = imports.mainWindow;
+const WindowMode = imports.windowMode;
 
 const _SEARCH_ENTRY_TIMEOUT = 200;
 
-function MainToolbar(windowMode) {
-    this._init(windowMode);
+function MainToolbar() {
+    this._init();
 }
 
 MainToolbar.prototype = {
-    _init: function(windowMode) {
+    _init: function() {
         this._model = null;
         this._document = null;
         this._searchEntryTimeout = 0;
@@ -48,7 +47,10 @@ MainToolbar.prototype = {
         this.widget = new Gtk.Toolbar({ icon_size: Gtk.IconSize.MENU });
         this.widget.get_style_context().add_class(Gtk.STYLE_CLASS_MENUBAR);
 
-        this.setWindowMode(windowMode);
+        this._windowModeId =
+            Global.modeController.connect('window-mode-changed',
+                                          Lang.bind(this, this._onWindowModeChanged));
+        this._onWindowModeChanged();
     },
 
     _clearToolbar: function() {
@@ -137,7 +139,7 @@ MainToolbar.prototype = {
 
         back.connect('clicked', Lang.bind(this,
             function() {
-                this.emit('back-clicked');
+                Global.modeController.setWindowMode(WindowMode.WindowMode.OVERVIEW);
             }));
 
         let grid = new Gtk.Grid({ orientation: Gtk.Orientation.HORIZONTAL,
@@ -191,12 +193,14 @@ MainToolbar.prototype = {
         }
     },
 
-    setWindowMode: function(windowMode) {
+    _onWindowModeChanged: function() {
+        let mode = Global.modeController.getWindowMode();
+
         this._clearToolbar();
 
-        if (windowMode == MainWindow.WindowMode.OVERVIEW)
+        if (mode == WindowMode.WindowMode.OVERVIEW)
             this._populateForOverview();
-        else if (windowMode == MainWindow.WindowMode.PREVIEW)
+        else if (mode == WindowMode.WindowMode.PREVIEW)
             this._populateForPreview();
     },
 
@@ -217,9 +221,13 @@ MainToolbar.prototype = {
 
     getSearchEntry: function() {
         return this._searchEntry;
+    },
+
+    destroy: function() {
+        Global.modeController.disconnect(this._windowModeId);
+        this.widget.destroy();
     }
 };
-Signals.addSignalMethods(MainToolbar.prototype);
 
 function FullscreenToolbar() {
     this._init();
@@ -229,7 +237,7 @@ FullscreenToolbar.prototype = {
     __proto__: MainToolbar.prototype,
 
     _init: function() {
-        MainToolbar.prototype._init.call(this, MainWindow.WindowMode.PREVIEW);
+        MainToolbar.prototype._init.call(this);
 
         this.actor = new GtkClutter.Actor({ contents: this.widget,
                                             opacity: 0 });

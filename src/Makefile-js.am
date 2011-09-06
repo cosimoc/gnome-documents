@@ -26,6 +26,7 @@ dist_js_DATA = \
     trackerUtils.js \
     utils.js \
     view.js \
+    windowMode.js \
     format.js \
     path.js
 

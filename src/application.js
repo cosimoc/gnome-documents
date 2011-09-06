@@ -48,6 +48,7 @@ const SelectionController = imports.selectionController;
 const Sources = imports.sources;
 const TrackerController = imports.trackerController;
 const Tweener = imports.util.tweener;
+const WindowMode = imports.windowMode;
 
 const _GD_DBUS_PATH = '/org/gnome/Documents';
 
@@ -151,6 +152,7 @@ Application.prototype = {
                         Global.documentManager = new Documents.DocumentManager();
                         Global.trackerController = new TrackerController.TrackerController();
                         Global.changeMonitor = new ChangeMonitor.TrackerChangeMonitor();
+                        Global.modeController = new WindowMode.ModeController();
 
                         this._mainWindow = new MainWindow.MainWindow();
                         this.activate();

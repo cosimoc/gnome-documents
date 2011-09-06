@@ -25,6 +25,7 @@ let connection = null;
 let documentManager = null;
 let errorHandler = null;
 let goaClient = null;
+let modeController = null;
 let offsetController = null;
 let queryBuilder = null;
 let selectionController = null;

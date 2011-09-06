@@ -43,6 +43,7 @@ const Preview = imports.preview;
 const SpinnerBox = imports.spinnerBox;
 const TrackerUtils = imports.trackerUtils;
 const Tweener = imports.util.tweener;
+const WindowMode = imports.windowMode;
 
 const _ = imports.gettext.gettext;
 
@@ -52,12 +53,6 @@ const _WINDOW_DEFAULT_HEIGHT = 600;
 const _PDF_LOADER_TIMEOUT = 300;
 
 const _FULLSCREEN_TOOLBAR_TIMEOUT = 2;
-
-const WindowMode = {
-    NONE: 0,
-    OVERVIEW: 1,
-    PREVIEW: 2
-};
 
 function MainWindow() {
     this._init();
@@ -75,7 +70,6 @@ MainWindow.prototype = {
         this._loaderTimeout = 0;
         this._lastFilter = '';
         this._scrolledWindowId = 0;
-        this._windowMode = WindowMode.NONE;
 
         this.window = new GtkClutter.Window({ type: Gtk.WindowType.TOPLEVEL,
                                        window_position: Gtk.WindowPosition.CENTER,
@@ -97,6 +91,9 @@ MainWindow.prototype = {
         Global.errorHandler.connect('load-error',
                                     Lang.bind(this, this._onLoadError));
 
+        Global.modeController.connect('window-mode-changed',
+                                      Lang.bind(this, this._onWindowModeChanged));
+
         this._grid = new Gtk.Grid({ orientation: Gtk.Orientation.HORIZONTAL });
         this.window.add(this._grid);
 
@@ -106,9 +103,7 @@ MainWindow.prototype = {
         this._viewContainer = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
         this._grid.add(this._viewContainer);
 
-        this._toolbar = new MainToolbar.MainToolbar(this._windowMode);
-        this._toolbar.connect('back-clicked',
-                              Lang.bind(this, this._onToolbarBackClicked));
+        this._toolbar = new MainToolbar.MainToolbar();
         this._viewContainer.add(this._toolbar.widget);
 
         this._scrolledWin = new Gtk.ScrolledWindow({ hexpand: true,
@@ -121,7 +116,8 @@ MainWindow.prototype = {
         this._viewContainer.add(this._loadMore.widget);
 
         this._grid.show_all();
-        this._setWindowMode(WindowMode.OVERVIEW);
+
+        Global.modeController.setWindowMode(WindowMode.WindowMode.OVERVIEW);
     },
 
     _onKeyPressEvent: function(widget, event) {
@@ -152,7 +148,7 @@ MainWindow.prototype = {
         }
 
         if (keyval == Gdk.KEY_Escape) {
-            this._setWindowMode(WindowMode.OVERVIEW);
+            Global.modeController.setWindowMode(WindowMode.WindowMode.OVERVIEW);
             return true;
         }
 
@@ -222,14 +218,8 @@ MainWindow.prototype = {
         this._initView();
     },
 
-    _setWindowMode: function(windowMode) {
-        if (this._windowMode == windowMode)
-            return;
-
-        this._windowMode = windowMode;
-        this._toolbar.setWindowMode(this._windowMode);
-
-        if (this._windowMode == WindowMode.OVERVIEW)
+    _onWindowModeChanged: function(controller, mode) {
+        if (mode == WindowMode.WindowMode.OVERVIEW)
             this._prepareForOverview();
         else
             this._prepareForPreview();
@@ -275,9 +265,6 @@ MainWindow.prototype = {
     _createFullscreenToolbar: function() {
         this._fsToolbar = new MainToolbar.FullscreenToolbar();
         this._fsToolbar.setModel(this._docModel, this._document);
-
-        this._fsToolbar.connect('back-clicked',
-                                Lang.bind(this, this._onToolbarBackClicked));
 
         let vScrollbar = this._scrolledWin.get_vscrollbar();
 
@@ -345,7 +332,7 @@ MainWindow.prototype = {
     _onPdfLoaderTimeout: function() {
         this._loaderTimeout = 0;
 
-        this._setWindowMode(WindowMode.PREVIEW);
+        Global.modeController.setWindowMode(WindowMode.WindowMode.PREVIEW);
 
         let spinnerBox = new SpinnerBox.SpinnerBox();
         this._scrolledWin.add_with_viewport(spinnerBox.widget);
@@ -362,7 +349,7 @@ MainWindow.prototype = {
             this._loaderTimeout = 0;
         }
 
-        this._setWindowMode(WindowMode.PREVIEW);
+        Global.modeController.setWindowMode(WindowMode.WindowMode.PREVIEW);
         this._preview = new Preview.PreviewView(model, document);
 
         if (this._fsToolbar)
@@ -426,10 +413,6 @@ MainWindow.prototype = {
         return false;
     },
 
-    _onToolbarBackClicked: function() {
-        this._setWindowMode(WindowMode.OVERVIEW);
-    },
-
     _onLoadError: function(manager, message, exception) {
         if (this._loaderTimeout != 0) {
             Mainloop.source_remove(this._loaderTimeout);
@@ -441,7 +424,7 @@ MainWindow.prototype = {
         if (exception.toString().indexOf('Operation was cancelled') != -1)
             return;
 
-        this._setWindowMode(WindowMode.PREVIEW);
+        Global.modeController.setWindowMode(WindowMode.WindowMode.PREVIEW);
 
         let errorBox = new ErrorBox.ErrorBox(message, exception.toString());
         this._scrolledWin.add_with_viewport(errorBox.widget);
