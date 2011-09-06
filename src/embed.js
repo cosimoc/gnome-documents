@@ -317,7 +317,7 @@ ViewEmbed.prototype  = {
         }
 
         if (this._queryErrorId != 0) {
-            Global.settings.disconnect(this._queryErrorId);
+            Global.errorHandler.disconnect(this._queryErrorId);
             this._queryErrorId = 0;
         }
 
