@@ -83,9 +83,9 @@ CategoryManager.prototype = {
         category = new Category(StockCategories.SHARED, _("Shared with you"), 'emblem-shared-symbolic');
         this._categories[category.id] = category;
 
-        // unimplemented
-        category = new Category(StockCategories.PRIVATE, _("Private"), 'channel-secure-symbolic');
-        this._categories[category.id] = category;
+        // Private category: currently unimplemented
+        // category = new Category(StockCategories.PRIVATE, _("Private"), 'channel-secure-symbolic');
+        // this._categories[category.id] = category;
 
         this.setActiveCategoryId(StockCategories.RECENT);
     },
