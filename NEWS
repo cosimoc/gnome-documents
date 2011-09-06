@@ -1,3 +1,20 @@
+0.1.91 - "Mexicola"
+===================
+
+- Hide/show documents on the fly for disabled GOA sources
+- Add a fullscreen preview mode
+- Extend search to look into document authors
+- Add a hi-res application icon
+- Use symbolic emblems
+- Display more file details in list view
+- Use a nicer thumbnail frame from Nautilus for document thumbnails
+- Sanitize and remove extensions from filenames
+- Add keybindings for quit/fullscreen/search
+- Fix parallel builds
+- Add translator comments
+- Fix license files and headers
+- Require GLib 2.29.90 and g-o-a 3.1.90
+
 0.1.90 - "Vintage Hardware"
 ===========================
 
