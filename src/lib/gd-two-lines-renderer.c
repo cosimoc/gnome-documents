@@ -118,7 +118,6 @@ gd_two_lines_renderer_get_size (GtkCellRenderer *cell,
                                 gint *y_offset)
 {
   GdTwoLinesRenderer *self = GD_TWO_LINES_RENDERER (cell);
-  gint layout_w, layout_h;
   gint xpad, ypad;
   PangoLayout *layout_one, *layout_two;
   GdkRectangle layout_one_rect, layout_two_rect, layout_union;

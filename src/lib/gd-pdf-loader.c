@@ -406,7 +406,6 @@ pdf_load_job_from_gdata_cache (PdfLoadJob *job)
 {
   gchar *tmp_name;
   gchar *tmp_path;
-  GFile *pdf_file;
 
   tmp_name = g_strdup_printf ("gnome-documents-%u.pdf", 
                               g_str_hash (job->document_id));
