@@ -1,0 +1,135 @@
+# Gujarati translation for gnome-documents.
+# Copyright (C) 2011 gnome-documents's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-documents package.
+#
+# , 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-documents master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
+"cgi?product=gnome-documents&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-09-07 01:04+0000\n"
+"PO-Revision-Date: 2011-09-07 15:50+0000\n"
+"Last-Translator: \n"
+"Language-Team: gu_IN <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 1.0\n"
+
+#: ../data/gnome-documents.desktop.in.in.h:1
+msgid "Access, manage and share documents"
+msgstr "દસ્તાવેજોને વાપરો, સંચાલિત અને વહેંચો"
+
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:47
+msgid "Documents"
+msgstr "દસ્તાવેજો"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1
+msgid "Enable list view"
+msgstr "યાદી દૃશ્ય સક્રિય કરો"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
+msgid "List view"
+msgstr "યાદી દૃશ્ય"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
+msgid "The active source filter"
+msgstr "સક્રિય સ્ત્રોત ફિલ્ટર"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "The last active source filter"
+msgstr "છેલ્લે સક્રિય સ્ત્રોત ફિલ્ટર"
+
+#. Translators: this refers to new and recent documents
+#: ../src/categories.js:77
+msgid "New and Recent"
+msgstr "નવું અને તાજેતરનું"
+
+#. Translators: this refers to favorite documents
+#: ../src/categories.js:80
+msgid "Favorites"
+msgstr "પસંદીદા"
+
+#. Translators: this refers to shared documents
+#: ../src/categories.js:83
+msgid "Shared with you"
+msgstr "તમારી સાથે વહેંચાયેલ છે"
+
+#: ../src/documents.js:269 ../src/sources.js:116
+msgid "Local"
+msgstr "સ્થાનિક"
+
+#: ../src/documents.js:388
+msgid "Google Docs"
+msgstr "Google દસ્તાવેજો"
+
+#: ../src/documents.js:389
+msgid "Google"
+msgstr "Google"
+
+#: ../src/documents.js:458
+msgid "Spreadsheet"
+msgstr "સ્પ્રેડશીટ"
+
+#: ../src/documents.js:460
+msgid "Presentation"
+msgstr "પ્રસ્તુતિ"
+
+#: ../src/documents.js:462
+msgid "Document"
+msgstr "દસ્તાવેજ"
+
+#. Translators: %s is the title of a document
+#: ../src/error.js:37
+#, c-format
+msgid "Unable to load \"%s\" for preview"
+msgstr "પૂર્વદર્શન માટે \"%s\" ને લાવવાનું અસમર્થ"
+
+#: ../src/error.js:44
+msgid "Unable to fetch the list of documents"
+msgstr "દસ્તાવેજોની યાદીને લાવવાનું અસમર્થ"
+
+#: ../src/loadMore.js:70
+#, c-format
+msgid "Load %d more documents"
+msgid_plural "Load %d more documents"
+msgstr[0] "%d વધારે દસ્તાવેજોને લાવો"
+msgstr[1] ""
+
+#: ../src/mainToolbar.js:201
+#, c-format
+msgid "(%d of %d)"
+msgstr "(%d નું %d)"
+
+#: ../src/sidebar.js:131 ../src/sources.js:255
+msgid "Sources"
+msgstr "સ્ત્રોતો"
+
+#: ../src/sources.js:110
+msgid "All"
+msgstr "બધા"
+
+#: ../src/spinnerBox.js:47
+msgid "Loading..."
+msgstr "લાવી રહ્યા છે..."
+
+#. Translators: this is the Open action in a context menu
+#: ../src/view.js:47
+#, c-format
+msgid "Open with %s"
+msgstr "%s સાથે ખોલો"
+
+#: ../src/view.js:47
+msgid "Open"
+msgstr "ખોલો"
+
+#: ../src/view.js:59
+msgid "Remove from favorites"
+msgstr "પસંદીદા માંથી દૂર કરો"
+
+#: ../src/view.js:59
+msgid "Add to favorites"
+msgstr "પસંદીદામાં ઉમેરો"
+
