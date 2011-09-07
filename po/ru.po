@@ -2,13 +2,14 @@
 # Copyright (C) 2011 gnome-documents's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-documents package.
 # Yuri Myasoedov <omerta13@yandex.ru>, 2011.
+# Stas Solovey <whats_up@tut.by>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-08-31 05:41+0000\n"
-"PO-Revision-Date: 2011-08-31 09:53+0300\n"
+"POT-Creation-Date: 2011-09-07 01:04+0000\n"
+"PO-Revision-Date: 2011-09-07 19:29+0300\n"
 "Last-Translator: Yuri Myasoedov <omerta13@yandex.ru>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +22,7 @@ msgid "Access, manage and share documents"
 msgstr "Управление и предоставление доступа к документам"
 
 #: ../data/gnome-documents.desktop.in.in.h:2
-#: ../src/mainWindow.js:74
+#: ../src/mainWindow.js:47
 msgid "Documents"
 msgstr "Документы"
 
@@ -41,77 +42,98 @@ msgstr "Активный фильтр источников"
 msgid "The last active source filter"
 msgstr "Последний активный фильтр источников"
 
-#: ../src/categories.js:69
+#. Translators: this refers to new and recent documents
+#: ../src/categories.js:77
 msgid "New and Recent"
 msgstr "Новые и недавние"
 
-#: ../src/categories.js:71
+#. Translators: this refers to favorite documents
+#: ../src/categories.js:80
 msgid "Favorites"
 msgstr "Избранное"
 
-#: ../src/categories.js:73
+#. Translators: this refers to shared documents
+#: ../src/categories.js:83
 msgid "Shared with you"
 msgstr "В открытом для вас доступе"
 
-#. unimplemented
-#: ../src/categories.js:77
-msgid "Private"
-msgstr "Личные"
+#: ../src/documents.js:269
+#: ../src/sources.js:116
+msgid "Local"
+msgstr "Локальные"
 
-#: ../src/documents.js:335
+#: ../src/documents.js:388
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/error.js:36
+#: ../src/documents.js:389
+msgid "Google"
+msgstr "Google"
+
+#: ../src/documents.js:458
+msgid "Spreadsheet"
+msgstr "Таблица"
+
+#: ../src/documents.js:460
+msgid "Presentation"
+msgstr "Презентация"
+
+#: ../src/documents.js:462
+msgid "Document"
+msgstr "Документ"
+
+#. Translators: %s is the title of a document
+#: ../src/error.js:37
 #, c-format
 msgid "Unable to load \"%s\" for preview"
 msgstr "Не удалось загрузить «%s» для просмотра"
 
-#: ../src/error.js:43
+#: ../src/error.js:44
 msgid "Unable to fetch the list of documents"
 msgstr "Не удалось получить список документов"
 
-#: ../src/loadMore.js:69
+#: ../src/loadMore.js:70
 #, c-format
+#| msgid "Load %d more documents"
 msgid "Load %d more documents"
-msgstr "Загрузить ещё %d документов"
+msgid_plural "Load %d more documents"
+msgstr[0] "Загрузить ещё %d документ"
+msgstr[1] "Загрузить ещё %d документа"
+msgstr[2] "Загрузить ещё %d документов"
 
-#: ../src/mainToolbar.js:157
+#: ../src/mainToolbar.js:201
 #, c-format
-msgid "page %d of %d"
-msgstr "страница %d из %d"
+msgid "(%d of %d)"
+msgstr "(%d из %d)"
 
-#: ../src/sidebar.js:130
-#: ../src/sources.js:214
+#: ../src/sidebar.js:131
+#: ../src/sources.js:255
 msgid "Sources"
 msgstr "Источники"
 
-#: ../src/sources.js:109
+#: ../src/sources.js:110
 msgid "All"
 msgstr "Все"
-
-#: ../src/sources.js:114
-msgid "Local"
-msgstr "Локальные"
 
 #: ../src/spinnerBox.js:47
 msgid "Loading..."
 msgstr "Загрузка…"
 
-#: ../src/view.js:45
+#. Translators: this is the Open action in a context menu
+#: ../src/view.js:47
 #, c-format
 msgid "Open with %s"
 msgstr "Открыть с помощью %s"
 
-#: ../src/view.js:45
+#: ../src/view.js:47
 msgid "Open"
 msgstr "Открыть"
 
-#: ../src/view.js:55
+#: ../src/view.js:59
 msgid "Remove from favorites"
 msgstr "Удалить из избранного"
 
-#: ../src/view.js:55
+#: ../src/view.js:59
 msgid "Add to favorites"
 msgstr "Добавить в избранное"
 
