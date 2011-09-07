@@ -25,6 +25,7 @@ const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
 
 const Global = imports.global;
+const View = imports.view;
 
 function PreviewView(model, document) {
     this._init(model, document);
@@ -41,6 +42,23 @@ PreviewView.prototype = {
 
         this.widget.connect('button-press-event',
                             Lang.bind(this, this._onButtonPressEvent));
+        this.widget.connect('button-release-event',
+                            Lang.bind(this, this._onButtonReleaseEvent));
+    },
+
+    _onButtonReleaseEvent: function(widget, event) {
+        let button = event.get_button()[1];
+        let timestamp = event.get_time();
+
+        if (button != 3)
+            return false;
+
+        let doc = Global.documentManager.getActiveDocument();
+        let menu = new View.ContextMenu(doc.urn);
+
+        menu.widget.popup_for_device(null, null, null, null, null, null, button, timestamp);
+
+        return true;
     },
 
     _onButtonPressEvent: function(widget, event) {

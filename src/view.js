@@ -29,6 +29,7 @@ const Signals = imports.signals;
 const Documents = imports.documents;
 const Global = imports.global;
 const TrackerUtils = imports.trackerUtils;
+const WindowMode = imports.windowMode;
 const Utils = imports.utils;
 
 function ContextMenu(urn) {
@@ -38,7 +39,7 @@ function ContextMenu(urn) {
 ContextMenu.prototype = {
     _init: function(urn) {
         let doc = Global.documentManager.lookupDocument(urn);
-        let isFavorite = doc.favorite;
+        let showFavorite = (Global.modeController.getWindowMode() != WindowMode.WindowMode.PREVIEW);
 
         this.widget = new Gtk.Menu();
 
@@ -53,15 +54,18 @@ ContextMenu.prototype = {
                 doc.open(item.get_screen(), Gtk.get_current_event_time());
             }));
 
-        let favoriteLabel = (isFavorite) ? _("Remove from favorites") : _("Add to favorites");
-        let favoriteItem = new Gtk.MenuItem({ label: favoriteLabel });
-        favoriteItem.show();
-        this.widget.append(favoriteItem);
+        if (showFavorite) {
+            let isFavorite = doc.favorite;
+            let favoriteLabel = (isFavorite) ? _("Remove from favorites") : _("Add to favorites");
+            let favoriteItem = new Gtk.MenuItem({ label: favoriteLabel });
+            favoriteItem.show();
+            this.widget.append(favoriteItem);
 
-        favoriteItem.connect('activate', Lang.bind(this,
-            function() {
-                doc.setFavorite(!isFavorite);
-            }));
+            favoriteItem.connect('activate', Lang.bind(this,
+                function() {
+                    doc.setFavorite(!isFavorite);
+                }));
+        }
 
         this.widget.show_all();
     }
