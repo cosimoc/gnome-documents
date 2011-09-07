@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=gnome-documents&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2011-09-07 01:04+0000\n"
-"PO-Revision-Date: 2011-09-07 15:50+0000\n"
+"PO-Revision-Date: 2011-09-07 15:57+0000\n"
 "Last-Translator: \n"
 "Language-Team: gu_IN <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -96,7 +96,7 @@ msgstr "દસ્તાવેજોની યાદીને લાવવાન�
 msgid "Load %d more documents"
 msgid_plural "Load %d more documents"
 msgstr[0] "%d વધારે દસ્તાવેજોને લાવો"
-msgstr[1] ""
+msgstr[1] "%d વધારે દસ્તાવેજોને લાવો"
 
 #: ../src/mainToolbar.js:201
 #, c-format
@@ -132,4 +132,5 @@ msgstr "પસંદીદા માંથી દૂર કરો"
 #: ../src/view.js:59
 msgid "Add to favorites"
 msgstr "પસંદીદામાં ઉમેરો"
+
 
