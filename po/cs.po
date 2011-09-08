@@ -8,21 +8,21 @@ msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-02 23:16+0000\n"
-"PO-Revision-Date: 2011-09-03 08:33+0200\n"
+"POT-Creation-Date: 2011-09-06 19:36+0000\n"
+"PO-Revision-Date: 2011-09-08 08:00+0200\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
-"Language: cs\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../data/gnome-documents.desktop.in.in.h:1
 msgid "Access, manage and share documents"
 msgstr "Přístup k dokumentům, jejich správa a sdílení"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:82
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:47
 msgid "Documents"
 msgstr "Dokumenty"
 
@@ -56,11 +56,6 @@ msgstr "Oblíbené"
 #: ../src/categories.js:83
 msgid "Shared with you"
 msgstr "Sdílené s vámi"
-
-#. unimplemented
-#: ../src/categories.js:87
-msgid "Private"
-msgstr "Soukromé"
 
 #: ../src/documents.js:269 ../src/sources.js:116
 msgid "Local"
@@ -96,17 +91,21 @@ msgstr "Nelze načíst „%s“ pro náhled"
 msgid "Unable to fetch the list of documents"
 msgstr "Nelze získat seznam dokumentů"
 
-#: ../src/loadMore.js:69
+#: ../src/loadMore.js:70
 #, c-format
+#| msgid "Load %d more documents"
 msgid "Load %d more documents"
-msgstr "Načíst dalších %d dokumentů"
+msgid_plural "Load %d more documents"
+msgstr[0] "Načíst %d další dokument"
+msgstr[1] "Načíst další %d dokumenty"
+msgstr[2] "Načíst dalších %d dokumentů"
 
-#: ../src/mainToolbar.js:183
+#: ../src/mainToolbar.js:201
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d z %d)"
 
-#: ../src/sidebar.js:130 ../src/sources.js:255
+#: ../src/sidebar.js:131 ../src/sources.js:255
 msgid "Sources"
 msgstr "Zdroje"
 
