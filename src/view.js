@@ -146,6 +146,10 @@ View.prototype = {
             return false;
 
         let path = this.getPathAtPos(coords);
+
+        if (!path)
+            return false;
+
         let iter = this._treeModel.get_iter(path)[1];
 
         let urn = this._treeModel.get_value(iter, Documents.ModelColumns.URN);
