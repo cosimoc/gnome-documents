@@ -30,7 +30,8 @@ void gd_store_set (GtkListStore *store,
                    const gchar *urn,
                    const gchar *title,
                    const gchar *author,
-                   GdkPixbuf *icon);
+                   GdkPixbuf *icon,
+                   glong mtime);
 
 GtkListStore* gd_create_sources_store (void);
 void gd_sources_store_set (GtkListStore *store,
@@ -64,6 +65,9 @@ GdkPixbuf * gd_embed_image_in_frame (GdkPixbuf *source_image,
                                      int bottom_offset);
 
 char *gd_filename_strip_extension (const char * filename_with_extension);
+
+gboolean gd_time_val_from_iso8601 (const gchar *string,
+                                   GTimeVal *timeval);
 
 #endif /* __GD_UTILS_H__ */
                                   

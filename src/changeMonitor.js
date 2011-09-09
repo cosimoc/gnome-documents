@@ -44,6 +44,41 @@ TrackerResourcesService.prototype = {
 };
 DBus.proxifyPrototype(TrackerResourcesService.prototype, TrackerResourcesServiceIface);
 
+const ChangeEventType = {
+    CHANGED: 0,
+    CREATED: 1,
+    DELETED: 2
+};
+
+const _RDF_TYPE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
+
+function ChangeEvent(urn, predicate, isDelete) {
+    this._init(urn, predicate, isDelete);
+}
+
+ChangeEvent.prototype = {
+    _init: function(urn, predicate, isDelete) {
+        this.urn = urn;
+
+        if (predicate == _RDF_TYPE) {
+            if (isDelete)
+                this.type = ChangeEventType.DELETED;
+            else
+                this.type = ChangeEventType.CREATED;
+        } else {
+            this.type = ChangeEventType.CHANGED;
+        }
+    },
+
+    merge: function(event) {
+        // deletions or creations override the current type
+        if (event.type == ChangeEventType.DELETED ||
+            event.type == ChangeEventType.CREATED) {
+            this.type = event.type;
+        }
+    }
+};
+
 function TrackerChangeMonitor() {
     this._init();
 }
@@ -61,21 +96,21 @@ TrackerChangeMonitor.prototype = {
         deleteEvents.forEach(Lang.bind(this,
             function(event) {
                 this._outstandingOps++;
-                this._updateIterator(event);
+                this._updateIterator(event, true);
             }));
 
         insertEvents.forEach(Lang.bind(this,
             function(event) {
                 this._outstandingOps++;
-                this._updateIterator(event);
+                this._updateIterator(event, false);
             }));
     },
 
-    _updateIterator: function(event) {
+    _updateIterator: function(event, isDelete) {
         // we're only interested in the resource URN, as we will query for
         // the item properties again, but we still want to compress deletes and inserts
         Global.connection.query_async(
-            ('SELECT tracker:uri(%d) {}').format(event[1]),
+            ('SELECT tracker:uri(%d) tracker:uri(%d) {}').format(event[1], event[2]),
             null, Lang.bind(this,
                 function(object, res) {
                     let cursor = object.query_finish(res);
@@ -86,8 +121,9 @@ TrackerChangeMonitor.prototype = {
 
                             if (valid) {
                                 let subject = cursor.get_string(0)[0];
-                                if (this._pendingChanges.indexOf(subject) == -1)
-                                    this._pendingChanges.push(subject);
+                                let predicate = cursor.get_string(1)[0];
+
+                                this._addEvent(subject, predicate, isDelete);
                             }
 
                             cursor.close();
@@ -97,14 +133,25 @@ TrackerChangeMonitor.prototype = {
                 }));
     },
 
+    _addEvent: function(subject, predicate, isDelete) {
+        let event = new ChangeEvent(subject, predicate, isDelete);
+        let oldEvent = this._pendingChanges[subject];
+
+        if (oldEvent != null) {
+            oldEvent.merge(event);
+            this._pendingChanges[subject] = oldEvent;
+        } else {
+            this._pendingChanges[subject] = event;
+        }
+    },
+
     _updateCollector: function() {
         this._outstandingOps--;
 
         if (this._outstandingOps == 0) {
-            this.emit('changes-pending', this._pendingChanges.slice(0));
-            this._pendingChanges = [];
+            this.emit('changes-pending', this._pendingChanges);
+            this._pendingChanges = {};
         }
     }
-
 };
 Signals.addSignalMethods(TrackerChangeMonitor.prototype);

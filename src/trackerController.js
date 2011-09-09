@@ -68,12 +68,6 @@ TrackerController.prototype = {
                     return;
                 }
 
-                // FIXME: we must have a way to know from the miner if there were
-                // no changes processed, to avoid uselessly refreshing the view.
-                // That requires support for the Changes feed in libgdata, see
-                // https://bugzilla.gnome.org/show_bug.cgi?id=654652
-                this._refresh();
-
                 Mainloop.timeout_add_seconds(MINER_REFRESH_TIMEOUT,
                                              Lang.bind(this, this._refreshMinerNow));
             }));

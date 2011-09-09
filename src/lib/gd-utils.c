@@ -38,11 +38,12 @@
 GtkListStore *
 gd_create_list_store (void)
 {
-  return gtk_list_store_new (4,
+  return gtk_list_store_new (5,
                              G_TYPE_STRING, // URN
                              G_TYPE_STRING, // TITLE
                              G_TYPE_STRING, // AUTHOR
-                             GDK_TYPE_PIXBUF); // ICON
+                             GDK_TYPE_PIXBUF, // ICON
+                             G_TYPE_LONG); // MTIME
 }
 
 void
@@ -51,13 +52,15 @@ gd_store_set (GtkListStore *store,
               const gchar *urn,
               const gchar *title,
               const gchar *author,
-              GdkPixbuf *icon)
+              GdkPixbuf *icon,
+              glong mtime)
 {
   gtk_list_store_set (store, iter,
                       0, urn,
                       1, title,
                       2, author,
                       3, icon,
+                      4, mtime,
                       -1);
 }
 
@@ -432,4 +435,18 @@ gd_filename_strip_extension (const char * filename_with_extension)
 	}
 
 	return filename;
+}
+
+/**
+ * gd_time_val_from_iso8601:
+ * @string:
+ * @timeval: (out):
+ *
+ * Returns:
+ */
+gboolean
+gd_time_val_from_iso8601 (const gchar *string,
+                          GTimeVal *timeval)
+{
+  return g_time_val_from_iso8601 (string, timeval);
 }

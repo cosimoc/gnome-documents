@@ -72,20 +72,12 @@ DocCommon.prototype = {
         this._refreshIconId =
             Global.settings.connect('changed::list-view',
                                     Lang.bind(this, this.refreshIcon));
-        this._changesId =
-            Global.changeMonitor.connect('changes-pending',
-                                         Lang.bind(this, this._onChangesPending));
         this._categoryId =
             Global.categoryManager.connect('active-category-changed',
                                            Lang.bind(this, this.refreshIcon));
     },
 
-    _onChangesPending: function(monitor, changes) {
-        if (changes[0] == this.urn)
-            this._refresh();
-    },
-
-    _refresh: function() {
+    refresh: function() {
         let sparql = Global.queryBuilder.buildSingleQuery(this.urn);
 
         Global.connection.query_async(sparql, null, Lang.bind(this,
@@ -117,9 +109,12 @@ DocCommon.prototype = {
         this.uri = cursor.get_string(Query.QueryColumns.URI)[0];
         this.urn = cursor.get_string(Query.QueryColumns.URN)[0];
         this.author = cursor.get_string(Query.QueryColumns.AUTHOR)[0];
-        this.mtime = cursor.get_string(Query.QueryColumns.MTIME)[0];
         this.resourceUrn = cursor.get_string(Query.QueryColumns.RESOURCE_URN)[0];
         this.favorite = cursor.get_boolean(Query.QueryColumns.FAVORITE);
+
+        let mtime = cursor.get_string(Query.QueryColumns.MTIME)[0];
+        let timeVal = Gd.time_val_from_iso8601(mtime)[1];
+        this.mtime = timeVal.tv_sec;
 
         this.mimeType = cursor.get_string(Query.QueryColumns.MIMETYPE)[0];
         this.rdfType = cursor.get_string(Query.QueryColumns.RDFTYPE)[0];
@@ -239,7 +234,6 @@ DocCommon.prototype = {
 
     destroy: function() {
         Global.settings.disconnect(this._refreshIconId);
-        Global.changeMonitor.disconnect(this._changesId);
         Global.categoryManager.disconnect(this._categoryId);
     },
 
@@ -522,7 +516,58 @@ DocumentManager.prototype = {
         this._docs = {};
         this._activeDocument = null;
 
+        Global.changeMonitor.connect('changes-pending',
+                                     Lang.bind(this, this._onChangesPending));
+
         this._pixbufFrame = GdkPixbuf.Pixbuf.new_from_file(Path.ICONS_DIR + 'thumbnail-frame.png');
+    },
+
+    _onChangesPending: function(monitor, changes) {
+        for (idx in changes) {
+            let changeEvent = changes[idx];
+
+            if (changeEvent.type == ChangeMonitor.ChangeEventType.CHANGED) {
+                let doc = this.lookupDocument(changeEvent.urn);
+
+                if (doc)
+                    doc.refresh();
+            } else if (changeEvent.type == ChangeMonitor.ChangeEventType.CREATED) {
+                this._onDocumentCreated(changeEvent.urn);
+            } else if (changeEvent.type == ChangeMonitor.ChangeEventType.DELETED) {
+                let doc = this.lookupDocument(changeEvent.urn);
+
+                if (doc) {
+                    this.emit('document-removed', doc);
+
+                    doc.destroy();
+                    delete this._docs[changeEvent.urn];
+                }
+            }
+        }
+    },
+
+    _onDocumentCreated: function(urn) {
+        let sparql = Global.queryBuilder.buildSingleQuery(urn);
+
+        Global.connection.query_async(sparql, null, Lang.bind(this,
+            function(object, res) {
+                let cursor = null;
+
+                try {
+                    cursor = object.query_finish(res);
+                    cursor.next_async(null, Lang.bind(this,
+                        function(object, res) {
+                            let valid = object.next_finish(res);
+                            if (valid)
+                                this.addDocument(object);
+
+                            cursor.close();
+                        }));
+                } catch (e) {
+                    log('Unable to add new document: ' + e.toString());
+                    return;
+                }
+            }));
     },
 
     _identifierIsGoogle: function(identifier) {
@@ -544,7 +589,7 @@ DocumentManager.prototype = {
             doc = new LocalDocument(cursor);
 
         this._docs[doc.urn] = doc;
-        this.emit('new-document', doc);
+        this.emit('document-added', doc);
     },
 
     clear: function() {
@@ -585,7 +630,8 @@ const ModelColumns = {
     URN: 0,
     TITLE: 1,
     AUTHOR: 2,
-    ICON: 3
+    ICON: 3,
+    MTIME: 4
 };
 
 function DocumentModel() {
@@ -595,28 +641,32 @@ function DocumentModel() {
 DocumentModel.prototype = {
     _init: function() {
         this.model = Gd.create_list_store();
+        this.model.set_sort_column_id(ModelColumns.MTIME,
+                                      Gtk.SortType.DESCENDING);
+
         this._documentManager = Global.documentManager;
 
         this._documentManager.connect('clear', Lang.bind(this, this._onManagerClear));
-        this._documentManager.connect('new-document', Lang.bind(this, this._onNewDocument));
+        this._documentManager.connect('document-added', Lang.bind(this, this._onDocumentAdded));
+        this._documentManager.connect('document-removed', Lang.bind(this, this._onDocumentRemoved));
 
         let documents = this._documentManager.getDocuments();
         for (idx in this._documentManager.getDocuments())
-            this._onNewDocument(this._documentManager, documents[idx]);
+            this._onDocumentAdded(this._documentManager, documents[idx]);
     },
 
     _onManagerClear: function() {
         this.model.clear();
     },
 
-    _onNewDocument: function(manager, doc) {
+    _onDocumentAdded: function(manager, doc) {
         let iter = this.model.append();
         let treePath = this.model.get_path(iter);
 
         Gd.store_set(this.model, iter,
                      doc.urn,
                      doc.title, doc.author,
-                     doc.pixbuf);
+                     doc.pixbuf, doc.mtime);
 
         doc.connect('info-updated', Lang.bind(this,
             function() {
@@ -625,7 +675,21 @@ DocumentModel.prototype = {
                     Gd.store_set(this.model, iter,
                                  doc.urn,
                                  doc.title, doc.author,
-                                 doc.pixbuf);
+                                 doc.pixbuf, doc.mtime);
+            }));
+    },
+
+    _onDocumentRemoved: function(manager, doc) {
+        this.model.foreach(Lang.bind(this,
+            function(model, path, iter) {
+                let urn = model.get_value(iter, ModelColumns.URN);
+
+                if (urn == doc.urn) {
+                    this.model.remove(iter);
+                    return true;
+                }
+
+                return false;
             }));
     }
 };
