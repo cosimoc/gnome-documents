@@ -94,10 +94,12 @@ TrackerController.prototype = {
 
             if (!valid) {
                 // signal the total count update and return
+                cursor.close();
                 this._onQueryFinished(null);
                 return;
             }
         } catch (e) {
+            cursor.close();
             this._onQueryFinished(e);
             return;
         }

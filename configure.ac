@@ -55,6 +55,7 @@ GOBJECT_INTROSPECTION_MIN_VERSION=0.9.6
 GDATA_MIN_VERSION=0.9.1
 GOA_MIN_VERSION=3.1.90
 CLUTTER_GTK_MIN_VERSION=1.0.1
+TRACKER_MIN_VERSION=0.12.0
 
 PKG_CHECK_MODULES(DOCUMENTS,
                   clutter-gtk-1.0 >= $CLUTTER_GTK_MIN_VERSION
@@ -64,7 +65,7 @@ PKG_CHECK_MODULES(DOCUMENTS,
                   gobject-introspection-1.0 >= $GOBJECT_INTROSPECTION_MIN_VERSION
                   gtk+-3.0 >= $GTK_MIN_VERSION
                   gnome-desktop-3.0
-                  tracker-sparql-0.12
+                  tracker-sparql-0.12 >= $TRACKER_MIN_VERSION
                   goa-1.0 >= $GOA_MIN_VERSION
                   libgdata >= $GDATA_MIN_VERSION
                   oauth)

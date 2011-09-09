@@ -90,6 +90,8 @@ TrackerChangeMonitor.prototype = {
                                     this._pendingChanges.push(subject);
                             }
 
+                            cursor.close();
+
                             this._updateCollector();
                         }));
                 }));

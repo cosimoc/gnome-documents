@@ -103,12 +103,6 @@ Application.prototype = {
         Gettext.textdomain('gnome-documents');
         String.prototype.format = Format.format;
 
-        // FIXME: tracker cursor have a bug when using the SQLite interface,
-        // where the data doesn't get updated until the cursor is finalized.
-        // Unfortunately, this doesn't play nice with garbage collection, so
-        // we need to force the (slow) DBus backend until that's fixed.
-        GLib.setenv('TRACKER_SPARQL_BACKEND', 'bus', true);
-
         GLib.set_prgname('gnome-documents');
         GtkClutter.init(null, null);
         EvDoc.init();

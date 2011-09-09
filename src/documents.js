@@ -99,6 +99,8 @@ DocCommon.prototype = {
                             let valid = object.next_finish(res);
                             if (valid)
                                 this.populateFromCursor(object);
+
+                            cursor.close();
                         }));
                 } catch (e) {
                     log('Unable to refresh file information: ' + e.toString());

@@ -46,18 +46,19 @@ function resourceUrnFromSourceId(sourceId, callback) {
                      try {
                          let valid = cursor.next_finish(res);
 
-                         if (!valid) {
-                             callback(urn);
-                             return;
-                         }
+                         if (valid)
+                             urn = cursor.get_string(0)[0];
+
+                         cursor.close();
+                         callback(urn);
                      } catch (e) {
                          log('Unable to resolve account ID -> resource URN: ' + e.toString());
+
+                         cursor.close();
                          callback(urn);
+
                          return;
                      }
-
-                     urn = cursor.get_string(0)[0];
-                     callback(urn);
                  });
          });
 }

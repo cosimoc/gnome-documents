@@ -58,11 +58,13 @@ OffsetController.prototype = {
                     cursor.next_async(null, Lang.bind(this,
                         function(object, res) {
                             let valid = object.next_finish(res);
-                            if (!valid)
-                                return;
 
-                            this._itemCount = cursor.get_integer(0);
-                            this.emit('item-count-changed', this._itemCount);
+                            if (valid) {
+                                this._itemCount = cursor.get_integer(0);
+                                this.emit('item-count-changed', this._itemCount);
+                            }
+
+                            cursor.close();
                         }));
                 }));
     },
