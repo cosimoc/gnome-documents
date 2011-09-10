@@ -38,6 +38,8 @@ struct _GdGDataMinerPrivate {
 
   GCancellable *cancellable;
   GSimpleAsyncResult *result;
+
+  GHashTable *previous_resources;
 };
 
 static void
@@ -369,6 +371,50 @@ _tracker_utils_iso8601_from_timestamp (gint64 timestamp)
 }
 
 static void
+previous_resources_cleanup_foreach (gpointer key,
+                                    gpointer value,
+                                    gpointer user_data)
+{
+  const gchar *resource = value;
+  GString *delete = user_data;
+
+  g_string_append_printf (delete, "<%s> a rdfs:Resource . ", resource);
+}
+
+static void
+gd_gdata_miner_cleanup_previous (GdGDataMiner *self)
+{
+  GString *delete;
+  GList *values;
+  GError *error = NULL;
+
+  delete = g_string_new (NULL);
+  g_string_append (delete, "DELETE { ");
+
+  /* the resources left here are those who were in the database,
+   * but were not found during the query; remove them from the database.
+   */
+  g_hash_table_foreach (self->priv->previous_resources,
+                        previous_resources_cleanup_foreach,
+                        delete);
+
+  g_string_append (delete, "}");
+
+  tracker_sparql_connection_update (self->priv->connection,
+                                    delete->str,
+                                    G_PRIORITY_DEFAULT,
+                                    self->priv->cancellable,
+                                    &error);
+
+  if (error != NULL) {
+    g_printerr ("Unable to cleanup the previous results: %s\n", error->message);
+    g_error_free (error);
+  }
+
+  g_string_free (delete, TRUE);
+}
+
+static void
 gd_gdata_miner_process_entry (GdGDataMiner *self,
                               GDataDocumentsEntry *doc_entry,
                               GError **error)
@@ -401,6 +447,9 @@ gd_gdata_miner_process_entry (GdGDataMiner *self,
   resource_url = g_strdup_printf 
     ("google:docs:%s", 
      gdata_documents_entry_get_path (doc_entry));
+
+  /* remove from the list of the previous resources */
+  g_hash_table_remove (self->priv->previous_resources, identifier);
 
   if (GDATA_IS_DOCUMENTS_PRESENTATION (doc_entry))
     class = "nfo:Presentation";
@@ -571,7 +620,7 @@ gd_gdata_miner_process_entry (GdGDataMiner *self,
 }
 
 static void
-gd_gdata_miner_query (GdGDataMiner *self)
+gd_gdata_miner_query_gdata (GdGDataMiner *self)
 {
   GDataDocumentsQuery *query;
   GDataDocumentsFeed *feed;
@@ -605,8 +654,43 @@ gd_gdata_miner_query (GdGDataMiner *self)
         }
     }
 
+  gd_gdata_miner_cleanup_previous (self);
+
   g_simple_async_result_complete_in_idle (self->priv->result);
   g_object_unref (feed);
+}
+
+static void
+gd_gdata_miner_query_existing (GdGDataMiner *self)
+{
+  GString *select;
+  TrackerSparqlCursor *cursor;
+  GError *error = NULL;
+
+  select = g_string_new (NULL);
+  g_string_append_printf (select,
+                          "SELECT ?urn nao:identifier(?urn) WHERE { ?urn a nfo:RemoteDataObject . "
+                          "?urn nie:dataSource \"%s\" }", DATASOURCE_URN);
+
+  cursor = tracker_sparql_connection_query (self->priv->connection,
+                                            select->str,
+                                            self->priv->cancellable,
+                                            &error);
+
+  if (error != NULL) {
+    g_printerr ("Error while getting the previous resources: %s\n", error->message);
+    g_error_free (error);
+    return;
+  }
+
+  while (tracker_sparql_cursor_next (cursor, self->priv->cancellable, NULL)) {
+    g_hash_table_insert (self->priv->previous_resources, 
+                         g_strdup (tracker_sparql_cursor_get_string (cursor, 1, NULL)),
+                         g_strdup (tracker_sparql_cursor_get_string (cursor, 0, NULL)));
+  }
+
+  g_object_unref (cursor);
+  g_string_free (select, TRUE);
 }
 
 static void
@@ -659,7 +743,8 @@ gd_gdata_miner_setup_account (GdGDataMiner *self,
       return;
     }
 
-  gd_gdata_miner_query (self);
+  gd_gdata_miner_query_existing (self);
+  gd_gdata_miner_query_gdata (self);
 }
 
 static void
@@ -728,6 +813,8 @@ gd_gdata_miner_dispose (GObject *object)
   g_clear_object (&self->priv->cancellable);
   g_clear_object (&self->priv->result);
 
+  g_hash_table_unref (self->priv->previous_resources);
+
   G_OBJECT_CLASS (gd_gdata_miner_parent_class)->dispose (object);
 }
 
@@ -736,6 +823,8 @@ gd_gdata_miner_init (GdGDataMiner *self)
 {
   self->priv =
     G_TYPE_INSTANCE_GET_PRIVATE (self, GD_TYPE_GDATA_MINER, GdGDataMinerPrivate);
+  self->priv->previous_resources = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                                          (GDestroyNotify) g_free, (GDestroyNotify) g_free);
 }
 
 static void
