@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-01 12:26+0200\n"
-"PO-Revision-Date: 2011-09-01 12:25+0100\n"
+"POT-Creation-Date: 2011-09-12 19:38+0200\n"
+"PO-Revision-Date: 2011-09-12 19:38+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: \n"
@@ -21,7 +21,8 @@ msgstr ""
 msgid "Access, manage and share documents"
 msgstr "Kom åt, hantera och dela dokument"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:81
+#: ../data/gnome-documents.desktop.in.in.h:2
+#: ../src/mainWindow.js:47
 msgid "Documents"
 msgstr "Dokument"
 
@@ -56,32 +57,28 @@ msgstr "Favoriter"
 msgid "Shared with you"
 msgstr "Delade med dig"
 
-#. unimplemented
-#: ../src/categories.js:87
-msgid "Private"
-msgstr "Privat"
-
-#: ../src/documents.js:269 ../src/sources.js:116
+#: ../src/documents.js:253
+#: ../src/sources.js:116
 msgid "Local"
 msgstr "Lokal"
 
-#: ../src/documents.js:388
+#: ../src/documents.js:372
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:389
+#: ../src/documents.js:373
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:446
+#: ../src/documents.js:442
 msgid "Spreadsheet"
 msgstr "Kalkylark"
 
-#: ../src/documents.js:448
+#: ../src/documents.js:444
 msgid "Presentation"
 msgstr "Presentation"
 
-#: ../src/documents.js:450
+#: ../src/documents.js:446
 msgid "Document"
 msgstr "Dokument"
 
@@ -95,17 +92,20 @@ msgstr "Kunde inte läsa in \"%s\" för granskning"
 msgid "Unable to fetch the list of documents"
 msgstr "Kunde inte hämta listan över dokument"
 
-#: ../src/loadMore.js:69
+#: ../src/loadMore.js:70
 #, c-format
 msgid "Load %d more documents"
-msgstr "Läs in ytterligare %d dokument"
+msgid_plural "Load %d more documents"
+msgstr[0] "Läs in ytterligare %d dokument"
+msgstr[1] "Läs in ytterligare %d dokument"
 
-#: ../src/mainToolbar.js:182
+#: ../src/mainToolbar.js:201
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d av %d)"
 
-#: ../src/sidebar.js:130 ../src/sources.js:216
+#: ../src/sidebar.js:131
+#: ../src/sources.js:255
 msgid "Sources"
 msgstr "Källor"
 
@@ -118,19 +118,23 @@ msgid "Loading..."
 msgstr "Läser in..."
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:46
+#: ../src/view.js:66
 #, c-format
 msgid "Open with %s"
 msgstr "Öppna med %s"
 
-#: ../src/view.js:46
+#: ../src/view.js:68
 msgid "Open"
 msgstr "Öppna"
 
-#: ../src/view.js:56
+#: ../src/view.js:78
 msgid "Remove from favorites"
 msgstr "Ta bort från favoriter"
 
-#: ../src/view.js:56
+#: ../src/view.js:78
 msgid "Add to favorites"
 msgstr "Lägg till i favoriter"
+
+#~ msgid "Private"
+#~ msgstr "Privat"
+
