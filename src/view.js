@@ -109,8 +109,7 @@ View.prototype = {
     _init: function() {
         this._selectedURNs = null;
 
-        this._model = new Documents.DocumentModel();
-        this._treeModel = this._model.model;
+        this._treeModel = Global.documentManager.getModel().model;
         this.widget.set_model(this._treeModel);
 
         this.widget.connect('destroy', Lang.bind(this,

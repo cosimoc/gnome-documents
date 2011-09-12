@@ -504,6 +504,8 @@ DocumentManager.prototype = {
         this._docs = {};
         this._activeDocument = null;
 
+        this._model = new DocumentModel();
+
         Global.changeMonitor.connect('changes-pending',
                                      Lang.bind(this, this._onChangesPending));
 
@@ -525,7 +527,7 @@ DocumentManager.prototype = {
                 let doc = this.lookupDocument(changeEvent.urn);
 
                 if (doc) {
-                    this.emit('document-removed', doc);
+                    this._model.documentRemoved(doc);
 
                     doc.destroy();
                     delete this._docs[changeEvent.urn];
@@ -577,7 +579,7 @@ DocumentManager.prototype = {
             doc = new LocalDocument(cursor);
 
         this._docs[doc.urn] = doc;
-        this.emit('document-added', doc);
+        this._model.documentAdded(doc);
     },
 
     clear: function() {
@@ -585,7 +587,7 @@ DocumentManager.prototype = {
             this._docs[idx].destroy();
         };
         this._docs = {};
-        this.emit('clear');
+        this._model.clear();
     },
 
     getDocuments: function() {
@@ -610,6 +612,10 @@ DocumentManager.prototype = {
 
     getActiveDocument: function() {
         return this._activeDocument;
+    },
+
+    getModel: function() {
+        return this._model;
     }
 };
 Signals.addSignalMethods(DocumentManager.prototype);
@@ -631,23 +637,13 @@ DocumentModel.prototype = {
         this.model = Gd.create_list_store();
         this.model.set_sort_column_id(ModelColumns.MTIME,
                                       Gtk.SortType.DESCENDING);
-
-        this._documentManager = Global.documentManager;
-
-        this._documentManager.connect('clear', Lang.bind(this, this._onManagerClear));
-        this._documentManager.connect('document-added', Lang.bind(this, this._onDocumentAdded));
-        this._documentManager.connect('document-removed', Lang.bind(this, this._onDocumentRemoved));
-
-        let documents = this._documentManager.getDocuments();
-        for (idx in this._documentManager.getDocuments())
-            this._onDocumentAdded(this._documentManager, documents[idx]);
     },
 
-    _onManagerClear: function() {
+    clear: function() {
         this.model.clear();
     },
 
-    _onDocumentAdded: function(manager, doc) {
+    documentAdded: function(doc) {
         let iter = this.model.append();
         let treePath = this.model.get_path(iter);
 
@@ -667,7 +663,7 @@ DocumentModel.prototype = {
             }));
     },
 
-    _onDocumentRemoved: function(manager, doc) {
+    documentRemoved: function(doc) {
         this.model.foreach(Lang.bind(this,
             function(model, path, iter) {
                 let urn = model.get_value(iter, ModelColumns.URN);
