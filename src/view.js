@@ -24,6 +24,7 @@ const Gtk = imports.gi.Gtk;
 const _ = imports.gettext.gettext;
 
 const Lang = imports.lang;
+const Mainloop = imports.mainloop;
 const Signals = imports.signals;
 
 const Documents = imports.documents;
@@ -126,12 +127,19 @@ View.prototype = {
             this._selectionController.connect('selection-check',
                                               Lang.bind(this, this._updateSelection));
 
-        this._updateSelection(true);
+        // HACK: give the view some time to setup the scrolled window
+        // allocation, as updateSelection() might call scrollToPath().
+        // Is there anything better we can do here?
+        Mainloop.timeout_add(100, Lang.bind(this,
+            function() {
+                this._updateSelection();
+                return false;
+            }));
 
         this.connectToSelectionChanged(Lang.bind(this, this._onSelectionChanged));
     },
 
-    _updateSelection: function(scroll) {
+    _updateSelection: function() {
         let selectionObject = this.getSelectionObject();
         let selected = this._selectionController.getSelection().slice(0);
 
@@ -148,7 +156,7 @@ View.prototype = {
                     selectionObject.select_path(path);
                     selected.splice(urnIndex, 1);
 
-                    if (first && scroll) {
+                    if (first) {
                         this.scrollToPath(path);
                         first = false;
                     }
