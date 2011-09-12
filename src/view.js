@@ -32,40 +32,70 @@ const TrackerUtils = imports.trackerUtils;
 const WindowMode = imports.windowMode;
 const Utils = imports.utils;
 
-function ContextMenu(urn) {
-    this._init(urn);
+function ContextMenu(urns) {
+    this._init(urns);
 }
 
 ContextMenu.prototype = {
-    _init: function(urn) {
-        let doc = Global.documentManager.lookupDocument(urn);
-        let showFavorite = (Global.modeController.getWindowMode() != WindowMode.WindowMode.PREVIEW);
+    _init: function(urns) {
+        let favCount = 0;
+        let apps = [];
+        let docs = [];
 
         this.widget = new Gtk.Menu();
+        let showFavorite = (Global.modeController.getWindowMode() != WindowMode.WindowMode.PREVIEW);
 
-        // Translators: this is the Open action in a context menu
-        let openLabel = (doc.defaultAppName) ? _("Open with %s").format(doc.defaultAppName) : _("Open");
+        urns.forEach(Lang.bind(this,
+            function(urn) {
+                let doc = Global.documentManager.lookupDocument(urn);
+                if (doc.favorite)
+                    favCount++;
+
+                if (apps.indexOf(doc.defaultAppName) == -1) {
+                    apps.push(doc.defaultAppName);
+                }
+
+                docs.push(doc);
+            }));
+
+        showFavorite &= ((favCount == 0) || (favCount == urns.length));
+
+        let openLabel = null;
+        if (apps.length == 1) {
+            // Translators: this is the Open action in a context menu
+            openLabel = _("Open with %s").format(apps[0]);
+        } else {
+            openLabel = _("Open");
+        }
+
         let openItem = new Gtk.MenuItem({ label: openLabel });
         openItem.show();
         this.widget.append(openItem);
 
-        openItem.connect('activate', Lang.bind(this,
-            function(item) {
-                doc.open(item.get_screen(), Gtk.get_current_event_time());
-            }));
-
+        let favoriteItem = null;
         if (showFavorite) {
-            let isFavorite = doc.favorite;
+            let isFavorite = (favCount == urns.length);
             let favoriteLabel = (isFavorite) ? _("Remove from favorites") : _("Add to favorites");
-            let favoriteItem = new Gtk.MenuItem({ label: favoriteLabel });
+
+            favoriteItem = new Gtk.MenuItem({ label: favoriteLabel });
             favoriteItem.show();
             this.widget.append(favoriteItem);
-
-            favoriteItem.connect('activate', Lang.bind(this,
-                function() {
-                    doc.setFavorite(!isFavorite);
-                }));
         }
+
+        docs.forEach(Lang.bind(this,
+            function(doc) {
+                openItem.connect('activate', Lang.bind(this,
+                    function(item) {
+                        doc.open(item.get_screen(), Gtk.get_current_event_time());
+                    }));
+
+                if (favoriteItem) {
+                    favoriteItem.connect('activate', Lang.bind(this,
+                        function() {
+                            doc.setFavorite(!doc.favorite);
+                        }));
+                }
+            }));
 
         this.widget.show_all();
     }
@@ -87,7 +117,8 @@ View.prototype = {
             function() {
                 Global.selectionController.disconnect(this._selectionControllerId);
             }));
-        this.widget.connect('button-release-event', Lang.bind(this, this._onButtonRelease));
+        this.widget.connect('button-release-event', Lang.bind(this, this._onButtonReleaseEvent));
+        this.widget.connect('button-press-event', Lang.bind(this, this._onButtonPressEvent));
 
         this.createRenderers();
 
@@ -137,7 +168,29 @@ View.prototype = {
         Global.selectionController.setSelection(selectedURNs);
     },
 
-    _onButtonRelease: function(view, event) {
+    _onButtonPressEvent: function(widget, event) {
+        let button = event.get_button()[1];
+        if (button != 3)
+            return false;
+
+        let coords = [ event.get_coords()[1] , event.get_coords()[2] ];
+        let path = this.getPathAtPos(coords);
+
+        let selection = Global.selectionController.getSelection();
+
+        if (path) {
+            let urn = Utils.getURNFromPath(path, this._treeModel);
+
+            if (selection.indexOf(urn) == -1)
+                this.getSelectionObject().unselect_all();
+
+            this.getSelectionObject().select_path(path);
+        }
+
+        return true;
+    },
+
+    _onButtonReleaseEvent: function(view, event) {
         let button = event.get_button()[1];
         let coords = [ event.get_coords()[1] , event.get_coords()[2] ];
         let timestamp = event.get_time();
@@ -153,7 +206,7 @@ View.prototype = {
         let iter = this._treeModel.get_iter(path)[1];
 
         let urn = this._treeModel.get_value(iter, Documents.ModelColumns.URN);
-        let menu = new ContextMenu(urn);
+        let menu = new ContextMenu(Global.selectionController.getSelection());
 
         menu.widget.popup_for_device(null, null, null, null, null, null, button, timestamp);
 

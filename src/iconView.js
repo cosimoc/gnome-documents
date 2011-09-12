@@ -51,6 +51,9 @@ IconView.prototype = {
         this.widget.connect('item-activated',
                             Lang.bind(this, this._onItemActivated));
 
+        this.widget.connect('button-press-event',
+                            Lang.bind(this, this._onButtonPressEvent));
+
         this.widget.show();
 
         // chain up to the parent

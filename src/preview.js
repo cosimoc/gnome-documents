@@ -54,7 +54,7 @@ PreviewView.prototype = {
             return false;
 
         let doc = Global.documentManager.getActiveDocument();
-        let menu = new View.ContextMenu(doc.urn);
+        let menu = new View.ContextMenu([ doc.urn ]);
 
         menu.widget.popup_for_device(null, null, null, null, null, null, button, timestamp);
 

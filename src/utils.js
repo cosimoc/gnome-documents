@@ -50,9 +50,13 @@ function iconFromRdfType(type) {
 function getURNsFromPaths(paths, model) {
     return paths.map(Lang.bind(this,
             function(path) {
-                let iter = model.get_iter(path)[1];
-                let urn = model.get_value(iter, Documents.ModelColumns.URN);
-
-                return urn;
+                return getURNFromPath(path, model);
             }));
+}
+
+function getURNFromPath(path, model) {
+    let iter = model.get_iter(path)[1];
+    let urn = model.get_value(iter, Documents.ModelColumns.URN);
+
+    return urn;
 }
