@@ -4,3 +4,10 @@
     border-image-width: 0 2 2 2;
     border-width: 0 1 1 1;
 }
+
+.documents-icon-bg {
+    background-color: #3465a4;
+    border-radius: 4;
+
+    color: #ffffff;
+}

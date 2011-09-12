@@ -168,22 +168,10 @@ DocCommon.prototype = {
     },
 
     _createSymbolicEmblem: function(name) {
-        let symbolicName = name + '-symbolic';
-        let icon = new Gio.ThemedIcon({ name: symbolicName });
+        let pix = Gd.create_symbolic_icon(name, Utils.getIconSize());
 
-        let theme = Gtk.IconTheme.get_default();
-        let info = theme.lookup_by_gicon(icon, 64, Gtk.IconLookupFlags.FORCE_SIZE);
-
-        let rgba = new Gdk.RGBA();
-        rgba.parse("#3465a4");
-
-        let pix = null;
-
-        try {
-            pix = info.load_symbolic(rgba, null, null, null, null)[0];
-        } catch (e) {
+        if (!pix)
             pix = new Gio.ThemedIcon({ name: name });
-        }
 
         return pix;
     },
