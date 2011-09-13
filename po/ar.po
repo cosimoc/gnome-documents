@@ -2,31 +2,35 @@
 # Copyright (C) 2011 gnome-documents's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-documents package.
 # Abdalrahim G. Fakhouri <abdilra7eem@yahoo.com>, 2011.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-01 14:06+0000\n"
-"PO-Revision-Date: 2011-09-01 14:06+0000\n"
+"POT-Creation-Date: 2011-09-12 22:16+0000\n"
+"PO-Revision-Date: 2011-09-02 20:40+0300\n"
 "Last-Translator: Abdalrahim G. Fakhouri <abdilra7eem@yahoo.com>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
+"X-Generator: Virtaal 0.7.0\n"
+"X-Project-Style: gnome\n"
 
 #: ../data/gnome-documents.desktop.in.in.h:1
 msgid "Access, manage and share documents"
 msgstr "الوصول للمستندات وإدارتها ونشرها"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:81
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:47
 msgid "Documents"
 msgstr "المستندات"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:1
 msgid "Enable list view"
-msgstr "تفعيل العرض كقائمة"
+msgstr "فعّل العرض كقائمة"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:2
 msgid "List view"
@@ -42,7 +46,6 @@ msgstr "مرشّح المصادر الأخير المفعّل"
 
 #. Translators: this refers to new and recent documents
 #: ../src/categories.js:77
-#, fuzzy
 msgid "New and Recent"
 msgstr "المستندات الحديثة"
 
@@ -56,32 +59,27 @@ msgstr "المفضّلة"
 msgid "Shared with you"
 msgstr "مشتركة معك"
 
-#. unimplemented
-#: ../src/categories.js:87
-msgid "Private"
-msgstr "خاص"
-
-#: ../src/documents.js:269 ../src/sources.js:116
+#: ../src/documents.js:253 ../src/sources.js:116
 msgid "Local"
 msgstr "محلّي"
 
-#: ../src/documents.js:388
+#: ../src/documents.js:372
 msgid "Google Docs"
 msgstr "مستندات جوجل"
 
-#: ../src/documents.js:389
+#: ../src/documents.js:373
 msgid "Google"
 msgstr "جوجل"
 
-#: ../src/documents.js:446
+#: ../src/documents.js:442
 msgid "Spreadsheet"
 msgstr "جداول"
 
-#: ../src/documents.js:448
+#: ../src/documents.js:444
 msgid "Presentation"
 msgstr "عروض تقديميّة"
 
-#: ../src/documents.js:450
+#: ../src/documents.js:446
 msgid "Document"
 msgstr "مستندات"
 
@@ -95,17 +93,24 @@ msgstr "تعذّر تحميل \"%s\" للعرض"
 msgid "Unable to fetch the list of documents"
 msgstr "تعذّر جلب قائمة المستندات"
 
-#: ../src/loadMore.js:69
-#, c-format
+#: ../src/loadMore.js:70
+#, fuzzy, c-format
+#| msgid "Load %d more documents"
 msgid "Load %d more documents"
-msgstr "تحميل %d ملفات إضافيّة"
+msgid_plural "Load %d more documents"
+msgstr[0] "حمّل %d ملفات إضافيّة"
+msgstr[1] "حمّل %d ملفات إضافيّة"
+msgstr[2] "حمّل %d ملفات إضافيّة"
+msgstr[3] "حمّل %d ملفات إضافيّة"
+msgstr[4] "حمّل %d ملفات إضافيّة"
+msgstr[5] "حمّل %d ملفات إضافيّة"
 
-#: ../src/mainToolbar.js:182
+#: ../src/mainToolbar.js:201
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d من %d)"
 
-#: ../src/sidebar.js:130 ../src/sources.js:216
+#: ../src/sidebar.js:131 ../src/sources.js:255
 msgid "Sources"
 msgstr "المصادر"
 
@@ -115,22 +120,25 @@ msgstr "الكلّ"
 
 #: ../src/spinnerBox.js:47
 msgid "Loading..."
-msgstr "يجري التحميل"
+msgstr "يُحمّل"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:46
+#: ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "افتح باستخدام %s"
 
-#: ../src/view.js:46
+#: ../src/view.js:69
 msgid "Open"
 msgstr "افتح"
 
-#: ../src/view.js:56
+#: ../src/view.js:79
 msgid "Remove from favorites"
 msgstr "أزل من المفضّلة"
 
-#: ../src/view.js:56
+#: ../src/view.js:79
 msgid "Add to favorites"
 msgstr "أضف للمفضّلة"
+
+#~ msgid "Private"
+#~ msgstr "خاص"
