@@ -1,0 +1,139 @@
+# Tamil translation for gnome-documents.
+# Copyright (C) 2011 gnome-documents's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-documents package.
+#
+# Dr.T.Vasudevan <agnihot3@gmail.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-documents master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
+"cgi?product=gnome-documents&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-09-01 14:06+0000\n"
+"PO-Revision-Date: 2011-09-13 12:10+0530\n"
+"Last-Translator: Dr.T.Vasudevan <agnihot3@gmail.com>\n"
+"Language-Team: Tamil <ta@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.1\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: ../data/gnome-documents.desktop.in.in.h:1
+msgid "Access, manage and share documents"
+msgstr "ஆவணங்களை அணுகு, மேலாளு, பகிர்"
+
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:81
+msgid "Documents"
+msgstr "ஆவணங்கள்"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1
+msgid "Enable list view"
+msgstr "பட்டியல் பார்வையை செயலாக்கு"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
+msgid "List view"
+msgstr "பட்டியல் பார்வை"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
+msgid "The active source filter"
+msgstr "செயலில் உள்ள மூல வடிப்பி"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "The last active source filter"
+msgstr "கடைசியாக செயலில் இருந்த மூல வடிப்பி"
+
+#. Translators: this refers to new and recent documents
+#: ../src/categories.js:77
+msgid "New and Recent"
+msgstr "புதிய மற்றும் அண்மை"
+
+#. Translators: this refers to favorite documents
+#: ../src/categories.js:80
+msgid "Favorites"
+msgstr "விருப்பங்கள்"
+
+#. Translators: this refers to shared documents
+#: ../src/categories.js:83
+msgid "Shared with you"
+msgstr "உங்களுடன் பகிர்ந்த"
+
+#. unimplemented
+#: ../src/categories.js:87
+msgid "Private"
+msgstr "அந்தரங்க"
+
+#: ../src/documents.js:269 ../src/sources.js:116
+msgid "Local"
+msgstr "உள்ளமை"
+
+#: ../src/documents.js:388
+msgid "Google Docs"
+msgstr "கூகுள் டாக்ஸ்"
+
+#: ../src/documents.js:389
+msgid "Google"
+msgstr "கூகுள்"
+
+#: ../src/documents.js:446
+msgid "Spreadsheet"
+msgstr "விரிதாள்"
+
+#: ../src/documents.js:448
+msgid "Presentation"
+msgstr "முன்வைப்பு"
+
+#: ../src/documents.js:450
+msgid "Document"
+msgstr "ஆவணம்"
+
+#. Translators: %s is the title of a document
+#: ../src/error.js:37
+#, c-format
+msgid "Unable to load \"%s\" for preview"
+msgstr " \"%s\"  ஐ முன்பார்வைக்கு ஏற்ற முடியவில்லை"
+
+#: ../src/error.js:44
+msgid "Unable to fetch the list of documents"
+msgstr "ஆவணங்கள் பட்டியலை கொண்டுவர முடியவில்லை"
+
+#: ../src/loadMore.js:69
+#, c-format
+msgid "Load %d more documents"
+msgstr "மேலும் %d ஆவணங்களை ஏற்றுக"
+
+#: ../src/mainToolbar.js:182
+#, c-format
+msgid "(%d of %d)"
+msgstr "(%d  %dஇல் )"
+
+#: ../src/sidebar.js:130 ../src/sources.js:216
+msgid "Sources"
+msgstr "மூலங்கள் "
+
+#: ../src/sources.js:110
+msgid "All"
+msgstr "அனைத்தும் "
+
+#: ../src/spinnerBox.js:47
+msgid "Loading..."
+msgstr "ஏற்றுகிறது..."
+
+#. Translators: this is the Open action in a context menu
+#: ../src/view.js:46
+#, c-format
+msgid "Open with %s"
+msgstr "%s ஆல் திற"
+
+#: ../src/view.js:46
+msgid "Open"
+msgstr "திற"
+
+#: ../src/view.js:56
+msgid "Remove from favorites"
+msgstr "விருப்பங்களிலிருந்து நீக்கு"
+
+#: ../src/view.js:56
+msgid "Add to favorites"
+msgstr "விருப்பங்களில் சேர்"
+
+
