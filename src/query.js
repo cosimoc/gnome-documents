@@ -50,6 +50,7 @@ QueryBuilder.prototype = {
     buildFilterLocal: function() {
         let path;
         let desktopURI;
+        let downloadsURI;
         let documentsURI;
 
         path = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DESKTOP);
@@ -64,9 +65,16 @@ QueryBuilder.prototype = {
         else
             documentsURI = '';
 
+        path = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DOWNLOAD);
+        if (path)
+            downloadsURI = Gio.file_new_for_path(path).get_uri();
+        else
+            downloadsURI = '';
+
         let filter =
             ('((fn:starts-with (nie:url(?urn), "%s")) || ' +
-             '(fn:starts-with (nie:url(?urn), "%s")))').format(desktopURI, documentsURI);
+             ' (fn:starts-with (nie:url(?urn), "%s")) || ' +
+             ' (fn:starts-with (nie:url(?urn), "%s"))    )').format(desktopURI, documentsURI, downloadsURI);
 
         return filter;
     },
