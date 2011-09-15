@@ -101,6 +101,7 @@ SourceManager.prototype = {
                               name: _("Local") });
         this._sources[source.id] = source;
 
+        Global.goaClient.connect('account-added', Lang.bind(this, this._refreshGoaAccounts));
         Global.goaClient.connect('account-changed', Lang.bind(this, this._refreshGoaAccounts));
         Global.goaClient.connect('account-removed', Lang.bind(this, this._refreshGoaAccounts));
         this._refreshGoaAccounts();
