@@ -55,21 +55,10 @@ Source.prototype = {
             this.name = params.name;
         }
 
-        this._initCallback = params.initCallback;
-
         if (this.id == 'all' || this.id == 'local') {
             this.resourceUrn = null;
-            Mainloop.idle_add(Lang.bind(this,
-                function() {
-                    this._initCallback();
-                    return false;
-                }));
         } else {
-            TrackerUtils.resourceUrnFromSourceId(this.id, Lang.bind(this,
-                function(resourceUrn) {
-                    this.resourceUrn = resourceUrn;
-                    this._initCallback();
-                }));
+            this.resourceUrn = 'gd:goa-account:' + this.id;
         }
     },
 
@@ -102,19 +91,14 @@ SourceManager.prototype = {
         this._sources = {};
         this._activeSource = null;
 
-        // two outstanding ops for the local sources
-        this._outstandingOps = 2;
-
         // Translators: this refers to documents
         let source = new Source({ id: 'all',
-                                  name: _("All"),
-                                  initCallback: Lang.bind(this, this._asyncSourceCollector) });
+                                  name: _("All") });
         this._sources[source.id] = source;
 
         // Translators: this refers to local documents
         source = new Source({ id: 'local',
-                              name: _("Local"),
-                              initCallback: Lang.bind(this, this._asyncSourceCollector) });
+                              name: _("Local") });
         this._sources[source.id] = source;
 
         Global.goaClient.connect('account-changed', Lang.bind(this, this._refreshGoaAccounts));
@@ -123,12 +107,8 @@ SourceManager.prototype = {
     },
 
     _refreshGoaAccounts: function() {
-        let haveGoa = false;
-        let foundGoa = false;
-
         for (idx in this._sources) {
             if (this._sources[idx].object) {
-                haveGoa = true;
                 delete this._sources[idx];
             }
         }
@@ -144,40 +124,22 @@ SourceManager.prototype = {
                 if (!object.get_documents())
                     return;
 
-                foundGoa = true;
-
-                this._outstandingOps++;
-                let source = new Source({ object: object,
-                                          initCallback: Lang.bind(this, this._asyncSourceCollector) });
+                let source = new Source({ object: object });
                 this._sources[source.id] = source;
             }));
 
-        if (!foundGoa && haveGoa)
-            this.emit('sources-changed');
-
         let activeSourceId = Global.settings.get_string('active-source');
-        if (this._sources[activeSourceId])
+        if (!this._sources[activeSourceId])
             activeSourceId = 'all';
 
         this.setActiveSourceId(activeSourceId);
-    },
-
-    _asyncSourceCollector: function() {
-        this._outstandingOps--;
-
-        if (this._outstandingOps == 0)
-            this.emit('sources-changed');
+        this.emit('sources-changed');
     },
 
     setActiveSourceId: function(id) {
         let source = this._sources[id];
 
         if (!source)
-            return;
-
-        // wait for the uninitialized source to return and
-        // emit sources-changed instead
-        if (this.object && !this.resourceUrn)
             return;
 
         if (this._activeSource == source)

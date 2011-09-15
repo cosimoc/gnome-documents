@@ -23,46 +23,6 @@ const GLib = imports.gi.GLib;
 
 const Global = imports.global;
 
-function resourceUrnFromSourceId(sourceId, callback) {
-    let sparql = ('SELECT ?urn WHERE { ?urn a nie:DataSource; nao:identifier \"goa:documents:%s\" }').format(sourceId);
-
-    Global.connection.query_async
-        (sparql, null,
-         function(object, res) {
-             let cursor = null;
-             let urn = '';
-
-             try {
-                 cursor = object.query_finish(res);
-             } catch (e) {
-                 log('Unable to resolve account ID -> resource URN: ' + e.toString());
-
-                 callback(urn);
-                 return;
-             }
-
-             cursor.next_async(null,
-                 function(object, res) {
-                     try {
-                         let valid = cursor.next_finish(res);
-
-                         if (valid)
-                             urn = cursor.get_string(0)[0];
-
-                         cursor.close();
-                         callback(urn);
-                     } catch (e) {
-                         log('Unable to resolve account ID -> resource URN: ' + e.toString());
-
-                         cursor.close();
-                         callback(urn);
-
-                         return;
-                     }
-                 });
-         });
-}
-
 function setFavorite(urn, isFavorite, callback) {
     let sparql = ('%s { <%s> nao:hasTag nao:predefined-tag-favorite }').format((isFavorite ? 'INSERT OR REPLACE' : 'DELETE'), urn);
 

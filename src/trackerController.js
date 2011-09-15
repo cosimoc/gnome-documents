@@ -58,6 +58,9 @@ TrackerController.prototype = {
         this._filterController = Global.filterController;
         this._filterController.connect('filter-changed',
                                        Lang.bind(this, this._onFilterChanged));
+
+        // perform initial query
+        this._refresh();
     },
 
     _refreshMinerNow: function() {
