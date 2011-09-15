@@ -104,6 +104,15 @@ QueryBuilder.prototype = {
         return filter;
     },
 
+    _buildFilterType: function() {
+        let filter =
+            '(fn:contains(rdf:type(?urn), \"nfo#PaginatedTextDocument\") ||'
+            + 'fn:contains(rdf:type(?urn), \"nfo#Spreadsheet\") ||'
+            + 'fn:contains(rdf:type(?urn), \"nfo#Presentation\"))';
+
+        return filter;
+    },
+
     _buildFilterString: function() {
         let sparql = 'FILTER (';
 
@@ -112,19 +121,10 @@ QueryBuilder.prototype = {
         sparql += '(' + Global.sourceManager.getActiveSourceFilter() + ')';
         sparql += ' && ';
         sparql += '(' + Global.categoryManager.getActiveCategoryFilter() + ')';
+        sparql += ' && ';
+        sparql += '(' + this._buildFilterType() + ')';
 
         sparql += ')';
-
-        return sparql;
-    },
-
-    _buildTypeFilter: function() {
-        let sparql =
-            '{ ?urn a nfo:PaginatedTextDocument } ' +
-            'UNION ' +
-            '{ ?urn a nfo:Spreadsheet } ' +
-            'UNION ' +
-            '{ ?urn a nfo:Presentation } ';
 
         return sparql;
     },
@@ -139,19 +139,19 @@ QueryBuilder.prototype = {
 
     _buildQueryInternal: function(global) {
         let globalSparql =
-            'WHERE { ' + this._buildOptional() + '}';
+            'WHERE { ?urn a rdfs:Resource ' +
+            this._buildOptional();
 
         if (global) {
-            globalSparql =
-                ('WHERE { ' +
-                 this._buildTypeFilter() +
-                 this._buildOptional() +
-                 Global.categoryManager.getActiveCategoryWhere() +
+            globalSparql +=
+                (Global.categoryManager.getActiveCategoryWhere() +
                  this._buildFilterString() +
                  ' } ' +
                  'ORDER BY DESC (?mtime)' +
                  'LIMIT %d OFFSET %d').format(Global.offsetController.getOffsetStep(),
                                               Global.offsetController.getOffset());
+        } else {
+            globalSparql += this._buildFilterString() + ' }';
         }
 
         let sparql =
@@ -184,7 +184,6 @@ QueryBuilder.prototype = {
     buildCountQuery: function() {
         let sparql =
             'SELECT DISTINCT COUNT(?urn) WHERE { ' +
-            this._buildTypeFilter() +
             this._buildOptional() +
             this._buildFilterString() +
             '}';
