@@ -450,7 +450,6 @@ account_miner_job_cleanup_previous (AccountMinerJob *job,
                                     GError **error)
 {
   GString *delete;
-  GList *values;
 
   delete = g_string_new (NULL);
   g_string_append (delete, "DELETE { ");
@@ -729,7 +728,6 @@ account_miner_job_query_existing (AccountMinerJob *job,
 {
   GString *select;
   TrackerSparqlCursor *cursor;
-  gboolean valid;
 
   select = g_string_new (NULL);
   g_string_append_printf (select,
@@ -845,8 +843,6 @@ static void
 gd_gdata_miner_complete_error (GdGDataMiner *self,
                                GError *error)
 {
-  GList *l;
-
   g_assert (self->priv->result != NULL);
 
   g_simple_async_result_take_error (self->priv->result, error);
@@ -898,6 +894,233 @@ gd_gdata_miner_setup_account (GdGDataMiner *self,
   account_miner_job_process_async (job, miner_job_process_ready_cb, job);
 }
 
+typedef struct {
+  GdGDataMiner *self;
+  GList *doc_objects;
+  GList *acc_objects;
+  GList *old_datasources;
+} CleanupJob;
+
+static gboolean
+cleanup_old_accounts_done (gpointer data)
+{
+  CleanupJob *job = data;
+  GList *l;
+  GoaObject *object;
+  GdGDataMiner *self = job->self;
+
+  /* now setup all the current accounts */
+  for (l = job->doc_objects; l != NULL; l = l->next)
+    {
+      object = l->data;
+      gd_gdata_miner_setup_account (self, object);
+
+      g_object_unref (object);
+    }
+
+  if (job->doc_objects != NULL)
+    {
+      g_list_free (job->doc_objects);
+      job->doc_objects = NULL;
+    }
+
+  if (job->acc_objects != NULL)
+    {
+      g_list_free_full (job->acc_objects, g_object_unref);
+      job->acc_objects = NULL;
+    }
+
+  if (job->old_datasources != NULL)
+    {
+      g_list_free_full (job->old_datasources, g_free);
+      job->old_datasources = NULL;
+    }
+
+  gd_gdata_miner_check_pending_jobs (self);
+
+  g_clear_object (&job->self);
+  g_slice_free (CleanupJob, job);
+
+  return FALSE;
+}
+
+static void
+cleanup_job_do_cleanup (CleanupJob *job)
+{
+  GdGDataMiner *self = job->self;
+  GString *select, *update;
+  gboolean append_union = FALSE;
+  GList *l;
+  TrackerSparqlCursor *cursor;
+  GError *error = NULL;
+  const gchar *resource;
+
+  if (job->old_datasources == NULL)
+    return;
+
+  update = g_string_new (NULL);
+  g_string_append (update, "DELETE { ");
+
+  /* select all documents from the datasources we want to remove */
+  select = g_string_new (NULL);
+  g_string_append (select, "SELECT ?urn WHERE { ");
+
+  for (l = job->old_datasources; l != NULL; l = l->next)
+    {
+      resource = l->data;
+      g_debug ("Cleaning up old datasource %s", resource);
+
+      if (append_union)
+        g_string_append (select, " UNION ");
+      else
+        append_union = TRUE;
+
+      g_string_append_printf (select, "{ ?urn nie:dataSource \"%s\" }", resource);
+
+      /* also append the datasource itself to the list of resources to delete */
+      g_string_append_printf (update, "<%s> a rdfs:Resource . ", resource);
+    }
+
+  g_string_append (select, " }");
+
+  cursor = tracker_sparql_connection_query (self->priv->connection,
+                                            select->str,
+                                            self->priv->cancellable,
+                                            &error);
+
+  g_string_free (select, TRUE);
+
+  if (error != NULL)
+    {
+      g_printerr ("Error while cleaning up old accounts: %s\n", error->message);
+      return;
+    }
+
+  /* gather all the documents we want to remove */
+  while (tracker_sparql_cursor_next (cursor, self->priv->cancellable, NULL))
+    {
+      resource = tracker_sparql_cursor_get_string (cursor, 0, NULL);
+      g_debug ("Cleaning up resource %s belonging to an old datasource", resource);
+
+      if (resource != NULL)
+        g_string_append_printf (update, "<%s> a rdfs:Resource . ", resource);
+    }
+
+  g_string_append (update, " }");
+
+  /* actually remove everything we have to remove */
+  tracker_sparql_connection_update (self->priv->connection,
+                                    update->str,
+                                    G_PRIORITY_DEFAULT,
+                                    self->priv->cancellable,
+                                    &error);
+
+  g_string_free (update, TRUE);
+
+  if (error != NULL)
+    {
+      g_printerr ("Error while cleaning up old accounts: %s\n", error->message);
+      return;
+    }
+}
+
+static gint
+cleanup_datasource_compare (gconstpointer a,
+                            gconstpointer b)
+{
+  GoaObject *object = GOA_OBJECT (a);
+  const gchar *datasource = b;
+  gint res;
+
+  GoaAccount *account;
+  gchar *object_datasource;
+
+  account = goa_object_peek_account (object);
+  g_assert (account != NULL);
+
+  object_datasource = g_strdup_printf ("gd:goa-account:%s", goa_account_get_id (account));
+  res = g_strcmp0 (datasource, object_datasource);
+
+  g_free (object_datasource);
+
+  return res;
+}
+
+static gboolean
+cleanup_job (GIOSchedulerJob *sched_job,
+             GCancellable *cancellable,
+             gpointer user_data)
+{
+  GString *select;
+  GError *error = NULL;
+  TrackerSparqlCursor *cursor;
+  const gchar *datasource;
+  GList *element;
+  CleanupJob *job = user_data;
+  GdGDataMiner *self = job->self;
+
+  /* find all our datasources in the tracker DB */
+  select = g_string_new (NULL);
+  g_string_append_printf (select, "SELECT ?datasource WHERE { ?datasource a nie:DataSource . "
+                          "?datasource nao:identifier \"%s\" }", MINER_IDENTIFIER);
+
+  cursor = tracker_sparql_connection_query (self->priv->connection,
+                                            select->str,
+                                            self->priv->cancellable,
+                                            &error);
+  g_string_free (select, TRUE);
+
+  if (error != NULL)
+    {
+      g_printerr ("Error while cleaning up old accounts: %s\n", error->message);
+      goto out;
+    }
+
+  while (tracker_sparql_cursor_next (cursor, self->priv->cancellable, NULL))
+    {
+      /* If the source we found is not in the current list, add
+       * it to the cleanup list.
+       * Note that the objects here in the list might *not* support
+       * documents, in case the switch has been disabled in System Settings.
+       * In fact, we only remove all the account data in case the account
+       * is really removed from the panel.
+       */
+      datasource = tracker_sparql_cursor_get_string (cursor, 0, NULL);
+      element = g_list_find_custom (job->acc_objects, datasource,
+                                    cleanup_datasource_compare);
+
+      if (element == NULL)
+        job->old_datasources = g_list_prepend (job->old_datasources,
+                                               g_strdup (datasource));
+    }
+
+  g_object_unref (cursor);
+
+  /* cleanup the DB */
+  cleanup_job_do_cleanup (job);
+
+ out:
+  g_io_scheduler_job_send_to_mainloop_async (sched_job,
+                                             cleanup_old_accounts_done, job, NULL);
+  return FALSE;
+}
+
+static void
+gd_gdata_miner_cleanup_old_accounts (GdGDataMiner *self,
+                                     GList *doc_objects,
+                                     GList *acc_objects)
+{
+  CleanupJob *job = g_slice_new0 (CleanupJob);
+
+  job->self = g_object_ref (self);
+  job->doc_objects = doc_objects;
+  job->acc_objects = acc_objects;
+
+  g_io_scheduler_push_job (cleanup_job, job, NULL,
+                           G_PRIORITY_DEFAULT,
+                           self->priv->cancellable);
+}
+
 static void
 client_ready_cb (GObject *source,
                  GAsyncResult *res,
@@ -909,8 +1132,7 @@ client_ready_cb (GObject *source,
   GoaObject *object;
   const gchar *provider_type;
   GError *error = NULL;
-  GList *accounts, *l;
-  gboolean found = FALSE;
+  GList *accounts, *doc_objects, *acc_objects, *l;
 
   self->priv->client = goa_client_new_finish (res, &error);
 
@@ -920,14 +1142,13 @@ client_ready_cb (GObject *source,
       return;
     }
 
+  doc_objects = NULL;
+  acc_objects = NULL;
+
   accounts = goa_client_get_accounts (self->priv->client);
   for (l = accounts; l != NULL; l = l->next)
     {
       object = l->data;
-
-      documents = goa_object_peek_documents (object);
-      if (documents == NULL)
-        continue;
 
       account = goa_object_peek_account (object);
       if (account == NULL)
@@ -937,20 +1158,18 @@ client_ready_cb (GObject *source,
       if (g_strcmp0 (provider_type, "google") != 0)
         continue;
 
-      found = TRUE;
-      gd_gdata_miner_setup_account (self, object);
+      acc_objects = g_list_append (acc_objects, g_object_ref (object));
+
+      documents = goa_object_peek_documents (object);
+      if (documents == NULL)
+        continue;
+
+      doc_objects = g_list_append (doc_objects, g_object_ref (object));
     }
 
   g_list_free_full (accounts, g_object_unref);
 
-  if (!found)
-    {
-      gd_gdata_miner_complete_error (self,
-                                     g_error_new_literal (G_IO_ERROR,
-                                                          G_IO_ERROR_NOT_FOUND,
-                                                          "No GOA resource found supporting documents"));
-      return;
-    }
+  gd_gdata_miner_cleanup_old_accounts (self, doc_objects, acc_objects);
 }
 
 static void
