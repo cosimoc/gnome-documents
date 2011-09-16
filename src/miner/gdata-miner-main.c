@@ -99,7 +99,9 @@ miner_refresh_db_ready_cb (GObject *source,
   GError *error = NULL;
 
   gd_gdata_miner_refresh_db_finish (GD_GDATA_MINER (source), res, &error);
+
   refreshing = FALSE;
+  ensure_autoquit_on ();
 
   if (error != NULL)
     {
@@ -110,8 +112,6 @@ miner_refresh_db_ready_cb (GObject *source,
     {
       g_dbus_method_invocation_return_value (invocation, NULL);
     }
-
-  ensure_autoquit_on ();
 }
 
 static void

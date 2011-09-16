@@ -228,6 +228,7 @@ _tracker_utils_ensure_contact_resource (TrackerSparqlConnection *connection,
   g_variant_iter_next (iter, "{ss}", &key, &val);
 
   g_variant_iter_free (iter);
+  g_variant_unref (insert_res);
 
   if (g_strcmp0 (key, "res") == 0)
     {
@@ -331,6 +332,7 @@ _tracker_sparql_connection_ensure_resource (TrackerSparqlConnection *connection,
   g_variant_iter_next (iter, "{ss}", &key, &val);
 
   g_variant_iter_free (iter);
+  g_variant_unref (insert_res);
 
   if (g_strcmp0 (key, "res") == 0)
     {
