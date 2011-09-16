@@ -6,12 +6,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
-"documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-12 22:16+0000\n"
-"PO-Revision-Date: 2011-09-01 00:58+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-09-16 21:41+0200\n"
+"PO-Revision-Date: 2011-09-16 21:46+0200\n"
 "Last-Translator: Luca Ferretti <lferrett@gnome.org>\n"
 "Language-Team: Italian <gnome-it-list@gnome.org>\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -56,7 +56,7 @@ msgstr "Preferiti"
 msgid "Shared with you"
 msgstr "Condivisi con te"
 
-#: ../src/documents.js:253 ../src/sources.js:116
+#: ../src/documents.js:253 ../src/sources.js:101
 msgid "Local"
 msgstr "Locali"
 
@@ -92,11 +92,10 @@ msgstr "Impossibile recuperre l'elenco dei documenti"
 
 # FIXME!! plural forma
 #: ../src/loadMore.js:70
-#, fuzzy, c-format
-#| msgid "Load %d more documents"
+#, c-format
 msgid "Load %d more documents"
 msgid_plural "Load %d more documents"
-msgstr[0] "Carica altri %d documenti"
+msgstr[0] "Carica %d altro documento"
 msgstr[1] "Carica altri %d documenti"
 
 #: ../src/mainToolbar.js:201
@@ -104,12 +103,12 @@ msgstr[1] "Carica altri %d documenti"
 msgid "(%d of %d)"
 msgstr "(%d di %d)"
 
-#: ../src/sidebar.js:131 ../src/sources.js:255
+#: ../src/sidebar.js:131 ../src/sources.js:218
 msgid "Sources"
 msgstr "Sorgenti"
 
 # FIXME: commento, riferito a?
-#: ../src/sources.js:110
+#: ../src/sources.js:96
 msgid "All"
 msgstr "Tutte"
 
