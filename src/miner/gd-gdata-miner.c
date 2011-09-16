@@ -749,6 +749,8 @@ account_miner_job_query_existing (AccountMinerJob *job,
                            g_strdup (tracker_sparql_cursor_get_string (cursor, 1, NULL)),
                            g_strdup (tracker_sparql_cursor_get_string (cursor, 0, NULL)));
     }
+
+  g_object_unref (cursor);
 }
 
 static void
@@ -1007,6 +1009,7 @@ cleanup_job_do_cleanup (CleanupJob *job)
     }
 
   g_string_append (update, " }");
+  g_object_unref (cursor);
 
   /* actually remove everything we have to remove */
   tracker_sparql_connection_update (self->priv->connection,
