@@ -478,7 +478,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
                                  GError **error)
 {
   GDataEntry *entry = GDATA_ENTRY (doc_entry);
-  gchar *resource;
+  gchar *entry_path, *resource = NULL;
   gchar *date, *resource_url, *datasource_urn;
   const gchar *identifier, *class = NULL;
 
@@ -504,9 +504,10 @@ account_miner_job_process_entry (AccountMinerJob *job,
     }
 
   identifier = gdata_entry_get_id (entry);
-  resource_url = g_strdup_printf 
-    ("google:docs:%s", 
-     gdata_documents_entry_get_path (doc_entry));
+  entry_path = gdata_documents_entry_get_path (doc_entry);
+  resource_url = g_strdup_printf ("google:docs:%s", entry_path);
+
+  g_free (entry_path);
 
   /* remove from the list of the previous resources */
   g_hash_table_remove (job->previous_resources, identifier);
@@ -684,6 +685,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
  out:
   g_clear_object (&access_rules);
   g_free (resource_url);
+  g_free (resource);
 
   if (*error != NULL)
     return FALSE;
