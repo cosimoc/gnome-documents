@@ -1,3 +1,15 @@
+0.1.92 - "Tony's Theme"
+=======================
+
+- Listen to changes in the system GOA accounts configuration
+- Support multiple GOA accounts
+- Style symbolic emblems like in the mockups
+- Remove deleted Google Docs from the DB when mining
+- Update on the fly for changes in the tracker DB
+- Add a compact context menu in preview mode
+- Look for results in ~/Downloads as well (Colin Walters)
+- Require Tracker 0.12.1
+
 0.1.91 - "Mexicola"
 ===================
 
