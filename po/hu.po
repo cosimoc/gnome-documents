@@ -1,0 +1,134 @@
+# Hungarian translation for gnome-documents.
+# Copyright (C) 2011. Free Software Foundation, Inc.
+# This file is distributed under the same license as the gnome-documents package.
+#
+# Gabor Kelemen <kelemeng at gnome dot hu>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-documents master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-09-19 02:59+0200\n"
+"PO-Revision-Date: 2011-09-19 02:58+0200\n"
+"Last-Translator: Gabor Kelemen <kelemeng at gnome dot hu>\n"
+"Language-Team: Magyar <gnome-hu-list at gnome dot org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 1.0\n"
+
+#: ../data/gnome-documents.desktop.in.in.h:1
+msgid "Access, manage and share documents"
+msgstr "Dokumentumok elérése, kezelése és megosztása"
+
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:47
+msgid "Documents"
+msgstr "Dokumentumok"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1
+msgid "Enable list view"
+msgstr "Listanézet engedélyezése"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
+msgid "List view"
+msgstr "Listanézet"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
+msgid "The active source filter"
+msgstr "Az aktív forrásszűrő"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "The last active source filter"
+msgstr "Az utoljára aktív forrásszűrő"
+
+#. Translators: this refers to new and recent documents
+#: ../src/categories.js:77
+msgid "New and Recent"
+msgstr "Új és legutóbbi"
+
+#. Translators: this refers to favorite documents
+#: ../src/categories.js:80
+msgid "Favorites"
+msgstr "Kedvencek"
+
+#. Translators: this refers to shared documents
+#: ../src/categories.js:83
+msgid "Shared with you"
+msgstr "Megosztva Önnel"
+
+#: ../src/documents.js:253 ../src/sources.js:101
+msgid "Local"
+msgstr "Helyi"
+
+#: ../src/documents.js:372
+msgid "Google Docs"
+msgstr "Google Dokumentumok"
+
+#: ../src/documents.js:373
+msgid "Google"
+msgstr "Google"
+
+#: ../src/documents.js:442
+msgid "Spreadsheet"
+msgstr "Táblázat"
+
+#: ../src/documents.js:444
+msgid "Presentation"
+msgstr "Prezentáció"
+
+#: ../src/documents.js:446
+msgid "Document"
+msgstr "Dokumentum"
+
+#. Translators: %s is the title of a document
+#: ../src/error.js:37
+#, c-format
+msgid "Unable to load \"%s\" for preview"
+msgstr "A(z) „%s” nem tölthető be az előnézetből"
+
+#: ../src/error.js:44
+msgid "Unable to fetch the list of documents"
+msgstr "Nem kérhető le a dokumentumok listája"
+
+#: ../src/loadMore.js:70
+#, c-format
+msgid "Load %d more documents"
+msgid_plural "Load %d more documents"
+msgstr[0] "Még %d dokumentum betöltése"
+msgstr[1] "Még %d dokumentum betöltése"
+
+#: ../src/mainToolbar.js:201
+#, c-format
+msgid "(%d of %d)"
+msgstr "(%d / %d)"
+
+#: ../src/sidebar.js:131 ../src/sources.js:218
+msgid "Sources"
+msgstr "Források"
+
+#: ../src/sources.js:96
+msgid "All"
+msgstr "Összes"
+
+#: ../src/spinnerBox.js:47
+msgid "Loading..."
+msgstr "Betöltés…"
+
+#. Translators: this is the Open action in a context menu
+#: ../src/view.js:67
+#, c-format
+msgid "Open with %s"
+msgstr "Megnyitás ezzel: %s"
+
+#: ../src/view.js:69
+msgid "Open"
+msgstr "Megnyitás"
+
+#: ../src/view.js:79
+msgid "Remove from favorites"
+msgstr "Eltávolítás a Kedvencek közül"
+
+#: ../src/view.js:79
+msgid "Add to favorites"
+msgstr "Hozzáadás a Kedvencekhez"
