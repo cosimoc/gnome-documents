@@ -1,0 +1,134 @@
+# Slovak translation for gnome-documents.
+# Copyright (C) 2011 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gnome-documents package.
+# Stanislav Petrek <stanislav.petrek@gmail.com>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-documents\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"documents&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-09-15 20:27+0000\n"
+"PO-Revision-Date: 2011-09-21 21:34+0200\n"
+"Last-Translator: Stanislav Petrek <stanislav.petrek@gmail.com>\n"
+"Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 1 : (n>=2 && n<=4) ? 2 : 0;\n"
+
+#: ../data/gnome-documents.desktop.in.in.h:1
+msgid "Access, manage and share documents"
+msgstr "Prístup, správa a zdieľanie dokumentov"
+
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:47
+msgid "Documents"
+msgstr "Dokumenty"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1
+msgid "Enable list view"
+msgstr ""
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
+msgid "List view"
+msgstr ""
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
+msgid "The active source filter"
+msgstr "Aktívny filter pre zdroj"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "The last active source filter"
+msgstr "Posledný aktívny filter pre zdroj"
+
+#. Translators: this refers to new and recent documents
+#: ../src/categories.js:77
+msgid "New and Recent"
+msgstr "Nové a nedávne"
+
+#. Translators: this refers to favorite documents
+#: ../src/categories.js:80
+msgid "Favorites"
+msgstr "Obľúbené"
+
+#. Translators: this refers to shared documents
+#: ../src/categories.js:83
+msgid "Shared with you"
+msgstr "Zdieľané s vami"
+
+#: ../src/documents.js:253 ../src/sources.js:101
+msgid "Local"
+msgstr "Lokálne"
+
+#: ../src/documents.js:372
+msgid "Google Docs"
+msgstr "Google dokumenty"
+
+#: ../src/documents.js:373
+msgid "Google"
+msgstr "Google"
+
+#: ../src/documents.js:442
+msgid "Spreadsheet"
+msgstr "Tabuľka"
+
+#: ../src/documents.js:444
+msgid "Presentation"
+msgstr "Prezentácia"
+
+#: ../src/documents.js:446
+msgid "Document"
+msgstr "Dokument"
+
+#. Translators: %s is the title of a document
+#: ../src/error.js:37
+#, c-format
+msgid "Unable to load \"%s\" for preview"
+msgstr "Nepodarilo sa načítať \"%s\" pre náhľad"
+
+#: ../src/error.js:44
+msgid "Unable to fetch the list of documents"
+msgstr "Nepodarilo sa vybrať zoznam dokumentov"
+
+#: ../src/loadMore.js:70
+#, c-format
+msgid "Load %d more documents"
+msgid_plural "Load %d more documents"
+msgstr[0] "Načítať ďalších %d dokumentov"
+msgstr[1] "Načítať ďalší %d dokument"
+msgstr[2] "Načítať ďalšie %d dokumenty"
+
+#: ../src/mainToolbar.js:201
+#, c-format
+msgid "(%d of %d)"
+msgstr "(%d z %d)"
+
+#: ../src/sidebar.js:131 ../src/sources.js:218
+msgid "Sources"
+msgstr "Zdroje"
+
+#: ../src/sources.js:96
+msgid "All"
+msgstr "Všetky"
+
+#: ../src/spinnerBox.js:47
+msgid "Loading..."
+msgstr "Načítava sa..."
+
+#. Translators: this is the Open action in a context menu
+#: ../src/view.js:67
+#, c-format
+msgid "Open with %s"
+msgstr "Otvoriť pomocou %s"
+
+#: ../src/view.js:69
+msgid "Open"
+msgstr "Otvoriť"
+
+#: ../src/view.js:79
+msgid "Remove from favorites"
+msgstr "Odstrániť z obľúbených"
+
+#: ../src/view.js:79
+msgid "Add to favorites"
+msgstr "Pridať k obľúbeným"
