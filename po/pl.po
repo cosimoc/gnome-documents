@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-08 21:45+0200\n"
-"PO-Revision-Date: 2011-09-08 21:46+0200\n"
+"POT-Creation-Date: 2011-09-21 23:02+0200\n"
+"PO-Revision-Date: 2011-09-21 23:03+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -60,27 +60,27 @@ msgstr "Ulubione"
 msgid "Shared with you"
 msgstr "Współdzielone"
 
-#: ../src/documents.js:269 ../src/sources.js:116
+#: ../src/documents.js:253 ../src/sources.js:101
 msgid "Local"
 msgstr "Lokalne"
 
-#: ../src/documents.js:388
+#: ../src/documents.js:372
 msgid "Google Docs"
-msgstr "Google Docs"
+msgstr "Dokumenty Google"
 
-#: ../src/documents.js:389
+#: ../src/documents.js:373
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:458
+#: ../src/documents.js:442
 msgid "Spreadsheet"
 msgstr "Arkusz kalkulacyjny"
 
-#: ../src/documents.js:460
+#: ../src/documents.js:444
 msgid "Presentation"
 msgstr "Prezentacja"
 
-#: ../src/documents.js:462
+#: ../src/documents.js:446
 msgid "Document"
 msgstr "Dokument"
 
@@ -100,18 +100,18 @@ msgid "Load %d more documents"
 msgid_plural "Load %d more documents"
 msgstr[0] "Wczytaj %d dokument więcej"
 msgstr[1] "Wczytaj %d dokumenty więcej"
-msgstr[2] "Wczytaj %d więcej dokumentów"
+msgstr[2] "Wczytaj %d dokumentów więcej"
 
 #: ../src/mainToolbar.js:201
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d z %d)"
 
-#: ../src/sidebar.js:131 ../src/sources.js:255
+#: ../src/sidebar.js:131 ../src/sources.js:218
 msgid "Sources"
 msgstr "Źródła"
 
-#: ../src/sources.js:110
+#: ../src/sources.js:96
 msgid "All"
 msgstr "Wszystko"
 
@@ -120,19 +120,19 @@ msgid "Loading..."
 msgstr "Wczytywanie..."
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:47
+#: ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "Otwórz za pomocą %s"
 
-#: ../src/view.js:47
+#: ../src/view.js:69
 msgid "Open"
 msgstr "Otwórz"
 
-#: ../src/view.js:59
+#: ../src/view.js:79
 msgid "Remove from favorites"
 msgstr "Usuń z ulubionych"
 
-#: ../src/view.js:59
+#: ../src/view.js:79
 msgid "Add to favorites"
 msgstr "Dodaj do ulubionych"
