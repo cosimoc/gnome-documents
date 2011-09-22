@@ -1,0 +1,136 @@
+# Assamese translation for gnome-documents.
+# Copyright (C) 2011 gnome-documents's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-documents package.
+#
+# ngoswami <ngoswami@redhat.com>, 2011.
+# Nilamdyuti Goswami <ngoswami@redhat.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-documents master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"documents&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-09-15 20:27+0000\n"
+"PO-Revision-Date: 2011-09-14 12:39+0530\n"
+"Last-Translator: Nilamdyuti Goswami <ngoswami@redhat.com>\n"
+"Language-Team: as_IN <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 1.0\n"
+
+#: ../data/gnome-documents.desktop.in.in.h:1
+msgid "Access, manage and share documents"
+msgstr "দস্তাবেজসমূহ অভিগম, ব্যৱস্থাপনা আৰু অংশীদাৰী কৰক"
+
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:47
+msgid "Documents"
+msgstr "দস্তাবেজসমূহ"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1
+msgid "Enable list view"
+msgstr "তালিকা দৰ্শন সামৰ্থবান কৰক"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
+msgid "List view"
+msgstr "তালিকা দৰ্শন"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
+msgid "The active source filter"
+msgstr "সক্ৰিয় উৎস পৰিস্ৰাৱক"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "The last active source filter"
+msgstr "সৰ্বশেষ সক্ৰিয় উৎস পৰিস্ৰাৱক"
+
+#. Translators: this refers to new and recent documents
+#: ../src/categories.js:77
+msgid "New and Recent"
+msgstr "নতুন আৰু শেহতীয়া"
+
+#. Translators: this refers to favorite documents
+#: ../src/categories.js:80
+msgid "Favorites"
+msgstr "পছন্দৰ"
+
+#. Translators: this refers to shared documents
+#: ../src/categories.js:83
+msgid "Shared with you"
+msgstr "আপোনাৰ সৈতে অংশীদাৰী কৰা হৈছে"
+
+#: ../src/documents.js:253 ../src/sources.js:101
+msgid "Local"
+msgstr "স্থানীয়"
+
+#: ../src/documents.js:372
+msgid "Google Docs"
+msgstr "Google দস্তাবেজসমূহ"
+
+#: ../src/documents.js:373
+msgid "Google"
+msgstr "Google"
+
+#: ../src/documents.js:442
+msgid "Spreadsheet"
+msgstr "স্প্ৰেডশ্বিট"
+
+#: ../src/documents.js:444
+msgid "Presentation"
+msgstr "পৰিৱেশন"
+
+#: ../src/documents.js:446
+msgid "Document"
+msgstr "দস্তাবেজ"
+
+#. Translators: %s is the title of a document
+#: ../src/error.js:37
+#, c-format
+msgid "Unable to load \"%s\" for preview"
+msgstr " \"%s\" -ক পূৰ্বদৰ্শনৰ বাবে ল'ড কৰিবলে অক্ষম"
+
+#: ../src/error.js:44
+msgid "Unable to fetch the list of documents"
+msgstr "দস্তাবেজসমূহৰ তালিকা প্ৰাপ্ত কৰিবলে অক্ষম"
+
+#: ../src/loadMore.js:70
+#, c-format
+msgid "Load %d more documents"
+msgid_plural "Load %d more documents"
+msgstr[0] "%d অধিক দস্তাবেজসমূহ ল'ড কৰক"
+msgstr[1] "%d অধিক দস্তাবেজসমূহ ল'ড কৰক"
+
+#: ../src/mainToolbar.js:201
+#, c-format
+msgid "(%d of %d)"
+msgstr "(%d  -ৰ  %d)"
+
+#: ../src/sidebar.js:131 ../src/sources.js:218
+msgid "Sources"
+msgstr "উৎসসমূহ"
+
+#: ../src/sources.js:96
+msgid "All"
+msgstr "সকলো"
+
+#: ../src/spinnerBox.js:47
+msgid "Loading..."
+msgstr "লোড কৰা হৈ আছে…"
+
+#. Translators: this is the Open action in a context menu
+#: ../src/view.js:67
+#, c-format
+msgid "Open with %s"
+msgstr "%s -ৰ সৈতে খোলক"
+
+#: ../src/view.js:69
+msgid "Open"
+msgstr "খোলক"
+
+#: ../src/view.js:79
+msgid "Remove from favorites"
+msgstr "পছন্দৰ পৰা আতৰাওক"
+
+#: ../src/view.js:79
+msgid "Add to favorites"
+msgstr "পছন্দলে যোগ কৰক"
+
