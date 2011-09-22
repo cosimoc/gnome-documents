@@ -5,16 +5,17 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-documents 0.1\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-30 19:49+0200\n"
-"PO-Revision-Date: 2011-08-30 19:57+0100\n"
+"Project-Id-Version: gnome-documents master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"documents&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-09-19 15:23+0000\n"
+"PO-Revision-Date: 2011-09-22 08:58+0100\n"
 "Last-Translator: Mario Blättermann <mariobl@freenet.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Poedit-Language: German\n"
 "X-Poedit-Country: GERMANY\n"
@@ -23,7 +24,7 @@ msgstr ""
 msgid "Access, manage and share documents"
 msgstr "Auf Dokumente zugreifen, verwalten und freigeben"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:64
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:47
 msgid "Documents"
 msgstr "Dokumente"
 
@@ -43,75 +44,97 @@ msgstr "Der aktive Quellenfilter"
 msgid "The last active source filter"
 msgstr "Der letzte aktive Quellenfilter"
 
-#: ../src/categories.js:68
+#. Translators: this refers to new and recent documents
+#: ../src/categories.js:77
 msgid "New and Recent"
 msgstr "Neu und kürzlich geöffnet"
 
-#: ../src/categories.js:70
+#. Translators: this refers to favorite documents
+#: ../src/categories.js:80
 msgid "Favorites"
 msgstr "Favoriten"
 
-#: ../src/categories.js:71
+#. Translators: this refers to shared documents
+#: ../src/categories.js:83
 msgid "Shared with you"
 msgstr "Für Sie freigegeben"
 
-#. unimplemented
-#: ../src/categories.js:74
-msgid "Private"
-msgstr "Privat"
+#: ../src/documents.js:253 ../src/sources.js:101
+msgid "Local"
+msgstr "Lokal"
 
-#: ../src/documents.js:335
+#: ../src/documents.js:372
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/error.js:36
+#: ../src/documents.js:373
+msgid "Google"
+msgstr "Google"
+
+#: ../src/documents.js:442
+msgid "Spreadsheet"
+msgstr "Tabellendokument"
+
+#: ../src/documents.js:444
+msgid "Presentation"
+msgstr "Präsentation"
+
+#: ../src/documents.js:446
+msgid "Document"
+msgstr "Dokument"
+
+#. Translators: %s is the title of a document
+#: ../src/error.js:37
 #, c-format
 msgid "Unable to load \"%s\" for preview"
 msgstr "»%s« kann nicht für Vorschau geladen werden"
 
-#: ../src/error.js:43
+#: ../src/error.js:44
 msgid "Unable to fetch the list of documents"
 msgstr "Liste der Dokumente kann nicht abgerufen werden"
 
-#: ../src/loadMore.js:69
+# Fehler im Original, siehe https://bugzilla.gnome.org/show_bug.cgi?id=659639
+#: ../src/loadMore.js:70
 #, c-format
 msgid "Load %d more documents"
-msgstr "%d weitere Dokumente laden"
+msgid_plural "Load %d more documents"
+msgstr[0] "%d weiteres Dokument laden"
+msgstr[1] "%d weitere Dokumente laden"
 
-#: ../src/mainToolbar.js:164
+#: ../src/mainToolbar.js:201
 #, c-format
-msgid "page %d of %d"
-msgstr "Seite %d von %d"
+msgid "(%d of %d)"
+msgstr "(%d von %d)"
 
-#: ../src/sidebar.js:130 ../src/sources.js:210
+#: ../src/sidebar.js:131 ../src/sources.js:218
 msgid "Sources"
 msgstr "Quellen"
 
-#: ../src/sources.js:108
+#: ../src/sources.js:96
 msgid "All"
 msgstr "Alle"
-
-#: ../src/sources.js:111
-msgid "Local"
-msgstr "Lokal"
 
 #: ../src/spinnerBox.js:47
 msgid "Loading..."
 msgstr "Ladevorgang …"
 
-#: ../src/view.js:45
+#. Translators: this is the Open action in a context menu
+#: ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "Öffnen mit »%s«"
 
-#: ../src/view.js:45
+#: ../src/view.js:69
 msgid "Open"
 msgstr "Öffnen"
 
-#: ../src/view.js:55
+#: ../src/view.js:79
 msgid "Remove from favorites"
 msgstr "Aus Favoriten entfernen"
 
-#: ../src/view.js:55
+#: ../src/view.js:79
 msgid "Add to favorites"
 msgstr "Zu Favoriten hinzufügen"
+
+#~ msgid "Private"
+#~ msgstr "Privat"
