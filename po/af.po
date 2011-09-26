@@ -1,0 +1,120 @@
+# Afrikaans translation for gnome-documents.
+# Copyright (C) 2011 gnome-documents's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-documents package.
+# F Wolff <friedel@translate.org.za>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-documents master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"documents&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-09-26 06:07+0000\n"
+"PO-Revision-Date: 2011-09-26 09:59+0200\n"
+"Last-Translator: F Wolff <friedel@translate.org.za>\n"
+"Language-Team: translate-discuss-af@lists.sourceforge.net\n"
+"Language: af\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.7.1-rc1\n"
+"X-DamnedLies-Scope: partial\n"
+"X-Project-Style: gnome\n"
+
+#: ../data/gnome-documents.desktop.in.in.h:1
+msgid "Access, manage and share documents"
+msgstr "Bekyk, bestuur en deel dokumente"
+
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:47
+msgid "Documents"
+msgstr "Dokumente"
+
+#. Translators: this refers to new and recent documents
+#: ../src/categories.js:77
+msgid "New and Recent"
+msgstr "Nuut en onlangs"
+
+#. Translators: this refers to favorite documents
+#: ../src/categories.js:80
+msgid "Favorites"
+msgstr "Gunstelinge"
+
+#. Translators: this refers to shared documents
+#: ../src/categories.js:83
+msgid "Shared with you"
+msgstr "Met u gedeel"
+
+#: ../src/documents.js:253 ../src/sources.js:101
+msgid "Local"
+msgstr "Plaaslik"
+
+#: ../src/documents.js:372
+msgid "Google Docs"
+msgstr "Google Docs"
+
+#: ../src/documents.js:373
+msgid "Google"
+msgstr "Google"
+
+#: ../src/documents.js:442
+msgid "Spreadsheet"
+msgstr "Sigblad"
+
+#: ../src/documents.js:444
+msgid "Presentation"
+msgstr "Voorlegging"
+
+#: ../src/documents.js:446
+msgid "Document"
+msgstr "Dokument"
+
+#. Translators: %s is the title of a document
+#: ../src/error.js:37
+#, c-format
+msgid "Unable to load \"%s\" for preview"
+msgstr "Kon nie \"%s\" laai vir voorskou nie"
+
+#: ../src/error.js:44
+msgid "Unable to fetch the list of documents"
+msgstr "Kan nie die lys van dokumente afhaal nie"
+
+#: ../src/loadMore.js:70
+#, c-format
+msgid "Load %d more documents"
+msgid_plural "Load %d more documents"
+msgstr[0] "Laai nog 'n dokument"
+msgstr[1] "Laai nog %d dokumente"
+
+#: ../src/mainToolbar.js:201
+#, c-format
+msgid "(%d of %d)"
+msgstr "(%d van %d)"
+
+#: ../src/sidebar.js:131 ../src/sources.js:218
+msgid "Sources"
+msgstr "Bronne"
+
+#: ../src/sources.js:96
+msgid "All"
+msgstr ""
+
+#: ../src/spinnerBox.js:47
+msgid "Loading..."
+msgstr "Laai tans..."
+
+#. Translators: this is the Open action in a context menu
+#: ../src/view.js:67
+#, c-format
+msgid "Open with %s"
+msgstr "Open met %s"
+
+#: ../src/view.js:69
+msgid "Open"
+msgstr ""
+
+#: ../src/view.js:79
+msgid "Remove from favorites"
+msgstr "Verwyder uit gunstelinge"
+
+#: ../src/view.js:79
+msgid "Add to favorites"
+msgstr "Voeg by gunstelinge"
