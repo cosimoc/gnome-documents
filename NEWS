@@ -1,3 +1,11 @@
+0.2.0 - "Dropping Out"
+======================
+
+- First stable release
+- Limit a printf scope to avoid conflicts with URI-escaped strings
+  in some locales (Alban Browaeys)
+- Huge list of translation updates
+
 0.1.92 - "Tony's Theme"
 =======================
 
