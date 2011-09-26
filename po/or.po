@@ -1,0 +1,136 @@
+# Oriya translation for gnome-documents.
+# Copyright (C) 2011 gnome-documents's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-documents package.
+#
+# Manoj Kumar Giri <mgiri@redhat.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-documents master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
+"cgi?product=gnome-documents&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-09-25 19:14+0000\n"
+"PO-Revision-Date: 2011-09-26 11:36+0530\n"
+"Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
+"Language-Team: Oriya <or@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: or\n"
+"X-Generator: Lokalize 1.2\n"
+
+#: ../data/gnome-documents.desktop.in.in.h:1
+msgid "Access, manage and share documents"
+msgstr "ଦଲିଲଗୁଡ଼ିକୁ ଅଭିଗମ୍ୟ କରନ୍ତୁ, ପରିଚାଳନା କରନ୍ତୁ ଏବଂ ସହଭାଗ କରନ୍ତୁ"
+
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:47
+msgid "Documents"
+msgstr "ଦଲିଲଗୁଡିକ"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1
+msgid "Enable list view"
+msgstr "ତାଲିକା ପ୍ରଦର୍ଶନୀକୁ ସକ୍ରିୟ କରନ୍ତୁ"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
+msgid "List view"
+msgstr "ତାଲିକା ପ୍ରଦର୍ଶନୀ"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
+msgid "The active source filter"
+msgstr "ସକ୍ରିୟ ଉତ୍ସ ଛାଣକ"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "The last active source filter"
+msgstr "ଅନ୍ତିମ ସକ୍ରିୟ ଉତ୍ସ ଛାଣକ"
+
+#. Translators: this refers to new and recent documents
+#: ../src/categories.js:77
+msgid "New and Recent"
+msgstr "ନୂତନ ଏବଂ ସାମ୍ପ୍ରତିକ"
+
+#. Translators: this refers to favorite documents
+#: ../src/categories.js:80
+msgid "Favorites"
+msgstr "ମନପସନ୍ଦଗୁଡ଼ିକ"
+
+#. Translators: this refers to shared documents
+#: ../src/categories.js:83
+msgid "Shared with you"
+msgstr "ଆପଣଙ୍କ ସହିତ ସହଭାଗ କରନ୍ତୁ"
+
+#: ../src/documents.js:253 ../src/sources.js:101
+msgid "Local"
+msgstr "ସ୍ଥାନୀୟ"
+
+#: ../src/documents.js:372
+msgid "Google Docs"
+msgstr "Google ଦଲିଲଗୁଡ଼ିକ"
+
+#: ../src/documents.js:373
+msgid "Google"
+msgstr "Google"
+
+#: ../src/documents.js:442
+msgid "Spreadsheet"
+msgstr "ସ୍ପ୍ରେଡଶୀଟ"
+
+#: ../src/documents.js:444
+msgid "Presentation"
+msgstr "ଉପସ୍ଥାପନା"
+
+#: ../src/documents.js:446
+msgid "Document"
+msgstr "ଦଲିଲ"
+
+#. Translators: %s is the title of a document
+#: ../src/error.js:37
+#, c-format
+msgid "Unable to load \"%s\" for preview"
+msgstr "ପ୍ରାକଦର୍ଶନ ପଇଁ \"%s\" କୁ ଧାରଣ କରିବାରେ ଅସମର୍ଥ"
+
+#: ../src/error.js:44
+msgid "Unable to fetch the list of documents"
+msgstr "ଦଲିଲଗୁଡ଼ିକର ତାଲିକାକୁ ଆଣିବାରେ ଅସମର୍ଥ"
+
+#: ../src/loadMore.js:70
+#, c-format
+msgid "Load %d more documents"
+msgid_plural "Load %d more documents"
+msgstr[0] "%d ଟି ଅଧିକ ଦଲିଲ ଧାରଣ କରନ୍ତୁ"
+msgstr[1] "%d ଟି ଅଧିକ ଦଲିଲଗୁଡ଼ିକୁ ଧାରଣ କରନ୍ତୁ"
+
+#: ../src/mainToolbar.js:201
+#, c-format
+msgid "(%d of %d)"
+msgstr "(%d ର %d)"
+
+#: ../src/sidebar.js:131 ../src/sources.js:218
+msgid "Sources"
+msgstr "ଉତ୍ସ"
+
+#: ../src/sources.js:96
+msgid "All"
+msgstr "ସମସ୍ତ"
+
+#: ../src/spinnerBox.js:47
+msgid "Loading..."
+msgstr "ଧାରଣ କରୁଅଛି..."
+
+#. Translators: this is the Open action in a context menu
+#: ../src/view.js:67
+#, c-format
+msgid "Open with %s"
+msgstr "%s ସହିତ ଖୋଲନ୍ତୁ"
+
+#: ../src/view.js:69
+msgid "Open"
+msgstr "ଖୋଲନ୍ତୁ"
+
+#: ../src/view.js:79
+msgid "Remove from favorites"
+msgstr "ମନପସନ୍ଦଗୁଡ଼ିକ ମଧ୍ଯରୁ କାଢ଼ନ୍ତୁ"
+
+#: ../src/view.js:79
+msgid "Add to favorites"
+msgstr "ମନପସନ୍ଦଗୁଡ଼ିକ ମଧ୍ଯରେ ଯୋଗକରନ୍ତୁ"
+
