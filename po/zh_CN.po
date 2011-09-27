@@ -97,7 +97,6 @@ msgstr "无法获取文档清单"
 msgid "Load %d more documents"
 msgid_plural "Load %d more documents"
 msgstr[0] "更多加载 %d 份文档"
-msgstr[1] "加载 %d 更多文档"
 
 #: ../src/mainToolbar.js:201
 #, c-format
