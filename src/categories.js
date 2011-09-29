@@ -91,11 +91,15 @@ CategoryManager.prototype = {
     },
 
     setActiveCategoryId: function(id) {
-        if (!this._categories[id])
+        let category = this._categories[id];
+
+        if (!category)
             return;
 
-        this.activeCategory = this._categories[id];
-        this.emit('active-category-changed');
+        if (category != this.activeCategory) {
+            this.activeCategory = category;
+            this.emit('active-category-changed');
+        }
     },
 
     getActiveCategoryId: function() {
