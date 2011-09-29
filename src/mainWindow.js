@@ -33,8 +33,7 @@ const WindowMode = imports.windowMode;
 
 const _ = imports.gettext.gettext;
 
-const _WINDOW_DEFAULT_WIDTH = 768;
-const _WINDOW_DEFAULT_HEIGHT = 600;
+const _CONFIGURE_ID_TIMEOUT = 100; // msecs
 
 function MainWindow() {
     this._init();
@@ -42,18 +41,44 @@ function MainWindow() {
 
 MainWindow.prototype = {
     _init: function() {
+        this._configureId = 0;
+
         this.window = new Gtk.Window({ type: Gtk.WindowType.TOPLEVEL,
                                        window_position: Gtk.WindowPosition.CENTER,
                                        title: _("Documents") });
 
         Global.modeController.setWindowMode(WindowMode.WindowMode.OVERVIEW);
 
-        this.window.set_size_request(_WINDOW_DEFAULT_WIDTH, _WINDOW_DEFAULT_HEIGHT);
-        this.window.maximize();
+        // apply the last saved window size and position
+        let size = Global.settings.get_value('window-size');
+        if (size.n_children() == 2) {
+            let width = size.get_child_value(0);
+            let height = size.get_child_value(1);
+
+            this.window.set_size_request(width.get_int32(),
+                                         height.get_int32());
+        }
+
+        let position = Global.settings.get_value('window-position');
+        if (position.n_children() == 2) {
+            let x = position.get_child_value(0);
+            let y = position.get_child_value(1);
+
+            this.window.move(x.get_int32(),
+                             y.get_int32());
+        }
+
+        if (Global.settings.get_boolean('window-maximized'))
+            this.window.maximize();
+
         this.window.connect('delete-event',
-                            Lang.bind(this, this._onDeleteEvent));
+                            Lang.bind(this, this._quit));
         this.window.connect('key-press-event',
                             Lang.bind(this, this._onKeyPressEvent));
+        this.window.connect('configure-event',
+                            Lang.bind(this, this._onConfigureEvent));
+        this.window.connect('window-state-event',
+                            Lang.bind(this, this._onWindowStateEvent));
 
         Global.modeController.connect('fullscreen-changed',
                                       Lang.bind(this, this._onFullscreenChanged));
@@ -70,6 +95,50 @@ MainWindow.prototype = {
         this._grid.show_all();
     },
 
+    _saveWindowGeometry: function() {
+        // GLib.Variant.new() can handle arrays just fine
+        let size = this.window.get_size();
+        let variant = GLib.Variant.new ('ai', size);
+        Global.settings.set_value('window-size', variant);
+
+        let position = this.window.get_position();
+        variant = GLib.Variant.new ('ai', position);
+        Global.settings.set_value('window-position', variant);
+    },
+
+    _onConfigureEvent: function(widget, event) {
+        if (Global.modeController.getFullscreen())
+            return;
+
+        let window = widget.get_window();
+        let state = window.get_state();
+
+        if (state & Gdk.WindowState.MAXIMIZED)
+            return;
+
+        if (this._configureId != 0) {
+            Mainloop.source_remove(this._configureId);
+            this._configureId = 0;
+        }
+
+        this._configureId = Mainloop.timeout_add(_CONFIGURE_ID_TIMEOUT, Lang.bind(this,
+            function() {
+                this._saveWindowGeometry();
+                return false;
+            }));
+    },
+
+    _onWindowStateEvent: function(widget, event) {
+        let window = widget.get_window();
+        let state = window.get_state();
+
+        if (state & Gdk.WindowState.FULLSCREEN)
+            return;
+
+        let maximized = (state & Gdk.WindowState.MAXIMIZED);
+        Global.settings.set_boolean('window-maximized', maximized);
+    },
+
     _onFullscreenChanged: function(controller, fullscreen) {
         if (fullscreen)
             this.window.fullscreen();
@@ -83,7 +152,7 @@ MainWindow.prototype = {
 
         if ((keyval == Gdk.KEY_q) &&
             ((state & Gdk.ModifierType.CONTROL_MASK) != 0)) {
-            Global.application.quit();
+            this._quit();
             return true;
         }
 
@@ -127,7 +196,16 @@ MainWindow.prototype = {
         return false;
     },
 
-    _onDeleteEvent: function() {
+    _quit: function() {
+        // remove configure event handler if still there
+        if (this._configureId != 0) {
+            Mainloop.source_remove(this._configureId);
+            this._configureId = 0;
+        }
+
+        // always save geometry before quitting
+        this._saveWindowGeometry();
+
         Global.application.quit();
     }
 };
