@@ -67,7 +67,7 @@ LoadMoreButton.prototype = {
         if (remainingDocs > offsetStep)
             remainingDocs = offsetStep;
 
-        this.widget.label = Gettext.ngettext("Load %d more documents",
+        this.widget.label = Gettext.ngettext("Load %d more document",
                                              "Load %d more documents",
                                              remainingDocs).format(remainingDocs);
         this.widget.show();
