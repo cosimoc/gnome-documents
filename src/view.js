@@ -66,6 +66,7 @@ ContextMenu.prototype = {
             // Translators: this is the Open action in a context menu
             openLabel = _("Open with %s").format(apps[0]);
         } else {
+            // Translators: this is the Open action in a context menu
             openLabel = _("Open");
         }
 
