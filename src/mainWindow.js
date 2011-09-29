@@ -55,7 +55,7 @@ MainWindow.prototype = {
             let width = size.get_child_value(0);
             let height = size.get_child_value(1);
 
-            this.window.set_size_request(width.get_int32(),
+            this.window.set_default_size(width.get_int32(),
                                          height.get_int32());
         }
 
