@@ -443,7 +443,7 @@ unoconv_child_watch_cb (GPid pid,
 static void
 pdf_load_job_openoffice_refresh_cache (PdfLoadJob *job)
 {
-  gchar *doc_path, *cmd;
+  gchar *doc_path, *cmd, *quoted_path;
   GFile *file;
   gint argc;
   GPid pid;
@@ -453,16 +453,19 @@ pdf_load_job_openoffice_refresh_cache (PdfLoadJob *job)
   /* build the temporary PDF file path */
   file = g_file_new_for_uri (job->uri);
   doc_path = g_file_get_path (file);
+  quoted_path = g_shell_quote (doc_path);
+
   g_object_unref (file);
+  g_free (doc_path);
 
   /* call into the unoconv executable to convert the OpenOffice document
    * to the temporary PDF.
    */
-  cmd = g_strdup_printf ("unoconv -f pdf -o %s %s", job->pdf_path, doc_path);
+  cmd = g_strdup_printf ("unoconv -f pdf -o %s %s", job->pdf_path, quoted_path);
   g_shell_parse_argv (cmd, &argc, &argv, &error);
 
   g_free (cmd);
-  g_free (doc_path);
+  g_free (quoted_path);
 
   if (error != NULL) {
     pdf_load_job_complete_error (job, error);
