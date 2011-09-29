@@ -43,6 +43,9 @@ SelectionController.prototype = {
     },
 
     freezeSelection: function(freeze) {
+        if (freeze == this._isFreezed)
+            return;
+
         this._isFreezed = freeze;
 
         if (!this._isFreezed)
