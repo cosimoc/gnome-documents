@@ -96,6 +96,12 @@ MainWindow.prototype = {
     },
 
     _saveWindowGeometry: function() {
+        let window = this.window.get_window();
+        let state = window.get_state();
+
+        if (state & Gdk.WindowState.MAXIMIZED)
+            return;
+
         // GLib.Variant.new() can handle arrays just fine
         let size = this.window.get_size();
         let variant = GLib.Variant.new ('ai', size);
@@ -108,12 +114,6 @@ MainWindow.prototype = {
 
     _onConfigureEvent: function(widget, event) {
         if (Global.modeController.getFullscreen())
-            return;
-
-        let window = widget.get_window();
-        let state = window.get_state();
-
-        if (state & Gdk.WindowState.MAXIMIZED)
             return;
 
         if (this._configureId != 0) {
