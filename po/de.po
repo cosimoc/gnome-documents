@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-19 15:23+0000\n"
-"PO-Revision-Date: 2011-09-22 08:58+0100\n"
+"POT-Creation-Date: 2011-09-29 19:30+0000\n"
+"PO-Revision-Date: 2011-09-30 20:15+0100\n"
 "Last-Translator: Mario Blättermann <mariobl@freenet.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -93,10 +93,9 @@ msgstr "»%s« kann nicht für Vorschau geladen werden"
 msgid "Unable to fetch the list of documents"
 msgstr "Liste der Dokumente kann nicht abgerufen werden"
 
-# Fehler im Original, siehe https://bugzilla.gnome.org/show_bug.cgi?id=659639
 #: ../src/loadMore.js:70
 #, c-format
-msgid "Load %d more documents"
+msgid "Load %d more document"
 msgid_plural "Load %d more documents"
 msgstr[0] "%d weiteres Dokument laden"
 msgstr[1] "%d weitere Dokumente laden"
