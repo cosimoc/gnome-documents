@@ -6,16 +6,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
-"documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-29 19:30+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-09-30 20:14+0200\n"
 "PO-Revision-Date: 2011-09-30 20:15+0100\n"
 "Last-Translator: Mario Blättermann <mariobl@freenet.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Poedit-Language: German\n"
 "X-Poedit-Country: GERMANY\n"
@@ -24,7 +23,7 @@ msgstr ""
 msgid "Access, manage and share documents"
 msgstr "Auf Dokumente zugreifen, verwalten und freigeben"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:47
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:48
 msgid "Documents"
 msgstr "Dokumente"
 
@@ -43,6 +42,30 @@ msgstr "Der aktive Quellenfilter"
 #: ../data/org.gnome.documents.gschema.xml.in.h:4
 msgid "The last active source filter"
 msgstr "Der letzte aktive Quellenfilter"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
+msgid "Window maximized"
+msgstr "Fenster maximiert"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
+msgid "Window maximized state"
+msgstr "Maximierungszustand des Fensters"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
+msgid "Window position"
+msgstr "Fensterposition"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
+msgid "Window position (x and y)."
+msgstr "Fensterposition (x und y)."
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:9
+msgid "Window size"
+msgstr "Fenstergröße"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:10
+msgid "Window size (width and height)."
+msgstr "Fenstergröße (Breite und Höhe)"
 
 #. Translators: this refers to new and recent documents
 #: ../src/categories.js:77
@@ -123,15 +146,16 @@ msgstr "Ladevorgang …"
 msgid "Open with %s"
 msgstr "Öffnen mit »%s«"
 
-#: ../src/view.js:69
+#. Translators: this is the Open action in a context menu
+#: ../src/view.js:70
 msgid "Open"
 msgstr "Öffnen"
 
-#: ../src/view.js:79
+#: ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "Aus Favoriten entfernen"
 
-#: ../src/view.js:79
+#: ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Zu Favoriten hinzufügen"
 
