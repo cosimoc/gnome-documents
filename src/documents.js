@@ -65,7 +65,7 @@ DocCommon.prototype = {
         this.favorite = false;
         this.shared = false;
 
-        this._thumbnailed = false;
+        this.thumbnailed = false;
 
         this.populateFromCursor(cursor);
 
@@ -118,7 +118,6 @@ DocCommon.prototype = {
 
         this.mimeType = cursor.get_string(Query.QueryColumns.MIMETYPE)[0];
         this.rdfType = cursor.get_string(Query.QueryColumns.RDFTYPE)[0];
-        this.updateIconFromType();
 
         this.updateTypeDescription();
 
@@ -247,6 +246,7 @@ LocalDocument.prototype = {
     _init: function(cursor) {
         this._thumbPath = null;
         this._failedThumbnailing = false;
+        this._triedThumbnailing = false;
 
         DocCommon.prototype._init.call(this, cursor);
 
@@ -279,6 +279,12 @@ LocalDocument.prototype = {
             return;
         }
 
+        if (!this._triedThumbnailing) {
+            this.updateIconFromType();
+            this._triedThumbnailing = true;
+        }
+
+        this._triedThumbnailing = true;
         this._file = Gio.file_new_for_uri(this.uri);
         this._file.query_info_async(_FILE_ATTRIBUTES,
                                     0, 0, null,
