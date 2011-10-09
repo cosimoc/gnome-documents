@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-12 19:38+0200\n"
-"PO-Revision-Date: 2011-09-12 19:38+0100\n"
+"POT-Creation-Date: 2011-10-09 21:07+0200\n"
+"PO-Revision-Date: 2011-10-09 21:08+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: \n"
@@ -22,7 +22,7 @@ msgid "Access, manage and share documents"
 msgstr "Kom åt, hantera och dela dokument"
 
 #: ../data/gnome-documents.desktop.in.in.h:2
-#: ../src/mainWindow.js:47
+#: ../src/mainWindow.js:48
 msgid "Documents"
 msgstr "Dokument"
 
@@ -42,6 +42,30 @@ msgstr "Det aktiva källfiltret"
 msgid "The last active source filter"
 msgstr "Det senaste aktiva källfiltret"
 
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
+msgid "Window maximized"
+msgstr "Fönster maximerat"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
+msgid "Window maximized state"
+msgstr "Maximeringstillstånd för fönster"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
+msgid "Window position"
+msgstr "Fönstrets position"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
+msgid "Window position (x and y)."
+msgstr "Fönstrets position (x och y)."
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:9
+msgid "Window size"
+msgstr "Fönstrets storlek"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:10
+msgid "Window size (width and height)."
+msgstr "Fönsterstorlek (bredd och höjd)."
+
 #. Translators: this refers to new and recent documents
 #: ../src/categories.js:77
 msgid "New and Recent"
@@ -58,27 +82,27 @@ msgid "Shared with you"
 msgstr "Delade med dig"
 
 #: ../src/documents.js:253
-#: ../src/sources.js:116
+#: ../src/sources.js:101
 msgid "Local"
 msgstr "Lokal"
 
-#: ../src/documents.js:372
+#: ../src/documents.js:378
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:373
+#: ../src/documents.js:379
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:442
+#: ../src/documents.js:448
 msgid "Spreadsheet"
 msgstr "Kalkylark"
 
-#: ../src/documents.js:444
+#: ../src/documents.js:450
 msgid "Presentation"
 msgstr "Presentation"
 
-#: ../src/documents.js:446
+#: ../src/documents.js:452
 msgid "Document"
 msgstr "Dokument"
 
@@ -94,7 +118,7 @@ msgstr "Kunde inte hämta listan över dokument"
 
 #: ../src/loadMore.js:70
 #, c-format
-msgid "Load %d more documents"
+msgid "Load %d more document"
 msgid_plural "Load %d more documents"
 msgstr[0] "Läs in ytterligare %d dokument"
 msgstr[1] "Läs in ytterligare %d dokument"
@@ -105,11 +129,11 @@ msgid "(%d of %d)"
 msgstr "(%d av %d)"
 
 #: ../src/sidebar.js:131
-#: ../src/sources.js:255
+#: ../src/sources.js:218
 msgid "Sources"
 msgstr "Källor"
 
-#: ../src/sources.js:110
+#: ../src/sources.js:96
 msgid "All"
 msgstr "Alla"
 
@@ -118,20 +142,21 @@ msgid "Loading..."
 msgstr "Läser in..."
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:66
+#: ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "Öppna med %s"
 
-#: ../src/view.js:68
+#. Translators: this is the Open action in a context menu
+#: ../src/view.js:70
 msgid "Open"
 msgstr "Öppna"
 
-#: ../src/view.js:78
+#: ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "Ta bort från favoriter"
 
-#: ../src/view.js:78
+#: ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Lägg till i favoriter"
 
