@@ -614,6 +614,11 @@ DocumentManager.prototype = {
             return;
 
         this._activeDocument = doc;
+
+        if (this._activeDocument != null) {
+            let recentManager = Gtk.RecentManager.get_default();
+            recentManager.add_item(this._activeDocument.uri);
+        }
     },
 
     getActiveDocument: function() {
