@@ -52,9 +52,8 @@ SidebarModel.prototype = {
         let iter = null;
 
         this.model = Gd.create_sidebar_store();
-        this._categoryManager = Global.categoryManager;
 
-        let categories = this._categoryManager.getCategories();
+        let categories = Global.categoryManager.getCategories();
         for (idx in categories) {
             let category = categories[idx];
             iter = this.model.append();
@@ -72,7 +71,6 @@ SidebarView.prototype = {
     _init: function() {
         this._model = new SidebarModel();
         this._treeModel = this._model.model;
-        this._categoryManager = Global.categoryManager;
 
         this._treeView = new Gtk.TreeView({ headers_visible: false,
                                             vexpand: true });
@@ -87,7 +85,7 @@ SidebarView.prototype = {
                 let iter = this._treeModel.get_iter(path)[1];
                 let id = this._treeModel.get_value(iter, SidebarModelColumns.ID);
 
-                this._categoryManager.setActiveCategoryId(id);
+                Global.categoryManager.setActiveCategoryId(id);
             }));
 
         let col = new Gtk.TreeViewColumn();
