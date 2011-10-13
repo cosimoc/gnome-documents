@@ -7,9 +7,9 @@ else
 fi
 
 if test x"$GI_TYPELIB_PATH" = x ; then
-    export GI_TYPELIB_PATH=@pkglibdir@
+    export GI_TYPELIB_PATH=@libdir@/girepository-1.0
 else
-    export GI_TYPELIB_PATH=@pkglibdir@:$GI_TYPELIB_PATH
+    export GI_TYPELIB_PATH=@libdir@/girepository-1.0:$GI_TYPELIB_PATH
 fi
 
 /usr/bin/env gjs -I @pkgdatadir@/js -c "const Main = imports.main; Main.start();"

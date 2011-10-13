@@ -8,12 +8,16 @@ AM_CPPFLAGS = \
     -DGNOME_DOCUMENTS_TOP_SRCDIR=\"$(abs_top_srcdir)\" \
     -DGNOME_DOCUMENTS_BUILDDIR=\"$(abs_top_builddir)\"
 
+girdir = $(datadir)/gir-1.0
+typelibdir = $(libdir)/girepository-1.0
+
 BUILT_SOURCES =
 EXTRA_DIST =
 CLEANFILES =
+lib_LTLIBRARIES =
 INTROSPECTION_GIRS =
+gir_DATA =
 typelib_DATA =
-privlib_LTLIBRARIES =
 libexec_PROGRAMS =
 
 # convenience command for doing Makefile variable substitutions in non-Makefile
@@ -32,10 +36,10 @@ include Makefile-lib.am
 include Makefile-miner.am
 include Makefile-js.am
 
-typelibdir = $(pkglibdir)
-typelib_DATA += $(INTROSPECTION_GIRS:.gir=.typelib)
+gir_DATA += $(INTROSPECTION_GIRS)
+typelib_DATA += $(gir_DATA:.gir=.typelib)
 
-CLEANFILES += $(INTROSPECTION_GIRS) $(typelib_DATA)
+CLEANFILES += $(gir_DATA) $(typelib_DATA)
 
 bin_SCRIPTS = gnome-documents
 
