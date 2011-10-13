@@ -21,11 +21,11 @@
 
 const Signals = imports.signals;
 
-function FilterController() {
+function SearchFilterController() {
     this._init();
 };
 
-FilterController.prototype = {
+SearchFilterController.prototype = {
     _init: function() {
         this._filter = '';
     },
@@ -35,11 +35,11 @@ FilterController.prototype = {
             return;
 
         this._filter = filter;
-        this.emit('filter-changed', this._filter);
+        this.emit('changed', this._filter);
     },
 
     getFilter: function() {
         return this._filter;
     }
 };
-Signals.addSignalMethods(FilterController.prototype);
+Signals.addSignalMethods(SearchFilterController.prototype);

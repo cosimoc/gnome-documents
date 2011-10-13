@@ -37,7 +37,7 @@ const ChangeMonitor = imports.changeMonitor;
 const Collections = imports.collections;
 const Documents = imports.documents;
 const Error = imports.error;
-const FilterController = imports.filterController;
+const Filters = imports.filters;
 const Format = imports.format;
 const Global = imports.global;
 const Main = imports.main;
@@ -118,7 +118,7 @@ Application.prototype = {
         Global.application = this;
         Global.settings = new Gio.Settings({ schema: 'org.gnome.documents' });
         Global.offsetController = new OffsetController.OffsetController();
-        Global.filterController = new FilterController.FilterController();
+        Global.searchFilterController = new Filters.SearchFilterController();
         Global.categoryManager = new Categories.CategoryManager();
         Global.errorHandler = new Error.ErrorHandler();
 

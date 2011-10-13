@@ -126,7 +126,7 @@ MainToolbar.prototype = {
                     this._searchEntryTimeout = 0;
 
                     let currentText = this._searchEntry.get_text();
-                    Global.filterController.setFilter(currentText);
+                    Global.searchFilterController.setFilter(currentText);
             }));
         }));
 
@@ -145,7 +145,7 @@ MainToolbar.prototype = {
 
         this.widget.show_all();
 
-        this._searchEntry.set_text(Global.filterController.getFilter());
+        this._searchEntry.set_text(Global.searchFilterController.getFilter());
     },
 
     _populateForPreview: function(model, document) {

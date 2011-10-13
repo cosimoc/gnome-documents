@@ -98,8 +98,8 @@ QueryBuilder.prototype = {
              '"%s") ||' +
              'fn:contains ' +
              '(fn:lower-case (tracker:coalesce(nco:fullname(?creator), nco:fullname(?publisher))), ' +
-             '"%s")').format(Global.filterController.getFilter(),
-                             Global.filterController.getFilter());
+             '"%s")').format(Global.searchFilterController.getFilter(),
+                             Global.searchFilterController.getFilter());
 
         return filter;
     },

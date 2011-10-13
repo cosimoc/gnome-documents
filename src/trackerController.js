@@ -55,9 +55,8 @@ TrackerController.prototype = {
         this._offsetController.connect('offset-changed',
                                        Lang.bind(this, this._performCurrentQuery));
 
-        this._filterController = Global.filterController;
-        this._filterController.connect('filter-changed',
-                                       Lang.bind(this, this._onFilterChanged));
+        Global.searchFilterController.connect('changed',
+                                              Lang.bind(this, this._onSearchFilterChanged));
 
         // perform initial query
         this._refresh();
@@ -127,7 +126,7 @@ TrackerController.prototype = {
         this._performCurrentQuery();
     },
 
-    _onFilterChanged: function() {
+    _onSearchFilterChanged: function() {
         this._offsetController.resetOffset();
         this._refresh();
     }
