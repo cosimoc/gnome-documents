@@ -34,6 +34,7 @@ const Tracker = imports.gi.Tracker;
 
 const Categories = imports.categories;
 const ChangeMonitor = imports.changeMonitor;
+const Collections = imports.collections;
 const Documents = imports.documents;
 const Error = imports.error;
 const FilterController = imports.filterController;
@@ -144,6 +145,7 @@ Application.prototype = {
                         Global.selectionController = new SelectionController.SelectionController();
                         Global.queryBuilder = new Query.QueryBuilder();
                         Global.changeMonitor = new ChangeMonitor.TrackerChangeMonitor();
+                        Global.collectionManager = new Collections.CollectionManager();
                         Global.documentManager = new Documents.DocumentManager();
                         Global.trackerController = new TrackerController.TrackerController();
                         Global.modeController = new WindowMode.ModeController();

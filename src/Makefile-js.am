@@ -3,6 +3,7 @@ dist_js_DATA = \
     application.js \
     categories.js \
     changeMonitor.js \
+    collections.js \
     documents.js \
     embed.js \
     error.js \
