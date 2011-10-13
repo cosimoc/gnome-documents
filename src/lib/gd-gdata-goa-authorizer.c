@@ -28,7 +28,7 @@
 struct _GdGDataGoaAuthorizerPrivate {
 
 	/* GDataAuthorizer methods must be thread-safe. */
-	GMutex *mutex;
+	GMutex mutex;
 
 	/* GoaObject is already thread-safe. */
 	GoaObject *goa_object;
@@ -344,7 +344,7 @@ gdata_goa_authorizer_finalize (GObject *object)
 
 	priv = GD_GDATA_GOA_AUTHORIZER_GET_PRIVATE (object);
 
-	g_mutex_free (priv->mutex);
+	g_mutex_clear (&priv->mutex);
 	g_free (priv->access_token);
 	g_free (priv->access_token_secret);
 	g_hash_table_destroy (priv->authorization_domains);
@@ -390,12 +390,12 @@ gdata_goa_authorizer_process_request (GDataAuthorizer *authorizer,
 
 	priv = GD_GDATA_GOA_AUTHORIZER_GET_PRIVATE (authorizer);
 
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 
 	if (gdata_goa_authorizer_is_authorized (authorizer, domain))
 		gdata_goa_authorizer_add_authorization (authorizer, message);
 
-	g_mutex_unlock (priv->mutex);
+	g_mutex_unlock (&priv->mutex);
 }
 
 static gboolean
@@ -407,11 +407,11 @@ gdata_goa_authorizer_is_authorized_for_domain (GDataAuthorizer *authorizer,
 
 	priv = GD_GDATA_GOA_AUTHORIZER_GET_PRIVATE (authorizer);
 
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 
 	authorized = gdata_goa_authorizer_is_authorized (authorizer, domain);
 
-	g_mutex_unlock (priv->mutex);
+	g_mutex_unlock (&priv->mutex);
 
 	return authorized;
 }
@@ -428,7 +428,7 @@ gdata_goa_authorizer_refresh_authorization (GDataAuthorizer *authorizer,
 
 	priv = GD_GDATA_GOA_AUTHORIZER_GET_PRIVATE (authorizer);
 
-	g_mutex_lock (priv->mutex);
+	g_mutex_lock (&priv->mutex);
 
 	g_free (priv->access_token);
 	priv->access_token = NULL;
@@ -449,7 +449,7 @@ gdata_goa_authorizer_refresh_authorization (GDataAuthorizer *authorizer,
 	g_object_unref (goa_account);
 	g_object_unref (goa_oauth_based);
 
-	g_mutex_unlock (priv->mutex);
+	g_mutex_unlock (&priv->mutex);
 
 	return success;
 }
@@ -504,7 +504,7 @@ gd_gdata_goa_authorizer_init (GdGDataGoaAuthorizer *authorizer)
 		(GDestroyNotify) NULL);
 
 	authorizer->priv = GD_GDATA_GOA_AUTHORIZER_GET_PRIVATE (authorizer);
-	authorizer->priv->mutex = g_mutex_new ();
+	g_mutex_init (&authorizer->priv->mutex);
 	authorizer->priv->authorization_domains = authorization_domains;
 }
 
