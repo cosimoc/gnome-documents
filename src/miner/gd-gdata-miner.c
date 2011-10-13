@@ -719,7 +719,10 @@ account_miner_job_query_gdata (AccountMinerJob *job,
       account_miner_job_process_entry (job, l->data, error);
 
       if (*error != NULL)
-        break;
+        {
+          g_warning ("Unable to process entry %p: %s", l->data, (*error)->message);
+          g_clear_error (error);
+        }
     }
 
   g_object_unref (feed);
