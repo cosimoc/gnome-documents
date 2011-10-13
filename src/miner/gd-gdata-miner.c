@@ -28,6 +28,7 @@
 
 #define MINER_IDENTIFIER "gd:gdata:miner:86ec9bc9-c242-427f-aa19-77b5a2c9b6f0"
 #define STARRED_CATEGORY_TERM "http://schemas.google.com/g/2005/labels#starred"
+#define PARENT_LINK_REL "http://schemas.google.com/docs/2007#parent"
 
 G_DEFINE_TYPE (GdGDataMiner, gd_gdata_miner, G_TYPE_OBJECT)
 
@@ -480,12 +481,13 @@ account_miner_job_process_entry (AccountMinerJob *job,
                                  GError **error)
 {
   GDataEntry *entry = GDATA_ENTRY (doc_entry);
-  gchar *entry_path, *resource = NULL;
-  gchar *date, *resource_url, *datasource_urn;
-  const gchar *identifier, *class = NULL;
+  gchar *resource = NULL;
+  gchar *date, *resource_url, *datasource_urn, *identifier;
+  const gchar *class = NULL;
 
-  GList *authors, *l;
+  GList *authors, *l, *parents;
   GDataAuthor *author;
+  GDataLink *parent;
 
   GDataLink *alternate;
   const gchar *alternate_uri;
@@ -496,20 +498,21 @@ account_miner_job_process_entry (AccountMinerJob *job,
 
   GDataFeed *access_rules = NULL;
 
-  if (!GDATA_IS_DOCUMENTS_DOCUMENT (doc_entry))
+  if (GDATA_IS_DOCUMENTS_FOLDER (doc_entry))
     {
-      /* TODO: folders */
-      g_set_error_literal (error, G_IO_ERROR,
-                           G_IO_ERROR_NOT_SUPPORTED,
-                           "Folders are not supported");
-      return FALSE;
+      identifier = g_strdup_printf ("gd:collection:%s", gdata_entry_get_id (entry));
+      resource_url = NULL;
     }
+  else
+    {
+      gchar *entry_path;
 
-  identifier = gdata_entry_get_id (entry);
-  entry_path = gdata_documents_entry_get_path (doc_entry);
-  resource_url = g_strdup_printf ("google:docs:%s", entry_path);
+      identifier = g_strdup (gdata_entry_get_id (entry));
+      entry_path = gdata_documents_entry_get_path (doc_entry);
+      resource_url = g_strdup_printf ("google:docs:%s", entry_path);
 
-  g_free (entry_path);
+      g_free (entry_path);
+    }
 
   /* remove from the list of the previous resources */
   g_hash_table_remove (job->previous_resources, identifier);
@@ -520,15 +523,15 @@ account_miner_job_process_entry (AccountMinerJob *job,
     class = "nfo:Spreadsheet";
   else if (GDATA_IS_DOCUMENTS_TEXT (doc_entry))
     class = "nfo:PaginatedTextDocument";
-
+  else if (GDATA_IS_DOCUMENTS_FOLDER (doc_entry))
+    class = "nfo:DataContainer";
+ 
   resource = _tracker_sparql_connection_ensure_resource
     (job->connection, 
      job->cancellable, error,
      resource_url, identifier,
-     "nfo:RemoteDataObject",
-     class,
-     NULL);
-
+     "nfo:RemoteDataObject", class, NULL);
+  
   if (*error != NULL)
     goto out;
 
@@ -555,6 +558,35 @@ account_miner_job_process_entry (AccountMinerJob *job,
 
   if (*error != NULL)
     goto out;
+
+  parents = gdata_entry_look_up_links (entry, PARENT_LINK_REL);
+  for (l = parents; l != NULL; l = l->next)
+    {
+      gchar *parent_resource_urn, *parent_resource_id;
+
+      parent = l->data;
+      parent_resource_id = 
+        g_strdup_printf ("gd:collection:%s", gdata_link_get_uri (parent));
+
+      parent_resource_urn = _tracker_sparql_connection_ensure_resource
+        (job->connection, job->cancellable, error,
+         NULL, parent_resource_id,
+         "nfo:RemoteDataObject", "nfo:DataContainer", NULL);
+      g_free (parent_resource_id);
+
+      if (*error != NULL)
+        goto out;
+
+      _tracker_sparql_connection_insert_or_replace_triple
+        (job->connection,
+         job->cancellable, error,
+         identifier, resource,
+         "nie:isPartOf", parent_resource_urn);
+      g_free (parent_resource_urn);
+
+      if (*error != NULL)
+        goto out;
+    }
 
   categories = gdata_entry_get_categories (entry);
   for (l = categories; l != NULL; l = l->next)
@@ -688,6 +720,10 @@ account_miner_job_process_entry (AccountMinerJob *job,
   g_clear_object (&access_rules);
   g_free (resource_url);
   g_free (resource);
+  g_free (identifier);
+
+  if (parents != NULL)
+    g_list_free (parents);
 
   if (*error != NULL)
     return FALSE;
@@ -704,6 +740,7 @@ account_miner_job_query_gdata (AccountMinerJob *job,
   GList *entries, *l;
 
   query = gdata_documents_query_new (NULL);
+  gdata_documents_query_set_show_folders (query, TRUE);
   feed = gdata_documents_service_query_documents 
     (job->service, query, 
      job->cancellable, NULL, NULL, error);
