@@ -20,8 +20,10 @@
  */
 
 const Gd = imports.gi.Gd;
+const Gdk = imports.gi.Gdk;
 const Goa = imports.gi.Goa;
 const Gtk = imports.gi.Gtk;
+const Pango = imports.gi.Pango;
 const _ = imports.gettext.gettext;
 
 const Lang = imports.lang;
@@ -40,7 +42,13 @@ const SidebarModelColumns = {
     ID: 0,
     NAME: 1,
     ICON: 2,
-    HEADING: 3
+    HEADING_TEXT: 3,
+    SECTION: 4
+};
+
+const SidebarModelSections = {
+    CATEGORIES: 0,
+    COLLECTIONS: 1
 };
 
 function SidebarModel() {
@@ -52,14 +60,67 @@ SidebarModel.prototype = {
         let iter = null;
 
         this.model = Gd.create_sidebar_store();
+        this.model.set_default_sort_func(Lang.bind(this, this._modelSortFunc));
 
+        this._collectionsId = Global.collectionManager.connect('collection-added', Lang.bind(this,
+            this._addCollection));
+
+        // insert categories
         let categories = Global.categoryManager.getCategories();
         for (idx in categories) {
             let category = categories[idx];
             iter = this.model.append();
             Gd.sidebar_store_set(this.model, iter,
-                                 category.id, category.name, category.icon, false);
+                                 category.id, category.name, category.icon,
+                                 '', SidebarModelSections.CATEGORIES);
         };
+
+        // insert collections
+        iter = this.model.append();
+        Gd.sidebar_store_set(this.model, iter,
+                             '', '', '',
+                             _('Collections'), SidebarModelSections.COLLECTIONS);
+
+        let collections = Global.collectionManager.getCollections();
+        for (idx in collections) {
+            let collection = collections[idx];
+            this._addCollection(Global.collectionManager, collection);
+        }
+    },
+
+    // returns:
+    // * 0 if iters are equal
+    // * < 0 if A sorts before B
+    // * > 0 if A sorts after B
+    _modelSortFunc: function(iterA, iterB) {
+        let sectionA, sectionB;
+
+        sectionA = this.model.get_value(iterA, SidebarModelColumns.SECTION);
+        sectionB = this.model.get_value(iterB, SidebarModelColumns.SECTION);
+
+        let diff = sectionA - sectionB;
+        if (diff != 0)
+            return diff;
+
+        // they're in the same section, so prefer headings
+        let headingA, headingB;
+
+        headingA = this.model.get_value(iterA, SidebarModelColumns.HEADING_TEXT);
+        headingB = this.model.get_value(iterB, SidebarModelColumns.HEADING_TEXT);
+
+        if (headingA.length)
+            return -1;
+        else if (headingB.length)
+            return 1;
+
+        return 0;
+    },
+
+    _addCollection: function(manager, collection) {
+        let iter = this.model.append();
+        Gd.sidebar_store_set(this.model, iter,
+                             collection.urn, collection.name, '',
+                             '', SidebarModelSections.COLLECTIONS);
     }
 };
 
@@ -77,6 +138,9 @@ SidebarView.prototype = {
         Gd.gtk_tree_view_set_activate_on_single_click(this._treeView, true);
         this._treeView.set_model(this._treeModel);
 
+        let selection = this._treeView.get_selection();
+        selection.set_select_function(Lang.bind(this, this._treeSelectionFunc));
+
         this.widget = new Gtk.ScrolledWindow({ hscrollbar_policy: Gtk.PolicyType.NEVER });
         this.widget.add(this._treeView);
 
@@ -91,18 +155,145 @@ SidebarView.prototype = {
         let col = new Gtk.TreeViewColumn();
         this._treeView.append_column(col);
 
-        this._rendererIcon = new Gtk.CellRendererPixbuf({ xpad: 4 });
+        // heading
+        this._rendererHeading = new Gtk.CellRendererText({ xpad: 10,
+                                                           weight: Pango.Weight.BOLD,
+                                                           weight_set: true });
+        col.pack_start(this._rendererHeading, false);
+        col.add_attribute(this._rendererHeading,
+                          'text', SidebarModelColumns.HEADING_TEXT);
+        col.set_cell_data_func(this._rendererHeading,
+                               Lang.bind(this, this._headingDataFunc));
+
+        // icon
+        this._rendererIcon = new Gtk.CellRendererPixbuf({ xpad: 10 });
         col.pack_start(this._rendererIcon, false);
         col.add_attribute(this._rendererIcon,
                           'icon-name', SidebarModelColumns.ICON);
+        col.set_cell_data_func(this._rendererIcon,
+                               Lang.bind(this, this._bgDataFunc));
 
-
-        this._rendererText = new Gtk.CellRendererText();
+        // name
+        this._rendererText = new Gtk.CellRendererText({ ellipsize: Pango.EllipsizeMode.END });
         col.pack_start(this._rendererText, true);
         col.add_attribute(this._rendererText,
                           'text', SidebarModelColumns.NAME);
+        col.set_cell_data_func(this._rendererText,
+                               Lang.bind(this, this._textDataFunc));
 
         this.widget.show_all();
+    },
+
+    _treeSelectionFunc: function(selection, model, path, selected) {
+        let iter = model.get_iter(path);
+        if (!iter[0])
+            return false;
+
+        iter = iter[1];
+
+        let heading = model.get_value(iter, SidebarModelColumns.HEADING_TEXT);
+        if (heading.length)
+            return false;
+
+        return true;
+    },
+
+    _headingDataFunc: function(col, renderer, model, iter) {
+        let heading = model.get_value(iter, SidebarModelColumns.HEADING_TEXT);
+
+        // if there's no heading set, make this renderer invisible,
+        // and unset its custom foreground color
+        if (!heading.length) {
+            renderer.visible = false;
+            renderer.foreground_set = false;
+
+            return;
+        }
+
+        // make this visible
+        renderer.visible = true;
+
+        // use a lighter text for the heading text
+        let context = this._treeView.get_style_context();
+        let fgColor = context.get_color(Gtk.StateFlags.NORMAL);
+        let symbolicColor = Gtk.SymbolicColor.new_literal(fgColor);
+        let shade = symbolicColor.new_shade(1.50);
+
+        [ res, fgColor ] = shade.resolve(null);
+
+        if (res) {
+            renderer.foreground_rgba = fgColor;
+            renderer.foreground_set = true;
+        } else {
+            renderer.foreground_set = false;
+        }
+    },
+
+    _textDataFunc: function(col, renderer, model, iter) {
+        // if there's no text to show, hide the renderer
+        let text = model.get_value(iter, SidebarModelColumns.NAME);
+        if (!text.length) {
+            renderer.visible = false;
+            renderer.foreground_set = false;
+            return;
+        }
+
+        // make this visible
+        renderer.visible = true;
+
+        // render the background according to the current section
+        this._bgDataFunc(col, renderer, model, iter);
+
+        // we want to change the fg color for the text in the categories
+        // section
+        let section = model.get_value(iter, SidebarModelColumns.SECTION);
+        if (section != SidebarModelSections.CATEGORIES) {
+            renderer.foreground_set = false;
+            return;
+        }
+
+        // use a darker text for the category names
+        let context = this._treeView.get_style_context();
+        let fgColor = context.get_color(Gtk.StateFlags.NORMAL);
+        let symbolicColor = Gtk.SymbolicColor.new_literal(fgColor);
+        let shade = symbolicColor.new_shade(0.60);
+
+        [ res, fgColor ] = shade.resolve(null);
+
+        if (res) {
+            renderer.foreground_rgba = fgColor;
+            renderer.foreground_set = true;
+        } else {
+            renderer.foreground_set = false;
+        }
+    },
+
+    _bgDataFunc: function(col, renderer, model, iter) {
+        let section = model.get_value(iter, SidebarModelColumns.SECTION);
+        let heading = model.get_value(iter, SidebarModelColumns.HEADING_TEXT);
+
+        // we want to change the background color for the collections
+        // section, but not for its heading
+        if (section != SidebarModelSections.COLLECTIONS ||
+            heading.length) {
+            renderer.cell_background_set = false;
+            return;
+        }
+
+        // shade the bg color to be darker
+        let context = this._treeView.get_style_context();
+        let bgColor = context.get_background_color(Gtk.StateFlags.NORMAL);
+        let symbolicColor = Gtk.SymbolicColor.new_literal(bgColor);
+        let shade = symbolicColor.new_shade(0.95);
+
+        [ res, bgColor ] = shade.resolve(null);
+
+        if (res) {
+            renderer.cell_background_rgba = bgColor;
+            renderer.cell_background_set = true;
+        } else {
+            renderer.cell_background_set = false;
+        }
     }
 };
 
@@ -113,7 +304,6 @@ function SidebarMainPage() {
 SidebarMainPage.prototype = {
     _init: function() {
         this.widget = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,
-                                     border_width: 6,
                                      width_request: _SIDEBAR_WIDTH_REQUEST,
                                      column_homogeneous: true,
                                      row_spacing: 12 });
@@ -129,7 +319,8 @@ SidebarMainPage.prototype = {
         this._buttonLabel = new Gtk.Label({ label: _("Sources") });
         buttonContent.add(this._buttonLabel);
 
-        this._sourcesButton = new Gtk.Button({ child: buttonContent });
+        this._sourcesButton = new Gtk.Button({ child: buttonContent,
+                                               border_width: 6 });
         this.widget.add(this._sourcesButton);
         this._sourcesButton.connect('clicked', Lang.bind(this, this._onSourcesButtonClicked));
 

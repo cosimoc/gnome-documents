@@ -100,11 +100,12 @@ gd_sources_store_set (GtkListStore *store,
 GtkListStore *
 gd_create_sidebar_store (void)
 {
-  return gtk_list_store_new (4,
+  return gtk_list_store_new (5,
                              G_TYPE_STRING, // ID
                              G_TYPE_STRING, // NAME
                              G_TYPE_STRING, // ICON
-                             G_TYPE_BOOLEAN); // HEADING
+                             G_TYPE_STRING, // HEADING_TEXT
+                             G_TYPE_INT); // SECTION
 }
 
 void
@@ -113,13 +114,15 @@ gd_sidebar_store_set (GtkListStore *store,
                       const gchar *id,
                       const gchar *name,
                       const gchar *icon_name,
-                      gboolean heading)
+                      const gchar *heading_text,
+                      gint section)
 {
   gtk_list_store_set (store, iter,
                       0, id,
                       1, name,
                       2, icon_name,
-                      3, heading,
+                      3, heading_text,
+                      4, section,
                       -1);
 }
 

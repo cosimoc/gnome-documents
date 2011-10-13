@@ -46,7 +46,8 @@ void gd_sidebar_store_set (GtkListStore *store,
                            const gchar *id,
                            const gchar *name,
                            const gchar *icon_name,
-                           gboolean heading);
+                           const gchar *heading_text,
+                           gint section);
 
 void gd_queue_thumbnail_job_for_file_async (GFile *file,
                                             GAsyncReadyCallback callback,
