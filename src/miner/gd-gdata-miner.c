@@ -44,7 +44,7 @@ struct _GdGDataMinerPrivate {
 static gchar *
 _tracker_utils_format_into_graph (const gchar *graph)
 {
-  return (graph != NULL) ? g_strdup_printf ("INTO <%s> ", graph) : NULL;
+  return (graph != NULL) ? g_strdup_printf ("INTO <%s> ", graph) : g_strdup ("");
 }
 
 static gboolean
