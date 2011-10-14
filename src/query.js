@@ -81,10 +81,13 @@ QueryBuilder.prototype = {
 
     buildFilterNotLocal: function() {
         let sparql = '(';
-        let remoteSources = Global.sourceManager.getRemoteSources();
+        let sources = Global.sourceManager.getItems();
 
-        for (idx in remoteSources)
-            sparql += ('(nie:dataSource(?urn) = "%s") || ').format(remoteSources[idx].resourceUrn);
+        for (idx in sources) {
+            let source = sources[idx];
+            if (source.isGoa)
+                sparql += source.getFilter() + ' || ';
+        }
 
         sparql += 'false)';
 

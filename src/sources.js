@@ -32,6 +32,7 @@ const Pango = imports.gi.Pango;
 const _ = imports.gettext.gettext;
 
 const Global = imports.global;
+const Manager = imports.manager;
 const TrackerUtils = imports.trackerUtils;
 
 function Source(params) {
@@ -42,23 +43,17 @@ Source.prototype = {
     _init: function(params) {
         this.id = null;
         this.name = null;
-        this.object = null;
+        this.isGoa = false;
 
         if (params.object) {
-            this.object = params.object;
-
-            let account = this.object.get_account();
-            this.id = account.id;
+            let account = params.object.get_account();
+            this.id = 'gd:goa-account:' + account.id;
             this.name = account.provider_name;
+
+            this.isGoa = true;
         } else {
             this.id = params.id;
             this.name = params.name;
-        }
-
-        if (this.id == 'all' || this.id == 'local') {
-            this.resourceUrn = null;
-        } else {
-            this.resourceUrn = 'gd:goa-account:' + this.id;
         }
     },
 
@@ -75,8 +70,8 @@ Source.prototype = {
     _buildFilterResource: function() {
         let filter = '(false)';
 
-        if (this.resourceUrn)
-            filter = ('(nie:dataSource(?urn) = "%s")').format(this.resourceUrn);
+        if (this.isGoa)
+            filter = ('(nie:dataSource(?urn) = "%s")').format(this.id);
 
         return filter;
     }
@@ -87,19 +82,20 @@ function SourceManager() {
 };
 
 SourceManager.prototype = {
+    __proto__: Manager.BaseManager.prototype,
+
     _init: function() {
-        this._sources = {};
-        this._activeSource = null;
+        Manager.BaseManager.prototype._init.call(this);
 
         // Translators: this refers to documents
         let source = new Source({ id: 'all',
                                   name: _("All") });
-        this._sources[source.id] = source;
+        this.addItem(source);
 
         // Translators: this refers to local documents
         source = new Source({ id: 'local',
                               name: _("Local") });
-        this._sources[source.id] = source;
+        this.addItem(source);
 
         Global.goaClient.connect('account-added', Lang.bind(this, this._refreshGoaAccounts));
         Global.goaClient.connect('account-changed', Lang.bind(this, this._refreshGoaAccounts));
@@ -108,11 +104,11 @@ SourceManager.prototype = {
     },
 
     _refreshGoaAccounts: function() {
-        for (idx in this._sources) {
-            if (this._sources[idx].object) {
-                delete this._sources[idx];
-            }
-        }
+        this.removeMatchingItems(
+            function(item) {
+                // if it's a Goa object, remove it
+                return !item.isGoa;
+            });
 
         let accounts = Global.goaClient.get_accounts();
         let modified = false;
@@ -126,68 +122,26 @@ SourceManager.prototype = {
                     return;
 
                 let source = new Source({ object: object });
-                this._sources[source.id] = source;
+                this.addItem(source);
             }));
 
-        let activeSourceId = Global.settings.get_string('active-source');
-        if (!this._sources[activeSourceId])
-            activeSourceId = 'all';
+        let activeItemId = Global.settings.get_string('active-source');
 
-        this.setActiveSourceId(activeSourceId);
-        this.emit('sources-changed');
+        // fallback to 'all' if we never saved any source, or if the saved
+        // source disappeared in the meantime
+        if (!this.setActiveItemById(activeItemId))
+            this.setActiveItemById('all');
     },
 
-    setActiveSourceId: function(id) {
-        let source = this._sources[id];
-
-        if (!source)
-            return;
-
-        if (this._activeSource == source)
-            return;
-
-        this._activeSource = source;
-        Global.settings.set_string('active-source', this._activeSource.id);
-
-        this.emit('active-source-changed');
-    },
-
-    getActiveSourceId: function() {
-        return this._activeSource.id;
+    setActiveItem: function(item) {
+        if (Manager.BaseManager.prototype.setActiveItem.call(this, item))
+            Global.settings.set_string('active-source', item.id);
     },
 
     getActiveSourceFilter: function() {
-        return this._activeSource.getFilter();
-    },
-
-    getSourceByUrn: function(resourceUrn) {
-        let source = null;
-        for (idx in this._sources) {
-            if (this._sources[idx].resourceUrn == resourceUrn) {
-                source = this._sources[idx];
-                break;
-            }
-        }
-
-        return source;
-    },
-
-    getSources: function() {
-        return this._sources;
-    },
-
-    getRemoteSources: function() {
-        let remoteSources = {};
-
-        for (idx in this._sources) {
-            if (this._sources[idx].resourceUrn)
-                remoteSources[idx] = this._sources[idx];
-        }
-
-        return remoteSources;
+        return this.getActiveItem().getFilter();
     }
 };
-Signals.addSignalMethods(SourceManager.prototype);
 
 // GTK+ implementations
 
@@ -205,7 +159,7 @@ SourceModel.prototype = {
     _init: function() {
         this.model = Gd.create_sources_store();
         this._sourceManager = Global.sourceManager;
-        this._sourceManager.connect('sources-changed', Lang.bind(this, this._refreshModel));
+        this._sourceManager.connect('item-added', Lang.bind(this, this._refreshModel));
 
         this._refreshModel();
     },
@@ -217,7 +171,7 @@ SourceModel.prototype = {
         Gd.sources_store_set(this.model, iter,
                              '', _("Sources"), true);
 
-        let sources = this._sourceManager.getSources();
+        let sources = this._sourceManager.getItems();
         for (idx in sources) {
             let source = sources[idx];
             iter = this.model.append();
@@ -251,7 +205,7 @@ SourceView.prototype = {
                 let iter = this._model.model.get_iter(path)[1];
                 let id = this._model.model.get_value(iter, SourceModelColumns.ID);
 
-                this._sourceManager.setActiveSourceId(id);
+                this._sourceManager.setActiveItemById(id);
                 this.emit('source-clicked');
             }));
 
@@ -276,7 +230,7 @@ SourceView.prototype = {
                       Lang.bind(this,
                           function(col, cell, model, iter) {
                               let id = model.get_value(iter, SourceModelColumns.ID);
-                              if (id == this._sourceManager.getActiveSourceId())
+                              if (id == this._sourceManager.getActiveItem().id)
                                   cell.active = true;
                               else
                                   cell.active = false;

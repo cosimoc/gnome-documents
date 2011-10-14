@@ -42,9 +42,9 @@ TrackerController.prototype = {
         this._refreshMinerNow();
 
         this._sourceManager = Global.sourceManager;
-        this._sourceManager.connect('sources-changed',
+        this._sourceManager.connect('item-added',
                                     Lang.bind(this, this._refresh));
-        this._sourceManager.connect('active-source-changed',
+        this._sourceManager.connect('active-changed',
                                     Lang.bind(this, this._refresh));
 
         this._offsetController = Global.offsetController;
