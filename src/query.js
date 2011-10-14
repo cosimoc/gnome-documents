@@ -74,7 +74,7 @@ QueryBuilder.prototype = {
         let filter =
             ('((fn:starts-with (nie:url(?urn), "%s")) || ' +
              ' (fn:starts-with (nie:url(?urn), "%s")) || ' +
-             ' (fn:starts-with (nie:url(?urn), "%s"))    )').format(desktopURI, documentsURI, downloadsURI);
+             ' (fn:starts-with (nie:url(?urn), "%s")))').format(desktopURI, documentsURI, downloadsURI);
 
         return filter;
     },
@@ -96,12 +96,12 @@ QueryBuilder.prototype = {
 
     _buildFilterSearch: function() {
         let filter =
-            ('fn:contains ' +
+            ('(fn:contains ' +
              '(fn:lower-case (tracker:coalesce(nie:title(?urn), nfo:fileName(?urn))), ' +
              '"%s") ||' +
              'fn:contains ' +
              '(fn:lower-case (tracker:coalesce(nco:fullname(?creator), nco:fullname(?publisher))), ' +
-             '"%s")').format(Global.searchFilterController.getFilter(),
+             '"%s"))').format(Global.searchFilterController.getFilter(),
                              Global.searchFilterController.getFilter());
 
         return filter;
@@ -121,11 +121,11 @@ QueryBuilder.prototype = {
 
         sparql += '(' + this._buildFilterSearch() + ')';
         sparql += ' && ';
-        sparql += '(' + Global.sourceManager.getActiveSourceFilter() + ')';
+        sparql += Global.sourceManager.getActiveSourceFilter();
         sparql += ' && ';
-        sparql += '(' + Global.categoryManager.getActiveCategoryFilter() + ')';
+        sparql += Global.categoryManager.getActiveCategoryFilter();
         sparql += ' && ';
-        sparql += '(' + this._buildFilterType() + ')';
+        sparql += this._buildFilterType();
 
         sparql += ')';
 

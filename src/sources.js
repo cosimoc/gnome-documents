@@ -62,7 +62,8 @@ Source.prototype = {
             return Global.queryBuilder.buildFilterLocal();
 
         if (this.id == 'all')
-            return Global.queryBuilder.buildFilterLocal() + ' || ' + Global.queryBuilder.buildFilterNotLocal();
+            return '(' + Global.queryBuilder.buildFilterLocal() + ' || '
+                    + Global.queryBuilder.buildFilterNotLocal() + ')';
 
         return this._buildFilterResource();
     },
