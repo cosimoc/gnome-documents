@@ -17,6 +17,7 @@ dist_js_DATA = \
     main.js \
     mainToolbar.js \
     mainWindow.js \
+    manager.js \
     offsetController.js \
     preview.js \
     query.js \
