@@ -48,7 +48,7 @@ ContextMenu.prototype = {
 
         urns.forEach(Lang.bind(this,
             function(urn) {
-                let doc = Global.documentManager.lookupDocument(urn);
+                let doc = Global.documentManager.getItemById(urn);
                 if (doc.favorite)
                     favCount++;
 

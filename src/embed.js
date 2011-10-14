@@ -152,8 +152,8 @@ ViewEmbed.prototype  = {
             this._loaderTimeout = 0;
         }
 
-        let doc = Global.documentManager.lookupDocument(urn);
-        Global.documentManager.setActiveDocument(doc);
+        let doc = Global.documentManager.getItemById(urn);
+        Global.documentManager.setActiveItem(doc);
 
         this._loaderTimeout = Mainloop.timeout_add(_PDF_LOADER_TIMEOUT,
             Lang.bind(this, this._onPdfLoaderTimeout));
@@ -247,7 +247,7 @@ ViewEmbed.prototype  = {
         this._document = null;
         this._stage = null;
 
-        Global.documentManager.setActiveDocument(null);
+        Global.documentManager.setActiveItem(null);
 
         this._scrolledWin = new Gtk.ScrolledWindow({ hexpand: true,
                                                      vexpand: true,

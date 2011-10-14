@@ -34,6 +34,7 @@ const Signals = imports.signals;
 const Categories = imports.categories;
 const ChangeMonitor = imports.changeMonitor;
 const Global = imports.global;
+const Manager = imports.manager;
 const Path = imports.path;
 const Query = imports.query;
 const TrackerUtils = imports.trackerUtils;
@@ -47,7 +48,7 @@ function DocCommon(cursor) {
 
 DocCommon.prototype = {
     _init: function(cursor) {
-        this.urn = null;
+        this.id = null;
         this.uri = null;
         this.title = null;
         this.author = null;
@@ -72,13 +73,13 @@ DocCommon.prototype = {
         this._refreshIconId =
             Global.settings.connect('changed::list-view',
                                     Lang.bind(this, this.refreshIcon));
-        this._categoryId =
-            Global.categoryManager.connect('active-category-changed',
-                                           Lang.bind(this, this.refreshIcon));
+        this._filterId =
+            Global.sideFilterController.connect('changed',
+                                                Lang.bind(this, this.refreshIcon));
     },
 
     refresh: function() {
-        let sparql = Global.queryBuilder.buildSingleQuery(this.urn);
+        let sparql = Global.queryBuilder.buildSingleQuery(this.id);
 
         Global.connection.query_async(sparql, null, Lang.bind(this,
             function(object, res) {
@@ -107,7 +108,7 @@ DocCommon.prototype = {
 
     populateFromCursor: function(cursor) {
         this.uri = cursor.get_string(Query.QueryColumns.URI)[0];
-        this.urn = cursor.get_string(Query.QueryColumns.URN)[0];
+        this.id = cursor.get_string(Query.QueryColumns.URN)[0];
         this.author = cursor.get_string(Query.QueryColumns.AUTHOR)[0];
         this.resourceUrn = cursor.get_string(Query.QueryColumns.RESOURCE_URN)[0];
         this.favorite = cursor.get_boolean(Query.QueryColumns.FAVORITE);
@@ -178,11 +179,17 @@ DocCommon.prototype = {
     checkEffectsAndUpdateInfo: function() {
         let emblemIcons = [];
         let pixbuf = this.pixbuf;
+        let activeItem;
+
+        activeItem = Global.sideFilterController.getWhereItem();
 
         if (this.favorite &&
-            (Global.categoryManager.getActiveCategoryId() != Categories.StockCategories.FAVORITES))
+            (!activeItem ||
+             (activeItem.id != Categories.StockCategories.FAVORITES)))
             emblemIcons.push(this._createSymbolicEmblem('emblem-favorite'));
-        if (this.shared && (Global.categoryManager.getActiveCategoryId() != Categories.StockCategories.SHARED))
+        if (this.shared &&
+            (!activeItem ||
+             (activeItem.id != Categories.StockCategories.SHARED)))
             emblemIcons.push(this._createSymbolicEmblem('emblem-shared'));
 
         if (emblemIcons.length > 0) {
@@ -221,7 +228,7 @@ DocCommon.prototype = {
 
     destroy: function() {
         Global.settings.disconnect(this._refreshIconId);
-        Global.categoryManager.disconnect(this._categoryId);
+        Global.sideFilterController.disconnect(this._filterId);
     },
 
     open: function(screen, timestamp) {
@@ -229,7 +236,7 @@ DocCommon.prototype = {
     },
 
     setFavorite: function(favorite) {
-        TrackerUtils.setFavorite(this.urn, favorite, null);
+        TrackerUtils.setFavorite(this.id, favorite, null);
     }
 };
 Signals.addSignalMethods(DocCommon.prototype);
@@ -380,7 +387,7 @@ GoogleDocument.prototype = {
     },
 
     _createGDataEntry: function(cancellable, callback) {
-        let source = Global.sourceManager.getSourceByUrn(this.resourceUrn);
+        let source = Global.sourceManager.getItemById(this.resourceUrn);
 
         let authorizer = new Gd.GDataGoaAuthorizer({ goa_object: source.object });
         let service = new GData.DocumentsService({ authorizer: authorizer });
@@ -506,9 +513,10 @@ function DocumentManager() {
 }
 
 DocumentManager.prototype = {
+    __proto__: Manager.BaseManager.prototype,
+
     _init: function() {
-        this._docs = {};
-        this._activeDocument = null;
+        Manager.BaseManager.prototype._init.call(this);
 
         this._model = new DocumentModel();
 
@@ -523,20 +531,20 @@ DocumentManager.prototype = {
             let changeEvent = changes[idx];
 
             if (changeEvent.type == ChangeMonitor.ChangeEventType.CHANGED) {
-                let doc = this.lookupDocument(changeEvent.urn);
+                let doc = this.getItemById(changeEvent.urn);
 
                 if (doc)
                     doc.refresh();
             } else if (changeEvent.type == ChangeMonitor.ChangeEventType.CREATED) {
                 this._onDocumentCreated(changeEvent.urn);
             } else if (changeEvent.type == ChangeMonitor.ChangeEventType.DELETED) {
-                let doc = this.lookupDocument(changeEvent.urn);
+                let doc = this.getItemById(changeEvent.urn);
 
                 if (doc) {
                     this._model.documentRemoved(doc);
 
                     doc.destroy();
-                    delete this._docs[changeEvent.urn];
+                    this.removeItemById(changeEvent.urn);
                 }
             }
         }
@@ -555,7 +563,7 @@ DocumentManager.prototype = {
                         function(object, res) {
                             let valid = object.next_finish(res);
                             if (valid)
-                                this.addDocument(object);
+                                this.addDocumentFromCursor(object);
 
                             cursor.close();
                         }));
@@ -575,7 +583,7 @@ DocumentManager.prototype = {
         return this._pixbufFrame;
     },
 
-    addDocument: function(cursor) {
+    addDocumentFromCursor: function(cursor) {
         let identifier = cursor.get_string(Query.QueryColumns.IDENTIFIER)[0];
         let doc;
 
@@ -584,52 +592,31 @@ DocumentManager.prototype = {
         else
             doc = new LocalDocument(cursor);
 
-        this._docs[doc.urn] = doc;
+        this.addItem(doc);
         this._model.documentAdded(doc);
     },
 
     clear: function() {
-        for (idx in this._docs) {
-            this._docs[idx].destroy();
+        let items = this.getItems();
+        for (idx in items) {
+            items[idx].destroy();
         };
-        this._docs = {};
+
+        Manager.BaseManager.prototype.clear.call(this);
         this._model.clear();
     },
 
-    getDocuments: function() {
-        return this._docs;
-    },
-
-    lookupDocument: function(urn) {
-        let document = null;
-
-        if (this._docs[urn])
-            document = this._docs[urn];
-
-        return document;
-    },
-
-    setActiveDocument: function(doc) {
-        if (doc == this._activeDocument)
-            return;
-
-        this._activeDocument = doc;
-
-        if (this._activeDocument != null) {
+    setActiveItem: function(doc) {
+        if (Manager.BaseManager.prototype.setActiveItem.call(this, doc)) {
             let recentManager = Gtk.RecentManager.get_default();
-            recentManager.add_item(this._activeDocument.uri);
+            recentManager.add_item(this.getActiveItem().uri);
         }
-    },
-
-    getActiveDocument: function() {
-        return this._activeDocument;
     },
 
     getModel: function() {
         return this._model;
     }
 };
-Signals.addSignalMethods(DocumentManager.prototype);
 
 const ModelColumns = {
     URN: 0,
@@ -659,7 +646,7 @@ DocumentModel.prototype = {
         let treePath = this.model.get_path(iter);
 
         Gd.store_set(this.model, iter,
-                     doc.urn,
+                     doc.id,
                      doc.title, doc.author,
                      doc.pixbuf, doc.mtime);
 
@@ -668,7 +655,7 @@ DocumentModel.prototype = {
                 let objectIter = this.model.get_iter(treePath)[1];
                 if (objectIter)
                     Gd.store_set(this.model, iter,
-                                 doc.urn,
+                                 doc.id,
                                  doc.title, doc.author,
                                  doc.pixbuf, doc.mtime);
             }));
@@ -679,7 +666,7 @@ DocumentModel.prototype = {
             function(model, path, iter) {
                 let urn = model.get_value(iter, ModelColumns.URN);
 
-                if (urn == doc.urn) {
+                if (urn == doc.id) {
                     this.model.remove(iter);
                     return true;
                 }

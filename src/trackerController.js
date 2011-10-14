@@ -96,7 +96,7 @@ TrackerController.prototype = {
             return;
         }
 
-        Global.documentManager.addDocument(cursor);
+        Global.documentManager.addDocumentFromCursor(cursor);
         cursor.next_async(null, Lang.bind(this, this._onCursorNext));
     },
 

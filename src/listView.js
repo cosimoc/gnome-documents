@@ -105,7 +105,7 @@ ListView.prototype = {
         col.set_cell_data_func(typeRenderer, Lang.bind(this,
             function(col, cell, model, iter) {
                 let urn = model.get_value(iter, Documents.ModelColumns.URN);
-                let doc = Global.documentManager.lookupDocument(urn);
+                let doc = Global.documentManager.getItemById(urn);
 
                 typeRenderer.text = doc.typeDescription;
             }));
@@ -116,7 +116,7 @@ ListView.prototype = {
         col.set_cell_data_func(whereRenderer, Lang.bind(this,
             function(col, cell, model, iter) {
                 let urn = model.get_value(iter, Documents.ModelColumns.URN);
-                let doc = Global.documentManager.lookupDocument(urn);
+                let doc = Global.documentManager.getItemById(urn);
 
                 whereRenderer.text = doc.sourceName;
             }));

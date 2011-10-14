@@ -187,7 +187,7 @@ MainToolbar.prototype = {
 
     _updateModelLabels: function() {
         let pageLabel = null;
-        let doc = Global.documentManager.getActiveDocument();
+        let doc = Global.documentManager.getActiveItem();
 
         let titleLabel = ('<b>%s</b>').format(GLib.markup_escape_text(doc.title, -1));
         this._titleLabel.set_markup(titleLabel);
