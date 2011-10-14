@@ -47,10 +47,6 @@ TrackerController.prototype = {
         this._sourceManager.connect('active-source-changed',
                                     Lang.bind(this, this._refresh));
 
-        this._categoryManager = Global.categoryManager;
-        this._categoryManager.connect('active-category-changed',
-                                      Lang.bind(this, this._refresh));
-
         this._offsetController = Global.offsetController;
         this._offsetController.connect('offset-changed',
                                        Lang.bind(this, this._performCurrentQuery));

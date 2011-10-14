@@ -25,6 +25,7 @@ const Signals = imports.signals;
 const _ = imports.gettext.gettext;
 
 const Global = imports.global;
+const Manager = imports.manager;
 
 const StockCategories = {
     RECENT: 'recent',
@@ -33,15 +34,15 @@ const StockCategories = {
     PRIVATE: 'private'
 };
 
-function Category(id, name, icon) {
-    this._init(id, name, icon);
+function Category(params) {
+    this._init(params);
 };
 
 Category.prototype = {
-    _init: function(id, name, icon) {
-        this.id = id;
-        this.name = name;
-        this.icon = icon;
+    _init: function(params) {
+        this.id = params.id;
+        this.name = params.name;
+        this.icon = params.icon;
     },
 
     getWhere: function() {
@@ -52,7 +53,7 @@ Category.prototype = {
         if (this.id == StockCategories.SHARED)
             return '{ ?urn nco:contributor ?contributor . ?urn nco:creator ?creator FILTER (?contributor != ?creator ) }';
 
-        return '{ }';
+        return '';
     },
 
     getFilter: function() {
@@ -69,53 +70,39 @@ function CategoryManager() {
 };
 
 CategoryManager.prototype = {
-    _init: function() {
-        this._categories = {};
+    __proto__: Manager.BaseManager.prototype,
 
-        let category;
+    _init: function() {
+        Manager.BaseManager.prototype._init.call(this);
+
+        let category, recent;
         // Translators: this refers to new and recent documents
-        category = new Category(StockCategories.RECENT, _("New and Recent"), '');
-        this._categories[category.id] = category;
+        recent = new Category({ id: StockCategories.RECENT,
+                                name: _("New and Recent"),
+                                icon: '' });
+        this.addItem(recent);
+
         // Translators: this refers to favorite documents
-        category = new Category(StockCategories.FAVORITES, _("Favorites"), 'emblem-favorite-symbolic');
-        this._categories[category.id] = category;
+        category = new Category({ id: StockCategories.FAVORITES,
+                                  name: _("Favorites"),
+                                  icon: 'emblem-favorite-symbolic' });
+        this.addItem(category);
         // Translators: this refers to shared documents
-        category = new Category(StockCategories.SHARED, _("Shared with you"), 'emblem-shared-symbolic');
-        this._categories[category.id] = category;
+        category = new Category({ id: StockCategories.SHARED,
+                                  name: _("Shared with you"),
+                                  icon: 'emblem-shared-symbolic' });
+        this.addItem(category);
 
         // Private category: currently unimplemented
         // category = new Category(StockCategories.PRIVATE, _("Private"), 'channel-secure-symbolic');
         // this._categories[category.id] = category;
 
-        this.setActiveCategoryId(StockCategories.RECENT);
-    },
-
-    setActiveCategoryId: function(id) {
-        let category = this._categories[id];
-
-        if (!category)
-            return;
-
-        if (category != this.activeCategory) {
-            this.activeCategory = category;
-            this.emit('active-category-changed');
-        }
-    },
-
-    getActiveCategoryId: function() {
-        return this.activeCategory.id;
-    },
-
-    getActiveCategoryWhere: function() {
-        return this.activeCategory.getWhere();
+        this.setActiveItem(recent);
     },
 
     getActiveCategoryFilter: function() {
-        return this.activeCategory.getFilter();
-    },
-
-    getCategories: function() {
-        return this._categories;
+        let active = this.getActiveItem();
+        return active.getFilter();
     }
 };
 Signals.addSignalMethods(CategoryManager.prototype);

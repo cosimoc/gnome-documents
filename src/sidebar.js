@@ -66,9 +66,9 @@ SidebarModel.prototype = {
             this._addCollection));
 
         // insert categories
-        let categories = Global.categoryManager.getCategories();
-        for (idx in categories) {
-            let category = categories[idx];
+        let items = Global.categoryManager.getItems();
+        for (idx in items) {
+            let category = items[idx];
             iter = this.model.append();
             Gd.sidebar_store_set(this.model, iter,
                                  category.id, category.name, category.icon,
