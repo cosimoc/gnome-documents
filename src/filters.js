@@ -43,3 +43,35 @@ SearchFilterController.prototype = {
     }
 };
 Signals.addSignalMethods(SearchFilterController.prototype);
+
+function SideFilterController() {
+    this._init();
+}
+
+SideFilterController.prototype = {
+    _init: function() {
+        this._whereItem = null;
+    },
+
+    setActiveItem: function(controller, item) {
+        if (this._whereItem == item)
+            return;
+
+        this._whereItem = item;
+        controller.setActiveItem(this._whereItem);
+
+        this.emit('changed', this._whereItem);
+    },
+
+    getWhere: function() {
+        if (!this._whereItem)
+            return '';
+
+        return this._whereItem.getWhere();
+    },
+
+    getWhereItem: function() {
+        return this._whereItem;
+    }
+};
+Signals.addSignalMethods(SideFilterController.prototype);

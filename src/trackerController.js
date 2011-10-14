@@ -51,6 +51,8 @@ TrackerController.prototype = {
         this._offsetController.connect('offset-changed',
                                        Lang.bind(this, this._performCurrentQuery));
 
+        Global.sideFilterController.connect('changed',
+                                            Lang.bind(this, this._refresh));
         Global.searchFilterController.connect('changed',
                                               Lang.bind(this, this._onSearchFilterChanged));
 

@@ -148,8 +148,16 @@ SidebarView.prototype = {
             function(view, path) {
                 let iter = this._treeModel.get_iter(path)[1];
                 let id = this._treeModel.get_value(iter, SidebarModelColumns.ID);
+                let section = this._treeModel.get_value(iter, SidebarModelColumns.SECTION);
 
-                Global.categoryManager.setActiveCategoryId(id);
+                let controller = null;
+                if (section == SidebarModelSections.CATEGORIES)
+                    controller = Global.categoryManager;
+                else if (section == SidebarModelSections.COLLECTIONS)
+                    controller = Global.collectionManager;
+
+                let item = controller.getItemById(id);
+                Global.sideFilterController.setActiveItem(controller, item);
             }));
 
         let col = new Gtk.TreeViewColumn();

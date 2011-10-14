@@ -147,11 +147,11 @@ QueryBuilder.prototype = {
 
         if (global) {
             globalSparql +=
-                Global.categoryManager.getActiveCategoryWhere() +
-                 this._buildFilterString() +
-                 ' } ' +
-                 'ORDER BY DESC (?mtime)' +
-                 ('LIMIT %d OFFSET %d').format(Global.offsetController.getOffsetStep(),
+                Global.sideFilterController.getWhere() +
+                this._buildFilterString() +
+                ' } ' +
+                'ORDER BY DESC (?mtime)' +
+                ('LIMIT %d OFFSET %d').format(Global.offsetController.getOffsetStep(),
                                               Global.offsetController.getOffset());
         } else {
             globalSparql += this._buildFilterString() + ' }';
