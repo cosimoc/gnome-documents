@@ -23,6 +23,7 @@ const Lang = imports.lang;
 const Signals = imports.signals;
 
 const Global = imports.global;
+const Manager = imports.manager;
 
 const CollectionQueryColumns = {
     URN: 0,
@@ -35,15 +36,15 @@ function Collection(params) {
 
 Collection.prototype = {
     _init: function(params) {
-        this.urn = null;
-        this.name = null;
-
         if (params.cursor) {
             let cursor = params.cursor;
 
-            this.urn = cursor.get_string(CollectionQueryColumns.URN)[0];
+            this.id = cursor.get_string(CollectionQueryColumns.URN)[0];
             this.name = cursor.get_string(CollectionQueryColumns.NAME)[0];
         }
+
+        // TODO add icon for remote categories
+        this.icon = '';
     },
 
     getWhere: function() {
@@ -57,13 +58,28 @@ function CollectionManager() {
 };
 
 CollectionManager.prototype = {
-    _init: function() {
-        this._collections = {};
+    __proto__: Manager.BaseManager.prototype,
 
+    _init: function() {
+        Manager.BaseManager.prototype._init.call(this);
+        this._newItems = {};
+
+        // we want to only display collections for the current source,
+        // so refresh the list when the active source changes.
+        Global.sourceManager.connect('active-changed',
+                                     Lang.bind(this, this._refreshCollections));
+
+        this._refreshCollections();
+
+        // TODO: keep track changes from the tracker store
+    },
+
+    _refreshCollections: function() {
         let sparql = 'SELECT ?urn nie:title(?urn) WHERE { ' +
             '{ ?urn a nfo:DataContainer } ' +
             '{ ?doc nie:isPartOf ?urn } ' +
-            'FILTER ((fn:starts-with (nao:identifier(?urn), "gd:collection"))' +
+            'FILTER ((fn:starts-with (nao:identifier(?urn), "gd:collection")) &&' +
+            Global.sourceManager.getFilter() +
             ')}';
 
         Global.connection.query_async(sparql, null, Lang.bind(this,
@@ -77,10 +93,6 @@ CollectionManager.prototype = {
             }));
     },
 
-    _onChangesPending: function() {
-
-    },
-
     _onCursorNext: function(cursor, res) {
         try {
             let valid = cursor.next_finish(res);
@@ -91,41 +103,37 @@ CollectionManager.prototype = {
             } else {
                 // process all the items we collected
                 cursor.close();
+                this._refreshItems();
             }
         } catch (e) {
             log('Unable to query the collection list: ' + e.toString());
             cursor.close();
+            this._refreshItems();
         }
+    },
+
+    _refreshItems: function() {
+        let oldItems = this.getItems();
+
+        for (idx in oldItems) {
+            // if old items are not found in the new array,
+            // remove them
+            if (!this._newItems[idx])
+                this.removeItem(oldItems[idx]);
+        }
+
+        for (idx in this._newItems) {
+            // if new items are not found in the old array,
+            // add them
+            if (!oldItems[idx])
+                this.addItem(this._newItems[idx]);
+        }
+
+        this._newItems = {};
     },
 
     _addCollectionFromCursor: function(cursor) {
-        let urn = cursor.get_string(CollectionQueryColumns.URN)[0];
-        let collection = this.getCollectionByUrn(urn);
-
-        if (collection != null) {
-            collection.updateFromCursor(cursor);
-        } else {
-            collection = new Collection({ cursor: cursor });
-            this._addCollection(collection);
-        }
-    },
-
-    _addCollection: function(collection) {
-        this._collections[collection.urn] = collection;
-        this.emit('collection-added', collection);
-    },
-
-    getCollections: function() {
-        return this._collections;
-    },
-
-    getCollectionByUrn: function(urn) {
-        let retval = this._collections[urn];
-
-        if (!retval)
-            retval = null;
-
-        return retval;
+        let collection = new Collection({ cursor: cursor });
+        this._newItems[collection.id] = collection;
     }
 };
-Signals.addSignalMethods(CollectionManager.prototype);

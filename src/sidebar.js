@@ -62,7 +62,7 @@ SidebarModel.prototype = {
         this.model = Gd.create_sidebar_store();
         this.model.set_default_sort_func(Lang.bind(this, this._modelSortFunc));
 
-        this._collectionsId = Global.collectionManager.connect('collection-added', Lang.bind(this,
+        this._collectionsId = Global.collectionManager.connect('item-added', Lang.bind(this,
             this._addCollection));
 
         // insert categories
@@ -81,9 +81,9 @@ SidebarModel.prototype = {
                              '', '', '',
                              _('Collections'), SidebarModelSections.COLLECTIONS);
 
-        let collections = Global.collectionManager.getCollections();
-        for (idx in collections) {
-            let collection = collections[idx];
+        items = Global.collectionManager.getItems();
+        for (idx in items) {
+            let collection = items[idx];
             this._addCollection(Global.collectionManager, collection);
         }
     },
@@ -119,7 +119,7 @@ SidebarModel.prototype = {
     _addCollection: function(manager, collection) {
         let iter = this.model.append();
         Gd.sidebar_store_set(this.model, iter,
-                             collection.urn, collection.name, '',
+                             collection.id, collection.name, '',
                              '', SidebarModelSections.COLLECTIONS);
     }
 };
