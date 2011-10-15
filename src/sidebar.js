@@ -57,16 +57,31 @@ function SidebarModel() {
 
 SidebarModel.prototype = {
     _init: function() {
-        let iter = null;
+        this._collHeaderRef = null;
 
         this.model = Gd.create_sidebar_store();
-        this.model.set_default_sort_func(Lang.bind(this, this._modelSortFunc));
+        this.model.set_sort_column_id(0, Gtk.SortType.ASCENDING);
+        this.model.set_sort_func(0, Lang.bind(this, this._modelSortFunc));
 
-        this._collectionsId = Global.collectionManager.connect('item-added', Lang.bind(this,
-            this._addCollection));
+        // track collections additions and removals;
+        // categories are static right now, so there's no need to track
+        // additions/removal for them.
+        Global.collectionManager.connect('item-added',
+                                         Lang.bind(this, this._addCollection));
+        Global.collectionManager.connect('item-removed',
+                                         Lang.bind(this, this._removeCollection));
+
+        let iter = null;
+
+        // insert collections
+        let items = Global.collectionManager.getItems();
+        for (idx in items) {
+            let collection = items[idx];
+            this._addCollection(null, collection);
+        }
 
         // insert categories
-        let items = Global.categoryManager.getItems();
+        items = Global.categoryManager.getItems();
         for (idx in items) {
             let category = items[idx];
             iter = this.model.append();
@@ -74,25 +89,68 @@ SidebarModel.prototype = {
                                  category.id, category.name, category.icon,
                                  '', SidebarModelSections.CATEGORIES);
         };
+    },
 
-        // insert collections
-        iter = this.model.append();
-        Gd.sidebar_store_set(this.model, iter,
-                             '', '', '',
-                             _('Collections'), SidebarModelSections.COLLECTIONS);
+    _checkHeader: function() {
+        let shouldShow = (Global.collectionManager.getItemsCount() > 0);
 
-        items = Global.collectionManager.getItems();
-        for (idx in items) {
-            let collection = items[idx];
-            this._addCollection(Global.collectionManager, collection);
+        // if the header is already in the desired state, just return
+        if ((this._collHeaderRef && shouldShow) ||
+            (!this._collHeaderRef && !shouldShow))
+            return;
+
+        if (shouldShow) {
+            // save this as a tree reference to remove it later
+            let iter = this.model.append();
+            let path = this.model.get_path(iter);
+            this._collHeaderRef = Gtk.TreeRowReference.new(this.model, path);
+
+            Gd.sidebar_store_set(this.model, iter,
+                                 'collections-header-placeholder', '', '',
+                                 _('Collections'), SidebarModelSections.COLLECTIONS);
+        } else {
+            let path = this._collHeaderRef.get_path();
+            let iter = this.model.get_iter(path);
+
+            if (iter[0]) {
+                this.model.remove(iter[1]);
+                this._collHeaderRef = null;
+            }
         }
+    },
+
+    _addCollection: function(controller, collection) {
+        // just append here; the sort function will move the new
+        // row to the right position
+        let iter = this.model.append();
+        Gd.sidebar_store_set(this.model, iter,
+                             collection.id, collection.name, '',
+                             '', SidebarModelSections.COLLECTIONS);
+
+        this._checkHeader();
+    },
+
+    _removeCollection: function(controller, collection) {
+        // go through the model rows until we found our collection
+        this.model.foreach(Lang.bind(this,
+            function(model, path, iter) {
+                let id = this.model.get_value(iter, SidebarModelColumns.ID);
+                if (id == collection.id) {
+                    this.model.remove(iter);
+                    this._checkHeader();
+
+                    return true;
+                }
+
+                return false;
+            }));
     },
 
     // returns:
     // * 0 if iters are equal
     // * < 0 if A sorts before B
     // * > 0 if A sorts after B
-    _modelSortFunc: function(iterA, iterB) {
+    _modelSortFunc: function(model, iterA, iterB) {
         let sectionA, sectionB;
 
         sectionA = this.model.get_value(iterA, SidebarModelColumns.SECTION);
@@ -114,13 +172,6 @@ SidebarModel.prototype = {
             return 1;
 
         return 0;
-    },
-
-    _addCollection: function(manager, collection) {
-        let iter = this.model.append();
-        Gd.sidebar_store_set(this.model, iter,
-                             collection.id, collection.name, '',
-                             '', SidebarModelSections.COLLECTIONS);
     }
 };
 
