@@ -121,9 +121,9 @@ QueryBuilder.prototype = {
 
         sparql += '(' + this._buildFilterSearch() + ')';
         sparql += ' && ';
-        sparql += Global.sourceManager.getActiveSourceFilter();
+        sparql += Global.sourceManager.getFilter();
         sparql += ' && ';
-        sparql += Global.categoryManager.getActiveCategoryFilter();
+        sparql += Global.categoryManager.getFilter();
         sparql += ' && ';
         sparql += this._buildFilterType();
 

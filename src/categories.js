@@ -98,11 +98,6 @@ CategoryManager.prototype = {
         // this._categories[category.id] = category;
 
         this.setActiveItem(recent);
-    },
-
-    getActiveCategoryFilter: function() {
-        let active = this.getActiveItem();
-        return active.getFilter();
     }
 };
 Signals.addSignalMethods(CategoryManager.prototype);

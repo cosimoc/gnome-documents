@@ -137,10 +137,6 @@ SourceManager.prototype = {
     setActiveItem: function(item) {
         if (Manager.BaseManager.prototype.setActiveItem.call(this, item))
             Global.settings.set_string('active-source', item.id);
-    },
-
-    getActiveSourceFilter: function() {
-        return this.getActiveItem().getFilter();
     }
 };
 
