@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-03 17:43+0000\n"
+"POT-Creation-Date: 2011-10-13 18:13+0000\n"
 "PO-Revision-Date: 2011-09-04 00:07+0200\n"
-"Last-Translator: Kristjan SCHMIDT <kristjan.schmidt@googlemail.com>\n"
+"Last-Translator: Tiffany ANTOPOLSKI\n"
 "Language-Team: Esperanto <ubuntu-l10n-eo@lists.launchpad.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Access, manage and share documents"
 msgstr "Aliri, administri kaj kunhavigi dokumentojn"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:82
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:48
 msgid "Documents"
 msgstr "Dokumentoj"
 
@@ -38,15 +38,37 @@ msgid "The active source filter"
 msgstr "La aktiva fontfiltrilo"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:4
-#, fuzzy
 msgid "The last active source filter"
-msgstr "La lasta aktiva fontfiltrilo"
+msgstr "La last aktiva fontfiltrilo"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
+msgid "Window maximized"
+msgstr "Fenestro maksimumigita"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
+msgid "Window maximized state"
+msgstr "Maksimumigita stato de fenestro"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
+msgid "Window position"
+msgstr "Pozicio de fenestro"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
+msgid "Window position (x and y)."
+msgstr "Pozicio de fenestro (x kaj y)."
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:9
+msgid "Window size"
+msgstr "Fenestrogrando"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:10
+msgid "Window size (width and height)."
+msgstr "Fenestrogrando (larĝo kaj alto)."
 
 #. Translators: this refers to new and recent documents
 #: ../src/categories.js:77
-#, fuzzy
 msgid "New and Recent"
-msgstr "Nove kaj pasinte"
+msgstr "Novaj kaj lastatempaj"
 
 #. Translators: this refers to favorite documents
 #: ../src/categories.js:80
@@ -58,32 +80,27 @@ msgstr "Legosignoj"
 msgid "Shared with you"
 msgstr "Kunhavigite kun vi"
 
-#. unimplemented
-#: ../src/categories.js:87
-msgid "Private"
-msgstr "Private"
-
-#: ../src/documents.js:269 ../src/sources.js:116
+#: ../src/documents.js:253 ../src/sources.js:101
 msgid "Local"
 msgstr "Loke"
 
-#: ../src/documents.js:388
+#: ../src/documents.js:378
 msgid "Google Docs"
 msgstr "Guglo-Docs"
 
-#: ../src/documents.js:389
+#: ../src/documents.js:379
 msgid "Google"
 msgstr "Guglo"
 
-#: ../src/documents.js:446
+#: ../src/documents.js:448
 msgid "Spreadsheet"
 msgstr "Kalkultabelo"
 
-#: ../src/documents.js:448
+#: ../src/documents.js:450
 msgid "Presentation"
 msgstr "Prezentaĵo"
 
-#: ../src/documents.js:450
+#: ../src/documents.js:452
 msgid "Document"
 msgstr "Dokumento"
 
@@ -97,21 +114,23 @@ msgstr "Ne eblis ŝargi na \"%s\" por antaŭmontro"
 msgid "Unable to fetch the list of documents"
 msgstr "Ne eblis venigi la liston de dokumentoj"
 
-#: ../src/loadMore.js:69
+#: ../src/loadMore.js:70
 #, c-format
-msgid "Load %d more documents"
-msgstr "Ŝargi %d pluajn dokumentojn"
+msgid "Load %d more document"
+msgid_plural "Load %d more documents"
+msgstr[0] "Ŝargi %d pluan dokumenton"
+msgstr[1] "Ŝargi %d pluajn dokumentojn"
 
-#: ../src/mainToolbar.js:183
+#: ../src/mainToolbar.js:201
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d de %d)"
 
-#: ../src/sidebar.js:130 ../src/sources.js:255
+#: ../src/sidebar.js:131 ../src/sources.js:218
 msgid "Sources"
 msgstr "Fontoj"
 
-#: ../src/sources.js:110
+#: ../src/sources.js:96
 msgid "All"
 msgstr "Ĉiuj"
 
@@ -120,19 +139,20 @@ msgid "Loading..."
 msgstr "Ŝargante..."
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:46
+#: ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "Malfermi per %s"
 
-#: ../src/view.js:46
+#. Translators: this is the Open action in a context menu
+#: ../src/view.js:70
 msgid "Open"
 msgstr "Malfermi"
 
-#: ../src/view.js:56
+#: ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "Forigi de la legosignoj"
 
-#: ../src/view.js:56
+#: ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Aldoni al la legosignoj"
