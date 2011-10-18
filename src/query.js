@@ -39,6 +39,17 @@ const QueryColumns = {
     SHARED: 11
 };
 
+function Query(sparql) {
+    this._init(sparql);
+}
+
+Query.prototype = {
+    _init: function(sparql) {
+        this.sparql = sparql;
+        this.activeSource = Global.sourceManager.getActiveItem();
+    }
+};
+
 function QueryBuilder() {
     this._init();
 }
@@ -177,11 +188,13 @@ QueryBuilder.prototype = {
 
     buildSingleQuery: function(resource) {
         let sparql = this._buildQueryInternal(false);
-        return sparql.replace('?urn', '<' + resource + '>', 'g');
+        sparql = sparql.replace('?urn', '<' + resource + '>', 'g');
+
+        return new Query(sparql);
     },
 
     buildGlobalQuery: function() {
-        return this._buildQueryInternal(true);
+        return new Query(this._buildQueryInternal(true));
     },
 
     buildCountQuery: function() {
@@ -191,6 +204,17 @@ QueryBuilder.prototype = {
             this._buildFilterString() +
             '}';
 
-        return sparql;
+        return new Query(sparql);
+    },
+
+    buildCollectionsQuery: function() {
+        let sparql = 'SELECT ?urn nie:title(?urn) WHERE { ' +
+            '{ ?urn a nfo:DataContainer } ' +
+            '{ ?doc nie:isPartOf ?urn } ' +
+            'FILTER ((fn:starts-with (nao:identifier(?urn), "gd:collection")) &&' +
+            Global.sourceManager.getFilter() +
+            ')}';
+
+        return new Query(sparql);
     }
 };

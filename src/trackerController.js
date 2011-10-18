@@ -37,6 +37,8 @@ function TrackerController() {
 
 TrackerController.prototype = {
     _init: function() {
+        this._currentQuery = null;
+
         // startup a refresh of the gdocs cache
         this._miner = new GDataMiner.GDataMiner();
         this._refreshMinerNow();
@@ -112,7 +114,8 @@ TrackerController.prototype = {
     },
 
     _performCurrentQuery: function() {
-        Global.connection.query_async(Global.queryBuilder.buildGlobalQuery(),
+        this._currentQuery = Global.queryBuilder.buildGlobalQuery();
+        Global.connection.query_async(this._currentQuery.sparql,
                                       null, Lang.bind(this, this._onQueryExecuted));
     },
 

@@ -44,8 +44,10 @@ OffsetController.prototype = {
 
     // to be called by the model
     resetItemCount: function() {
+        let query = Global.queryBuilder.buildCountQuery();
+
         Global.connection.query_async
-            (Global.queryBuilder.buildCountQuery(), null, Lang.bind(this,
+            (query.sparql, null, Lang.bind(this,
                 function(object, res) {
                     let cursor = null;
                     try {

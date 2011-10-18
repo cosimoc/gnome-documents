@@ -63,6 +63,7 @@ CollectionManager.prototype = {
     _init: function() {
         Manager.BaseManager.prototype._init.call(this);
         this._newItems = {};
+        this._currentQuery = null;
 
         // we want to only display collections for the current source,
         // so refresh the list when the active source changes.
@@ -75,14 +76,8 @@ CollectionManager.prototype = {
     },
 
     _refreshCollections: function() {
-        let sparql = 'SELECT ?urn nie:title(?urn) WHERE { ' +
-            '{ ?urn a nfo:DataContainer } ' +
-            '{ ?doc nie:isPartOf ?urn } ' +
-            'FILTER ((fn:starts-with (nao:identifier(?urn), "gd:collection")) &&' +
-            Global.sourceManager.getFilter() +
-            ')}';
-
-        Global.connection.query_async(sparql, null, Lang.bind(this,
+        this._currentQuery = Global.queryBuilder.buildCollectionsQuery();
+        Global.connection.query_async(this._currentQuery.sparql, null, Lang.bind(this,
             function(object, res) {
                 try {
                     let cursor = object.query_finish(res);

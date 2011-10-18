@@ -79,9 +79,9 @@ DocCommon.prototype = {
     },
 
     refresh: function() {
-        let sparql = Global.queryBuilder.buildSingleQuery(this.id);
+        let query = Global.queryBuilder.buildSingleQuery(this.id);
 
-        Global.connection.query_async(sparql, null, Lang.bind(this,
+        Global.connection.query_async(query.sparql, null, Lang.bind(this,
             function(object, res) {
                 let cursor = null;
 
@@ -551,9 +551,9 @@ DocumentManager.prototype = {
     },
 
     _onDocumentCreated: function(urn) {
-        let sparql = Global.queryBuilder.buildSingleQuery(urn);
+        let query = Global.queryBuilder.buildSingleQuery(urn);
 
-        Global.connection.query_async(sparql, null, Lang.bind(this,
+        Global.connection.query_async(query.sparql, null, Lang.bind(this,
             function(object, res) {
                 let cursor = null;
 
