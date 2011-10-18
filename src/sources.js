@@ -155,6 +155,7 @@ SourceModel.prototype = {
         this.model = Gd.create_sources_store();
         this._sourceManager = Global.sourceManager;
         this._sourceManager.connect('item-added', Lang.bind(this, this._refreshModel));
+        this._sourceManager.connect('item-removed', Lang.bind(this, this._refreshModel));
 
         this._refreshModel();
     },
