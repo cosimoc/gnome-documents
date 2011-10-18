@@ -108,22 +108,7 @@ CollectionManager.prototype = {
     },
 
     _refreshItems: function() {
-        let oldItems = this.getItems();
-
-        for (idx in oldItems) {
-            // if old items are not found in the new array,
-            // remove them
-            if (!this._newItems[idx])
-                this.removeItem(oldItems[idx]);
-        }
-
-        for (idx in this._newItems) {
-            // if new items are not found in the old array,
-            // add them
-            if (!oldItems[idx])
-                this.addItem(this._newItems[idx]);
-        }
-
+        this.processNewItems(this._newItems);
         this._newItems = {};
     },
 

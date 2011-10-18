@@ -80,14 +80,6 @@ BaseManager.prototype = {
         this.removeItemById(item.id);
     },
 
-    removeMatchingItems: function(filterFunc) {
-        for (idx in this._items) {
-            let item = this._items[idx];
-            if (!filterFunc(item))
-                this.removeItemById(idx);
-        }
-    },
-
     removeItemById: function(id) {
         let item = this._items[id];
 
@@ -108,6 +100,28 @@ BaseManager.prototype = {
             return item.getFilter();
 
         return '';
+    },
+
+    processNewItems: function(newItems) {
+        let oldItems = this.getItems();
+
+        for (idx in oldItems) {
+            let item = oldItems[idx];
+
+            // if old items are not found in the new array,
+            // remove them
+            if (!newItems[idx] && !item.builtin)
+                this.removeItem(oldItems[idx]);
+        }
+
+        for (idx in newItems) {
+            // if new items are not found in the old array,
+            // add them
+            if (!oldItems[idx])
+                this.addItem(newItems[idx]);
+        }
+
+        // TODO: merge existing item properties with new values
     }
 };
 Signals.addSignalMethods(BaseManager.prototype);

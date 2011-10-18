@@ -43,18 +43,17 @@ Source.prototype = {
     _init: function(params) {
         this.id = null;
         this.name = null;
-        this.isGoa = false;
 
         if (params.object) {
             let account = params.object.get_account();
             this.id = 'gd:goa-account:' + account.id;
             this.name = account.provider_name;
-
-            this.isGoa = true;
         } else {
             this.id = params.id;
             this.name = params.name;
         }
+
+        this.builtin = params.builtin;
     },
 
     getFilter: function() {
@@ -71,7 +70,7 @@ Source.prototype = {
     _buildFilterResource: function() {
         let filter = '(false)';
 
-        if (this.isGoa)
+        if (!this.builtin)
             filter = ('(nie:dataSource(?urn) = "%s")').format(this.id);
 
         return filter;
@@ -90,29 +89,26 @@ SourceManager.prototype = {
 
         // Translators: this refers to documents
         let source = new Source({ id: 'all',
-                                  name: _("All") });
+                                  name: _("All"),
+                                  builtin: true });
         this.addItem(source);
 
         // Translators: this refers to local documents
         source = new Source({ id: 'local',
-                              name: _("Local") });
+                              name: _("Local"),
+                              builtin: true });
         this.addItem(source);
 
         Global.goaClient.connect('account-added', Lang.bind(this, this._refreshGoaAccounts));
         Global.goaClient.connect('account-changed', Lang.bind(this, this._refreshGoaAccounts));
         Global.goaClient.connect('account-removed', Lang.bind(this, this._refreshGoaAccounts));
+
         this._refreshGoaAccounts();
     },
 
     _refreshGoaAccounts: function() {
-        this.removeMatchingItems(
-            function(item) {
-                // if it's a Goa object, remove it
-                return !item.isGoa;
-            });
-
+        let newItems = {};
         let accounts = Global.goaClient.get_accounts();
-        let modified = false;
 
         accounts.forEach(Lang.bind(this,
             function(object) {
@@ -123,8 +119,10 @@ SourceManager.prototype = {
                     return;
 
                 let source = new Source({ object: object });
-                this.addItem(source);
+                newItems[source.id] = source;
             }));
+
+        this.processNewItems(newItems);
 
         let activeItemId = Global.settings.get_string('active-source');
 

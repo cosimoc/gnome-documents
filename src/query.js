@@ -96,7 +96,7 @@ QueryBuilder.prototype = {
 
         for (idx in sources) {
             let source = sources[idx];
-            if (source.isGoa)
+            if (!source.builtin)
                 sparql += source.getFilter() + ' || ';
         }
 
