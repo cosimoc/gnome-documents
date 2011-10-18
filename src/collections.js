@@ -69,10 +69,26 @@ CollectionManager.prototype = {
         // so refresh the list when the active source changes.
         Global.sourceManager.connect('active-changed',
                                      Lang.bind(this, this._refreshCollections));
+        // when a source is removed or added, we might need to refresh
+        // the list of collections
+        Global.sourceManager.connect('item-added',
+                                     Lang.bind(this, this._onSourceAddedRemoved));
+        Global.sourceManager.connect('item-removed',
+                                     Lang.bind(this, this._onSourceAddedRemoved));
 
         this._refreshCollections();
 
         // TODO: keep track changes from the tracker store
+    },
+
+    _onSourceAddedRemoved: function(manager, item) {
+        // When a source is added or removed, refresh the model only if
+        // the current source is All.
+        // If it was the current source to be removed, we will get an
+        // 'active-changed' signal, so avoid refreshing twice
+        if (this._currentQuery.activeSource &&
+            this._currentQuery.activeSource.id == 'all')
+            this._refreshCollections();
     },
 
     _refreshCollections: function() {

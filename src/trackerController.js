@@ -44,10 +44,9 @@ TrackerController.prototype = {
         this._refreshMinerNow();
 
         this._sourceManager = Global.sourceManager;
-        this._sourceManager.connect('item-added',
-                                    Lang.bind(this, this._refresh));
-        this._sourceManager.connect('active-changed',
-                                    Lang.bind(this, this._refresh));
+        this._sourceManager.connect('item-added', Lang.bind(this, this._onSourceAddedRemoved));
+        this._sourceManager.connect('item-removed', Lang.bind(this, this._onSourceAddedRemoved));
+        this._sourceManager.connect('active-changed', Lang.bind(this, this._refresh));
 
         this._offsetController = Global.offsetController;
         this._offsetController.connect('offset-changed',
@@ -130,6 +129,16 @@ TrackerController.prototype = {
     _onSearchFilterChanged: function() {
         this._offsetController.resetOffset();
         this._refresh();
+    },
+
+    _onSourceAddedRemoved: function(manager, item) {
+        // When a source is added or removed, refresh the model only if
+        // the current source is All.
+        // If it was the current source to be removed, we will get an
+        // 'active-changed' signal, so avoid refreshing twice
+        if (this._currentQuery.activeSource &&
+            this._currentQuery.activeSource.id == 'all')
+            this._refresh();
     }
 };
 Signals.addSignalMethods(TrackerController.prototype);
