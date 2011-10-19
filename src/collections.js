@@ -27,7 +27,8 @@ const Manager = imports.manager;
 
 const CollectionQueryColumns = {
     URN: 0,
-    NAME: 1
+    NAME: 1,
+    DATASOURCE_URN: 2
 };
 
 function Collection(params) {
@@ -41,10 +42,19 @@ Collection.prototype = {
 
             this.id = cursor.get_string(CollectionQueryColumns.URN)[0];
             this.name = cursor.get_string(CollectionQueryColumns.NAME)[0];
-        }
 
-        // TODO add icon for remote categories
-        this.icon = '';
+            let datasource = cursor.get_string(CollectionQueryColumns.DATASOURCE_URN)[0];
+            let source = Global.sourceManager.getItemById(datasource);
+
+            if (source) {
+                let icon = source.icon;
+
+                if (icon.names)
+                    this.icon = icon.names[0];
+            } else {
+                this.icon = '';
+            }
+        }
     },
 
     getWhere: function() {

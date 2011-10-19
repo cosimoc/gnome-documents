@@ -124,7 +124,7 @@ SidebarModel.prototype = {
         // row to the right position
         let iter = this.model.append();
         Gd.sidebar_store_set(this.model, iter,
-                             collection.id, collection.name, '',
+                             collection.id, collection.name, collection.icon,
                              '', SidebarModelSections.COLLECTIONS);
 
         this._checkHeader();

@@ -43,11 +43,13 @@ Source.prototype = {
     _init: function(params) {
         this.id = null;
         this.name = null;
+        this.icon = null;
 
         if (params.object) {
             let account = params.object.get_account();
             this.id = 'gd:goa-account:' + account.id;
             this.name = account.provider_name;
+            this.icon = Gio.icon_new_for_string(account.provider_icon);
         } else {
             this.id = params.id;
             this.name = params.name;

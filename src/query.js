@@ -208,7 +208,7 @@ QueryBuilder.prototype = {
     },
 
     buildCollectionsQuery: function() {
-        let sparql = 'SELECT ?urn nie:title(?urn) WHERE { ' +
+        let sparql = 'SELECT ?urn nie:title(?urn) nie:dataSource(?urn) WHERE { ' +
             '{ ?urn a nfo:DataContainer } ' +
             '{ ?doc nie:isPartOf ?urn } ' +
             'FILTER ((fn:starts-with (nao:identifier(?urn), "gd:collection")) &&' +
