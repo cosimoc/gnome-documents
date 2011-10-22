@@ -1,0 +1,162 @@
+# Hebrew translations for PACKAGE package.
+# Copyright (C) 2011 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Yaron Shahrabani <sh.yaron@gmail.com>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Gnome-Documents\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-10-22 15:02+0200\n"
+"PO-Revision-Date: 2011-10-22 15:06+0200\n"
+"Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
+"Language-Team: Hebrew <sh.yaron@gmail.com>\n"
+"Language: he\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Language: Hebrew\n"
+"X-Poedit-Country: ISRAEL\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: ../data/gnome-documents.desktop.in.in.h:1
+msgid "Access, manage and share documents"
+msgstr "גישה, ניהול ושיתוף של מסמכים"
+
+#: ../data/gnome-documents.desktop.in.in.h:2
+#: ../src/mainWindow.js:48
+msgid "Documents"
+msgstr "מסמכים"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1
+msgid "Enable list view"
+msgstr "Enable list view"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
+msgid "List view"
+msgstr "List view"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
+msgid "The active source filter"
+msgstr "The active source filter"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "The last active source filter"
+msgstr "The last active source filter"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
+msgid "Window maximized"
+msgstr "Window maximized"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
+msgid "Window maximized state"
+msgstr "Window maximized state"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
+msgid "Window position"
+msgstr "Window position"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
+msgid "Window position (x and y)."
+msgstr "Window position (x and y)."
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:9
+msgid "Window size"
+msgstr "Window size"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:10
+msgid "Window size (width and height)."
+msgstr "Window size (width and height)."
+
+#: ../src/categories.js:81
+msgid "New and Recent"
+msgstr "חדש ו"
+
+#: ../src/categories.js:87
+msgid "Favorites"
+msgstr "מועדפים"
+
+#: ../src/categories.js:92
+msgid "Shared with you"
+msgstr "משותף אתך"
+
+#: ../src/documents.js:260
+#: ../src/sources.js:100
+msgid "Local"
+msgstr "מקומי"
+
+#: ../src/documents.js:385
+msgid "Google Docs"
+msgstr "Google Docs"
+
+#: ../src/documents.js:386
+msgid "Google"
+msgstr "Google"
+
+#: ../src/documents.js:455
+msgid "Spreadsheet"
+msgstr "גיליון אלקטרוני"
+
+#: ../src/documents.js:457
+msgid "Presentation"
+msgstr "מצגת"
+
+#: ../src/documents.js:459
+msgid "Document"
+msgstr "מסמך"
+
+#. Translators: %s is the title of a document
+#: ../src/error.js:37
+#, c-format
+msgid "Unable to load \"%s\" for preview"
+msgstr "לא ניתן לטעון את ”%s“ לתצוגה מקדימה"
+
+#: ../src/error.js:44
+msgid "Unable to fetch the list of documents"
+msgstr "לא ניתן לקבל את רשימת המסמכים"
+
+#: ../src/loadMore.js:70
+#, c-format
+msgid "Load %d more document"
+msgid_plural "Load %d more documents"
+msgstr[0] "טעינת מסמך נוסף"
+msgstr[1] "טעינת %d מסמכים נוספים"
+
+#: ../src/mainToolbar.js:201
+#, c-format
+msgid "(%d of %d)"
+msgstr "‏(%d מתוך %d)"
+
+#: ../src/sidebar.js:378
+#: ../src/sources.js:170
+msgid "Sources"
+msgstr "מקורות"
+
+#: ../src/sources.js:94
+msgid "All"
+msgstr "הכול"
+
+#: ../src/spinnerBox.js:47
+msgid "Loading..."
+msgstr "בטעינה..."
+
+#. Translators: this is the Open action in a context menu
+#: ../src/view.js:67
+#, c-format
+msgid "Open with %s"
+msgstr "פתיחה באמצעות %s"
+
+#. Translators: this is the Open action in a context menu
+#: ../src/view.js:70
+msgid "Open"
+msgstr "פתיחה"
+
+#: ../src/view.js:80
+msgid "Remove from favorites"
+msgstr "הסרה מהמועדפים"
+
+#: ../src/view.js:80
+msgid "Add to favorites"
+msgstr "הוספה למועדפים"
+
