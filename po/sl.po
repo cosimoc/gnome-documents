@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-07 15:33+0000\n"
-"PO-Revision-Date: 2011-09-07 20:53+0100\n"
+"POT-Creation-Date: 2011-10-22 13:07+0000\n"
+"PO-Revision-Date: 2011-10-23 20:02+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: Slovenian\n"
@@ -26,7 +26,7 @@ msgid "Access, manage and share documents"
 msgstr "Upravljanje, dostop in souporaba dokumentov"
 
 #: ../data/gnome-documents.desktop.in.in.h:2
-#: ../src/mainWindow.js:47
+#: ../src/mainWindow.js:48
 msgid "Documents"
 msgstr "Dokumenti"
 
@@ -46,43 +46,64 @@ msgstr "Dejavni filter vira"
 msgid "The last active source filter"
 msgstr "Zadnji dejavni filter virov"
 
-#. Translators: this refers to new and recent documents
-#: ../src/categories.js:77
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
+msgid "Window maximized"
+msgstr "Razpeto okno"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
+msgid "Window maximized state"
+msgstr "Razpeto glavno okno"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
+msgid "Window position"
+msgstr "Položaj okna"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
+msgid "Window position (x and y)."
+msgstr "Položaj okna (osi x in y)."
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:9
+msgid "Window size"
+msgstr "Velikost okna"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:10
+msgid "Window size (width and height)."
+msgstr "Velikost okna (širina in višina)."
+
+#: ../src/categories.js:81
 msgid "New and Recent"
 msgstr "Novo in nedavno"
 
-#. Translators: this refers to favorite documents
-#: ../src/categories.js:80
+#: ../src/categories.js:87
 msgid "Favorites"
 msgstr "Priljubljeno"
 
-#. Translators: this refers to shared documents
-#: ../src/categories.js:83
+#: ../src/categories.js:92
 msgid "Shared with you"
 msgstr "V souporabi"
 
-#: ../src/documents.js:269
-#: ../src/sources.js:116
+#: ../src/documents.js:260
+#: ../src/sources.js:100
 msgid "Local"
 msgstr "Krajevno"
 
-#: ../src/documents.js:388
+#: ../src/documents.js:385
 msgid "Google Docs"
 msgstr "Google dokumenti"
 
-#: ../src/documents.js:389
+#: ../src/documents.js:386
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:458
+#: ../src/documents.js:455
 msgid "Spreadsheet"
 msgstr "Preglednica"
 
-#: ../src/documents.js:460
+#: ../src/documents.js:457
 msgid "Presentation"
 msgstr "Predstavitev"
 
-#: ../src/documents.js:462
+#: ../src/documents.js:459
 msgid "Document"
 msgstr "Dokument"
 
@@ -98,7 +119,7 @@ msgstr "Seznama dokumentov ni mogoče pridobiti"
 
 #: ../src/loadMore.js:70
 #, c-format
-msgid "Load %d more documents"
+msgid "Load %d more document"
 msgid_plural "Load %d more documents"
 msgstr[0] "Naloži še %d dokumentov"
 msgstr[1] "Naloži še %d dokument"
@@ -110,12 +131,12 @@ msgstr[3] "Naloži še %d dokumente"
 msgid "(%d of %d)"
 msgstr "(%d od %d)"
 
-#: ../src/sidebar.js:131
-#: ../src/sources.js:255
+#: ../src/sidebar.js:378
+#: ../src/sources.js:170
 msgid "Sources"
 msgstr "Viri"
 
-#: ../src/sources.js:110
+#: ../src/sources.js:94
 msgid "All"
 msgstr "Vse"
 
@@ -124,20 +145,21 @@ msgid "Loading..."
 msgstr "Nalaganje ..."
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:47
+#: ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "Odpri z %s"
 
-#: ../src/view.js:47
+#. Translators: this is the Open action in a context menu
+#: ../src/view.js:70
 msgid "Open"
 msgstr "Odpri"
 
-#: ../src/view.js:59
+#: ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "Odstrani iz priljubljenih"
 
-#: ../src/view.js:59
+#: ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Dodaj med priljubljene"
 
