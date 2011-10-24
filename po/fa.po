@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-08-31 18:32+0000\n"
-"PO-Revision-Date: 2011-09-06 15:14+0330\n"
+"POT-Creation-Date: 2011-09-26 16:31+0000\n"
+"PO-Revision-Date: 2011-10-24 20:57+0330\n"
 "Last-Translator: Arash Mousavi <mousavi.arash@gmail.com>\n"
 "Language-Team: Persian\n"
 "MIME-Version: 1.0\n"
@@ -17,13 +17,14 @@ msgstr ""
 "X-Poedit-Language: Persian\n"
 "X-Poedit-Country: IRAN, ISLAMIC REPUBLIC OF\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../data/gnome-documents.desktop.in.in.h:1
 msgid "Access, manage and share documents"
 msgstr "دسترسی، مدیریت و اشتراک‌گذاری سندها"
 
 #: ../data/gnome-documents.desktop.in.in.h:2
-#: ../src/mainWindow.js:81
+#: ../src/mainWindow.js:47
 msgid "Documents"
 msgstr "سندها"
 
@@ -58,35 +59,28 @@ msgstr "علاقه‌مندی‌ها"
 msgid "Shared with you"
 msgstr "اشتراک‌شده با شما"
 
-#. unimplemented
-#: ../src/categories.js:87
-msgid "Private"
-msgstr "خصوصی"
-
-#: ../src/documents.js:265
-#: ../src/sources.js:116
+#: ../src/documents.js:253
+#: ../src/sources.js:101
 msgid "Local"
 msgstr "محلی"
 
-#: ../src/documents.js:388
+#: ../src/documents.js:372
 msgid "Google Docs"
 msgstr "اسناد گوگل"
 
-#: ../src/documents.js:389
-#| msgid "Google Docs"
+#: ../src/documents.js:373
 msgid "Google"
 msgstr "گوگل"
 
-#: ../src/documents.js:446
+#: ../src/documents.js:442
 msgid "Spreadsheet"
 msgstr "صفحه‌گسترده"
 
-#: ../src/documents.js:448
+#: ../src/documents.js:444
 msgid "Presentation"
 msgstr "ارائه"
 
-#: ../src/documents.js:450
-#| msgid "Documents"
+#: ../src/documents.js:446
 msgid "Document"
 msgstr "سند"
 
@@ -100,23 +94,25 @@ msgstr "نمی‌توان «%s» را برای پیش‌نمایش بارگیر�
 msgid "Unable to fetch the list of documents"
 msgstr "نمی‌توان فهرست اسناد را دریافت کرد"
 
-#: ../src/loadMore.js:69
+#: ../src/loadMore.js:70
 #, c-format
+#| msgid "Load %d more documents"
 msgid "Load %d more documents"
-msgstr "بارگیری %Id سند بیشتر"
+msgid_plural "Load %d more documents"
+msgstr[0] "بارگیری %Id سند دیگر"
+msgstr[1] "بارگیری %Id سند دیگر"
 
-#: ../src/mainToolbar.js:182
+#: ../src/mainToolbar.js:201
 #, c-format
-#| msgid "page %d of %d"
 msgid "(%d of %d)"
 msgstr "(%Id از %Id)"
 
-#: ../src/sidebar.js:130
-#: ../src/sources.js:216
+#: ../src/sidebar.js:131
+#: ../src/sources.js:218
 msgid "Sources"
 msgstr "منابع"
 
-#: ../src/sources.js:110
+#: ../src/sources.js:96
 msgid "All"
 msgstr "همه"
 
@@ -125,20 +121,22 @@ msgid "Loading..."
 msgstr "در حال بارگیری..."
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:46
+#: ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "باز کردن با %s"
 
-#: ../src/view.js:46
+#: ../src/view.js:69
 msgid "Open"
 msgstr "باز کردن"
 
-#: ../src/view.js:56
+#: ../src/view.js:79
 msgid "Remove from favorites"
 msgstr "حذف از علاقه‌مندی‌ها"
 
-#: ../src/view.js:56
+#: ../src/view.js:79
 msgid "Add to favorites"
 msgstr "اضافه‌کردن به علاقه‌مندی‌ها"
 
+#~ msgid "Private"
+#~ msgstr "خصوصی"
