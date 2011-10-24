@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-11 00:13+0000\n"
-"PO-Revision-Date: 2011-09-11 22:52+0300\n"
+"POT-Creation-Date: 2011-09-29 19:30+0000\n"
+"PO-Revision-Date: 2011-10-24 21:26+0300\n"
 "Last-Translator: Muhammet Kara <muhammet.k@gmail.com>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -58,27 +58,27 @@ msgstr "Sık Kullanılanlar"
 msgid "Shared with you"
 msgstr "Seninle Paylaşılan"
 
-#: ../src/documents.js:265 ../src/sources.js:116
+#: ../src/documents.js:253 ../src/sources.js:101
 msgid "Local"
 msgstr "Yerel"
 
-#: ../src/documents.js:384
+#: ../src/documents.js:372
 msgid "Google Docs"
 msgstr "Google Belgeleri"
 
-#: ../src/documents.js:385
+#: ../src/documents.js:373
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:454
+#: ../src/documents.js:442
 msgid "Spreadsheet"
 msgstr "Hesap Tablosu"
 
-#: ../src/documents.js:456
+#: ../src/documents.js:444
 msgid "Presentation"
 msgstr "Sunum"
 
-#: ../src/documents.js:458
+#: ../src/documents.js:446
 msgid "Document"
 msgstr "Belge"
 
@@ -94,7 +94,9 @@ msgstr "Belgelerin listesi alınamadı"
 
 #: ../src/loadMore.js:70
 #, c-format
-msgid "Load %d more documents"
+#| msgid "Load %d more documents"
+#| msgid_plural "Load %d more documents"
+msgid "Load %d more document"
 msgid_plural "Load %d more documents"
 msgstr[0] "%d belge daha yükle"
 
@@ -103,11 +105,11 @@ msgstr[0] "%d belge daha yükle"
 msgid "(%d of %d)"
 msgstr "(%d / %d)"
 
-#: ../src/sidebar.js:131 ../src/sources.js:255
+#: ../src/sidebar.js:131 ../src/sources.js:218
 msgid "Sources"
 msgstr "Kaynaklar"
 
-#: ../src/sources.js:110
+#: ../src/sources.js:96
 msgid "All"
 msgstr "Tümü"
 
@@ -116,20 +118,20 @@ msgid "Loading..."
 msgstr "Yükleniyor..."
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:47
+#: ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "%s ile Aç"
 
-#: ../src/view.js:47
+#: ../src/view.js:69
 msgid "Open"
 msgstr "Aç"
 
-#: ../src/view.js:59
+#: ../src/view.js:79
 msgid "Remove from favorites"
 msgstr "Sık Kullanılanlardan Çıkart"
 
-#: ../src/view.js:59
+#: ../src/view.js:79
 msgid "Add to favorites"
 msgstr "Sık Kullanılanlara Ekle"
 
