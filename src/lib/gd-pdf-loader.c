@@ -491,6 +491,38 @@ pdf_load_job_openoffice_refresh_cache (PdfLoadJob *job)
 }
 
 static void
+openoffice_cache_query_info_ready_cb (GObject *source,
+                                      GAsyncResult *res,
+                                      gpointer user_data)
+{
+  PdfLoadJob *job = user_data;
+  GError *error = NULL;
+  GFileInfo *info;
+
+  info = g_file_query_info_finish (G_FILE (source), res, &error);
+
+  if (error != NULL) {
+    /* create/invalidate cache */
+    pdf_load_job_openoffice_refresh_cache (job);
+
+    g_error_free (error);
+    return;
+  }
+
+  job->pdf_cache_mtime = 
+    g_file_info_get_attribute_uint64 (info, 
+                                      G_FILE_ATTRIBUTE_TIME_MODIFIED);
+
+  if (job->original_file_mtime > job->pdf_cache_mtime)
+    pdf_load_job_openoffice_refresh_cache (job);
+  else
+    /* load the cached file */
+    pdf_load_job_from_pdf (job);
+
+  g_object_unref (info);
+}
+
+static void
 openoffice_cache_query_info_original_ready_cb (GObject *source,
                                                GAsyncResult *res,
                                                gpointer user_data)
@@ -499,6 +531,8 @@ openoffice_cache_query_info_original_ready_cb (GObject *source,
   GError *error = NULL;
   GFileInfo *info;
   guint64 mtime;
+  gchar *pdf_path, *tmp_name, *tmp_path;
+  GFile *cache_file;
 
   info = g_file_query_info_finish (G_FILE (source), res, &error);
 
@@ -515,56 +549,6 @@ openoffice_cache_query_info_original_ready_cb (GObject *source,
   job->original_file_mtime = mtime = 
     g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
   g_object_unref (info);
-
-  if (mtime > job->pdf_cache_mtime)
-    pdf_load_job_openoffice_refresh_cache (job);
-  else
-    /* load the cached file */
-    pdf_load_job_from_pdf (job);
-}
-
-static void
-openoffice_cache_query_info_ready_cb (GObject *source,
-                                      GAsyncResult *res,
-                                      gpointer user_data)
-{
-  PdfLoadJob *job = user_data;
-  GError *error = NULL;
-  GFileInfo *info;
-  GFile *original_file;
-
-  info = g_file_query_info_finish (G_FILE (source), res, &error);
-
-  if (error != NULL) {
-    /* create/invalidate cache */
-    pdf_load_job_openoffice_refresh_cache (job);
-
-    g_error_free (error);
-    return;
-  }
-
-  job->pdf_cache_mtime = 
-    g_file_info_get_attribute_uint64 (info, 
-                                      G_FILE_ATTRIBUTE_TIME_MODIFIED);
-
-  original_file = g_file_new_for_uri (job->uri);
-  g_file_query_info_async (original_file,
-                           G_FILE_ATTRIBUTE_TIME_MODIFIED,
-                           G_FILE_QUERY_INFO_NONE,
-                           G_PRIORITY_DEFAULT,
-                           job->cancellable,
-                           openoffice_cache_query_info_original_ready_cb,
-                           job);
-
-  g_object_unref (original_file);
-  g_object_unref (info);
-}
-
-static void
-pdf_load_job_from_openoffice (PdfLoadJob *job)
-{
-  gchar *pdf_path, *tmp_name, *tmp_path;
-  GFile *cache_file;
 
   tmp_name = g_strdup_printf ("gnome-documents-%u.pdf", g_str_hash (job->uri));
   tmp_path = g_build_filename (g_get_user_cache_dir (), "gnome-documents", NULL);
@@ -585,6 +569,23 @@ pdf_load_job_from_openoffice (PdfLoadJob *job)
   g_free (tmp_name);
   g_free (tmp_path);
   g_object_unref (cache_file);
+}
+
+static void
+pdf_load_job_from_openoffice (PdfLoadJob *job)
+{
+  GFile *original_file;
+
+  original_file = g_file_new_for_uri (job->uri);
+  g_file_query_info_async (original_file,
+                           G_FILE_ATTRIBUTE_TIME_MODIFIED,
+                           G_FILE_QUERY_INFO_NONE,
+                           G_PRIORITY_DEFAULT,
+                           job->cancellable,
+                           openoffice_cache_query_info_original_ready_cb,
+                           job);
+
+  g_object_unref (original_file);
 }
 
 static void
