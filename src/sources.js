@@ -46,7 +46,9 @@ Source.prototype = {
         this.icon = null;
 
         if (params.object) {
+            this.object = params.object;
             let account = params.object.get_account();
+
             this.id = 'gd:goa-account:' + account.id;
             this.name = account.provider_name;
             this.icon = Gio.icon_new_for_string(account.provider_icon);
