@@ -200,6 +200,7 @@ ViewEmbed.prototype  = {
 
         this._destroyScrollChild();
         this._scrolledWin.add(this._preview.widget);
+        this._preview.widget.grab_focus();
     },
 
     _fullscreenMotionHandler: function(widget, event) {
