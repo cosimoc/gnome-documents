@@ -184,7 +184,8 @@ SidebarView.prototype = {
         this._model = new SidebarModel();
         this._treeModel = this._model.model;
 
-        this._treeView = new Gtk.TreeView({ headers_visible: false,
+        this._treeView = new Gtk.TreeView({ enable_search: false,
+                                            headers_visible: false,
                                             vexpand: true });
         Gd.gtk_tree_view_set_activate_on_single_click(this._treeView, true);
         this._treeView.set_model(this._treeModel);

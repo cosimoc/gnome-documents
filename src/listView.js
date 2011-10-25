@@ -36,7 +36,8 @@ ListView.prototype = {
     __proto__: View.View.prototype,
 
     _init: function() {
-        this.widget = new Gtk.TreeView({ hexpand: true,
+        this.widget = new Gtk.TreeView({ enable_search: false,
+                                         hexpand: true,
                                          vexpand: true,
                                          headers_visible: false });
 
