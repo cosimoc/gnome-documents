@@ -258,8 +258,10 @@ LocalDocument.prototype = {
         DocCommon.prototype._init.call(this, cursor);
 
         this.sourceName = _("Local");
+
         let defaultApp = Gio.app_info_get_default_for_type(this.mimeType, true);
-        this.defaultAppName = defaultApp.get_name();
+        if (defaultApp)
+            this.defaultAppName = defaultApp.get_name();
     },
 
     updateTypeDescription: function() {
