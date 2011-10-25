@@ -83,7 +83,7 @@ ViewEmbed.prototype  = {
 
     _createFullscreenToolbar: function() {
         this._fsToolbar = new MainToolbar.FullscreenToolbar();
-        this._fsToolbar.setModel(this._docModel, this._document);
+        this._fsToolbar.setModel(this._docModel);
 
         this._stage.add_actor(this._fsToolbar.actor);
 
@@ -175,7 +175,7 @@ ViewEmbed.prototype  = {
 
     _onDocumentLoaded: function(document) {
         this._loaderCancellable = null;
-        let model = EvView.DocumentModel.new_with_document(document);
+        this._docModel = EvView.DocumentModel.new_with_document(document);
 
         if (this._loaderTimeout) {
             Mainloop.source_remove(this._loaderTimeout);
@@ -185,15 +185,12 @@ ViewEmbed.prototype  = {
         Global.modeController.setWindowMode(WindowMode.WindowMode.PREVIEW);
         Global.modeController.setCanFullscreen(true);
 
-        this._preview = new Preview.PreviewView(model, document);
+        this._preview = new Preview.PreviewView(this._docModel);
 
         if (this._fsToolbar)
-            this._fsToolbar.setModel(model, document);
+            this._fsToolbar.setModel(this._docModel);
 
-        this._toolbar.setModel(model, document);
-
-        this._docModel = model;
-        this._document = document;
+        this._toolbar.setModel(this._docModel);
 
         this._preview.widget.connect('motion-notify-event',
                                      Lang.bind(this, this._fullscreenMotionHandler));
@@ -245,7 +242,6 @@ ViewEmbed.prototype  = {
         this._actor = null;
         this._clutterEmbed = null;
         this._docModel = null;
-        this._document = null;
         this._stage = null;
 
         Global.documentManager.setActiveItem(null);

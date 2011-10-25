@@ -42,7 +42,6 @@ function MainToolbar() {
 MainToolbar.prototype = {
     _init: function() {
         this._model = null;
-        this._document = null;
         this._searchFocusId = 0;
         this._searchEntryTimeout = 0;
 
@@ -66,7 +65,6 @@ MainToolbar.prototype = {
         }));
 
         this._model = null;
-        this._document = null;
     },
 
     _populateForOverview: function() {
@@ -148,7 +146,7 @@ MainToolbar.prototype = {
         this._searchEntry.set_text(Global.searchFilterController.getFilter());
     },
 
-    _populateForPreview: function(model, document) {
+    _populateForPreview: function(model) {
         let back = new Gtk.ToolButton({ icon_name: 'go-previous-symbolic' });
         back.get_style_context().add_class('raised');
         this.widget.insert(back, 0);
@@ -192,11 +190,11 @@ MainToolbar.prototype = {
         let titleLabel = ('<b>%s</b>').format(GLib.markup_escape_text(doc.title, -1));
         this._titleLabel.set_markup(titleLabel);
 
-        if (this._model && this._document) {
+        if (this._model) {
             let curPage, totPages;
 
             curPage = this._model.get_page();
-            totPages = this._document.get_n_pages();
+            totPages = this._model.get_document().get_n_pages();
 
             pageLabel = _("(%d of %d)").format(curPage + 1, totPages);
         }
@@ -220,13 +218,11 @@ MainToolbar.prototype = {
             this._populateForPreview();
     },
 
-    setModel: function(model, document) {
-        if (!model || !document)
+    setModel: function(model) {
+        if (!model)
             return;
 
         this._model = model;
-        this._document = document;
-
         this._model.connect('page-changed', Lang.bind(this,
             function() {
                 this._updateModelLabels();

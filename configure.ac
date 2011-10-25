@@ -49,6 +49,7 @@ AC_SUBST(GJS_JS_DIR)
 
 GLIB_GSETTINGS
 
+EVINCE_MIN_VERSION=3.3.0
 GLIB_MIN_VERSION=2.29.90
 GTK_MIN_VERSION=3.1.13
 GOBJECT_INTROSPECTION_MIN_VERSION=0.9.6
@@ -59,8 +60,8 @@ TRACKER_MIN_VERSION=0.12.1
 
 PKG_CHECK_MODULES(DOCUMENTS,
                   clutter-gtk-1.0 >= $CLUTTER_GTK_MIN_VERSION
-                  evince-document-3.0
-                  evince-view-3.0
+                  evince-document-3.0 >= $EVINCE_MIN_VERSION
+                  evince-view-3.0 >= $EVINCE_MIN_VERSION
                   glib-2.0 >= $GLIB_MIN_VERSION
                   gobject-introspection-1.0 >= $GOBJECT_INTROSPECTION_MIN_VERSION
                   gtk+-3.0 >= $GTK_MIN_VERSION

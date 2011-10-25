@@ -27,14 +27,13 @@ const Lang = imports.lang;
 const Global = imports.global;
 const View = imports.view;
 
-function PreviewView(model, document) {
-    this._init(model, document);
+function PreviewView(model) {
+    this._init(model);
 }
 
 PreviewView.prototype = {
-    _init: function(model, document) {
+    _init: function(model) {
         this._model = model;
-        this._document = document;
 
         this.widget = EvView.View.new();
         this.widget.set_model(this._model);
