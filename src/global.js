@@ -33,5 +33,6 @@ let searchFilterController = null;
 let sideFilterController = null;
 let selectionController = null;
 let settings = null;
+let stage = null;
 let sourceManager = null;
 let trackerController = null;

@@ -20,12 +20,15 @@
  */
 
 const Gd = imports.gi.Gd;
+const Gdk = imports.gi.Gdk;
 const Gtk = imports.gi.Gtk;
+const GtkClutter = imports.gi.GtkClutter;
 
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
 
 const Global = imports.global;
+const Tweener = imports.util.tweener;
 
 const _SEARCH_ENTRY_TIMEOUT = 200;
 
@@ -41,10 +44,14 @@ Searchbar.prototype = {
         this.widget = new Gtk.Toolbar();
         this.widget.get_style_context().add_class(Gtk.STYLE_CLASS_PRIMARY_TOOLBAR);
 
+        this.actor = new GtkClutter.Actor({ contents: this.widget,
+                                            height: 0 });
+
         this._searchEntry = new Gtk.Entry({ width_request: 260,
                                             secondary_icon_name: 'edit-find-symbolic',
                                             secondary_icon_sensitive: false,
-                                            secondary_icon_activatable: false });
+                                            secondary_icon_activatable: false,
+                                            no_show_all: true });
         let item = new Gtk.ToolItem();
         item.set_expand(true);
 
@@ -53,6 +60,18 @@ Searchbar.prototype = {
         container.add(this._searchEntry);
 
         item.add(container);
+
+        this._searchEntry.connect('key-press-event', Lang.bind(this,
+            function(widget, event) {
+                let keyval = event.get_keyval()[1];
+
+                if (keyval == Gdk.KEY_Escape) {
+                    this._moveOut();
+                    return true;
+                }
+
+                return false;
+            }));
 
         this._searchEntry.connect('changed', Lang.bind(this, function() {
             let text = this._searchEntry.get_text();
@@ -85,13 +104,12 @@ Searchbar.prototype = {
         }));
 
         this._searchFocusId =
-            Global.focusController.connect('focus-search', Lang.bind(this,
-                function() {
-                    this._searchEntry.grab_focus();
-                }));
+            Global.focusController.connect('focus-search', Lang.bind(this, this._moveIn));
 
         this.widget.insert(item, 0);
         this._searchEntry.set_text(Global.searchFilterController.getFilter());
+
+        this.widget.show_all();
     },
 
     destroy: function() {
@@ -99,5 +117,26 @@ Searchbar.prototype = {
             Global.focusController.disconnect(this._searchFocusId);
             this._searchFocusId = 0;
         }
+    },
+
+    _moveIn: function() {
+        this._searchEntry.show();
+        Tweener.addTween(this.actor, { height: this.widget.get_preferred_height()[1],
+                                       time: 0.20,
+                                       transition: 'easeOutQuad',
+                                       onComplete: function() {
+                                           this._searchEntry.grab_focus();
+                                       },
+                                       onCompleteScope: this });
+    },
+
+    _moveOut: function() {
+        Tweener.addTween(this.actor, { height: 0,
+                                       time: 0.20,
+                                       transition: 'easeOutQuad',
+                                       onComplete: function() {
+                                           this._searchEntry.hide();
+                                       },
+                                       onCompleteScope: this });
     }
 };

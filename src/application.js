@@ -23,6 +23,7 @@ const DBus = imports.dbus;
 const Lang = imports.lang;
 const Gettext = imports.gettext;
 
+const ClutterX11 = imports.gi.ClutterX11;
 const GtkClutter = imports.gi.GtkClutter;
 const EvDoc = imports.gi.EvinceDocument;
 const Gdk = imports.gi.Gdk;
@@ -105,6 +106,7 @@ Application.prototype = {
         String.prototype.format = Format.format;
 
         GLib.set_prgname('gnome-documents');
+        ClutterX11.disable_event_retrieval();
         GtkClutter.init(null, null);
         EvDoc.init();
         Tweener.init();

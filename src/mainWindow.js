@@ -19,9 +19,11 @@
  *
  */
 
+const Clutter = imports.gi.Clutter;
 const Gdk = imports.gi.Gdk;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
+const GtkClutter = imports.gi.GtkClutter;
 
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
@@ -47,6 +49,11 @@ MainWindow.prototype = {
         this.window = new Gtk.Window({ type: Gtk.WindowType.TOPLEVEL,
                                        window_position: Gtk.WindowPosition.CENTER,
                                        title: _("Documents") });
+        this._clutterEmbed = new GtkClutter.Embed();
+        this.window.add(this._clutterEmbed);
+        this._clutterEmbed.show();
+
+        Global.stage = this._clutterEmbed.get_stage();
 
         Global.modeController.setWindowMode(WindowMode.WindowMode.OVERVIEW);
 
@@ -84,17 +91,33 @@ MainWindow.prototype = {
         Global.modeController.connect('fullscreen-changed',
                                       Lang.bind(this, this._onFullscreenChanged));
 
-        this._grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
-        this.window.add(this._grid);
+        // the base layout is a vertical ClutterBox
+        this._clutterBoxLayout = new Clutter.BoxLayout({ vertical: true });
+        this._clutterBox = new Clutter.Box({ layout_manager: this._clutterBoxLayout });
+        this._clutterBox.add_constraint(
+            new Clutter.BindConstraint({ coordinate: Clutter.BindCoordinate.SIZE,
+                                         source: Global.stage }));
 
+        Global.stage.add_actor(this._clutterBox);
+
+        // first child: searchbar filling the X axis
         this._searchbar = new Searchbar.Searchbar();
-        this._grid.attach(this._searchbar.widget, 0, 0, 2, 1);
+        this._clutterBox.add_actor(this._searchbar.actor);
+        this._clutterBoxLayout.set_fill(this._searchbar.actor, true, false);
+
+        // second child: the actual sidebar + embed, filling both axis
+        // and expanding
+        this._grid = new Gtk.Grid({ orientation: Gtk.Orientation.HORIZONTAL });
+        this._gridActor = new GtkClutter.Actor({ contents: this._grid });
+        this._clutterBox.add_actor(this._gridActor);
+        this._clutterBoxLayout.set_expand(this._gridActor, true);
+        this._clutterBoxLayout.set_fill(this._gridActor, true, true);
 
         this._sidebar = new Sidebar.Sidebar();
-        this._grid.attach(this._sidebar.widget, 0, 1, 1, 1);
+        this._grid.add(this._sidebar.widget);
 
         this._embed = new Embed.ViewEmbed();
-        this._grid.attach(this._embed.widget, 1, 1, 1, 1);
+        this._grid.add(this._embed.widget);
 
         this._grid.show_all();
     },

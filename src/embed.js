@@ -85,13 +85,13 @@ ViewEmbed.prototype  = {
         this._fsToolbar = new MainToolbar.FullscreenToolbar();
         this._fsToolbar.setModel(this._docModel);
 
-        this._stage.add_actor(this._fsToolbar.actor);
+        Global.stage.add_actor(this._fsToolbar.actor);
 
         let vScrollbar = this._scrolledWin.get_vscrollbar();
 
         let sizeConstraint = new Clutter.BindConstraint
             ({ coordinate: Clutter.BindCoordinate.WIDTH,
-               source: this._stage,
+               source: Global.stage,
                offset: (vScrollbar.get_visible() ?
                         (- (vScrollbar.get_preferred_width()[1])) : 0 ) });
 
@@ -239,10 +239,7 @@ ViewEmbed.prototype  = {
             this._preview = null;
         }
 
-        this._actor = null;
-        this._clutterEmbed = null;
         this._docModel = null;
-        this._stage = null;
 
         Global.documentManager.setActiveItem(null);
 
@@ -318,24 +315,10 @@ ViewEmbed.prototype  = {
             this._queryErrorId = 0;
         }
 
-        this._clutterEmbed = new GtkClutter.Embed();
-        this.widget.add(this._clutterEmbed);
-
         this._scrolledWin = new Gtk.ScrolledWindow({ hexpand: true,
                                                      vexpand: true,
                                                      shadow_type: Gtk.ShadowType.IN });
-        this._actor = new GtkClutter.Actor({ contents: this._scrolledWin });
-
-        this._stage = this._clutterEmbed.get_stage();
-        this._actor.add_constraint(
-            new Clutter.BindConstraint({ coordinate: Clutter.BindCoordinate.WIDTH,
-                                         source: this._stage }));
-        this._actor.add_constraint(
-            new Clutter.BindConstraint({ coordinate: Clutter.BindCoordinate.HEIGHT,
-                                         source: this._stage }));
-
-        this._stage.add_actor(this._actor);
-
+        this.widget.add(this._scrolledWin);
         this.widget.show_all();
     },
 
