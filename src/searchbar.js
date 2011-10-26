@@ -19,6 +19,7 @@
  *
  */
 
+const Gd = imports.gi.Gd;
 const Gtk = imports.gi.Gtk;
 
 const Lang = imports.lang;
@@ -41,14 +42,17 @@ Searchbar.prototype = {
         this.widget.get_style_context().add_class(Gtk.STYLE_CLASS_PRIMARY_TOOLBAR);
 
         this._searchEntry = new Gtk.Entry({ width_request: 260,
-                                            margin_left: 64,
-                                            margin_right: 64,
                                             secondary_icon_name: 'edit-find-symbolic',
                                             secondary_icon_sensitive: false,
                                             secondary_icon_activatable: false });
         let item = new Gtk.ToolItem();
         item.set_expand(true);
-        item.add(this._searchEntry);
+
+        let container = new Gd.MarginContainer({ min_margin: 6,
+                                                 max_margin: 64 });
+        container.add(this._searchEntry);
+
+        item.add(container);
 
         this._searchEntry.connect('changed', Lang.bind(this, function() {
             let text = this._searchEntry.get_text();
