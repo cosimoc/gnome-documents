@@ -40,6 +40,7 @@ function MainToolbar() {
 MainToolbar.prototype = {
     _init: function() {
         this._model = null;
+        this._whereId = 0;
 
         this.widget = new Gtk.Toolbar({ icon_size: Gtk.IconSize.MENU });
         this.widget.get_style_context().add_class(Gtk.STYLE_CLASS_MENUBAR);
@@ -51,11 +52,16 @@ MainToolbar.prototype = {
     },
 
     _clearToolbar: function() {
+        this._model = null;
+
+        if (this._whereId != 0) {
+            Global.sideFilterController.disconnect(this._whereId);
+            this._whereId = 0;
+        }
+
         this.widget.foreach(Lang.bind(this, function(widget) {
             widget.destroy();
         }));
-
-        this._model = null;
     },
 
     _populateForOverview: function() {
@@ -77,16 +83,25 @@ MainToolbar.prototype = {
                              Gio.SettingsBindFlags.DEFAULT);
 
         let box = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL,
-                                spacing: 0,
-                                hexpand: true });
+                                spacing: 0 });
         box.add(iconView);
         box.add(listView);
 
         let item = new Gtk.ToolItem();
-        item.set_expand(true);
         item.add(box);
 
         this.widget.insert(item, 0);
+
+        let item2 = new Gtk.ToolItem();
+        this._whereLabel = new Gtk.Label({ margin_left: 12 });
+        item2.add(this._whereLabel);
+        this.widget.insert(item2, 1);
+
+        this._whereId =
+            Global.sideFilterController.connect('changed',
+                                                Lang.bind(this, this._onSideFilterChanged));
+        this._onSideFilterChanged();
+
         this.widget.show_all();
     },
 
@@ -149,6 +164,15 @@ MainToolbar.prototype = {
         } else {
             this._pageLabel.hide();
         }
+    },
+
+    _onSideFilterChanged: function() {
+        let item = Global.sideFilterController.getWhereItem();
+
+        if (!item)
+            return;
+
+        this._whereLabel.set_markup(('<b>%s</b>').format(item.name));
     },
 
     _onWindowModeChanged: function() {

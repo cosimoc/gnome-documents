@@ -21,6 +21,8 @@
 
 const Signals = imports.signals;
 
+const Global = imports.global;
+
 function SearchFilterController() {
     this._init();
 };
@@ -50,7 +52,8 @@ function SideFilterController() {
 
 SideFilterController.prototype = {
     _init: function() {
-        this._whereItem = null;
+        // intialize to last category
+        this._whereItem = Global.categoryManager.getActiveItem();
     },
 
     setActiveItem: function(controller, item) {
