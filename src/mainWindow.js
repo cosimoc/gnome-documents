@@ -28,6 +28,7 @@ const Mainloop = imports.mainloop;
 
 const Embed = imports.embed;
 const Global = imports.global;
+const Searchbar = imports.searchbar;
 const Sidebar = imports.sidebar;
 const WindowMode = imports.windowMode;
 
@@ -83,14 +84,17 @@ MainWindow.prototype = {
         Global.modeController.connect('fullscreen-changed',
                                       Lang.bind(this, this._onFullscreenChanged));
 
-        this._grid = new Gtk.Grid({ orientation: Gtk.Orientation.HORIZONTAL });
+        this._grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
         this.window.add(this._grid);
 
+        this._searchbar = new Searchbar.Searchbar();
+        this._grid.attach(this._searchbar.widget, 0, 0, 2, 1);
+
         this._sidebar = new Sidebar.Sidebar();
-        this._grid.add(this._sidebar.widget);
+        this._grid.attach(this._sidebar.widget, 0, 1, 1, 1);
 
         this._embed = new Embed.ViewEmbed();
-        this._grid.add(this._embed.widget);
+        this._grid.attach(this._embed.widget, 1, 1, 1, 1);
 
         this._grid.show_all();
     },
