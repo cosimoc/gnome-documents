@@ -19,7 +19,6 @@
  *
  */
 
-const Gd = imports.gi.Gd;
 const Gtk = imports.gi.Gtk;
 const _ = imports.gettext.gettext;
 

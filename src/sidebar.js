@@ -20,8 +20,6 @@
  */
 
 const Gd = imports.gi.Gd;
-const Gdk = imports.gi.Gdk;
-const Goa = imports.gi.Goa;
 const Gtk = imports.gi.Gtk;
 const Pango = imports.gi.Pango;
 const _ = imports.gettext.gettext;

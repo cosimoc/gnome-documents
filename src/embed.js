@@ -34,7 +34,6 @@ const WindowMode = imports.windowMode;
 
 const Clutter = imports.gi.Clutter;
 const EvView = imports.gi.EvinceView;
-const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
 const GtkClutter = imports.gi.GtkClutter;
