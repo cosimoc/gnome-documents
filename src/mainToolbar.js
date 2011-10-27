@@ -46,6 +46,7 @@ MainToolbar.prototype = {
         this.widget = new Gtk.Toolbar({ icon_size: Gtk.IconSize.MENU });
         this.widget.get_style_context().add_class(Gtk.STYLE_CLASS_MENUBAR);
 
+        // setup listeners to mode changes that affect the toolbar layout
         this._selectionModeId =
             Global.selectionController.connect('selection-mode-changed',
                                                Lang.bind(this, this._onSelectionModeChanged));
@@ -68,6 +69,7 @@ MainToolbar.prototype = {
             this._selectionChangedId = 0;
         }
 
+        // destroy all the children
         this.widget.foreach(Lang.bind(this, function(widget) {
             widget.destroy();
         }));
@@ -83,6 +85,7 @@ MainToolbar.prototype = {
     },
 
     _populateForSelectionMode: function() {
+        // don't show icons in selection mode
         this.widget.set_style(Gtk.ToolbarStyle.TEXT);
 
         let selectAll = new Gtk.ToolButton({ stock_id: 'gtk-select-all' });
@@ -109,10 +112,13 @@ MainToolbar.prototype = {
                 Global.selectionController.setSelectionMode(false);
             }));
 
+        // put the first and the last buttons in a size group, so that
+        // the label stays center-aligned
         let sizeGroup = new Gtk.SizeGroup();
         sizeGroup.add_widget(cancel);
         sizeGroup.add_widget(selectAll);
 
+        // connect to selection changes while in this mode
         this._selectionChangedId =
             Global.selectionController.connect('selection-changed',
                                                Lang.bind(this, this._updateSelectionLabel));
@@ -166,12 +172,14 @@ MainToolbar.prototype = {
 
         item3.connect('toggled', Lang.bind(this,
             function(button) {
+                // toggle selection mode if the button is toggled
                 let isToggled = button.get_active();
                 Global.selectionController.setSelectionMode(isToggled);
             }));
         // set initial state
         item3.set_active(Global.selectionController.getSelectionMode());
 
+        // connect to sidebar filter changes while in this mode
         this._whereId =
             Global.sideFilterController.connect('changed',
                                                 Lang.bind(this, this._onSideFilterChanged));
