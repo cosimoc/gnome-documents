@@ -19,8 +19,10 @@
  *
  */
 
+const Clutter = imports.gi.Clutter;
 const Gd = imports.gi.Gd;
 const Gtk = imports.gi.Gtk;
+const GtkClutter = imports.gi.GtkClutter;
 const Pango = imports.gi.Pango;
 const _ = imports.gettext.gettext;
 
@@ -29,6 +31,7 @@ const Signals = imports.signals;
 
 const Global = imports.global;
 const Sources = imports.sources;
+const Tweener = imports.util.tweener;
 const WindowMode = imports.windowMode;
 
 const _SIDEBAR_WIDTH_REQUEST = 240;
@@ -404,6 +407,8 @@ Sidebar.prototype = {
         this.widget = new Gtk.Notebook({ show_tabs: false });
         this.widget.get_style_context().add_class(Gtk.STYLE_CLASS_SIDEBAR);
 
+        this.actor = new GtkClutter.Actor({ contents: this.widget });
+
         this._sourceView = new Sources.SourceView();
         this.widget.insert_page(this._sourceView.widget, null, _SIDEBAR_SOURCES_PAGE);
         this._sourceView.connect('source-clicked',
@@ -429,6 +434,14 @@ Sidebar.prototype = {
     },
 
     _onWindowModeChanged: function(controller, mode) {
-        this.widget.set_visible(mode == WindowMode.WindowMode.OVERVIEW);
+        if (mode == WindowMode.WindowMode.PREVIEW) {
+            Tweener.addTween(this.actor, { width: 0,
+                                           time: 0.15,
+                                           transition: 'easeInQuad' });
+        } else if (mode == WindowMode.WindowMode.OVERVIEW) {
+            Tweener.addTween(this.actor, { width: this.widget.get_preferred_width()[1],
+                                           time: 0.15,
+                                           transition: 'easeOutQuad' });
+        }
     }
 };

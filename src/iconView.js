@@ -46,15 +46,9 @@ IconView.prototype = {
         this.widget.item_width = _VIEW_ITEM_WIDTH;
         this.widget.column_spacing = _VIEW_COLUMN_SPACING;
         this.widget.margin = _VIEW_MARGIN;
-        this.widget.set_selection_mode(Gtk.SelectionMode.MULTIPLE);
 
         this.widget.connect('item-activated',
                             Lang.bind(this, this._onItemActivated));
-
-        this.widget.connect('button-press-event',
-                            Lang.bind(this, this._onButtonPressEvent));
-
-        this.widget.show();
 
         // chain up to the parent
         View.View.prototype._init.call(this);
@@ -74,6 +68,14 @@ IconView.prototype = {
 
     getPathAtPos: function(position) {
         return this.widget.get_path_at_pos(position[0], position[1]);
+    },
+
+    setSelectionMode: function(mode) {
+        this.getSelectionObject().set_selection_mode(mode);
+    },
+
+    setSingleClickMode: function(mode) {
+        Gd.gtk_icon_view_set_activate_on_single_click(this.widget, mode);
     },
 
     scrollToPath: function(path) {

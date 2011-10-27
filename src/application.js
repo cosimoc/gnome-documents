@@ -46,7 +46,7 @@ const MainWindow = imports.mainWindow;
 const OffsetController = imports.offsetController;
 const Path = imports.path;
 const Query = imports.query;
-const SelectionController = imports.selectionController;
+const Selections = imports.selections;
 const Sources = imports.sources;
 const TrackerController = imports.trackerController;
 const Tweener = imports.util.tweener;
@@ -144,7 +144,7 @@ Application.prototype = {
                         }
 
                         Global.sourceManager = new Sources.SourceManager();
-                        Global.selectionController = new SelectionController.SelectionController();
+                        Global.selectionController = new Selections.SelectionController();
                         Global.queryBuilder = new Query.QueryBuilder();
                         Global.changeMonitor = new ChangeMonitor.TrackerChangeMonitor();
                         Global.collectionManager = new Collections.CollectionManager();

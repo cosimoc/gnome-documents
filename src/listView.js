@@ -46,9 +46,6 @@ ListView.prototype = {
 
         this.widget.show();
 
-        let selection = this.widget.get_selection();
-        selection.set_mode(Gtk.SelectionMode.MULTIPLE);
-
         // chain up to the parent
         View.View.prototype._init.call(this);
     },
@@ -75,6 +72,14 @@ ListView.prototype = {
 
     scrollToPath: function(path) {
         this.widget.scroll_to_cell(path, null, false, 0, 0);
+    },
+
+    setSelectionMode: function(mode) {
+        this.getSelectionObject().set_mode(mode);
+    },
+
+    setSingleClickMode: function(mode) {
+        Gd.gtk_tree_view_set_activate_on_single_click(this.widget, mode);
     },
 
     createRenderers: function() {

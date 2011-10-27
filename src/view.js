@@ -110,22 +110,33 @@ View.prototype = {
     _init: function() {
         this._selectedURNs = null;
 
+        // setup the model
         this._treeModel = Global.documentManager.getModel().model;
         this.widget.set_model(this._treeModel);
+
+        // setup selections
+        this.setSingleClickMode(true);
+
+        this.setSelectionMode(Gtk.SelectionMode.SINGLE);
+        this._selectionModeId =
+            Global.selectionController.connect('selection-mode-changed',
+                                               Lang.bind(this, this._onSelectionModeChanged));
+        this._selectionControllerId =
+            Global.selectionController.connect('selection-check',
+                                               Lang.bind(this, this._updateSelection));
+        this._selectAllId =
+            Global.selectionController.connect('select-all',
+                                               Lang.bind(this, this._onSelectAll));
 
         this.widget.connect('destroy', Lang.bind(this,
             function() {
                 Global.selectionController.disconnect(this._selectionControllerId);
+                Global.selectionController.disconnect(this._selectionModeId);
+                Global.selectionController.disconnect(this._selectAllId);
             }));
-        this.widget.connect('button-release-event', Lang.bind(this, this._onButtonReleaseEvent));
         this.widget.connect('button-press-event', Lang.bind(this, this._onButtonPressEvent));
 
         this.createRenderers();
-
-        this._selectionController = Global.selectionController;
-        this._selectionControllerId =
-            this._selectionController.connect('selection-check',
-                                              Lang.bind(this, this._updateSelection));
 
         // HACK: give the view some time to setup the scrolled window
         // allocation, as updateSelection() might call scrollToPath().
@@ -137,11 +148,13 @@ View.prototype = {
             }));
 
         this.connectToSelectionChanged(Lang.bind(this, this._onSelectionChanged));
+
+        this.widget.show();
     },
 
     _updateSelection: function() {
         let selectionObject = this.getSelectionObject();
-        let selected = this._selectionController.getSelection().slice(0);
+        let selected = Global.selectionController.getSelection().slice(0);
 
         if (!selected.length)
             return;
@@ -169,7 +182,24 @@ View.prototype = {
             }));
     },
 
+    _onSelectAll: function() {
+        this.getSelectionObject().select_all();
+    },
+
+    _onSelectionModeChanged: function(controller, selectionMode) {
+        // setup the GtkSelectionMode of the view according to whether or not
+        // the view is in "selection mode"
+        if (selectionMode) {
+            this.setSingleClickMode(false);
+            this.setSelectionMode(Gtk.SelectionMode.MULTIPLE);
+        } else {
+            this.setSingleClickMode(true);
+            this.setSelectionMode(Gtk.SelectionMode.SINGLE);
+        }
+    },
+
     _onSelectionChanged: function() {
+        // update the selection on the controller when the view signals a change
         let selectedURNs = Utils.getURNsFromPaths(this.getSelection(),
                                                   this._treeModel);
         Global.selectionController.setSelection(selectedURNs);
@@ -177,45 +207,29 @@ View.prototype = {
 
     _onButtonPressEvent: function(widget, event) {
         let button = event.get_button()[1];
-        if (button != 3)
-            return false;
+        let enteredMode = false;
 
-        let coords = [ event.get_coords()[1] , event.get_coords()[2] ];
-        let path = this.getPathAtPos(coords);
-
-        let selection = Global.selectionController.getSelection();
-
-        if (path) {
-            let urn = Utils.getURNFromPath(path, this._treeModel);
-
-            if (selection.indexOf(urn) == -1)
-                this.getSelectionObject().unselect_all();
-
-            this.getSelectionObject().select_path(path);
+        if (!Global.selectionController.getSelectionMode()) {
+            if (button == 3) {
+                Global.selectionController.setSelectionMode(true);
+                enteredMode = true;
+            } else {
+                return false;
+            }
         }
 
-        return true;
-    },
-
-    _onButtonReleaseEvent: function(view, event) {
-        let button = event.get_button()[1];
         let coords = [ event.get_coords()[1] , event.get_coords()[2] ];
-        let timestamp = event.get_time();
-
-        if (button != 3)
-            return false;
-
         let path = this.getPathAtPos(coords);
 
-        if (!path)
-            return false;
+        if (path) {
+            let selectionObj = this.getSelectionObject();
+            let isSelected = selectionObj.path_is_selected(path);
 
-        let iter = this._treeModel.get_iter(path)[1];
-
-        let urn = this._treeModel.get_value(iter, Documents.ModelColumns.URN);
-        let menu = new ContextMenu(Global.selectionController.getSelection());
-
-        menu.widget.popup_for_device(null, null, null, null, null, null, button, timestamp);
+            if (isSelected && !enteredMode)
+                selectionObj.unselect_path(path);
+            else if (!isSelected)
+                selectionObj.select_path(path);
+        }
 
         return true;
     },

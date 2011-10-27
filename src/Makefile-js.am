@@ -22,7 +22,7 @@ dist_js_DATA = \
     preview.js \
     query.js \
     searchbar.js \
-    selectionController.js \
+    selections.js \
     sidebar.js \
     sources.js \
     spinnerBox.js \

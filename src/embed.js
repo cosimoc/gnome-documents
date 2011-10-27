@@ -54,6 +54,7 @@ ViewEmbed.prototype  = {
         this._viewSettingsId = 0;
 
         this.widget = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
+        this.actor = new GtkClutter.Actor({ contents: this.widget });
 
         this._toolbar = new MainToolbar.MainToolbar();
         this.widget.add(this._toolbar.widget);

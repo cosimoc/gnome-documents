@@ -31,6 +31,7 @@ const Mainloop = imports.mainloop;
 const Embed = imports.embed;
 const Global = imports.global;
 const Searchbar = imports.searchbar;
+const Selections = imports.selections;
 const Sidebar = imports.sidebar;
 const Utils = imports.utils;
 const WindowMode = imports.windowMode;
@@ -38,6 +39,7 @@ const WindowMode = imports.windowMode;
 const _ = imports.gettext.gettext;
 
 const _CONFIGURE_ID_TIMEOUT = 100; // msecs
+const _OSD_TOOLBAR_SPACING = 60;
 
 function MainWindow() {
     this._init();
@@ -106,21 +108,46 @@ MainWindow.prototype = {
         this._clutterBox.add_actor(this._searchbar.actor);
         this._clutterBoxLayout.set_fill(this._searchbar.actor, true, false);
 
-        // second child: the actual sidebar + embed, filling both axis
-        // and expanding
-        this._grid = new Gtk.Grid({ orientation: Gtk.Orientation.HORIZONTAL });
-        this._gridActor = new GtkClutter.Actor({ contents: this._grid });
-        this._clutterBox.add_actor(this._gridActor);
-        this._clutterBoxLayout.set_expand(this._gridActor, true);
-        this._clutterBoxLayout.set_fill(this._gridActor, true, true);
+        // second child: an horizontal layout box which will
+        // contain the sidebar and the embed
+        this._horizLayout = new Clutter.BoxLayout();
+        this._horizBox = new Clutter.Box({ layout_manager: this._horizLayout });
+        this._clutterBox.add_actor(this._horizBox);
+        this._clutterBoxLayout.set_expand(this._horizBox, true);
+        this._clutterBoxLayout.set_fill(this._horizBox, true, true);
 
+        // create the sidebar and pack it as a first child into the
+        // horizontal box
         this._sidebar = new Sidebar.Sidebar();
-        this._grid.add(this._sidebar.widget);
+        this._horizBox.add_actor(this._sidebar.actor);
+        this._horizLayout.set_fill(this._sidebar.actor, false, true);
 
+        // create the embed and pack it as the second child into
+        // the horizontal box
         this._embed = new Embed.ViewEmbed();
-        this._grid.add(this._embed.widget);
+        this._horizBox.add_actor(this._embed.actor);
+        this._horizLayout.set_expand(this._embed.actor, true);
+        this._horizLayout.set_fill(this._embed.actor, true, true);
 
-        this._grid.show_all();
+        // create the OSD toolbar for selected items, it's hidden by default
+        this._selectionToolbar = new Selections.SelectionToolbar();
+        this._selectionToolbar.actor.add_constraint(
+            new Clutter.AlignConstraint({ align_axis: Clutter.AlignAxis.X_AXIS,
+                                          source: this._embed.actor,
+                                          factor: 0.50 }));
+        let yConstraint =
+            new Clutter.BindConstraint({ source: this._embed.actor,
+                                         coordinate: Clutter.BindCoordinate.Y,
+                                         offset: this._embed.actor.height - _OSD_TOOLBAR_SPACING });
+        this._selectionToolbar.actor.add_constraint(yConstraint);
+
+        // refresh the constraint offset when the height of the embed actor changes
+        this._embed.actor.connect("notify::height", Lang.bind(this,
+            function() {
+                yConstraint.set_offset(this._embed.actor.height - _OSD_TOOLBAR_SPACING);
+            }));
+
+        Global.stage.add_actor(this._selectionToolbar.actor);
     },
 
     _saveWindowGeometry: function() {

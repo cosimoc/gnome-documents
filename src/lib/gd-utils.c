@@ -262,6 +262,53 @@ gd_gtk_tree_view_set_activate_on_single_click (GtkTreeView *tree_view,
 	}
 }
 
+static gboolean 
+icon_view_button_press_callback (GtkWidget *icon_view,
+				 GdkEventButton *event,
+				 gpointer data)
+{
+  GtkTreePath *path;
+
+  if (event->button == 1 && event->type == GDK_BUTTON_PRESS) {
+    path = gtk_icon_view_get_path_at_pos (GTK_ICON_VIEW (icon_view),
+                                          event->x, event->y);
+
+    if (path != NULL) {
+      gtk_icon_view_item_activated (GTK_ICON_VIEW (icon_view), path);
+      gtk_tree_path_free (path);
+    }
+  }
+
+  return FALSE;
+}
+
+void
+gd_gtk_icon_view_set_activate_on_single_click (GtkIconView *icon_view,
+                                               gboolean should_activate)
+{
+  guint button_press_id;
+
+  button_press_id = GPOINTER_TO_UINT 
+    (g_object_get_data (G_OBJECT (icon_view), 
+                        "gd-icon-view-activate"));
+
+  if (button_press_id && !should_activate) {
+    g_signal_handler_disconnect (icon_view, button_press_id);
+    g_object_set_data (G_OBJECT (icon_view), 
+                       "gd-icon-view-activate", 
+                       NULL);
+  } else if (!button_press_id && should_activate) {
+    button_press_id = 
+      g_signal_connect (icon_view,
+                        "button_press_event",
+                        G_CALLBACK (icon_view_button_press_callback),
+                        NULL);
+    g_object_set_data (G_OBJECT (icon_view), 
+                       "gd-icon-view-activate", 
+                       GUINT_TO_POINTER (button_press_id));
+  }
+}
+
 /* utility to stretch a frame to the desired size */
 
 static void
