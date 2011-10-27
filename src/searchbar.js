@@ -29,6 +29,7 @@ const Mainloop = imports.mainloop;
 
 const Global = imports.global;
 const Tweener = imports.util.tweener;
+const Utils = imports.utils;
 
 const _SEARCH_ENTRY_TIMEOUT = 200;
 
@@ -38,8 +39,10 @@ function Searchbar() {
 
 Searchbar.prototype = {
     _init: function() {
+        this._searchEventId = 0;
         this._searchFocusId = 0;
         this._searchEntryTimeout = 0;
+        this._searchFadingIn = false;
 
         this.widget = new Gtk.Toolbar();
         this.widget.get_style_context().add_class(Gtk.STYLE_CLASS_PRIMARY_TOOLBAR);
@@ -104,7 +107,9 @@ Searchbar.prototype = {
         }));
 
         this._searchFocusId =
-            Global.focusController.connect('focus-search', Lang.bind(this, this._moveIn));
+            Global.focusController.connect('toggle-search', Lang.bind(this, this._onToggleSearch));
+        this._searchEventId =
+            Global.focusController.connect('deliver-event', Lang.bind(this, this._onDeliverEvent));
 
         this.widget.insert(item, 0);
         this._searchEntry.set_text(Global.searchFilterController.getFilter());
@@ -117,20 +122,63 @@ Searchbar.prototype = {
             Global.focusController.disconnect(this._searchFocusId);
             this._searchFocusId = 0;
         }
+
+        if (this._searchEventId != 0) {
+            Global.focusController.disconnect(this._searchEventId);
+            this._searchEventId = 0;
+        }
+
+        this.widget.destroy();
     },
 
-    _moveIn: function() {
+    _onToggleSearch: function() {
+        if (Global.focusController.getSearchVisible())
+            this._moveOut();
+        else
+            this._moveIn(Gtk.get_current_event_device());
+    },
+
+    _onDeliverEvent: function(controller, event) {
+        if (!this._searchEntry.get_realized())
+            this._searchEntry.realize();
+
+        let preeditChanged = false;
+        let preeditChangedId =
+            this._searchEntry.connect('preedit-changed', Lang.bind(this,
+                function() {
+                    preeditChanged = true;
+                }));
+
+        let oldText = this._searchEntry.get_text();
+        let res = this._searchEntry.event(event);
+        let newText = this._searchEntry.get_text();
+
+        this._searchEntry.disconnect(preeditChangedId);
+
+        if (((res && (newText != oldText)) || preeditChanged) &&
+            !this._searchFadingIn) {
+            this._moveIn(event.get_device());
+        }
+    },
+
+    _moveIn: function(eventDevice) {
         this._searchEntry.show();
+        this._searchFadingIn = true;
+
         Tweener.addTween(this.actor, { height: this.widget.get_preferred_height()[1],
                                        time: 0.20,
                                        transition: 'easeOutQuad',
                                        onComplete: function() {
-                                           this._searchEntry.grab_focus();
+                                           this._searchFadingIn = false;
+                                           Global.focusController.setSearchVisible(true);
+
+                                           Gd.entry_focus_hack(this._searchEntry, eventDevice);
                                        },
                                        onCompleteScope: this });
     },
 
     _moveOut: function() {
+        Global.focusController.setSearchVisible(false);
         Tweener.addTween(this.actor, { height: 0,
                                        time: 0.20,
                                        transition: 'easeOutQuad',

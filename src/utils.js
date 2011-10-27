@@ -19,6 +19,7 @@
  *
  */
 
+const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
 
@@ -59,4 +60,17 @@ function getURNFromPath(path, model) {
     let urn = model.get_value(iter, Documents.ModelColumns.URN);
 
     return urn;
+}
+
+function isSearchEvent(event) {
+    let keyval = event.get_keyval()[1];
+    let state = event.get_state()[1];
+
+    let retval =
+        (((keyval == Gdk.KEY_f) &&
+          ((state & Gdk.ModifierType.CONTROL_MASK) != 0)) ||
+         ((keyval == Gdk.KEY_s) &&
+          ((state & Gdk.ModifierType.CONTROL_MASK) != 0)));
+
+    return retval;
 }

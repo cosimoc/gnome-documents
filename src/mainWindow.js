@@ -32,6 +32,7 @@ const Embed = imports.embed;
 const Global = imports.global;
 const Searchbar = imports.searchbar;
 const Sidebar = imports.sidebar;
+const Utils = imports.utils;
 const WindowMode = imports.windowMode;
 
 const _ = imports.gettext.gettext;
@@ -184,12 +185,14 @@ MainWindow.prototype = {
         }
 
         if (Global.modeController.getWindowMode() == WindowMode.WindowMode.PREVIEW)
-            return this._handleKeyPreview(keyval, state);
+            return this._handleKeyPreview(event);
         else
-            return this._handleKeyOverview(keyval, state);
+            return this._handleKeyOverview(event);
     },
 
-    _handleKeyPreview: function(keyval, state) {
+    _handleKeyPreview: function(event) {
+        let keyval = event.get_keyval()[1];
+        let state = event.get_state()[1];
         let fullscreen = Global.modeController.getFullscreen();
 
         if (keyval == Gdk.KEY_f) {
@@ -211,12 +214,14 @@ MainWindow.prototype = {
         return false;
     },
 
-    _handleKeyOverview: function(keyval, state) {
-        if (((keyval == Gdk.KEY_f) &&
-            ((state & Gdk.ModifierType.CONTROL_MASK) != 0)) ||
-            ((keyval == Gdk.KEY_s) &&
-            ((state & Gdk.ModifierType.CONTROL_MASK) != 0))) {
-            Global.focusController.requestSearch();
+    _handleKeyOverview: function(event) {
+        if (Utils.isSearchEvent(event)) {
+            Global.focusController.toggleSearch();
+            return true;
+        }
+
+        if (!Global.focusController.getSearchVisible()) {
+            Global.focusController.deliverEvent(event);
             return true;
         }
 

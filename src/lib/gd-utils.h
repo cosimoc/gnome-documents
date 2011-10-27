@@ -72,6 +72,8 @@ gboolean gd_time_val_from_iso8601 (const gchar *string,
 
 GIcon *gd_create_symbolic_icon (const gchar *name,
                                 gint base_size);
+void   gd_entry_focus_hack (GtkWidget *entry,
+                            GdkDevice *device);
 
 #endif /* __GD_UTILS_H__ */
                                   
