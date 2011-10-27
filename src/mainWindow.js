@@ -242,6 +242,13 @@ MainWindow.prototype = {
     },
 
     _handleKeyOverview: function(event) {
+        let keyval = event.get_keyval()[1];
+
+        if (keyval == Gdk.KEY_F9) {
+            this._sidebar.toggleVisibility();
+            return true;
+        }
+
         if (Utils.isSearchEvent(event)) {
             Global.focusController.toggleSearch();
             return true;

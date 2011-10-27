@@ -404,6 +404,8 @@ function Sidebar() {
 
 Sidebar.prototype = {
     _init: function() {
+        this._sidebarVisible = true;
+
         this.widget = new Gtk.Notebook({ show_tabs: false });
         this.widget.get_style_context().add_class(Gtk.STYLE_CLASS_SIDEBAR);
 
@@ -433,15 +435,32 @@ Sidebar.prototype = {
         this.widget.set_current_page(_SIDEBAR_SOURCES_PAGE);
     },
 
+    _moveOut: function() {
+        Tweener.addTween(this.actor, { width: 0,
+                                       time: 0.15,
+                                       transition: 'easeInQuad' });
+    },
+
+    _moveIn: function() {
+        Tweener.addTween(this.actor, { width: this.widget.get_preferred_width()[1],
+                                       time: 0.15,
+                                       transition: 'easeOutQuad' });
+    },
+
     _onWindowModeChanged: function(controller, mode) {
         if (mode == WindowMode.WindowMode.PREVIEW) {
-            Tweener.addTween(this.actor, { width: 0,
-                                           time: 0.15,
-                                           transition: 'easeInQuad' });
+            this._moveOut();
         } else if (mode == WindowMode.WindowMode.OVERVIEW) {
-            Tweener.addTween(this.actor, { width: this.widget.get_preferred_width()[1],
-                                           time: 0.15,
-                                           transition: 'easeOutQuad' });
+            if (this._sidebarVisible)
+                this._moveIn();
         }
+    },
+
+    toggleVisibility: function() {
+        this._sidebarVisible = !this._sidebarVisible;
+        if (this._sidebarVisible)
+            this._moveIn();
+        else
+            this._moveOut();
     }
 };
