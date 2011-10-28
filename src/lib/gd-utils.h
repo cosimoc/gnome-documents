@@ -33,12 +33,12 @@ void gd_store_set (GtkListStore *store,
                    GdkPixbuf *icon,
                    glong mtime);
 
-GtkListStore* gd_create_sources_store (void);
-void gd_sources_store_set (GtkListStore *store,
-                           GtkTreeIter *iter,
-                           const gchar *id,
-                           const gchar *name,
-                           gboolean heading);
+GtkListStore* gd_create_item_store (void);
+void gd_item_store_set (GtkListStore *store,
+                        GtkTreeIter *iter,
+                        const gchar *id,
+                        const gchar *name,
+                        const gchar *heading_text);
 
 GtkListStore * gd_create_sidebar_store (void);
 void gd_sidebar_store_set (GtkListStore *store,

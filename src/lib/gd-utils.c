@@ -65,30 +65,30 @@ gd_store_set (GtkListStore *store,
 }
 
 /**
- * gd_create_sources_store:
+ * gd_create_item_store:
  * 
  * Returns: (transfer full):
  */
 GtkListStore *
-gd_create_sources_store (void)
+gd_create_item_store (void)
 {
   return gtk_list_store_new (3,
                              G_TYPE_STRING, // ID
                              G_TYPE_STRING, // NAME
-                             G_TYPE_BOOLEAN); // HEADING
+                             G_TYPE_STRING); // HEADING_TEXT
 }
 
 void
-gd_sources_store_set (GtkListStore *store,
-                      GtkTreeIter *iter,
-                      const gchar *id,
-                      const gchar *name,
-                      gboolean heading)
+gd_item_store_set (GtkListStore *store,
+                   GtkTreeIter *iter,
+                   const gchar *id,
+                   const gchar *name,
+                   const gchar *heading_text)
 {
   gtk_list_store_set (store, iter,
                       0, id,
                       1, name,
-                      2, heading,
+                      2, heading_text,
                       -1);
 }
 
