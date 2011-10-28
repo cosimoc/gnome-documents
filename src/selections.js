@@ -93,7 +93,9 @@ SelectionToolbar.prototype = {
         this._insideRefresh = false;
 
         this.widget = new Gtk.Toolbar({ show_arrow: false,
-                                        icon_size: Gtk.IconSize.MENU });
+                                        icon_size: Gtk.IconSize.LARGE_TOOLBAR });
+        this.widget.get_style_context().add_class('osd');
+
         this.actor = new GtkClutter.Actor({ contents: this.widget,
                                             show_on_set_parent: false,
                                             opacity: 0 });
