@@ -20,20 +20,13 @@
  */
 
 const Lang = imports.lang;
-const Mainloop = imports.mainloop;
-const Signals = imports.signals;
 
-const Gd = imports.gi.Gd;
 const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
 const Goa = imports.gi.Goa;
-const Gtk = imports.gi.Gtk;
-const Pango = imports.gi.Pango;
 const _ = imports.gettext.gettext;
 
 const Global = imports.global;
 const Manager = imports.manager;
-const TrackerUtils = imports.trackerUtils;
 
 function Source(params) {
     this._init(params);
@@ -89,7 +82,7 @@ SourceManager.prototype = {
     __proto__: Manager.BaseManager.prototype,
 
     _init: function() {
-        Manager.BaseManager.prototype._init.call(this);
+        Manager.BaseManager.prototype._init.call(this, _("Sources"));
 
         // Translators: this refers to documents
         let source = new Source({ id: 'all',
@@ -141,129 +134,3 @@ SourceManager.prototype = {
             Global.settings.set_string('active-source', item.id);
     }
 };
-
-// GTK+ implementations
-
-const SourceModelColumns = {
-    ID: 0,
-    NAME: 1,
-    HEADING: 2
-};
-
-function SourceModel() {
-    this._init();
-}
-
-SourceModel.prototype = {
-    _init: function() {
-        this.model = Gd.create_sources_store();
-        this._sourceManager = Global.sourceManager;
-        this._sourceManager.connect('item-added', Lang.bind(this, this._refreshModel));
-        this._sourceManager.connect('item-removed', Lang.bind(this, this._refreshModel));
-
-        this._refreshModel();
-    },
-
-    _refreshModel: function() {
-        this.model.clear();
-
-        let iter = this.model.append();
-        Gd.sources_store_set(this.model, iter,
-                             '', _("Sources"), true);
-
-        let sources = this._sourceManager.getItems();
-        for (idx in sources) {
-            let source = sources[idx];
-            iter = this.model.append();
-            Gd.sources_store_set(this.model, iter,
-                                 source.id, source.name, false);
-        };
-    }
-};
-
-function SourceView() {
-    this._init();
-}
-
-SourceView.prototype = {
-    _init: function() {
-        this._model = new SourceModel();
-        this._sourceManager = Global.sourceManager;
-
-        this._treeView = new Gtk.TreeView({ headers_visible: false });
-        Gd.gtk_tree_view_set_activate_on_single_click(this._treeView, true);
-        this._treeView.set_model(this._model.model);
-
-        this.widget = new Gtk.ScrolledWindow({ hscrollbar_policy: Gtk.PolicyType.NEVER });
-        this.widget.add(this._treeView);
-
-        let selection = this._treeView.get_selection();
-        selection.set_mode(Gtk.SelectionMode.SINGLE);
-
-        this._treeView.connect('row-activated', Lang.bind(this,
-            function(view, path) {
-                let iter = this._model.model.get_iter(path)[1];
-                let id = this._model.model.get_value(iter, SourceModelColumns.ID);
-
-                this._sourceManager.setActiveItemById(id);
-                this.emit('source-clicked');
-            }));
-
-        let col = new Gtk.TreeViewColumn();
-        this._treeView.append_column(col);
-
-        // headings
-        this._rendererHeading = new Gtk.CellRendererText({ weight: Pango.Weight.BOLD,
-                                                           weight_set: true });
-        col.pack_start(this._rendererHeading, false);
-        col.add_attribute(this._rendererHeading,
-                          'text', SourceModelColumns.NAME);
-        col.set_cell_data_func(this._rendererHeading,
-            Lang.bind(this, this._visibilityForHeading, true));
-
-        // radio selection
-        this._rendererRadio = new Gtk.CellRendererToggle({ radio: true,
-                                                           mode: Gtk.CellRendererMode.INERT });
-        col.pack_start(this._rendererRadio, false);
-        col.set_cell_data_func(this._rendererRadio,
-            Lang.bind(this, this._visibilityForHeading, false,
-                      Lang.bind(this,
-                          function(col, cell, model, iter) {
-                              let id = model.get_value(iter, SourceModelColumns.ID);
-                              if (id == this._sourceManager.getActiveItem().id)
-                                  cell.active = true;
-                              else
-                                  cell.active = false;
-                          })));
-
-        // source name
-        this._rendererText = new Gtk.CellRendererText();
-        col.pack_start(this._rendererText, true);
-        col.add_attribute(this._rendererText,
-                          'text', SourceModelColumns.NAME);
-        col.set_cell_data_func(this._rendererText,
-            Lang.bind(this, this._visibilityForHeading, false));
-
-        // arrow
-        this._rendererArrow = new Gtk.CellRendererPixbuf({ icon_name: 'go-next-symbolic',
-                                                           follow_state: true });
-        col.pack_start(this._rendererArrow, false);
-        col.set_cell_data_func(this._rendererArrow,
-            Lang.bind(this, this._visibilityForHeading, false));
-
-        this.widget.show_all();
-    },
-
-    _visibilityForHeading: function(col, cell, model, iter, visible, additionalFunc) {
-        let heading = model.get_value(iter, SourceModelColumns.HEADING);
-
-        if ((visible && heading) || (!visible && !heading))
-            cell.visible = true;
-        else
-            cell.visible = false;
-
-        if (additionalFunc)
-            additionalFunc(col, cell, model, iter);
-    }
-};
-Signals.addSignalMethods(SourceView.prototype);
