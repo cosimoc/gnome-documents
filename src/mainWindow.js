@@ -129,6 +129,17 @@ MainWindow.prototype = {
         this._horizLayout.set_expand(this._embed.actor, true);
         this._horizLayout.set_fill(this._embed.actor, true, true);
 
+        // create the dropdown for the search bar, it's hidden by default
+        this._dropdownBox = new Searchbar.Dropdown();
+        this._dropdownBox.actor.add_constraint(
+            new Clutter.BindConstraint({ source: this._horizBox,
+                                         coordinate: Clutter.BindCoordinate.Y }));
+        this._dropdownBox.actor.add_constraint(
+            new Clutter.AlignConstraint({ source: this._horizBox,
+                                          align_axis: Clutter.AlignAxis.X_AXIS,
+                                          factor: 0.50 }));
+        Global.stage.add_actor(this._dropdownBox.actor);
+
         // create the OSD toolbar for selected items, it's hidden by default
         this._selectionToolbar = new Selections.SelectionToolbar();
         this._selectionToolbar.actor.add_constraint(

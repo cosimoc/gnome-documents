@@ -46,6 +46,7 @@ const MainWindow = imports.mainWindow;
 const OffsetController = imports.offsetController;
 const Path = imports.path;
 const Query = imports.query;
+const Searchbar = imports.searchbar;
 const Selections = imports.selections;
 const Sources = imports.sources;
 const TrackerController = imports.trackerController;
@@ -144,6 +145,8 @@ Application.prototype = {
                         }
 
                         Global.sourceManager = new Sources.SourceManager();
+                        Global.matchManager = new Searchbar.MatchManager();
+                        Global.typeManager = new Searchbar.SearchTypeManager();
                         Global.queryBuilder = new Query.QueryBuilder();
                         Global.changeMonitor = new ChangeMonitor.TrackerChangeMonitor();
                         Global.collectionManager = new Collections.CollectionManager();

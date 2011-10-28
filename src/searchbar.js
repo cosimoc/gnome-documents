@@ -23,15 +23,144 @@ const Gd = imports.gi.Gd;
 const Gdk = imports.gi.Gdk;
 const Gtk = imports.gi.Gtk;
 const GtkClutter = imports.gi.GtkClutter;
+const _ = imports.gettext.gettext;
 
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
 
 const Global = imports.global;
+const Manager = imports.manager;
+const Sources = imports.sources;
 const Tweener = imports.util.tweener;
 const Utils = imports.utils;
 
 const _SEARCH_ENTRY_TIMEOUT = 200;
+
+function SearchType(params) {
+    this._init(params);
+}
+
+SearchType.prototype = {
+    _init: function(params) {
+        this.id = params.id;
+        this.name = params.name;
+    }
+};
+
+function SearchTypeManager() {
+    this._init();
+}
+
+SearchTypeManager.prototype = {
+    __proto__: Manager.BaseManager.prototype,
+
+    _init: function() {
+        Manager.BaseManager.prototype._init.call(this, _("Type"));
+
+        this.addItem(new SearchType({ id: 'all',
+                                      name: _("All") }));
+        this.addItem(new SearchType({ id: 'collections',
+                                      name: _("Collections") }));
+        this.addItem(new SearchType({ id: 'pdf',
+                                      name: _("PDF Files") }));
+        this.addItem(new SearchType({ id: 'presentations',
+                                      name: _("Presentations") }));
+        this.addItem(new SearchType({ id: 'spreadsheets',
+                                      name: _("Spreadsheets") }));
+        this.addItem(new SearchType({ id: 'textdocs',
+                                      name: _("Text Documents") }));
+
+        this.setActiveItemById('all');
+    }
+};
+
+function Match(params) {
+    this._init(params);
+}
+
+Match.prototype = {
+    _init: function(params) {
+        this.id = params.id;
+        this.name = params.name;
+    }
+};
+
+function MatchManager() {
+    this._init();
+}
+
+MatchManager.prototype = {
+    __proto__: Manager.BaseManager.prototype,
+
+    _init: function() {
+        Manager.BaseManager.prototype._init.call(this, _("Match"));
+
+        this.addItem(new Match({ id: 'all',
+                                 name: _("All") }));
+        this.addItem(new Match({ id: 'title',
+                                 name: _("Title") }));
+        this.addItem(new Match({ id: 'author',
+                                 name: _("Author") }));
+
+        this.setActiveItemById('all');
+    }
+};
+
+function Dropdown() {
+    this._init();
+}
+
+Dropdown.prototype = {
+    _init: function() {
+        this._sourceView = new Manager.BaseView(Global.sourceManager);
+        this._typeView = new Manager.BaseView(Global.typeManager);
+        this._matchView = new Manager.BaseView(Global.matchManager);
+
+        this.widget = new Gtk.Frame({ shadow_type: Gtk.ShadowType.IN });
+        this.actor = new GtkClutter.Actor({ contents: this.widget,
+                                            opacity: 0 });
+        let actorWidget = this.actor.get_widget();
+        actorWidget.get_style_context().add_class('dropdown');
+
+        this._grid = new Gtk.Grid({ orientation: Gtk.Orientation.HORIZONTAL });
+        this.widget.add(this._grid);
+
+        this._grid.add(this._sourceView.widget);
+        this._grid.add(this._typeView.widget);
+        this._grid.add(this._matchView.widget);
+
+        this.widget.show_all();
+
+        Global.searchFilterController.connect('search-dropdown',
+                                              Lang.bind(this, this._onSearchDropdown));
+        this._onSearchDropdown();
+    },
+
+    _onSearchDropdown: function() {
+        let state = Global.searchFilterController.getDropdownState();
+        if (state)
+            this._fadeIn();
+        else
+            this._fadeOut();
+    },
+
+    _fadeIn: function() {
+        this.actor.raise_top();
+        Tweener.addTween(this.actor, { opacity: 245,
+                                       time: 0.20,
+                                       transition: 'easeOutQuad' });
+    },
+
+    _fadeOut: function() {
+        Tweener.addTween(this.actor, { opacity: 0,
+                                       time: 0.20,
+                                       transition: 'easeOutQuad',
+                                       onComplete: function() {
+                                           this.actor.lower_bottom();
+                                       },
+                                       onCompleteScope: this });
+    }
+};
 
 function Searchbar() {
     this._init();
@@ -54,14 +183,28 @@ Searchbar.prototype = {
                                             secondary_icon_name: 'edit-find-symbolic',
                                             secondary_icon_sensitive: false,
                                             secondary_icon_activatable: false,
-                                            no_show_all: true });
-        let item = new Gtk.ToolItem();
-        item.set_expand(true);
+                                            no_show_all: true,
+                                            hexpand: true });
+
+        let box = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL });
+        box.add(this._searchEntry);
+
+        this._dropdownButton = new Gtk.ToggleButton(
+            { child: new Gtk.Arrow({ arrow_type: Gtk.ArrowType.DOWN }) });
+        this._dropdownButton.connect('toggled', Lang.bind(this,
+            function() {
+                let active = this._dropdownButton.get_active();
+                Global.searchFilterController.setDropownState(active);
+            }));
+
+        box.add(this._dropdownButton);
 
         let container = new Gd.MarginContainer({ min_margin: 6,
                                                  max_margin: 64 });
-        container.add(this._searchEntry);
+        container.add(box);
 
+        let item = new Gtk.ToolItem();
+        item.set_expand(true);
         item.add(container);
 
         this._searchEntry.connect('key-press-event', Lang.bind(this,
@@ -184,6 +327,7 @@ Searchbar.prototype = {
                                        transition: 'easeOutQuad',
                                        onComplete: function() {
                                            this._searchEntry.hide();
+                                           this._dropdownButton.set_active(false);
                                        },
                                        onCompleteScope: this });
     }

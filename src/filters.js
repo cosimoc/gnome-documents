@@ -29,6 +29,7 @@ function SearchFilterController() {
 
 SearchFilterController.prototype = {
     _init: function() {
+        this._dropdownState = false;
         this._filter = '';
     },
 
@@ -42,6 +43,17 @@ SearchFilterController.prototype = {
 
     getFilter: function() {
         return this._filter;
+    },
+
+    setDropownState: function(state) {
+        if (state != this._dropdownState) {
+            this._dropdownState = state;
+            this.emit('search-dropdown', this._dropdownState);
+        }
+    },
+
+    getDropdownState: function() {
+        return this._dropdownState;
     }
 };
 Signals.addSignalMethods(SearchFilterController.prototype);
