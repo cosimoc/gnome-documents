@@ -322,19 +322,19 @@ FullscreenToolbar.prototype = {
         MainToolbar.prototype._init.call(this);
 
         this.actor = new GtkClutter.Actor({ contents: this.widget,
-                                            opacity: 0 });
+                                            y: -(this.widget.get_preferred_height()[1]) });
     },
 
     show: function() {
         Tweener.addTween(this.actor,
-                         { opacity: 255,
+                         { y: 0,
                            time: 0.20,
-                           transition: 'easeOutQuad' });
+                           transition: 'easeInQuad' });
     },
 
     hide: function() {
         Tweener.addTween(this.actor,
-                         { opacity: 0,
+                         { y: -(this.widget.get_preferred_height()[1]),
                            time: 0.20,
                            transition: 'easeOutQuad' });
     }
