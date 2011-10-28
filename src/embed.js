@@ -53,11 +53,18 @@ ViewEmbed.prototype  = {
         this._queryErrorId = 0;
         this._viewSettingsId = 0;
 
+        this._scrolledWinView = null;
+        this._scrolledWinPreview = null;
+
         this.widget = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
         this.actor = new GtkClutter.Actor({ contents: this.widget });
 
         this._toolbar = new MainToolbar.MainToolbar();
         this.widget.add(this._toolbar.widget);
+
+        this._notebook = new Gtk.Notebook({ show_tabs: false });
+        this._notebook.show();
+        this.widget.add(this._notebook);
 
         Global.errorHandler.connect('load-error',
                                     Lang.bind(this, this._onLoadError));
@@ -67,6 +74,8 @@ ViewEmbed.prototype  = {
         Global.modeController.connect('fullscreen-changed',
                                       Lang.bind(this, this._onFullscreenChanged));
         this._onWindowModeChanged();
+
+        this.widget.show();
     },
 
     _onFullscreenChanged: function(controller, fullscreen) {
@@ -87,7 +96,7 @@ ViewEmbed.prototype  = {
 
         Global.stage.add_actor(this._fsToolbar.actor);
 
-        let vScrollbar = this._scrolledWin.get_vscrollbar();
+        let vScrollbar = this._scrolledWinPreview.get_vscrollbar();
 
         let sizeConstraint = new Clutter.BindConstraint
             ({ coordinate: Clutter.BindCoordinate.WIDTH,
@@ -113,29 +122,28 @@ ViewEmbed.prototype  = {
     _onWindowModeChanged: function() {
         let mode = Global.modeController.getWindowMode();
 
-        // destroy every child except for the main toolbar
-        this.widget.foreach(Lang.bind(this,
-            function(widget) {
-                if (widget != this._toolbar.widget)
-                    widget.destroy();
-            }));
-
         if (mode == WindowMode.WindowMode.OVERVIEW)
             this._prepareForOverview();
         else
             this._prepareForPreview();
     },
 
-    _destroyScrollChild: function() {
-        let child = this._scrolledWin.get_child();
+    _destroyScrollPreviewChild: function() {
+        let child = this._scrolledWinPreview.get_child();
+        if (child)
+            child.destroy();
+    },
+
+    _destroyScrollViewChild: function() {
+        let child = this._scrolledWinView.get_child();
         if (child)
             child.destroy();
     },
 
     _initView: function() {
-        let isList = Global.settings.get_boolean('list-view');
+        this._destroyScrollViewChild();
 
-        this._destroyScrollChild();
+        let isList = Global.settings.get_boolean('list-view');
 
         if (isList)
             this._view = new ListView.ListView(this);
@@ -143,7 +151,7 @@ ViewEmbed.prototype  = {
             this._view = new IconView.IconView(this);
 
         this._view.connect('item-activated', Lang.bind(this, this._onViewItemActivated));
-        this._scrolledWin.add(this._view.widget);
+        this._scrolledWinView.add(this._view.widget);
     },
 
     _onViewItemActivated: function(view, urn) {
@@ -168,7 +176,7 @@ ViewEmbed.prototype  = {
         Global.modeController.setWindowMode(WindowMode.WindowMode.PREVIEW);
 
         let spinnerBox = new SpinnerBox.SpinnerBox();
-        this._scrolledWin.add_with_viewport(spinnerBox.widget);
+        this._scrolledWinPreview.add_with_viewport(spinnerBox.widget);
 
         return false;
     },
@@ -195,8 +203,8 @@ ViewEmbed.prototype  = {
         this._preview.widget.connect('motion-notify-event',
                                      Lang.bind(this, this._fullscreenMotionHandler));
 
-        this._destroyScrollChild();
-        this._scrolledWin.add(this._preview.widget);
+        this._destroyScrollPreviewChild();
+        this._scrolledWinPreview.add(this._preview.widget);
         this._preview.widget.grab_focus();
     },
 
@@ -242,22 +250,6 @@ ViewEmbed.prototype  = {
         this._docModel = null;
 
         Global.documentManager.setActiveItem(null);
-
-        this._scrolledWin = new Gtk.ScrolledWindow({ hexpand: true,
-                                                     vexpand: true,
-                                                     shadow_type: Gtk.ShadowType.IN });
-        this._scrolledWin.get_style_context().set_junction_sides(Gtk.JunctionSides.BOTTOM);
-        this.widget.add(this._scrolledWin);
-
-        this._loadMore = new LoadMore.LoadMoreButton();
-        this.widget.add(this._loadMore.widget);
-
-        this._initView();
-
-        this._scrolledWin.vadjustment.connect('value-changed',
-                                              Lang.bind(this, this._onAdjustmentChange));
-        this._onAdjustmentChange(this._scrolledWin.vadjustment);
-
         this._viewSettingsId =
             Global.settings.connect('changed::list-view',
                                     Lang.bind(this, this._initView));
@@ -265,7 +257,29 @@ ViewEmbed.prototype  = {
             Global.errorHandler.connect('query-error',
                                         Lang.bind(this, this._onQueryError));
 
-        this.widget.show_all();
+        if (!this._scrolledWinView) {
+            let grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
+
+            this._scrolledWinView = new Gtk.ScrolledWindow({ hexpand: true,
+                                                             vexpand: true,
+                                                             shadow_type: Gtk.ShadowType.IN });
+            this._scrolledWinView.get_style_context().set_junction_sides(Gtk.JunctionSides.BOTTOM);
+            grid.add(this._scrolledWinView);
+
+            this._loadMore = new LoadMore.LoadMoreButton();
+            grid.add(this._loadMore.widget);
+
+            this._initView();
+
+            this._scrolledWinView.vadjustment.connect('value-changed',
+                                                      Lang.bind(this, this._onAdjustmentChange));
+            this._onAdjustmentChange(this._scrolledWinView.vadjustment);
+
+            grid.show_all();
+            this._viewPage = this._notebook.append_page(grid, null);
+        }
+
+        this._notebook.set_current_page(this._viewPage);
     },
 
     _onAdjustmentChange: function(adjustment) {
@@ -296,10 +310,10 @@ ViewEmbed.prototype  = {
     },
 
     _onQueryError: function(manager, message, exception) {
-        this._destroyScrollChild();
+        this._destroyScrollViewChild();
 
         let errorBox = new ErrorBox.ErrorBox(message, exception.message);
-        this._scrolledWin.add_with_viewport(errorBox.widget);
+        this._scrolledWinView.add_with_viewport(errorBox.widget);
     },
 
     _prepareForPreview: function() {
@@ -315,11 +329,15 @@ ViewEmbed.prototype  = {
             this._queryErrorId = 0;
         }
 
-        this._scrolledWin = new Gtk.ScrolledWindow({ hexpand: true,
-                                                     vexpand: true,
-                                                     shadow_type: Gtk.ShadowType.IN });
-        this.widget.add(this._scrolledWin);
-        this.widget.show_all();
+        if (!this._scrolledWinPreview) {
+            this._scrolledWinPreview = new Gtk.ScrolledWindow({ hexpand: true,
+                                                                vexpand: true,
+                                                                shadow_type: Gtk.ShadowType.IN });
+            this._scrolledWinPreview.show();
+            this._previewPage = this._notebook.append_page(this._scrolledWinPreview, null);
+        }
+
+        this._notebook.set_current_page(this._previewPage);
     },
 
     _onLoadError: function(manager, message, exception) {
@@ -336,6 +354,6 @@ ViewEmbed.prototype  = {
         Global.modeController.setWindowMode(WindowMode.WindowMode.PREVIEW);
 
         let errorBox = new ErrorBox.ErrorBox(message, exception.message);
-        this._scrolledWin.add_with_viewport(errorBox.widget);
+        this._scrolledWinPreview.add_with_viewport(errorBox.widget);
     }
 };
