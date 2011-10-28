@@ -36,9 +36,6 @@ const WindowMode = imports.windowMode;
 
 const _SIDEBAR_WIDTH_REQUEST = 240;
 
-const _SIDEBAR_SOURCES_PAGE = 0;
-const _SIDEBAR_MAIN_PAGE = 1;
-
 const SidebarModelColumns = {
     ID: 0,
     NAME: 1,
@@ -194,7 +191,8 @@ SidebarView.prototype = {
         let selection = this._treeView.get_selection();
         selection.set_select_function(Lang.bind(this, this._treeSelectionFunc));
 
-        this.widget = new Gtk.ScrolledWindow({ hscrollbar_policy: Gtk.PolicyType.NEVER });
+        this.widget = new Gtk.ScrolledWindow({ hscrollbar_policy: Gtk.PolicyType.NEVER,
+                                               margin_top: 6 });
         this.widget.add(this._treeView);
 
         this._treeView.connect('row-activated', Lang.bind(this,
@@ -358,46 +356,6 @@ SidebarView.prototype = {
     }
 };
 
-function SidebarMainPage() {
-    this._init();
-};
-
-SidebarMainPage.prototype = {
-    _init: function() {
-        this.widget = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,
-                                     width_request: _SIDEBAR_WIDTH_REQUEST,
-                                     column_homogeneous: true,
-                                     row_spacing: 12 });
-
-        // sources button
-        let buttonContent = new Gtk.Grid({ orientation: Gtk.Orientation.HORIZONTAL,
-                                           column_spacing: 6 });
-        // FIXME: setting yalign here seems wrong, but why are those not aligned
-        // otherwise?
-        buttonContent.add(new Gtk.Image({ icon_size: Gtk.IconSize.MENU,
-                                          icon_name: 'go-previous-symbolic',
-                                          yalign: 0.75 }));
-        this._buttonLabel = new Gtk.Label({ label: _("Sources") });
-        buttonContent.add(this._buttonLabel);
-
-        this._sourcesButton = new Gtk.Button({ child: buttonContent,
-                                               border_width: 6 });
-        this.widget.add(this._sourcesButton);
-        this._sourcesButton.connect('clicked', Lang.bind(this, this._onSourcesButtonClicked));
-
-        // actual view
-        this._sidebarView = new SidebarView();
-        this.widget.add(this._sidebarView.widget);
-
-        this.widget.show_all();
-    },
-
-    _onSourcesButtonClicked: function() {
-        this.emit('sources-button-clicked');
-    }
-};
-Signals.addSignalMethods(SidebarMainPage.prototype);
-
 function Sidebar() {
     this._init();
 }
@@ -406,33 +364,18 @@ Sidebar.prototype = {
     _init: function() {
         this._sidebarVisible = true;
 
-        this.widget = new Gtk.Notebook({ show_tabs: false });
+        this.widget = new Gtk.Notebook({ show_tabs: false,
+                                         width_request: _SIDEBAR_WIDTH_REQUEST });
         this.widget.get_style_context().add_class(Gtk.STYLE_CLASS_SIDEBAR);
 
         this.actor = new GtkClutter.Actor({ contents: this.widget });
 
-        this._sourceView = new Sources.SourceView();
-        this.widget.insert_page(this._sourceView.widget, null, _SIDEBAR_SOURCES_PAGE);
-        this._sourceView.connect('source-clicked',
-                                 Lang.bind(this, this._onSourceClicked));
-
-        this._sidebarView = new SidebarMainPage();
-        this.widget.insert_page(this._sidebarView.widget, null, _SIDEBAR_MAIN_PAGE);
-        this._sidebarView.connect('sources-button-clicked',
-                                  Lang.bind(this, this._onSourcesButtonClicked));
-
-        this.widget.set_current_page(_SIDEBAR_MAIN_PAGE);
+        // actual view
+        this._sidebarView = new SidebarView();
+        this.widget.append_page(this._sidebarView.widget, null);
 
         Global.modeController.connect('window-mode-changed',
                                       Lang.bind(this, this._onWindowModeChanged));
-    },
-
-    _onSourceClicked: function() {
-        this.widget.set_current_page(_SIDEBAR_MAIN_PAGE);
-    },
-
-    _onSourcesButtonClicked: function() {
-        this.widget.set_current_page(_SIDEBAR_SOURCES_PAGE);
     },
 
     _moveOut: function() {
