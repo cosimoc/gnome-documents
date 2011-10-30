@@ -48,10 +48,11 @@ SearchFilterController.prototype = {
     },
 
     setDropownState: function(state) {
-        if (state != this._dropdownState) {
-            this._dropdownState = state;
-            this.emit('search-dropdown-changed', this._dropdownState);
-        }
+        if (this._dropdownState == state)
+            return;
+
+        this._dropdownState = state;
+        this.emit('search-dropdown-changed', this._dropdownState);
     },
 
     getDropdownState: function() {
@@ -59,13 +60,14 @@ SearchFilterController.prototype = {
     },
 
     setSearchVisible: function(visible) {
-        if (visible != this._searchVisible) {
-            this._searchVisible = visible;
-            this.emit('search-visible-changed', this._searchVisible);
+        if (this._searchVisible == visible)
+            return;
 
-            if (!this._searchVisible)
-                this.setDropownState(false);
-        }
+        this._searchVisible = visible;
+        this.emit('search-visible-changed', this._searchVisible);
+
+        if (!this._searchVisible)
+            this.setDropownState(false);
     },
 
     getSearchVisible: function() {
