@@ -63,6 +63,8 @@ TrackerController.prototype = {
                                               Lang.bind(this, this._onSearchRefresh));
         Global.searchMatchManager.connect('active-changed',
                                           Lang.bind(this, this._onSearchMatchChanged));
+        Global.searchTypeManager.connect('active-changed',
+                                         Lang.bind(this, this._onSearchRefresh));
 
         // perform initial query
         this._refresh();

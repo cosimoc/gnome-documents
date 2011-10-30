@@ -111,10 +111,35 @@ BaseManager.prototype = {
 
     getFilter: function() {
         let item = this.getActiveItem();
-        if (item && item.getFilter())
-            return item.getFilter();
+        let retval = '';
 
-        return '';
+        if (item.id == 'all')
+            retval = this._getAllFilter();
+        else if (item && item.getFilter())
+            retval = item.getFilter();
+
+        return retval;
+    },
+
+    _getAllFilter: function() {
+        let filter = '';
+        let first = true;
+
+        for (idx in this._items) {
+            let item = this._items[idx];
+
+            if (item.id == 'all')
+                continue;
+
+            if (first)
+                first = false;
+            else
+                filter += ' || ';
+
+            filter += item.getFilter();
+        }
+
+        return '(' + filter + ')';
     },
 
     processNewItems: function(newItems) {

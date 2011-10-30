@@ -44,6 +44,11 @@ SearchType.prototype = {
     _init: function(params) {
         this.id = params.id;
         this.name = params.name;
+        this._filter = (params.filter) ? (params.filter) : '';
+    },
+
+    getFilter: function() {
+        return this._filter;
     }
 };
 
@@ -59,16 +64,18 @@ SearchTypeManager.prototype = {
 
         this.addItem(new SearchType({ id: 'all',
                                       name: _("All") }));
-        this.addItem(new SearchType({ id: 'collections',
-                                      name: _("Collections") }));
         this.addItem(new SearchType({ id: 'pdf',
-                                      name: _("PDF Files") }));
+                                      name: _("PDF Documents"),
+                                      filter: 'fn:contains(nie:mimeType(?urn), \"application/pdf\")' }));
         this.addItem(new SearchType({ id: 'presentations',
-                                      name: _("Presentations") }));
+                                      name: _("Presentations"),
+                                      filter: 'fn:contains(rdf:type(?urn), \"nfo#Presentation\")' }));
         this.addItem(new SearchType({ id: 'spreadsheets',
-                                      name: _("Spreadsheets") }));
+                                      name: _("Spreadsheets"),
+                                      filter: 'fn:contains(rdf:type(?urn), \"nfo#Spreadsheet\")'}));
         this.addItem(new SearchType({ id: 'textdocs',
-                                      name: _("Text Documents") }));
+                                      name: _("Text Documents"),
+                                      filter: 'fn:contains(rdf:type(?urn), \"nfo#PaginatedTextDocument\")' }));
 
         this.setActiveItemById('all');
     }
@@ -89,24 +96,11 @@ SearchMatch.prototype = {
     },
 
     getFilter: function() {
-        let res = null;
-
-        if (this.id == SEARCH_MATCH_ALL)
-            res = (this._getFilterById(SEARCH_MATCH_TITLE) +
-                    ' || ' +
-                    this._getFilterById(SEARCH_MATCH_AUTHOR));
-        if (!res)
-            res = this._getFilterById(this.id);
-
-        return '(' + res + ')';
-    },
-
-    _getFilterById: function(id) {
-        if (id == SEARCH_MATCH_TITLE)
+        if (this.id == SEARCH_MATCH_TITLE)
             return ('fn:contains ' +
                     '(fn:lower-case (tracker:coalesce(nie:title(?urn), nfo:fileName(?urn))), ' +
                     '"%s")').format(Global.searchFilterController.getString());
-        if (id == SEARCH_MATCH_AUTHOR)
+        if (this.id == SEARCH_MATCH_AUTHOR)
             return ('fn:contains ' +
                     '(fn:lower-case (tracker:coalesce(nco:fullname(?creator), nco:fullname(?publisher))), ' +
                     '"%s")').format(Global.searchFilterController.getString());

@@ -105,15 +105,6 @@ QueryBuilder.prototype = {
         return sparql;
     },
 
-    _buildFilterType: function() {
-        let filter =
-            '(fn:contains(rdf:type(?urn), \"nfo#PaginatedTextDocument\") ||'
-            + 'fn:contains(rdf:type(?urn), \"nfo#Spreadsheet\") ||'
-            + 'fn:contains(rdf:type(?urn), \"nfo#Presentation\"))';
-
-        return filter;
-    },
-
     _buildFilterString: function() {
         let sparql = 'FILTER (';
 
@@ -123,7 +114,7 @@ QueryBuilder.prototype = {
         sparql += ' && ';
         sparql += Global.categoryManager.getFilter();
         sparql += ' && ';
-        sparql += this._buildFilterType();
+        sparql += Global.searchTypeManager.getFilter();
 
         sparql += ')';
 
