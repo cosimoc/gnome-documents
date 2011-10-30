@@ -145,8 +145,8 @@ Application.prototype = {
                         }
 
                         Global.sourceManager = new Sources.SourceManager();
-                        Global.matchManager = new Searchbar.MatchManager();
-                        Global.typeManager = new Searchbar.SearchTypeManager();
+                        Global.searchMatchManager = new Searchbar.SearchMatchManager();
+                        Global.searchTypeManager = new Searchbar.SearchTypeManager();
                         Global.queryBuilder = new Query.QueryBuilder();
                         Global.changeMonitor = new ChangeMonitor.TrackerChangeMonitor();
                         Global.collectionManager = new Collections.CollectionManager();

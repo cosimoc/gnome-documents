@@ -74,35 +74,65 @@ SearchTypeManager.prototype = {
     }
 };
 
-function Match(params) {
+const SEARCH_MATCH_AUTHOR = 'author';
+const SEARCH_MATCH_TITLE = 'title';
+const SEARCH_MATCH_ALL = 'all';
+
+function SearchMatch(params) {
     this._init(params);
 }
 
-Match.prototype = {
+SearchMatch.prototype = {
     _init: function(params) {
         this.id = params.id;
         this.name = params.name;
+    },
+
+    getFilter: function() {
+        let res = null;
+
+        if (this.id == SEARCH_MATCH_ALL)
+            res = (this._getFilterById(SEARCH_MATCH_TITLE) +
+                    ' || ' +
+                    this._getFilterById(SEARCH_MATCH_AUTHOR));
+        if (!res)
+            res = this._getFilterById(this.id);
+
+        return '(' + res + ')';
+    },
+
+    _getFilterById: function(id) {
+        if (id == SEARCH_MATCH_TITLE)
+            return ('fn:contains ' +
+                    '(fn:lower-case (tracker:coalesce(nie:title(?urn), nfo:fileName(?urn))), ' +
+                    '"%s")').format(Global.searchFilterController.getString());
+        if (id == SEARCH_MATCH_AUTHOR)
+            return ('fn:contains ' +
+                    '(fn:lower-case (tracker:coalesce(nco:fullname(?creator), nco:fullname(?publisher))), ' +
+                    '"%s")').format(Global.searchFilterController.getString());
+
+        return '';
     }
 };
 
-function MatchManager() {
+function SearchMatchManager() {
     this._init();
 }
 
-MatchManager.prototype = {
+SearchMatchManager.prototype = {
     __proto__: Manager.BaseManager.prototype,
 
     _init: function() {
         Manager.BaseManager.prototype._init.call(this, _("Match"));
 
-        this.addItem(new Match({ id: 'all',
-                                 name: _("All") }));
-        this.addItem(new Match({ id: 'title',
-                                 name: _("Title") }));
-        this.addItem(new Match({ id: 'author',
-                                 name: _("Author") }));
+        this.addItem(new SearchMatch({ id: SEARCH_MATCH_ALL,
+                                       name: _("All") }));
+        this.addItem(new SearchMatch({ id: SEARCH_MATCH_TITLE,
+                                       name: _("Title") }));
+        this.addItem(new SearchMatch({ id: SEARCH_MATCH_AUTHOR,
+                                       name: _("Author") }));
 
-        this.setActiveItemById('all');
+        this.setActiveItemById(SEARCH_MATCH_ALL);
     }
 };
 
@@ -113,8 +143,8 @@ function Dropdown() {
 Dropdown.prototype = {
     _init: function() {
         this._sourceView = new Manager.BaseView(Global.sourceManager);
-        this._typeView = new Manager.BaseView(Global.typeManager);
-        this._matchView = new Manager.BaseView(Global.matchManager);
+        this._typeView = new Manager.BaseView(Global.searchTypeManager);
+        this._matchView = new Manager.BaseView(Global.searchMatchManager);
 
         this.widget = new Gtk.Frame({ shadow_type: Gtk.ShadowType.IN });
         this.actor = new GtkClutter.Actor({ contents: this.widget,
@@ -240,7 +270,7 @@ Searchbar.prototype = {
                     this._searchEntryTimeout = 0;
 
                     let currentText = this._searchEntry.get_text();
-                    Global.searchFilterController.setFilter(currentText);
+                    Global.searchFilterController.setString(currentText);
             }));
         }));
 
@@ -254,7 +284,7 @@ Searchbar.prototype = {
             Global.searchFilterController.connect('deliver-event', Lang.bind(this, this._onDeliverEvent));
 
         this.widget.insert(item, 0);
-        this._searchEntry.set_text(Global.searchFilterController.getFilter());
+        this._searchEntry.set_text(Global.searchFilterController.getString());
 
         this.widget.show_all();
     },

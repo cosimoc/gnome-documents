@@ -105,19 +105,6 @@ QueryBuilder.prototype = {
         return sparql;
     },
 
-    _buildFilterSearch: function() {
-        let filter =
-            ('(fn:contains ' +
-             '(fn:lower-case (tracker:coalesce(nie:title(?urn), nfo:fileName(?urn))), ' +
-             '"%s") ||' +
-             'fn:contains ' +
-             '(fn:lower-case (tracker:coalesce(nco:fullname(?creator), nco:fullname(?publisher))), ' +
-             '"%s"))').format(Global.searchFilterController.getFilter(),
-                             Global.searchFilterController.getFilter());
-
-        return filter;
-    },
-
     _buildFilterType: function() {
         let filter =
             '(fn:contains(rdf:type(?urn), \"nfo#PaginatedTextDocument\") ||'
@@ -130,7 +117,7 @@ QueryBuilder.prototype = {
     _buildFilterString: function() {
         let sparql = 'FILTER (';
 
-        sparql += '(' + this._buildFilterSearch() + ')';
+        sparql += Global.searchMatchManager.getFilter();
         sparql += ' && ';
         sparql += Global.sourceManager.getFilter();
         sparql += ' && ';

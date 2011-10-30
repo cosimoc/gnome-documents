@@ -32,19 +32,19 @@ SearchFilterController.prototype = {
         this._searchVisible = false;
         this._searchIn = false;
         this._dropdownState = false;
-        this._filter = '';
+        this._string = '';
     },
 
-    setFilter: function(filter) {
-        if (this._filter == filter)
+    setString: function(string) {
+        if (this._string == string)
             return;
 
-        this._filter = filter;
-        this.emit('search-filter-changed', this._filter);
+        this._string = string;
+        this.emit('search-string-changed', this._string);
     },
 
-    getFilter: function() {
-        return this._filter;
+    getString: function() {
+        return this._string;
     },
 
     setDropownState: function(state) {
