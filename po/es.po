@@ -1,28 +1,28 @@
 # Spanish translation for gnome-documents.
 # Copyright (C) 2011 gnome-documents's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-documents package.
-# Jorge González <jorgegonz@svn.gnome.org>, 2011.
 # Daniel Mustieles <daniel.mustieles@gmail.com>, 2011.
+# Jorge González <jorgegonz@svn.gnome.org>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-10-07 08:17+0000\n"
-"PO-Revision-Date: 2011-10-07 10:52+0200\n"
-"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
-"Language-Team: Español <gnome-es-list@gnome.org>\n"
+"POT-Creation-Date: 2011-10-28 19:20+0000\n"
+"PO-Revision-Date: 2011-10-30 15:20+0100\n"
+"Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
+"Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
 #: ../data/gnome-documents.desktop.in.in.h:1
 msgid "Access, manage and share documents"
 msgstr "Acceder, gestionar y compartir documentos"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:48
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:54
 msgid "Documents"
 msgstr "Documentos"
 
@@ -66,42 +66,39 @@ msgstr "Tamaño de la ventana"
 msgid "Window size (width and height)."
 msgstr "Tamaño de la ventana (anchura y altura)."
 
-#. Translators: this refers to new and recent documents
-#: ../src/categories.js:77
+#: ../src/categories.js:81
 msgid "New and Recent"
 msgstr "Nuevos y recientes"
 
-#. Translators: this refers to favorite documents
-#: ../src/categories.js:80
+#: ../src/categories.js:87
 msgid "Favorites"
 msgstr "Marcadores"
 
-#. Translators: this refers to shared documents
-#: ../src/categories.js:83
+#: ../src/categories.js:92
 msgid "Shared with you"
 msgstr "Compartidos con usted"
 
-#: ../src/documents.js:253 ../src/sources.js:101
+#: ../src/documents.js:260 ../src/sources.js:102
 msgid "Local"
 msgstr "Locales"
 
-#: ../src/documents.js:378
+#: ../src/documents.js:387
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:379
+#: ../src/documents.js:388
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:448
+#: ../src/documents.js:457
 msgid "Spreadsheet"
 msgstr "Hoja de cálculo"
 
-#: ../src/documents.js:450
+#: ../src/documents.js:459
 msgid "Presentation"
 msgstr "Presentación"
 
-#: ../src/documents.js:452
+#: ../src/documents.js:461
 msgid "Document"
 msgstr "Documento"
 
@@ -122,12 +119,21 @@ msgid_plural "Load %d more documents"
 msgstr[0] "Cargar %d documento más"
 msgstr[1] "Cargar %d documentos más"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:82
+msgid "Click on items to select them"
+msgstr "Pulse sobre los elementos para seleccionarlos"
+
+#: ../src/mainToolbar.js:84
+#, c-format
+msgid "%d selected"
+msgstr "%d seleccionado(s)"
+
+#: ../src/mainToolbar.js:243
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d de %d)"
 
-#: ../src/sidebar.js:131 ../src/sources.js:218
+#: ../src/sidebar.js:380 ../src/sources.js:172
 msgid "Sources"
 msgstr "Fuentes"
 
@@ -140,21 +146,21 @@ msgid "Loading..."
 msgstr "Cargando…"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:67
+#: ../src/view.js:66
 #, c-format
 msgid "Open with %s"
 msgstr "Abrir con %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:70
+#: ../src/view.js:69
 msgid "Open"
 msgstr "Abrir"
 
-#: ../src/view.js:80
+#: ../src/view.js:79
 msgid "Remove from favorites"
 msgstr "Quitar de los marcadores"
 
-#: ../src/view.js:80
+#: ../src/view.js:79
 msgid "Add to favorites"
 msgstr "Añadir a los marcadores"
 
