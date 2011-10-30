@@ -259,13 +259,17 @@ LocalDocument.prototype = {
 
         this.sourceName = _("Local");
 
-        let defaultApp = Gio.app_info_get_default_for_type(this.mimeType, true);
+        let defaultApp = null;
+        if (this.mimeType)
+            defaultApp = Gio.app_info_get_default_for_type(this.mimeType, true);
+
         if (defaultApp)
             this.defaultAppName = defaultApp.get_name();
     },
 
     updateTypeDescription: function() {
-        this.typeDescription = Gio.content_type_get_description(this.mimeType);
+        if (this.mimeType)
+            this.typeDescription = Gio.content_type_get_description(this.mimeType);
     },
 
     _refreshThumbPath: function() {
