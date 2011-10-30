@@ -82,29 +82,3 @@ ModeController.prototype = {
     }
 };
 Signals.addSignalMethods(ModeController.prototype);
-
-function FocusController() {
-    this._init();
-};
-
-FocusController.prototype = {
-    _init: function() {
-    },
-
-    toggleSearch: function() {
-        this.emit('toggle-search');
-    },
-
-    getSearchVisible: function() {
-        return this._searchVisible;
-    },
-
-    setSearchVisible: function(visible) {
-        this._searchVisible = visible;
-    },
-
-    deliverEvent: function(event) {
-        this.emit('deliver-event', event);
-    }
-};
-Signals.addSignalMethods(FocusController.prototype);

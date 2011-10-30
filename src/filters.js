@@ -29,6 +29,8 @@ function SearchFilterController() {
 
 SearchFilterController.prototype = {
     _init: function() {
+        this._searchVisible = false;
+        this._searchIn = false;
         this._dropdownState = false;
         this._filter = '';
     },
@@ -38,7 +40,7 @@ SearchFilterController.prototype = {
             return;
 
         this._filter = filter;
-        this.emit('changed', this._filter);
+        this.emit('search-filter-changed', this._filter);
     },
 
     getFilter: function() {
@@ -48,12 +50,42 @@ SearchFilterController.prototype = {
     setDropownState: function(state) {
         if (state != this._dropdownState) {
             this._dropdownState = state;
-            this.emit('search-dropdown', this._dropdownState);
+            this.emit('search-dropdown-changed', this._dropdownState);
         }
     },
 
     getDropdownState: function() {
         return this._dropdownState;
+    },
+
+    setSearchVisible: function(visible) {
+        if (visible != this._searchVisible) {
+            this._searchVisible = visible;
+            this.emit('search-visible-changed', this._searchVisible);
+
+            if (!this._searchVisible)
+                this.setDropownState(false);
+        }
+    },
+
+    getSearchVisible: function() {
+        return this._searchVisible;
+    },
+
+    setSearchIn: function(setting) {
+        if (this._searchIn == setting)
+            return;
+
+        this._searchIn = setting;
+        this.emit('search-in-changed', this._searchIn);
+    },
+
+    getSearchIn: function() {
+        return this._searchIn;
+    },
+
+    deliverEvent: function(event) {
+        this.emit('deliver-event', event);
     }
 };
 Signals.addSignalMethods(SearchFilterController.prototype);

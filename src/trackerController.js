@@ -59,7 +59,7 @@ TrackerController.prototype = {
 
         Global.sideFilterController.connect('changed',
                                             Lang.bind(this, this._refresh));
-        Global.searchFilterController.connect('changed',
+        Global.searchFilterController.connect('search-filter-changed',
                                               Lang.bind(this, this._onSearchFilterChanged));
 
         // perform initial query

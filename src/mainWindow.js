@@ -261,12 +261,13 @@ MainWindow.prototype = {
         }
 
         if (Utils.isSearchEvent(event)) {
-            Global.focusController.toggleSearch();
+            let visible = Global.searchFilterController.getSearchVisible();
+            Global.searchFilterController.setSearchVisible(!visible);
             return true;
         }
 
-        if (!Global.focusController.getSearchVisible()) {
-            Global.focusController.deliverEvent(event);
+        if (!Global.searchFilterController.getSearchIn()) {
+            Global.searchFilterController.deliverEvent(event);
             return true;
         }
 

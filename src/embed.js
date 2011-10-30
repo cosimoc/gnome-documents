@@ -329,6 +329,8 @@ ViewEmbed.prototype  = {
             this._queryErrorId = 0;
         }
 
+        Global.searchFilterController.setSearchVisible(false);
+
         if (!this._scrolledWinPreview) {
             this._scrolledWinPreview = new Gtk.ScrolledWindow({ hexpand: true,
                                                                 vexpand: true,

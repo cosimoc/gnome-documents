@@ -24,7 +24,6 @@ let categoryManager = null;
 let connection = null;
 let documentManager = null;
 let errorHandler = null;
-let focusController = null;
 let goaClient = null;
 let matchManager = null;
 let modeController = null;
