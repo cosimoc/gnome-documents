@@ -24,6 +24,7 @@ const Gio = imports.gi.Gio;
 const Gd = imports.gi.Gd;
 const Gdk = imports.gi.Gdk;
 const GData = imports.gi.GData;
+const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const _ = imports.gettext.gettext;
@@ -273,12 +274,28 @@ LocalDocument.prototype = {
     },
 
     _refreshThumbPath: function() {
-        this.pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(this._thumbPath,
-                                                             Utils.getIconSize(),
-                                                             Utils.getIconSize());
-        this.thumbnailed = true;
-        this.checkEffectsAndUpdateInfo();
-        return;
+        let thumbFile = Gio.file_new_for_path(this._thumbPath);
+
+        thumbFile.read_async(GLib.PRIORITY_DEFAULT, null, Lang.bind(this,
+            function(object, res) {
+                try {
+                    let stream = object.read_finish(res);
+                    GdkPixbuf.Pixbuf.new_from_stream_at_scale_async(stream,
+                        Utils.getIconSize(), Utils.getIconSize(),
+                        true, null, Lang.bind(this,
+                            function(object, res) {
+                                try {
+                                    this.pixbuf = GdkPixbuf.Pixbuf.new_from_stream_finish(res);
+                                    this.thumbnailed = true;
+                                    this.checkEffectsAndUpdateInfo();
+                                } catch (e) {
+                                    this._failedThumbnailing = true;
+                                }
+                            }));
+                } catch (e) {
+                    this._failedThumbnailing = true;
+                }
+            }));
     },
 
     refreshIcon: function() {
