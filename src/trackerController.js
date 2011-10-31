@@ -38,6 +38,7 @@ function TrackerController() {
 TrackerController.prototype = {
     _init: function() {
         this._currentQuery = null;
+        this._querying = false;
 
         // startup a refresh of the gdocs cache
         this._miner = new GDataMiner.GDataMiner();
@@ -76,8 +77,20 @@ TrackerController.prototype = {
         return false;
     },
 
+    _setQueryStatus: function(status) {
+        if (this._querying == status)
+            return;
+
+        this._querying = status;
+        this.emit('query-status-changed', this._querying);
+    },
+
+    getQueryStatus: function() {
+        return this._querying;
+    },
+
     _onQueryFinished: function(exception) {
-        Global.selectionController.freezeSelection(false);
+        this._setQueryStatus(false);
 
         if (exception)
             Global.errorHandler.addQueryError(exception);
@@ -119,7 +132,7 @@ TrackerController.prototype = {
     },
 
     _refresh: function() {
-        Global.selectionController.freezeSelection(true);
+        this._setQueryStatus(true);
         Global.documentManager.clear();
         this._offsetController.resetItemCount();
 

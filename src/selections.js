@@ -44,7 +44,7 @@ SelectionController.prototype = {
     },
 
     setSelection: function(selection) {
-        if (this._isFreezed)
+        if (this._isFrozen)
             return;
 
         if (!selection)
@@ -60,13 +60,10 @@ SelectionController.prototype = {
     },
 
     freezeSelection: function(freeze) {
-        if (freeze == this._isFreezed)
+        if (freeze == this._isFrozen)
             return;
 
-        this._isFreezed = freeze;
-
-        if (!this._isFreezed)
-            this.emit('selection-check');
+        this._isFrozen = freeze;
     },
 
     setSelectionMode: function(setting) {

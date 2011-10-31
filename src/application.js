@@ -144,13 +144,13 @@ Application.prototype = {
                         }
 
                         Global.sourceManager = new Sources.SourceManager();
-                        Global.selectionController = new Selections.SelectionController();
                         Global.queryBuilder = new Query.QueryBuilder();
                         Global.changeMonitor = new ChangeMonitor.TrackerChangeMonitor();
                         Global.collectionManager = new Collections.CollectionManager();
                         Global.sideFilterController = new Filters.SideFilterController();
                         Global.documentManager = new Documents.DocumentManager();
                         Global.trackerController = new TrackerController.TrackerController();
+                        Global.selectionController = new Selections.SelectionController();
                         Global.modeController = new WindowMode.ModeController();
                         Global.focusController = new WindowMode.FocusController();
 

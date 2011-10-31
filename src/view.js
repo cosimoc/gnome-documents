@@ -109,47 +109,81 @@ function View() {
 View.prototype = {
     _init: function() {
         this._selectedURNs = null;
-
-        // setup the model
-        this._treeModel = Global.documentManager.getModel().model;
-        this.widget.set_model(this._treeModel);
+        this._updateSelectionId = 0;
 
         // setup selections
         this.setSingleClickMode(true);
 
+        // create renderers
+        this.createRenderers();
+
+        // setup selections view => controller
         this.setSelectionMode(Gtk.SelectionMode.SINGLE);
+        this.connectToSelectionChanged(Lang.bind(this, this._onSelectionChanged));
+
+        // setup selection controller => view
         this._selectionModeId =
             Global.selectionController.connect('selection-mode-changed',
                                                Lang.bind(this, this._onSelectionModeChanged));
-        this._selectionControllerId =
-            Global.selectionController.connect('selection-check',
-                                               Lang.bind(this, this._updateSelection));
         this._selectAllId =
             Global.selectionController.connect('select-all',
                                                Lang.bind(this, this._onSelectAll));
+        this._queryId =
+            Global.trackerController.connect('query-status-changed',
+                                             Lang.bind(this, this._onQueryStatusChanged));
 
+        this.widget.connect('button-press-event',
+                            Lang.bind(this, this._onButtonPressEvent));
         this.widget.connect('destroy', Lang.bind(this,
             function() {
-                Global.selectionController.disconnect(this._selectionControllerId);
+                // save selection when the view is destroyed
+                Global.selectionController.freezeSelection(true);
+
+                if (this._updateSelectionId != 0) {
+                    Mainloop.source_remove(this._updateSelectionId);
+                    this._updateSelectionId = 0;
+                }
+
+                Global.trackerController.disconnect(this._queryId);
                 Global.selectionController.disconnect(this._selectionModeId);
                 Global.selectionController.disconnect(this._selectAllId);
             }));
-        this.widget.connect('button-press-event', Lang.bind(this, this._onButtonPressEvent));
 
-        this.createRenderers();
-
-        // HACK: give the view some time to setup the scrolled window
-        // allocation, as updateSelection() might call scrollToPath().
-        // Is there anything better we can do here?
-        Mainloop.timeout_add(100, Lang.bind(this,
-            function() {
-                this._updateSelection();
-                return false;
-            }));
-
-        this.connectToSelectionChanged(Lang.bind(this, this._onSelectionChanged));
-
+        // this will create the model if we're done querying
+        this._onQueryStatusChanged();
         this.widget.show();
+    },
+
+    _onQueryStatusChanged: function() {
+        let status = Global.trackerController.getQueryStatus();
+
+        if (!status) {
+            // setup a model if we're not querying
+            this._treeModel = Global.documentManager.getModel().model;
+            this.widget.set_model(this._treeModel);
+
+            // unfreeze selection
+            Global.selectionController.freezeSelection(false);
+
+            // HACK: give the view some time to setup the scrolled window
+            // allocation, as updateSelection() might call scrollToPath().
+            // Is there anything better we can do here?
+            this._updateSelectionId =
+                Mainloop.timeout_add(100, Lang.bind(this,
+                    function() {
+                        this._updateSelectionId = 0;
+                        this._updateSelection();
+                        return false;
+                    }));
+        } else {
+            // save the last selection
+            Global.selectionController.freezeSelection(true);
+
+            // if we're querying, clear the model from the view,
+            // so that we don't uselessly refresh the rows
+            this._treeModel = null;
+            this.widget.set_model(null);
+        }
     },
 
     _updateSelection: function() {
