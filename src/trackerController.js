@@ -29,6 +29,8 @@ const Global = imports.global;
 const Query = imports.query;
 const Utils = imports.utils;
 
+const Gio = imports.gi.Gio;
+
 const MINER_REFRESH_TIMEOUT = 60; /* seconds */
 
 function TrackerController() {
@@ -38,6 +40,8 @@ function TrackerController() {
 TrackerController.prototype = {
     _init: function() {
         this._currentQuery = null;
+        this._cancellable = new Gio.Cancellable();
+        this._queryQueued = false;
         this._querying = false;
 
         // startup a refresh of the gdocs cache
@@ -94,6 +98,11 @@ TrackerController.prototype = {
 
         if (exception)
             Global.errorHandler.addQueryError(exception);
+
+        if (this._queryQueued) {
+            this._queryQueued = false;
+            this._refresh();
+        }
     },
 
     _onCursorNext: function(cursor, res) {
@@ -113,13 +122,13 @@ TrackerController.prototype = {
         }
 
         Global.documentManager.addDocumentFromCursor(cursor);
-        cursor.next_async(null, Lang.bind(this, this._onCursorNext));
+        cursor.next_async(this._cancellable, Lang.bind(this, this._onCursorNext));
     },
 
     _onQueryExecuted: function(object, res) {
         try {
             let cursor = object.query_finish(res);
-            cursor.next_async(null, Lang.bind(this, this._onCursorNext));
+            cursor.next_async(this._cancellable, Lang.bind(this, this._onCursorNext));
         } catch (e) {
             this._onQueryFinished(e);
         }
@@ -127,11 +136,21 @@ TrackerController.prototype = {
 
     _performCurrentQuery: function() {
         this._currentQuery = Global.queryBuilder.buildGlobalQuery();
+        this._cancellable.reset();
+
+        this._setQueryStatus(true);
         Global.connection.query_async(this._currentQuery.sparql,
-                                      null, Lang.bind(this, this._onQueryExecuted));
+                                      this._cancellable, Lang.bind(this, this._onQueryExecuted));
     },
 
     _refresh: function() {
+        if (this.getQueryStatus()) {
+            this._cancellable.cancel();
+            this._queryQueued = true;
+
+            return;
+        }
+
         this._setQueryStatus(true);
         Global.documentManager.clear();
         this._offsetController.resetItemCount();
