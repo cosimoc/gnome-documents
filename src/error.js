@@ -35,6 +35,11 @@ ErrorHandler.prototype = {
     addLoadError: function(doc, exception) {
         // Translators: %s is the title of a document
         let message = _("Unable to load \"%s\" for preview").format(doc.title);
+
+        // FIXME: we need support for error codes in GJS
+        if (exception.toString().indexOf('Operation was cancelled') != -1)
+            return;
+
         log('Error caught: ' + message + ' - ' + exception.message);
 
         this.emit('load-error', message, exception);
@@ -42,7 +47,10 @@ ErrorHandler.prototype = {
 
     addQueryError: function(exception) {
         let message = _("Unable to fetch the list of documents");
-        log('Error caught: ' + message + ' - ' + exception.message);
+
+        // FIXME: we need support for error codes in GJS
+        if (exception.toString().indexOf('Operation was cancelled') != -1)
+            return;
 
         this.emit('query-error', message, exception);
     }
