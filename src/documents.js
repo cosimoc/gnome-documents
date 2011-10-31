@@ -688,6 +688,9 @@ DocumentModel.prototype = {
                                  doc.title, doc.author,
                                  doc.pixbuf, doc.mtime);
             }));
+
+        while (Gtk.events_pending())
+            Gtk.main_iteration();
     },
 
     documentRemoved: function(doc) {
