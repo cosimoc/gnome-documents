@@ -649,16 +649,22 @@ DocumentModel.prototype = {
 
     documentAdded: function(doc) {
         let iter = this.model.append();
-        let treePath = this.model.get_path(iter);
 
         Gd.store_set(this.model, iter,
                      doc.id,
                      doc.title, doc.author,
                      doc.pixbuf, doc.mtime);
 
+        let treePath = this.model.get_path(iter);
+        let treeRowRef = Gtk.TreeRowReference.new(this.model, treePath);
+
         doc.connect('info-updated', Lang.bind(this,
             function() {
-                let objectIter = this.model.get_iter(treePath)[1];
+                let objectPath = treeRowRef.get_path();
+                if (!objectPath)
+                    return;
+
+                let objectIter = this.model.get_iter(objectPath)[1];
                 if (objectIter)
                     Gd.store_set(this.model, iter,
                                  doc.id,
