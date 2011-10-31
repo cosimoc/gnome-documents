@@ -45,6 +45,9 @@ MainToolbar.prototype = {
 
         this.widget = new Gtk.Toolbar({ icon_size: Gtk.IconSize.MENU });
         this.widget.get_style_context().add_class(Gtk.STYLE_CLASS_MENUBAR);
+        this.widget.show();
+
+        this.actor = new GtkClutter.Actor({ contents: this.widget });
 
         // setup listeners to mode changes that affect the toolbar layout
         this._selectionModeId =
@@ -321,8 +324,7 @@ FullscreenToolbar.prototype = {
     _init: function() {
         MainToolbar.prototype._init.call(this);
 
-        this.actor = new GtkClutter.Actor({ contents: this.widget,
-                                            y: -(this.widget.get_preferred_height()[1]) });
+        this.actor.y = -(this.widget.get_preferred_height()[1]);
     },
 
     show: function() {

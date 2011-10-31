@@ -59,15 +59,23 @@ ViewEmbed.prototype  = {
         this._scrolledWinView = null;
         this._scrolledWinPreview = null;
 
-        this.widget = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
-        this.actor = new GtkClutter.Actor({ contents: this.widget });
+        // the embed is a vertical ClutterBox
+        this._layout = new Clutter.BoxLayout({ vertical: true });
+        this.actor = new Clutter.Box({ layout_manager: this._layout });
 
+        // pack the toolbar
         this._toolbar = new MainToolbar.MainToolbar();
-        this.widget.add(this._toolbar.widget);
+        this.actor.add_actor(this._toolbar.actor);
+        this._layout.set_fill(this._toolbar.actor, true, false);
 
+        // pack the main GtkNotebook
         this._notebook = new Gtk.Notebook({ show_tabs: false });
         this._notebook.show();
-        this.widget.add(this._notebook);
+
+        this._embedActor = new GtkClutter.Actor({ contents: this._notebook });
+        this.actor.add_actor(this._embedActor);
+        this._layout.set_expand(this._embedActor, true);
+        this._layout.set_fill(this._embedActor, true, true);
 
         Global.errorHandler.connect('load-error',
                                     Lang.bind(this, this._onLoadError));
@@ -77,8 +85,6 @@ ViewEmbed.prototype  = {
         Global.modeController.connect('fullscreen-changed',
                                       Lang.bind(this, this._onFullscreenChanged));
         this._onWindowModeChanged();
-
-        this.widget.show();
     },
 
     _onFullscreenChanged: function(controller, fullscreen) {
