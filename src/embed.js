@@ -47,10 +47,13 @@ function ViewEmbed() {
 
 ViewEmbed.prototype  = {
     _init: function() {
+        this._adjustmentValueId = 0;
+        this._adjustmentChangedId = 0;
         this._loaderCancellable = null;
         this._loaderTimeout = 0;
         this._motionTimeoutId = 0;
         this._queryErrorId = 0;
+        this._scrollbarVisibleId = 0;
         this._viewSettingsId = 0;
 
         this._scrolledWinView = null;
@@ -271,42 +274,48 @@ ViewEmbed.prototype  = {
 
             this._initView();
 
-            this._scrolledWinView.vadjustment.connect('value-changed',
-                                                      Lang.bind(this, this._onAdjustmentChange));
-            this._onAdjustmentChange(this._scrolledWinView.vadjustment);
-
             grid.show_all();
             this._viewPage = this._notebook.append_page(grid, null);
         }
 
+        this._adjustmentValueId =
+            this._scrolledWinView.vadjustment.connect('value-changed',
+                                                      Lang.bind(this, this._onScrolledWinChange));
+        this._adjustmentChangedId =
+            this._scrolledWinView.vadjustment.connect('changed',
+                                                      Lang.bind(this, this._onScrolledWinChange));
+        this._scrollbarVisibleId =
+            this._scrolledWinView.get_vscrollbar().connect('notify::visible',
+                                                           Lang.bind(this, this._onScrolledWinChange));
+        this._onScrolledWinChange();
+
         this._notebook.set_current_page(this._viewPage);
     },
 
-    _onAdjustmentChange: function(adjustment) {
-        let end = (adjustment.value == (adjustment.upper - adjustment.get_page_size()));
+    _onScrolledWinChange: function() {
+        let vScrollbar = this._scrolledWinView.get_vscrollbar();
+        let adjustment = this._scrolledWinView.vadjustment;
+
+        // if there's no vscrollbar, or if it's not visible, hide the button
+        if (!vScrollbar ||
+            !vScrollbar.get_visible()) {
+            this._loadMore.setBlock(true);
+            return;
+        }
+
+        let value = adjustment.value;
+        let upper = adjustment.upper;
+        let page_size = adjustment.page_size;
+
+        let end = false;
 
         // special case this values which happen at construction
-        if (adjustment.value == 0 &&
-            adjustment.upper == 1 &&
-            adjustment.get_page_size() == 1)
+        if ((value == 0) && (upper == 1) && (page_size == 1))
             end = false;
+        else
+            end = !(adjustment.value < (adjustment.upper - adjustment.page_size));
 
-        if (end) {
-            if (!this._adjChangedId) {
-                this._loadMore.setBlock(false);
-
-                //wait for a changed event
-                this._adjChangedId = adjustment.connect('changed', Lang.bind(this,
-                    function(adjustment) {
-                        adjustment.disconnect(this._adjChangedId);
-                        this._adjChangedId = 0;
-
-                        this._loadMore.setBlock(true);
-                    }));
-            }
-        } else {
-            this._loadMore.setBlock(true);
-        }
+        this._loadMore.setBlock(!end);
     },
 
     _onQueryError: function(manager, message, exception) {
@@ -330,6 +339,19 @@ ViewEmbed.prototype  = {
         }
 
         Global.searchFilterController.setSearchVisible(false);
+
+        if (this._adjustmentValueId != 0) {
+            this._scrolledWinView.vadjustment.disconnect(this._adjustmentValueId);
+            this._adjustmentValueId = 0;
+        }
+        if (this._adjustmentChangedId != 0) {
+            this._scrolledWinView.vadjustment.disconnect(this._adjustmentChangedId);
+            this._adjustmentChangedId = 0;
+        }
+        if (this._scrollbarVisibleId != 0) {
+            this._scrolledWinView.get_vscrollbar().disconnect(this._scrollbarVisibleId);
+            this._scrollbarVisibleId = 0;
+        }
 
         if (!this._scrolledWinPreview) {
             this._scrolledWinPreview = new Gtk.ScrolledWindow({ hexpand: true,

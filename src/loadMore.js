@@ -74,6 +74,9 @@ LoadMoreButton.prototype = {
     },
 
     setBlock: function(block) {
+        if (this._block == block)
+            return;
+
         this._block = block;
         this._onItemCountChanged();
     }
