@@ -38,7 +38,7 @@ const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
 const GtkClutter = imports.gi.GtkClutter;
 
-const _PDF_LOADER_TIMEOUT = 300;
+const _PDF_LOADER_TIMEOUT = 400;
 const _FULLSCREEN_TOOLBAR_TIMEOUT = 2;
 
 function ViewEmbed() {
@@ -50,7 +50,6 @@ ViewEmbed.prototype  = {
         this._adjustmentValueId = 0;
         this._adjustmentChangedId = 0;
         this._loaderCancellable = null;
-        this._loaderTimeout = 0;
         this._motionTimeoutId = 0;
         this._queryErrorId = 0;
         this._scrollbarVisibleId = 0;
@@ -68,14 +67,22 @@ ViewEmbed.prototype  = {
         this.actor.add_actor(this._toolbar.actor);
         this._layout.set_fill(this._toolbar.actor, true, false);
 
-        // pack the main GtkNotebook
-        this._notebook = new Gtk.Notebook({ show_tabs: false });
-        this._notebook.show();
-
-        this._embedActor = new GtkClutter.Actor({ contents: this._notebook });
-        this.actor.add_actor(this._embedActor);
+        // pack the main GtkNotebook and a spinnerbox in a BinLayout, so that
+        // we can easily bring them front/back
+        this._embedLayout = new Clutter.BinLayout();
+        this._embedActor = new Clutter.Box({ layout_manager: this._embedLayout });
         this._layout.set_expand(this._embedActor, true);
         this._layout.set_fill(this._embedActor, true, true);
+        this.actor.add_actor(this._embedActor);
+
+        this._notebook = new Gtk.Notebook({ show_tabs: false });
+        this._notebook.show();
+        this._notebookActor = new GtkClutter.Actor({ contents: this._notebook });
+        this._embedLayout.add(this._notebookActor, Clutter.BinAlignment.FILL, Clutter.BinAlignment.FILL);
+
+        this._spinnerBox = new SpinnerBox.SpinnerBox();
+        this._embedLayout.add(this._spinnerBox.actor, Clutter.BinAlignment.FILL, Clutter.BinAlignment.FILL);
+        this._spinnerBox.actor.lower_bottom();
 
         Global.errorHandler.connect('load-error',
                                     Lang.bind(this, this._onLoadError));
@@ -84,7 +91,20 @@ ViewEmbed.prototype  = {
                                       Lang.bind(this, this._onWindowModeChanged));
         Global.modeController.connect('fullscreen-changed',
                                       Lang.bind(this, this._onFullscreenChanged));
+        Global.trackerController.connect('query-status-changed',
+                                         Lang.bind(this, this._onQueryStatusChanged));
+
         this._onWindowModeChanged();
+        this._onQueryStatusChanged();
+    },
+
+    _onQueryStatusChanged: function() {
+        let queryStatus = Global.trackerController.getQueryStatus();
+
+        if (queryStatus)
+            this._spinnerBox.moveIn();
+        else
+            this._spinnerBox.moveOut();
     },
 
     _onFullscreenChanged: function(controller, fullscreen) {
@@ -164,44 +184,24 @@ ViewEmbed.prototype  = {
     },
 
     _onViewItemActivated: function(view, urn) {
-        if (this._loaderTimeout != 0) {
-            Mainloop.source_remove(this._loaderTimeout);
-            this._loaderTimeout = 0;
-        }
-
         let doc = Global.documentManager.getItemById(urn);
         Global.documentManager.setActiveItem(doc);
 
-        this._loaderTimeout = Mainloop.timeout_add(_PDF_LOADER_TIMEOUT,
-            Lang.bind(this, this._onPdfLoaderTimeout));
+        // switch to preview mode, and schedule the spinnerbox to
+        // move in if the document is not loaded by the timeout
+        Global.modeController.setWindowMode(WindowMode.WindowMode.PREVIEW);
+        this._spinnerBox.moveInDelayed(_PDF_LOADER_TIMEOUT);
 
         this._loaderCancellable = new Gio.Cancellable();
         doc.loadPreview(this._loaderCancellable, Lang.bind(this, this._onDocumentLoaded));
-    },
-
-    _onPdfLoaderTimeout: function() {
-        this._loaderTimeout = 0;
-
-        Global.modeController.setWindowMode(WindowMode.WindowMode.PREVIEW);
-
-        let spinnerBox = new SpinnerBox.SpinnerBox();
-        this._scrolledWinPreview.add_with_viewport(spinnerBox.widget);
-
-        return false;
     },
 
     _onDocumentLoaded: function(document) {
         this._loaderCancellable = null;
         this._docModel = EvView.DocumentModel.new_with_document(document);
 
-        if (this._loaderTimeout) {
-            Mainloop.source_remove(this._loaderTimeout);
-            this._loaderTimeout = 0;
-        }
-
-        Global.modeController.setWindowMode(WindowMode.WindowMode.PREVIEW);
+        this._spinnerBox.moveOut();
         Global.modeController.setCanFullscreen(true);
-
         this._preview = new Preview.PreviewView(this._docModel);
 
         if (this._fsToolbar)
@@ -212,7 +212,6 @@ ViewEmbed.prototype  = {
         this._preview.widget.connect('motion-notify-event',
                                      Lang.bind(this, this._fullscreenMotionHandler));
 
-        this._destroyScrollPreviewChild();
         this._scrolledWinPreview.add(this._preview.widget);
         this._preview.widget.grab_focus();
     },
@@ -365,19 +364,16 @@ ViewEmbed.prototype  = {
                                                                 shadow_type: Gtk.ShadowType.IN });
             this._scrolledWinPreview.show();
             this._previewPage = this._notebook.append_page(this._scrolledWinPreview, null);
+        } else {
+            this._destroyScrollPreviewChild();
         }
 
         this._notebook.set_current_page(this._previewPage);
     },
 
     _onLoadError: function(manager, message, exception) {
-        if (this._loaderTimeout != 0) {
-            Mainloop.source_remove(this._loaderTimeout);
-            this._loaderTimeout = 0;
-        }
-
         this._loaderCancellable = null;
-        Global.modeController.setWindowMode(WindowMode.WindowMode.PREVIEW);
+        this._spinnerBox.moveOut();
 
         let errorBox = new ErrorBox.ErrorBox(message, exception.message);
         this._scrolledWinPreview.add_with_viewport(errorBox.widget);

@@ -20,7 +20,13 @@
  */
 
 const Gtk = imports.gi.Gtk;
+const GtkClutter = imports.gi.GtkClutter;
 const _ = imports.gettext.gettext;
+
+const Tweener = imports.util.tweener;
+
+const Lang = imports.lang;
+const Mainloop = imports.mainloop;
 
 const _SPINNER_SIZE = 128;
 
@@ -30,12 +36,17 @@ function SpinnerBox() {
 
 SpinnerBox.prototype = {
     _init: function() {
+        this._delayedMoveId = 0;
+
         this.widget = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,
                                      row_spacing: 24,
                                      hexpand: true,
                                      vexpand: true,
                                      halign: Gtk.Align.CENTER,
                                      valign: Gtk.Align.CENTER });
+
+        this.actor = new GtkClutter.Actor({ contents: this.widget,
+                                            opacity: 255 });
 
         this._spinner = new Gtk.Spinner({ width_request: _SPINNER_SIZE,
                                           height_request: _SPINNER_SIZE,
@@ -50,6 +61,44 @@ SpinnerBox.prototype = {
                                       valign: Gtk.Align.CENTER });
         this.widget.add(this._label);
 
+        this.widget.connect('destroy', Lang.bind(this, this._clearDelayId));
         this.widget.show_all();
+    },
+
+    _clearDelayId: function() {
+        if (this._delayedMoveId != 0) {
+            Mainloop.source_remove(this._delayedMoveId);
+            this._delayedMoveId = 0;
+        }
+    },
+
+    moveIn: function() {
+        this._clearDelayId();
+        this.actor.opacity = 255;
+        this.actor.raise_top();
+    },
+
+    moveOut: function() {
+        this._clearDelayId();
+
+        Tweener.addTween(this.actor, { opacity: 0,
+                                       time: 0.30,
+                                       transition: 'easeOutQuad',
+                                       onComplete: function () {
+                                           this.actor.lower_bottom();
+                                       },
+                                       onCompleteScope: this });
+    },
+
+    moveInDelayed: function(delay) {
+        this._clearDelayId();
+
+        this._delayedMoveId = Mainloop.timeout_add(delay, Lang.bind(this,
+            function() {
+                this._delayedMoveId = 0;
+
+                this.moveIn();
+                return false;
+            }));
     }
 };
