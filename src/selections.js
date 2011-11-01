@@ -105,9 +105,8 @@ SelectionToolbar.prototype = {
         this.widget.insert(this._toolbarFavorite, 0);
         this._toolbarFavorite.connect('clicked', Lang.bind(this, this._onToolbarFavorite));
 
-        let separator = new Gtk.SeparatorToolItem();
-        separator.show();
-        this.widget.insert(separator, 1);
+        this._separator = new Gtk.SeparatorToolItem();
+        this.widget.insert(this._separator, 1);
 
         this._toolbarOpen = new Gtk.ToolButton({ icon_name: 'document-open-symbolic' });
         this.widget.insert(this._toolbarOpen, 2);
@@ -178,6 +177,9 @@ SelectionToolbar.prototype = {
             }));
 
         showFavorite &= ((favCount == 0) || (favCount == selection.length));
+
+        // if we're showing the favorite icon, also show the separator
+        this._separator.set_visible(showFavorite);
 
         let openLabel = null;
         if (apps.length == 1) {
