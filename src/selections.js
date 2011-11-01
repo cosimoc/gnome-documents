@@ -94,11 +94,12 @@ SelectionToolbar.prototype = {
 
         this.widget = new Gtk.Toolbar({ show_arrow: false,
                                         icon_size: Gtk.IconSize.LARGE_TOOLBAR });
-        this.widget.get_style_context().add_class('osd');
 
         this.actor = new GtkClutter.Actor({ contents: this.widget,
                                             show_on_set_parent: false,
                                             opacity: 0 });
+        let actorWidget = this.actor.get_widget();
+        actorWidget.get_style_context().add_class('osd');
 
         this._toolbarFavorite = new Gtk.ToggleToolButton({ icon_name: 'emblem-favorite-symbolic' });
         this.widget.insert(this._toolbarFavorite, 0);

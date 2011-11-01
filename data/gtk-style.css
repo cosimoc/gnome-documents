@@ -1,8 +1,4 @@
 /* GTK+ custom style here */
-GtkClutterOffscreen {
-    background-color: alpha(#000, 0.00);
-}
-
 #ViewLoadMore {
     border-image-width: 0 2 2 2;
     border-width: 0 1 1 1;
@@ -15,7 +11,12 @@ GtkClutterOffscreen {
     color: #ffffff;
 }
 
-.osd.toolbar {
+.osd {
+    background-image: none;
+    background-color: alpha(#000, 0.00);
+}
+
+.osd .toolbar {
     padding: 6 6;
     border-style: none;
     border-radius: 5;
@@ -29,15 +30,15 @@ GtkClutterOffscreen {
     icon-shadow: 1 1 black;
 }
 
-.osd.toolbar .favorite {
+.osd .toolbar .favorite {
     color: shade(@theme_selected_bg_color, 1.20);
 }
 
-.osd.toolbar .separator {
+.osd .toolbar .separator {
     color: alpha(@theme_tooltip_fg_color, 0.30);
 }
 
-.osd.toolbar .button:hover {
+.osd .toolbar .button:hover {
     background-image: -gtk-gradient(linear, left top, left bottom,
                                     from(alpha(@theme_tooltip_fg_color, 0.00)),
                                     color-stop(0.50, alpha(@theme_tooltip_fg_color, 0.15)),
@@ -49,7 +50,7 @@ GtkClutterOffscreen {
     border-width: 0;
 }
 
-.osd.toolbar .button:active {
+.osd .toolbar .button:active {
     background-image: none;
     background-color: alpha(@theme_tooltip_fg_color, 0.15);
 
@@ -59,7 +60,7 @@ GtkClutterOffscreen {
     border-width: 0;    
 }
 
-.osd.toolbar .button:active:hover {
+.osd .toolbar .button:active:hover {
     background-image: -gtk-gradient(linear, left top, left bottom,
                                     from(alpha(@theme_tooltip_fg_color, 0.15)),
                                     color-stop(0.50, alpha(@theme_tooltip_fg_color, 0.30)),
