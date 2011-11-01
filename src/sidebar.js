@@ -383,13 +383,21 @@ Sidebar.prototype = {
     _moveOut: function() {
         Tweener.addTween(this.actor, { width: 0,
                                        time: 0.15,
-                                       transition: 'easeInQuad' });
+                                       transition: 'easeInQuad',
+                                       onComplete: function() {
+                                           Global.sideFilterController.setSidebarIn(false);
+                                       },
+                                       onCompleteScope: this });
     },
 
     _moveIn: function() {
         Tweener.addTween(this.actor, { width: this.widget.get_preferred_width()[1],
                                        time: 0.15,
-                                       transition: 'easeOutQuad' });
+                                       transition: 'easeOutQuad',
+                                       onComplete: function() {
+                                           Global.sideFilterController.setSidebarIn(true);
+                                       },
+                                       onCompleteScope: this });
     },
 
     _onWindowModeChanged: function(controller, mode) {

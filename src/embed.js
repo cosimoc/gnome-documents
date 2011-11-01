@@ -151,10 +151,22 @@ ViewEmbed.prototype  = {
     _onWindowModeChanged: function() {
         let mode = Global.modeController.getWindowMode();
 
-        if (mode == WindowMode.WindowMode.OVERVIEW)
-            this._prepareForOverview();
-        else
+        if (mode == WindowMode.WindowMode.OVERVIEW) {
+            // if the sidebar is visible, wait until it completed fading in before
+            // putting back the view
+            if (Global.sideFilterController.getSidebarVisible()) {
+                let sidebarInId =
+                    Global.sideFilterController.connect('sidebar-in-changed', Lang.bind(this,
+                        function() {
+                            Global.sideFilterController.disconnect(sidebarInId);
+                            this._prepareForOverview();
+                        }));
+            } else {
+                this._prepareForOverview();
+            }
+        } else {
             this._prepareForPreview();
+        }
     },
 
     _destroyScrollPreviewChild: function() {

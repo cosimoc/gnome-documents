@@ -102,6 +102,7 @@ SideFilterController.prototype = {
         this._whereItem = Global.categoryManager.getActiveItem();
 
         this._sidebarVisible = true;
+        this._sidebarIn = false;
     },
 
     setActiveItem: function(controller, item) {
@@ -124,6 +125,18 @@ SideFilterController.prototype = {
 
     getSidebarVisible: function() {
         return this._sidebarVisible;
+    },
+
+    setSidebarIn: function(setting) {
+        if (this._sidebarIn == setting)
+            return;
+
+        this._sidebarIn = setting;
+        this.emit('sidebar-in-changed', this._sidebarIn);
+    },
+
+    getSidebarIn: function() {
+        return this._sidebarIn;
     },
 
     getWhere: function() {
