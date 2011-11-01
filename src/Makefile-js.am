@@ -8,7 +8,6 @@ dist_js_DATA = \
     embed.js \
     error.js \
     errorBox.js \
-    filters.js \
     gDataMiner.js \
     global.js \
     iconView.js \

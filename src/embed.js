@@ -170,7 +170,7 @@ ViewEmbed.prototype  = {
     },
 
     _windowModeChangeFlash: function() {
-        let visible = Global.sideFilterController.getSidebarVisible();
+        let visible = Global.sidebarController.getSidebarVisible();
 
         // if the sidebar is visible, wait until it completed fading in before
         // putting back the view
@@ -197,15 +197,15 @@ ViewEmbed.prototype  = {
         let mode = Global.modeController.getWindowMode();
 
         if (mode == WindowMode.WindowMode.OVERVIEW) {
-            let visible = Global.sideFilterController.getSidebarVisible();
+            let visible = Global.sidebarController.getSidebarVisible();
 
             // if the sidebar is visible, wait until it completed fading in before
             // putting back the view
             if (visible) {
                 let sidebarInId =
-                    Global.sideFilterController.connect('sidebar-in-changed', Lang.bind(this,
+                    Global.sidebarController.connect('sidebar-in-changed', Lang.bind(this,
                         function() {
-                            Global.sideFilterController.disconnect(sidebarInId);
+                            Global.sidebarController.disconnect(sidebarInId);
                             this._prepareForOverview();
                         }));
             } else {
@@ -401,7 +401,7 @@ ViewEmbed.prototype  = {
             this._queryErrorId = 0;
         }
 
-        Global.searchFilterController.setSearchVisible(false);
+        Global.searchController.setSearchVisible(false);
 
         if (this._adjustmentValueId != 0) {
             this._scrolledWinView.vadjustment.disconnect(this._adjustmentValueId);

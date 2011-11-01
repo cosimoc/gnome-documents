@@ -256,19 +256,19 @@ MainWindow.prototype = {
         let keyval = event.get_keyval()[1];
 
         if (keyval == Gdk.KEY_F9) {
-            let visible = Global.sideFilterController.getSidebarVisible();
-            Global.sideFilterController.setSidebarVisible(!visible);
+            let visible = Global.sidebarController.getSidebarVisible();
+            Global.sidebarController.setSidebarVisible(!visible);
             return true;
         }
 
         if (Utils.isSearchEvent(event)) {
-            let visible = Global.searchFilterController.getSearchVisible();
-            Global.searchFilterController.setSearchVisible(!visible);
+            let visible = Global.searchController.getSearchVisible();
+            Global.searchController.setSearchVisible(!visible);
             return true;
         }
 
-        if (!Global.searchFilterController.getSearchIn()) {
-            Global.searchFilterController.deliverEvent(event);
+        if (!Global.searchController.getSearchIn()) {
+            Global.searchController.deliverEvent(event);
             return true;
         }
 

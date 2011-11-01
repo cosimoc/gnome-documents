@@ -57,10 +57,10 @@ TrackerController.prototype = {
         this._offsetController.connect('offset-changed',
                                        Lang.bind(this, this._performCurrentQuery));
 
-        Global.sideFilterController.connect('changed',
-                                            Lang.bind(this, this._refresh));
-        Global.searchFilterController.connect('search-string-changed',
-                                              Lang.bind(this, this._onSearchRefresh));
+        Global.sidebarController.connect('changed',
+                                         Lang.bind(this, this._refresh));
+        Global.searchController.connect('search-string-changed',
+                                        Lang.bind(this, this._onSearchRefresh));
         Global.searchMatchManager.connect('active-changed',
                                           Lang.bind(this, this._onSearchMatchChanged));
         Global.searchTypeManager.connect('active-changed',
@@ -170,7 +170,7 @@ TrackerController.prototype = {
     _onSearchMatchChanged: function() {
         // when the "match" search setting changes, refresh only if
         // the search string is not empty
-        if (Global.searchFilterController.getString() != '')
+        if (Global.searchController.getString() != '')
             this._onSearchRefresh();
     },
 

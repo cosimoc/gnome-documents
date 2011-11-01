@@ -136,7 +136,7 @@ QueryBuilder.prototype = {
 
         if (global) {
             globalSparql +=
-                Global.sideFilterController.getWhere() +
+                Global.sidebarController.getWhere() +
                 this._buildFilterString() +
                 ' } ' +
                 'ORDER BY DESC (?mtime)' +

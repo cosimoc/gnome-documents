@@ -27,6 +27,7 @@ const _ = imports.gettext.gettext;
 
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
+const Signals = imports.signals;
 
 const Global = imports.global;
 const Manager = imports.manager;
@@ -99,11 +100,11 @@ SearchMatch.prototype = {
         if (this.id == SEARCH_MATCH_TITLE)
             return ('fn:contains ' +
                     '(fn:lower-case (tracker:coalesce(nie:title(?urn), nfo:fileName(?urn))), ' +
-                    '"%s")').format(Global.searchFilterController.getString());
+                    '"%s")').format(Global.searchController.getString());
         if (this.id == SEARCH_MATCH_AUTHOR)
             return ('fn:contains ' +
                     '(fn:lower-case (tracker:coalesce(nco:fullname(?creator), nco:fullname(?publisher))), ' +
-                    '"%s")').format(Global.searchFilterController.getString());
+                    '"%s")').format(Global.searchController.getString());
 
         return '';
     }
@@ -130,6 +131,75 @@ SearchMatchManager.prototype = {
     }
 };
 
+function SearchController() {
+    this._init();
+};
+
+SearchController.prototype = {
+    _init: function() {
+        this._searchVisible = false;
+        this._searchIn = false;
+        this._dropdownState = false;
+        this._string = '';
+    },
+
+    setString: function(string) {
+        if (this._string == string)
+            return;
+
+        this._string = string;
+        this.emit('search-string-changed', this._string);
+    },
+
+    getString: function() {
+        return this._string;
+    },
+
+    setDropownState: function(state) {
+        if (this._dropdownState == state)
+            return;
+
+        this._dropdownState = state;
+        this.emit('search-dropdown-changed', this._dropdownState);
+    },
+
+    getDropdownState: function() {
+        return this._dropdownState;
+    },
+
+    setSearchVisible: function(visible) {
+        if (this._searchVisible == visible)
+            return;
+
+        this._searchVisible = visible;
+        this.emit('search-visible-changed', this._searchVisible);
+
+        if (!this._searchVisible)
+            this.setDropownState(false);
+    },
+
+    getSearchVisible: function() {
+        return this._searchVisible;
+    },
+
+    setSearchIn: function(setting) {
+        if (this._searchIn == setting)
+            return;
+
+        this._searchIn = setting;
+        this.emit('search-in-changed', this._searchIn);
+    },
+
+    getSearchIn: function() {
+        return this._searchIn;
+    },
+
+    deliverEvent: function(event) {
+        this.emit('deliver-event', event);
+    }
+};
+Signals.addSignalMethods(SearchController.prototype);
+
 function Dropdown() {
     this._init();
 }
@@ -155,13 +225,13 @@ Dropdown.prototype = {
 
         this.widget.show_all();
 
-        Global.searchFilterController.connect('search-dropdown-changed',
-                                              Lang.bind(this, this._onSearchDropdown));
+        Global.searchController.connect('search-dropdown-changed',
+                                        Lang.bind(this, this._onSearchDropdown));
         this._onSearchDropdown();
     },
 
     _onSearchDropdown: function() {
-        let state = Global.searchFilterController.getDropdownState();
+        let state = Global.searchController.getDropdownState();
         if (state)
             this._fadeIn();
         else
@@ -217,7 +287,7 @@ Searchbar.prototype = {
         this._dropdownButton.connect('toggled', Lang.bind(this,
             function() {
                 let active = this._dropdownButton.get_active();
-                Global.searchFilterController.setDropownState(active);
+                Global.searchController.setDropownState(active);
             }));
 
         box.add(this._dropdownButton);
@@ -235,7 +305,7 @@ Searchbar.prototype = {
                 let keyval = event.get_keyval()[1];
 
                 if (keyval == Gdk.KEY_Escape) {
-                    Global.searchFilterController.setSearchVisible(false);
+                    Global.searchController.setSearchVisible(false);
                     return true;
                 }
 
@@ -264,7 +334,7 @@ Searchbar.prototype = {
                     this._searchEntryTimeout = 0;
 
                     let currentText = this._searchEntry.get_text();
-                    Global.searchFilterController.setString(currentText);
+                    Global.searchController.setString(currentText);
             }));
         }));
 
@@ -273,24 +343,24 @@ Searchbar.prototype = {
         }));
 
         this._searchFocusId =
-            Global.searchFilterController.connect('search-visible-changed', Lang.bind(this, this._onSearchVisible));
+            Global.searchController.connect('search-visible-changed', Lang.bind(this, this._onSearchVisible));
         this._searchEventId =
-            Global.searchFilterController.connect('deliver-event', Lang.bind(this, this._onDeliverEvent));
+            Global.searchController.connect('deliver-event', Lang.bind(this, this._onDeliverEvent));
 
         this.widget.insert(item, 0);
-        this._searchEntry.set_text(Global.searchFilterController.getString());
+        this._searchEntry.set_text(Global.searchController.getString());
 
         this.widget.show_all();
     },
 
     destroy: function() {
         if (this._searchFocusId != 0) {
-            Global.searchFilterController.disconnect(this._searchFocusId);
+            Global.searchController.disconnect(this._searchFocusId);
             this._searchFocusId = 0;
         }
 
         if (this._searchEventId != 0) {
-            Global.searchFilterController.disconnect(this._searchEventId);
+            Global.searchController.disconnect(this._searchEventId);
             this._searchEventId = 0;
         }
 
@@ -298,7 +368,7 @@ Searchbar.prototype = {
     },
 
     _onSearchVisible: function() {
-        if (Global.searchFilterController.getSearchVisible())
+        if (Global.searchController.getSearchVisible())
             this._moveIn(Gtk.get_current_event_device());
         else
             this._moveOut();
@@ -322,8 +392,8 @@ Searchbar.prototype = {
         this._searchEntry.disconnect(preeditChangedId);
 
         if (((res && (newText != oldText)) || preeditChanged) &&
-            !Global.searchFilterController.getSearchIn()) {
-            Global.searchFilterController.setSearchVisible(true);
+            !Global.searchController.getSearchIn()) {
+            Global.searchController.setSearchVisible(true);
         }
     },
 
@@ -334,7 +404,7 @@ Searchbar.prototype = {
                                        time: 0.20,
                                        transition: 'easeOutQuad',
                                        onComplete: function() {
-                                           Global.searchFilterController.setSearchIn(true);
+                                           Global.searchController.setSearchIn(true);
 
                                            Gd.entry_focus_hack(this._searchEntry, eventDevice);
                                        },
@@ -348,7 +418,7 @@ Searchbar.prototype = {
                                        onComplete: function() {
                                            this._searchEntry.hide();
                                            this._dropdownButton.set_active(false);
-                                           Global.searchFilterController.setSearchIn(false);
+                                           Global.searchController.setSearchIn(false);
                                        },
                                        onCompleteScope: this });
     }

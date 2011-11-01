@@ -36,6 +36,66 @@ const WindowMode = imports.windowMode;
 
 const _SIDEBAR_WIDTH_REQUEST = 240;
 
+function SidebarController() {
+    this._init();
+}
+
+SidebarController.prototype = {
+    _init: function() {
+        // intialize to last category
+        this._whereItem = Global.categoryManager.getActiveItem();
+
+        this._sidebarVisible = true;
+        this._sidebarIn = false;
+    },
+
+    setActiveItem: function(controller, item) {
+        if (this._whereItem == item)
+            return;
+
+        this._whereItem = item;
+        controller.setActiveItem(this._whereItem);
+
+        this.emit('changed', this._whereItem);
+    },
+
+    setSidebarVisible: function(visible) {
+        if (this._sidebarVisible == visible)
+            return;
+
+        this._sidebarVisible = visible;
+        this.emit('sidebar-visible-changed', this._sidebarVisible);
+    },
+
+    getSidebarVisible: function() {
+        return this._sidebarVisible;
+    },
+
+    setSidebarIn: function(setting) {
+        if (this._sidebarIn == setting)
+            return;
+
+        this._sidebarIn = setting;
+        this.emit('sidebar-in-changed', this._sidebarIn);
+    },
+
+    getSidebarIn: function() {
+        return this._sidebarIn;
+    },
+
+    getWhere: function() {
+        if (!this._whereItem)
+            return '';
+
+        return this._whereItem.getWhere();
+    },
+
+    getWhereItem: function() {
+        return this._whereItem;
+    }
+};
+Signals.addSignalMethods(SidebarController.prototype);
+
 const SidebarModelColumns = {
     ID: 0,
     NAME: 1,
@@ -208,7 +268,7 @@ SidebarView.prototype = {
                     controller = Global.collectionManager;
 
                 let item = controller.getItemById(id);
-                Global.sideFilterController.setActiveItem(controller, item);
+                Global.sidebarController.setActiveItem(controller, item);
             }));
 
         let col = new Gtk.TreeViewColumn();
@@ -374,8 +434,8 @@ Sidebar.prototype = {
 
         Global.modeController.connect('window-mode-changed',
                                       Lang.bind(this, this._onWindowModeChanged));
-        Global.sideFilterController.connect('sidebar-visible-changed',
-                                            Lang.bind(this, this._onSidebarVisible));
+        Global.sidebarController.connect('sidebar-visible-changed',
+                                         Lang.bind(this, this._onSidebarVisible));
 
         this._onSidebarVisible();
     },
@@ -385,7 +445,7 @@ Sidebar.prototype = {
                                        time: 0.15,
                                        transition: 'easeInQuad',
                                        onComplete: function() {
-                                           Global.sideFilterController.setSidebarIn(false);
+                                           Global.sidebarController.setSidebarIn(false);
                                        },
                                        onCompleteScope: this });
     },
@@ -395,7 +455,7 @@ Sidebar.prototype = {
                                        time: 0.15,
                                        transition: 'easeOutQuad',
                                        onComplete: function() {
-                                           Global.sideFilterController.setSidebarIn(true);
+                                           Global.sidebarController.setSidebarIn(true);
                                        },
                                        onCompleteScope: this });
     },
@@ -404,13 +464,13 @@ Sidebar.prototype = {
         if (mode == WindowMode.WindowMode.PREVIEW) {
             this._moveOut();
         } else if (mode == WindowMode.WindowMode.OVERVIEW) {
-            if (Global.sideFilterController.getSidebarVisible())
+            if (Global.sidebarController.getSidebarVisible())
                 this._moveIn();
         }
     },
 
     _onSidebarVisible: function() {
-        let visible = Global.sideFilterController.getSidebarVisible();
+        let visible = Global.sidebarController.getSidebarVisible();
         if (visible)
             this._moveIn();
         else

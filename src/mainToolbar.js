@@ -63,7 +63,7 @@ MainToolbar.prototype = {
         this._model = null;
 
         if (this._whereId != 0) {
-            Global.sideFilterController.disconnect(this._whereId);
+            Global.sidebarController.disconnect(this._whereId);
             this._whereId = 0;
         }
 
@@ -184,8 +184,8 @@ MainToolbar.prototype = {
 
         // connect to sidebar filter changes while in this mode
         this._whereId =
-            Global.sideFilterController.connect('changed',
-                                                Lang.bind(this, this._onSideFilterChanged));
+            Global.sidebarController.connect('changed',
+                                             Lang.bind(this, this._onSideFilterChanged));
         this._onSideFilterChanged();
 
         this.widget.show_all();
@@ -255,7 +255,7 @@ MainToolbar.prototype = {
     },
 
     _onSideFilterChanged: function() {
-        let item = Global.sideFilterController.getWhereItem();
+        let item = Global.sidebarController.getWhereItem();
 
         if (!item)
             return;

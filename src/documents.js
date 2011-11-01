@@ -75,8 +75,8 @@ DocCommon.prototype = {
             Global.settings.connect('changed::list-view',
                                     Lang.bind(this, this.refreshIcon));
         this._filterId =
-            Global.sideFilterController.connect('changed',
-                                                Lang.bind(this, this.refreshIcon));
+            Global.sidebarController.connect('changed',
+                                             Lang.bind(this, this.refreshIcon));
     },
 
     refresh: function() {
@@ -182,7 +182,7 @@ DocCommon.prototype = {
         let pixbuf = this.pixbuf;
         let activeItem;
 
-        activeItem = Global.sideFilterController.getWhereItem();
+        activeItem = Global.sidebarController.getWhereItem();
 
         if (this.favorite &&
             (!activeItem ||
@@ -229,7 +229,7 @@ DocCommon.prototype = {
 
     destroy: function() {
         Global.settings.disconnect(this._refreshIconId);
-        Global.sideFilterController.disconnect(this._filterId);
+        Global.sidebarController.disconnect(this._filterId);
     },
 
     open: function(screen, timestamp) {
