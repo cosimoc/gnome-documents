@@ -30,6 +30,7 @@ const LoadMore = imports.loadMore;
 const MainToolbar = imports.mainToolbar;
 const Preview = imports.preview;
 const SpinnerBox = imports.spinnerBox;
+const Tweener = imports.util.tweener;
 const WindowMode = imports.windowMode;
 
 const Clutter = imports.gi.Clutter;
@@ -83,6 +84,16 @@ ViewEmbed.prototype  = {
         this._spinnerBox = new SpinnerBox.SpinnerBox();
         this._embedLayout.add(this._spinnerBox.actor, Clutter.BinAlignment.FILL, Clutter.BinAlignment.FILL);
         this._spinnerBox.actor.lower_bottom();
+
+        // also pack a white background to use for spotlights between window modes
+        this._background =
+            new Clutter.Rectangle({ color: new Clutter.Color ({ red: 255,
+                                                                blue: 255,
+                                                                green: 255,
+                                                                alpha: 255 }) });
+        this._embedLayout.add(this._background,
+            Clutter.BinAlignment.FILL, Clutter.BinAlignment.FILL);
+        this._background.lower_bottom();
 
         Global.errorHandler.connect('load-error',
                                     Lang.bind(this, this._onLoadError));
@@ -148,13 +159,49 @@ ViewEmbed.prototype  = {
         this._fsToolbar = null;
     },
 
+    _moveOutBackground: function() {
+        Tweener.addTween(this._background, { opacity: 0,
+                                             time: 0.20,
+                                             transition: 'easeInQuad',
+                                             onComplete: function() {
+                                                 this._background.lower_bottom();
+                                             },
+                                             onCompleteScope: this });
+    },
+
+    _windowModeChangeFlash: function() {
+        let visible = Global.sideFilterController.getSidebarVisible();
+
+        // if the sidebar is visible, wait until it completed fading in before
+        // putting back the view
+        if (visible) {
+            // follow the movement of the sidebar fading the preview to white
+            this._background.raise_top();
+            Tweener.addTween(this._background,
+                { opacity: 255,
+                  time: 0.20,
+                  transition: 'easeOutQuad',
+                  onComplete: function() {
+                      this._moveOutBackground();
+                  },
+                  onCompleteScope: this });
+        } else {
+            // fade from white when returning to the view anyway
+            this._background.raise_top();
+            this._background.opacity = 255;
+            this._moveOutBackground();
+        }
+    },
+
     _onWindowModeChanged: function() {
         let mode = Global.modeController.getWindowMode();
 
         if (mode == WindowMode.WindowMode.OVERVIEW) {
+            let visible = Global.sideFilterController.getSidebarVisible();
+
             // if the sidebar is visible, wait until it completed fading in before
             // putting back the view
-            if (Global.sideFilterController.getSidebarVisible()) {
+            if (visible) {
                 let sidebarInId =
                     Global.sideFilterController.connect('sidebar-in-changed', Lang.bind(this,
                         function() {
@@ -167,6 +214,8 @@ ViewEmbed.prototype  = {
         } else {
             this._prepareForPreview();
         }
+
+        this._windowModeChangeFlash();
     },
 
     _destroyScrollPreviewChild: function() {
