@@ -308,9 +308,6 @@ ViewEmbed.prototype  = {
             this._loaderCancellable = null;
         }
 
-        if (this._pdfLodaer)
-            this._pdfLoader = null;
-
         if (this._preview) {
             this._preview.destroy();
             this._preview = null;
