@@ -100,6 +100,8 @@ SideFilterController.prototype = {
     _init: function() {
         // intialize to last category
         this._whereItem = Global.categoryManager.getActiveItem();
+
+        this._sidebarVisible = true;
     },
 
     setActiveItem: function(controller, item) {
@@ -110,6 +112,18 @@ SideFilterController.prototype = {
         controller.setActiveItem(this._whereItem);
 
         this.emit('changed', this._whereItem);
+    },
+
+    setSidebarVisible: function(visible) {
+        if (this._sidebarVisible == visible)
+            return;
+
+        this._sidebarVisible = visible;
+        this.emit('sidebar-visible-changed', this._sidebarVisible);
+    },
+
+    getSidebarVisible: function() {
+        return this._sidebarVisible;
     },
 
     getWhere: function() {

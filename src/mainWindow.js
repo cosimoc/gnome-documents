@@ -256,7 +256,8 @@ MainWindow.prototype = {
         let keyval = event.get_keyval()[1];
 
         if (keyval == Gdk.KEY_F9) {
-            this._sidebar.toggleVisibility();
+            let visible = Global.sideFilterController.getSidebarVisible();
+            Global.sideFilterController.setSidebarVisible(!visible);
             return true;
         }
 

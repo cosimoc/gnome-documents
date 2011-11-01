@@ -362,8 +362,6 @@ function Sidebar() {
 
 Sidebar.prototype = {
     _init: function() {
-        this._sidebarVisible = true;
-
         this.widget = new Gtk.Notebook({ show_tabs: false,
                                          width_request: _SIDEBAR_WIDTH_REQUEST });
         this.widget.get_style_context().add_class(Gtk.STYLE_CLASS_SIDEBAR);
@@ -376,6 +374,10 @@ Sidebar.prototype = {
 
         Global.modeController.connect('window-mode-changed',
                                       Lang.bind(this, this._onWindowModeChanged));
+        Global.sideFilterController.connect('sidebar-visible-changed',
+                                            Lang.bind(this, this._onSidebarVisible));
+
+        this._onSidebarVisible();
     },
 
     _moveOut: function() {
@@ -394,14 +396,14 @@ Sidebar.prototype = {
         if (mode == WindowMode.WindowMode.PREVIEW) {
             this._moveOut();
         } else if (mode == WindowMode.WindowMode.OVERVIEW) {
-            if (this._sidebarVisible)
+            if (Global.sideFilterController.getSidebarVisible())
                 this._moveIn();
         }
     },
 
-    toggleVisibility: function() {
-        this._sidebarVisible = !this._sidebarVisible;
-        if (this._sidebarVisible)
+    _onSidebarVisible: function() {
+        let visible = Global.sideFilterController.getSidebarVisible();
+        if (visible)
             this._moveIn();
         else
             this._moveOut();
