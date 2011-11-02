@@ -125,9 +125,6 @@ View.prototype = {
         this._selectionModeId =
             Global.selectionController.connect('selection-mode-changed',
                                                Lang.bind(this, this._onSelectionModeChanged));
-        this._selectAllId =
-            Global.selectionController.connect('select-all',
-                                               Lang.bind(this, this._onSelectAll));
         this._queryId =
             Global.trackerController.connect('query-status-changed',
                                              Lang.bind(this, this._onQueryStatusChanged));
@@ -146,7 +143,6 @@ View.prototype = {
 
                 Global.trackerController.disconnect(this._queryId);
                 Global.selectionController.disconnect(this._selectionModeId);
-                Global.selectionController.disconnect(this._selectAllId);
             }));
 
         // this will create the model if we're done querying
@@ -214,10 +210,6 @@ View.prototype = {
 
                 return false;
             }));
-    },
-
-    _onSelectAll: function() {
-        this.getSelectionObject().select_all();
     },
 
     _onSelectionModeChanged: function(controller, selectionMode) {

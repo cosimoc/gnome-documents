@@ -39,10 +39,6 @@ SelectionController.prototype = {
         this._selectionMode = false;
     },
 
-    selectAll: function() {
-        this.emit('select-all');
-    },
-
     setSelection: function(selection) {
         if (this._isFrozen)
             return;

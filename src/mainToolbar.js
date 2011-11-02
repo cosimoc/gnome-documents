@@ -91,35 +91,20 @@ MainToolbar.prototype = {
         // don't show icons in selection mode
         this.widget.set_style(Gtk.ToolbarStyle.TEXT);
 
-        let selectAll = new Gtk.ToolButton({ stock_id: 'gtk-select-all' });
-        selectAll.get_style_context().add_class('raised');
-        this.widget.insert(selectAll, 0);
-
-        selectAll.connect('clicked', Lang.bind(this,
-            function() {
-                Global.selectionController.selectAll();
-            }));
-
         this._selectionLabel = new Gtk.Label();
 
         let labelItem = new Gtk.ToolItem({ child: this._selectionLabel });
         labelItem.set_expand(true);
-        this.widget.insert(labelItem, 1);
+        this.widget.insert(labelItem, 0);
 
         let cancel = new Gtk.ToolButton({ stock_id: 'gtk-cancel' });
         cancel.get_style_context().add_class('raised');
-        this.widget.insert(cancel, 2);
+        this.widget.insert(cancel, 1);
 
         cancel.connect('clicked', Lang.bind(this,
             function() {
                 Global.selectionController.setSelectionMode(false);
             }));
-
-        // put the first and the last buttons in a size group, so that
-        // the label stays center-aligned
-        let sizeGroup = new Gtk.SizeGroup();
-        sizeGroup.add_widget(cancel);
-        sizeGroup.add_widget(selectAll);
 
         // connect to selection changes while in this mode
         this._selectionChangedId =
