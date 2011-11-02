@@ -1,0 +1,135 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Korostil Daniel <ted.korostiled@gmail.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-09-28 02:35+0300\n"
+"PO-Revision-Date: 2011-09-28 02:41+0300\n"
+"Last-Translator: Korostil Daniel <ted.korostiled@gmail.com>\n"
+"Language-Team: translation@linux.org.ua\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Virtaal 0.6.1\n"
+
+#: ../data/gnome-documents.desktop.in.in.h:1
+msgid "Access, manage and share documents"
+msgstr "Доступ, впорядкування і оприлюднення документів"
+
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:47
+msgid "Documents"
+msgstr "Документи"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1
+msgid "Enable list view"
+msgstr "Увімкнути список"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
+msgid "List view"
+msgstr "Список"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
+msgid "The active source filter"
+msgstr "Увімкнутий фільтр джерел"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "The last active source filter"
+msgstr "Востаннє ввімкнутий фільтр джерел"
+
+#. Translators: this refers to new and recent documents
+#: ../src/categories.js:77
+msgid "New and Recent"
+msgstr "Нове і нещодавнє"
+
+#. Translators: this refers to favorite documents
+#: ../src/categories.js:80
+msgid "Favorites"
+msgstr "Улюблене"
+
+#. Translators: this refers to shared documents
+#: ../src/categories.js:83
+msgid "Shared with you"
+msgstr "Спільне з вами"
+
+#: ../src/documents.js:253 ../src/sources.js:101
+msgid "Local"
+msgstr "Локальне"
+
+#: ../src/documents.js:372
+msgid "Google Docs"
+msgstr "Google Docs"
+
+#: ../src/documents.js:373
+msgid "Google"
+msgstr "Google"
+
+#: ../src/documents.js:442
+msgid "Spreadsheet"
+msgstr "Електронна таблиця"
+
+#: ../src/documents.js:444
+msgid "Presentation"
+msgstr "Презентація"
+
+#: ../src/documents.js:446
+msgid "Document"
+msgstr "Документ"
+
+#. Translators: %s is the title of a document
+#: ../src/error.js:37
+#, c-format
+msgid "Unable to load \"%s\" for preview"
+msgstr "Неможливо завантажити «%s» для перегляду"
+
+#: ../src/error.js:44
+msgid "Unable to fetch the list of documents"
+msgstr "Неможливо одержати список документів"
+
+#: ../src/loadMore.js:70
+#, c-format
+msgid "Load %d more documents"
+msgid_plural "Load %d more documents"
+msgstr[0] "Завантажити ще %d документ"
+msgstr[1] "Завантажити ще %d документа"
+msgstr[2] "Завантажити ще %d документів"
+
+#: ../src/mainToolbar.js:201
+#, c-format
+msgid "(%d of %d)"
+msgstr "(%d з %d)"
+
+#: ../src/sidebar.js:131 ../src/sources.js:218
+msgid "Sources"
+msgstr "Джерела"
+
+#: ../src/sources.js:96
+msgid "All"
+msgstr "Усе"
+
+#: ../src/spinnerBox.js:47
+msgid "Loading..."
+msgstr "Завантаження…"
+
+#. Translators: this is the Open action in a context menu
+#: ../src/view.js:67
+#, c-format
+msgid "Open with %s"
+msgstr "Відкрити через %s"
+
+#: ../src/view.js:69
+msgid "Open"
+msgstr "Відкрити"
+
+#: ../src/view.js:79
+msgid "Remove from favorites"
+msgstr "Вилучити з улюбленого"
+
+#: ../src/view.js:79
+msgid "Add to favorites"
+msgstr "Додати до улюбленого"
