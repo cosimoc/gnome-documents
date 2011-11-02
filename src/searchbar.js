@@ -140,6 +140,7 @@ SearchController.prototype = {
         this._searchVisible = false;
         this._searchIn = false;
         this._dropdownState = false;
+        this._eventHandled = false;
         this._string = '';
     },
 
@@ -196,6 +197,14 @@ SearchController.prototype = {
 
     deliverEvent: function(event) {
         this.emit('deliver-event', event);
+    },
+
+    setEventHandled: function(handled) {
+        this._eventHandled = handled;
+    },
+
+    getEventHandled: function() {
+        return this._eventHandled;
     }
 };
 Signals.addSignalMethods(SearchController.prototype);
@@ -378,6 +387,8 @@ Searchbar.prototype = {
         if (!this._searchEntry.get_realized())
             this._searchEntry.realize();
 
+        let handled = false;
+
         let preeditChanged = false;
         let preeditChangedId =
             this._searchEntry.connect('preedit-changed', Lang.bind(this,
@@ -391,10 +402,14 @@ Searchbar.prototype = {
 
         this._searchEntry.disconnect(preeditChangedId);
 
-        if (((res && (newText != oldText)) || preeditChanged) &&
-            !Global.searchController.getSearchIn()) {
-            Global.searchController.setSearchVisible(true);
+        if (((res && (newText != oldText)) || preeditChanged)) {
+            handled = true;
+
+            if (!Global.searchController.getSearchIn())
+                Global.searchController.setSearchVisible(true);
         }
+
+        Global.searchController.setEventHandled(handled);
     },
 
     _moveIn: function(eventDevice) {

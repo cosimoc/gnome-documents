@@ -269,7 +269,7 @@ MainWindow.prototype = {
 
         if (!Global.searchController.getSearchIn()) {
             Global.searchController.deliverEvent(event);
-            return true;
+            return Global.searchController.getEventHandled();
         }
 
         return false;
