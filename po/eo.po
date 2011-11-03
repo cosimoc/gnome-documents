@@ -1,6 +1,7 @@
 # Esperanto translation for gnome-documents.
 # Copyright (C) 2011 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-documents package.
+# Tiffany Antopolski <tiffany.antopolski@gmail.com>, 2011.
 # Kristjan SCHMIDT <kristjan.schmidt@googlemail.com>, 2011.
 #
 msgid ""
@@ -8,20 +9,23 @@ msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-10-13 18:13+0000\n"
-"PO-Revision-Date: 2011-09-04 00:07+0200\n"
-"Last-Translator: Tiffany ANTOPOLSKI\n"
-"Language-Team: Esperanto <ubuntu-l10n-eo@lists.launchpad.net>\n"
+"POT-Creation-Date: 2011-11-02 22:05+0000\n"
+"PO-Revision-Date: 2011-11-03 19:52+0100\n"
+"Last-Translator: Kristjan SCHMIDT <kristjan.schmidt@googlemail.com>\n"
+"Language-Team: Esperanto <gnome-l10n-eo@lists.launchpad.net >\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: 8bits\n"
+"Language: eo\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"X-Generator: Virtaal 0.7.1-rc1\n"
+"X-Project-Style: gnome\n"
 
 #: ../data/gnome-documents.desktop.in.in.h:1
 msgid "Access, manage and share documents"
 msgstr "Aliri, administri kaj kunhavigi dokumentojn"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:48
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:54
 msgid "Documents"
 msgstr "Dokumentoj"
 
@@ -65,42 +69,39 @@ msgstr "Fenestrogrando"
 msgid "Window size (width and height)."
 msgstr "Fenestrogrando (larĝo kaj alto)."
 
-#. Translators: this refers to new and recent documents
-#: ../src/categories.js:77
+#: ../src/categories.js:81
 msgid "New and Recent"
 msgstr "Novaj kaj lastatempaj"
 
-#. Translators: this refers to favorite documents
-#: ../src/categories.js:80
+#: ../src/categories.js:87
 msgid "Favorites"
 msgstr "Legosignoj"
 
-#. Translators: this refers to shared documents
-#: ../src/categories.js:83
+#: ../src/categories.js:92
 msgid "Shared with you"
 msgstr "Kunhavigite kun vi"
 
-#: ../src/documents.js:253 ../src/sources.js:101
+#: ../src/documents.js:261 ../src/sources.js:95
 msgid "Local"
 msgstr "Loke"
 
-#: ../src/documents.js:378
+#: ../src/documents.js:408
 msgid "Google Docs"
 msgstr "Guglo-Docs"
 
-#: ../src/documents.js:379
+#: ../src/documents.js:409
 msgid "Google"
 msgstr "Guglo"
 
-#: ../src/documents.js:448
+#: ../src/documents.js:478
 msgid "Spreadsheet"
 msgstr "Kalkultabelo"
 
-#: ../src/documents.js:450
+#: ../src/documents.js:480
 msgid "Presentation"
 msgstr "Prezentaĵo"
 
-#: ../src/documents.js:452
+#: ../src/documents.js:482
 msgid "Document"
 msgstr "Dokumento"
 
@@ -110,7 +111,7 @@ msgstr "Dokumento"
 msgid "Unable to load \"%s\" for preview"
 msgstr "Ne eblis ŝargi na \"%s\" por antaŭmontro"
 
-#: ../src/error.js:44
+#: ../src/error.js:49
 msgid "Unable to fetch the list of documents"
 msgstr "Ne eblis venigi la liston de dokumentoj"
 
@@ -121,38 +122,47 @@ msgid_plural "Load %d more documents"
 msgstr[0] "Ŝargi %d pluan dokumenton"
 msgstr[1] "Ŝargi %d pluajn dokumentojn"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:85
+msgid "Click on items to select them"
+msgstr "Klaki sur eroj por elekti ilin"
+
+#: ../src/mainToolbar.js:87
+#, c-format
+msgid "%d selected"
+msgstr "%d elektita"
+
+#: ../src/mainToolbar.js:231
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d de %d)"
 
-#: ../src/sidebar.js:131 ../src/sources.js:218
+#: ../src/sources.js:85
 msgid "Sources"
 msgstr "Fontoj"
 
-#: ../src/sources.js:96
+#: ../src/sources.js:89
 msgid "All"
 msgstr "Ĉiuj"
 
-#: ../src/spinnerBox.js:47
+#: ../src/spinnerBox.js:58
 msgid "Loading..."
 msgstr "Ŝargante..."
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:67
+#: ../src/view.js:66
 #, c-format
 msgid "Open with %s"
 msgstr "Malfermi per %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:70
+#: ../src/view.js:69
 msgid "Open"
 msgstr "Malfermi"
 
-#: ../src/view.js:80
+#: ../src/view.js:79
 msgid "Remove from favorites"
 msgstr "Forigi de la legosignoj"
 
-#: ../src/view.js:80
+#: ../src/view.js:79
 msgid "Add to favorites"
 msgstr "Aldoni al la legosignoj"
