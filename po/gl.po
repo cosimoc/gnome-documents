@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-08 00:14+0200\n"
-"PO-Revision-Date: 2011-09-08 00:14+0200\n"
+"POT-Creation-Date: 2011-11-04 12:46+0100\n"
+"PO-Revision-Date: 2011-11-04 12:47+0100\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
@@ -23,7 +23,7 @@ msgstr ""
 msgid "Access, manage and share documents"
 msgstr "Acceder, xestionar e compartir documentos"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:47
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:54
 msgid "Documents"
 msgstr "Documentos"
 
@@ -43,42 +43,63 @@ msgstr "O filtro de fonte activo"
 msgid "The last active source filter"
 msgstr "O último filtro de fonte activo"
 
-#. Translators: this refers to new and recent documents
-#: ../src/categories.js:77
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
+msgid "Window maximized"
+msgstr "Xanela maximizada"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
+msgid "Window maximized state"
+msgstr "Estado de xanela maximizada"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
+msgid "Window position"
+msgstr "Posición da xanela"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
+msgid "Window position (x and y)."
+msgstr "Posición da xanela (x e y)."
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:9
+msgid "Window size"
+msgstr "Tamaño da xanela"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:10
+msgid "Window size (width and height)."
+msgstr "Tamaño da xanela (ancho e alto)."
+
+#: ../src/categories.js:81
 msgid "New and Recent"
 msgstr "Novos e recentes"
 
-#. Translators: this refers to favorite documents
-#: ../src/categories.js:80
+#: ../src/categories.js:87
 msgid "Favorites"
 msgstr "Marcadores"
 
-#. Translators: this refers to shared documents
-#: ../src/categories.js:83
+#: ../src/categories.js:92
 msgid "Shared with you"
 msgstr "Compartidos con vostede"
 
-#: ../src/documents.js:269 ../src/sources.js:116
+#: ../src/documents.js:261 ../src/sources.js:95
 msgid "Local"
 msgstr "Locais"
 
-#: ../src/documents.js:388
+#: ../src/documents.js:408
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:389
+#: ../src/documents.js:409
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:458
+#: ../src/documents.js:478
 msgid "Spreadsheet"
 msgstr "Folla de cálculo"
 
-#: ../src/documents.js:460
+#: ../src/documents.js:480
 msgid "Presentation"
 msgstr "Presentación"
 
-#: ../src/documents.js:462
+#: ../src/documents.js:482
 msgid "Document"
 msgstr "Documento"
 
@@ -88,49 +109,59 @@ msgstr "Documento"
 msgid "Unable to load \"%s\" for preview"
 msgstr "Non foi posíbel cargar «%s» para a súa vista previa"
 
-#: ../src/error.js:44
+#: ../src/error.js:49
 msgid "Unable to fetch the list of documents"
 msgstr "Non foi posíbel obter a lista de documentos"
 
 #: ../src/loadMore.js:70
 #, c-format
-msgid "Load %d more documents"
+msgid "Load %d more document"
 msgid_plural "Load %d more documents"
 msgstr[0] "Cargar %d documento máis"
 msgstr[1] "Cargar %d documentos máis"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:85
+msgid "Click on items to select them"
+msgstr "Prema nos elementos para seleccionalos"
+
+#: ../src/mainToolbar.js:87
+#, c-format
+msgid "%d selected"
+msgstr "%d seleccionados"
+
+#: ../src/mainToolbar.js:231
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d de %d)"
 
-#: ../src/sidebar.js:131 ../src/sources.js:255
+#: ../src/sources.js:85
 msgid "Sources"
 msgstr "Fontes"
 
-#: ../src/sources.js:110
+#: ../src/sources.js:89
 msgid "All"
 msgstr "Todos"
 
-#: ../src/spinnerBox.js:47
+#: ../src/spinnerBox.js:58
 msgid "Loading..."
 msgstr "Cargando…"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:47
+#: ../src/view.js:66
 #, c-format
 msgid "Open with %s"
 msgstr "Abrir con %s"
 
-#: ../src/view.js:47
+#. Translators: this is the Open action in a context menu
+#: ../src/view.js:69
 msgid "Open"
 msgstr "Abrir"
 
-#: ../src/view.js:59
+#: ../src/view.js:79
 msgid "Remove from favorites"
 msgstr "Quitar dos marcadores"
 
-#: ../src/view.js:59
+#: ../src/view.js:79
 msgid "Add to favorites"
 msgstr "Engadir aos marcadores"
 
