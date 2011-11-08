@@ -336,7 +336,7 @@ SidebarView.prototype = {
         let context = this._treeView.get_style_context();
         let fgColor = context.get_color(Gtk.StateFlags.NORMAL);
         let symbolicColor = Gtk.SymbolicColor.new_literal(fgColor);
-        let shade = symbolicColor.new_shade(1.50);
+        let shade = Gtk.SymbolicColor.new_shade(symbolicColor, 1.50);
 
         [ res, fgColor ] = shade.resolve(null);
 
@@ -375,7 +375,7 @@ SidebarView.prototype = {
         let context = this._treeView.get_style_context();
         let fgColor = context.get_color(Gtk.StateFlags.NORMAL);
         let symbolicColor = Gtk.SymbolicColor.new_literal(fgColor);
-        let shade = symbolicColor.new_shade(0.60);
+        let shade = Gtk.SymbolicColor.new_shade(symbolicColor, 0.60);
 
         [ res, fgColor ] = shade.resolve(null);
 
@@ -403,7 +403,7 @@ SidebarView.prototype = {
         let context = this._treeView.get_style_context();
         let bgColor = context.get_background_color(Gtk.StateFlags.NORMAL);
         let symbolicColor = Gtk.SymbolicColor.new_literal(bgColor);
-        let shade = symbolicColor.new_shade(0.95);
+        let shade = Gtk.SymbolicColor.new_shade(symbolicColor, 0.95);
 
         [ res, bgColor ] = shade.resolve(null);
 
