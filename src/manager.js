@@ -115,7 +115,7 @@ BaseManager.prototype = {
 
         if (item.id == 'all')
             retval = this._getAllFilter();
-        else if (item && item.getFilter())
+        else if (item && item.getFilter)
             retval = item.getFilter();
 
         return retval;
