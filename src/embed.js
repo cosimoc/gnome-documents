@@ -48,6 +48,7 @@ function ViewEmbed() {
 
 ViewEmbed.prototype  = {
     _init: function() {
+        this._activeItemId = 0;
         this._adjustmentValueId = 0;
         this._adjustmentChangedId = 0;
         this._loaderCancellable = null;
@@ -240,13 +241,11 @@ ViewEmbed.prototype  = {
         else
             this._view = new IconView.IconView(this);
 
-        this._view.connect('item-activated', Lang.bind(this, this._onViewItemActivated));
         this._scrolledWinView.add(this._view.widget);
     },
 
-    _onViewItemActivated: function(view, urn) {
-        let doc = Global.documentManager.getItemById(urn);
-        Global.documentManager.setActiveItem(doc);
+    _onActiveItemChanged: function() {
+        let doc = Global.documentManager.getActiveItem();
 
         // switch to preview mode, and schedule the spinnerbox to
         // move in if the document is not loaded by the timeout
@@ -316,6 +315,10 @@ ViewEmbed.prototype  = {
         this._docModel = null;
 
         Global.documentManager.setActiveItem(null);
+        this._activeItemId =
+            Global.documentManager.connect('active-changed',
+                                           Lang.bind(this, this._onActiveItemChanged));
+
         this._viewSettingsId =
             Global.settings.connect('changed::list-view',
                                     Lang.bind(this, this._initView));
@@ -399,6 +402,11 @@ ViewEmbed.prototype  = {
         if (this._queryErrorId != 0) {
             Global.errorHandler.disconnect(this._queryErrorId);
             this._queryErrorId = 0;
+        }
+
+        if (this._activeItemId != 0) {
+            Global.documentManager.disconnect(this._activeItemId);
+            this._activeItemId = 0;
         }
 
         Global.searchController.setSearchVisible(false);

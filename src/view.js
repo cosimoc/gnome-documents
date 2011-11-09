@@ -24,7 +24,6 @@ const _ = imports.gettext.gettext;
 
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
-const Signals = imports.signals;
 
 const Documents = imports.documents;
 const Global = imports.global;
@@ -269,7 +268,6 @@ View.prototype = {
         let iter = this._treeModel.get_iter(path)[1];
         let urn = this._treeModel.get_value(iter, Documents.ModelColumns.URN);
 
-        this.emit('item-activated', urn);
+        Global.documentManager.setActiveItemById(urn);
     }
 };
-Signals.addSignalMethods(View.prototype);
