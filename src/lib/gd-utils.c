@@ -92,40 +92,6 @@ gd_item_store_set (GtkListStore *store,
                       -1);
 }
 
-/**
- * gd_create_sidebar_store:
- *
- * Returns: (transfer full):
- */
-GtkListStore *
-gd_create_sidebar_store (void)
-{
-  return gtk_list_store_new (5,
-                             G_TYPE_STRING, // ID
-                             G_TYPE_STRING, // NAME
-                             G_TYPE_STRING, // ICON
-                             G_TYPE_STRING, // HEADING_TEXT
-                             G_TYPE_INT); // SECTION
-}
-
-void
-gd_sidebar_store_set (GtkListStore *store,
-                      GtkTreeIter *iter,
-                      const gchar *id,
-                      const gchar *name,
-                      const gchar *icon_name,
-                      const gchar *heading_text,
-                      gint section)
-{
-  gtk_list_store_set (store, iter,
-                      0, id,
-                      1, name,
-                      2, icon_name,
-                      3, heading_text,
-                      4, section,
-                      -1);
-}
-
 #define ATTRIBUTES_FOR_THUMBNAIL \
   G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE"," \
   G_FILE_ATTRIBUTE_TIME_MODIFIED

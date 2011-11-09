@@ -99,8 +99,10 @@ TrackerController.prototype = {
         this._offsetController.connect('offset-changed',
                                        Lang.bind(this, this._performCurrentQuery));
 
-        Global.sidebarController.connect('changed',
+        Global.collectionManager.connect('active-changed',
                                          Lang.bind(this, this._refresh));
+        Global.searchCategoryManager.connect('active-changed',
+                                             Lang.bind(this, this._refresh));
         Global.searchController.connect('search-string-changed',
                                         Lang.bind(this, this._onSearchRefresh));
         Global.searchMatchManager.connect('active-changed',

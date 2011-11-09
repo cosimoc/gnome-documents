@@ -32,7 +32,6 @@ const Gtk = imports.gi.Gtk;
 const GLib = imports.gi.GLib;
 const Tracker = imports.gi.Tracker;
 
-const Categories = imports.categories;
 const ChangeMonitor = imports.changeMonitor;
 const Collections = imports.collections;
 const Documents = imports.documents;
@@ -41,12 +40,12 @@ const Format = imports.format;
 const Global = imports.global;
 const Main = imports.main;
 const MainWindow = imports.mainWindow;
+const Manager = imports.manager;
 const OffsetController = imports.offsetController;
 const Path = imports.path;
 const Query = imports.query;
 const Searchbar = imports.searchbar;
 const Selections = imports.selections;
-const Sidebar = imports.sidebar;
 const Sources = imports.sources;
 const TrackerController = imports.trackerController;
 const Tweener = imports.util.tweener;
@@ -120,7 +119,6 @@ Application.prototype = {
         Global.settings = new Gio.Settings({ schema: 'org.gnome.documents' });
         Global.offsetController = new OffsetController.OffsetController();
         Global.searchController = new Searchbar.SearchController();
-        Global.categoryManager = new Categories.CategoryManager();
         Global.errorHandler = new Error.ErrorHandler();
 
         // connect to tracker
@@ -144,12 +142,12 @@ Application.prototype = {
 
                         Global.connectionQueue = new TrackerController.TrackerConnectionQueue();
                         Global.sourceManager = new Sources.SourceManager();
+                        Global.searchCategoryManager = new Searchbar.SearchCategoryManager();
                         Global.searchMatchManager = new Searchbar.SearchMatchManager();
                         Global.searchTypeManager = new Searchbar.SearchTypeManager();
                         Global.queryBuilder = new Query.QueryBuilder();
                         Global.changeMonitor = new ChangeMonitor.TrackerChangeMonitor();
                         Global.collectionManager = new Collections.CollectionManager();
-                        Global.sidebarController = new Sidebar.SidebarController();
                         Global.documentManager = new Documents.DocumentManager();
                         Global.trackerController = new TrackerController.TrackerController();
                         Global.selectionController = new Selections.SelectionController();

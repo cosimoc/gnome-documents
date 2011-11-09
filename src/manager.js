@@ -120,6 +120,16 @@ BaseManager.prototype = {
         return retval;
     },
 
+    getWhere: function() {
+        let item = this.getActiveItem();
+        let retval = '';
+
+        if (item && item.getWhere)
+            retval = item.getWhere();
+
+        return retval;
+    },
+
     _getAllFilter: function() {
         let filter = '';
         let first = true;

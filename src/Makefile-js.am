@@ -1,7 +1,6 @@
 jsdir = $(pkgdatadir)/js/
 dist_js_DATA = \
     application.js \
-    categories.js \
     changeMonitor.js \
     collections.js \
     documents.js \
@@ -22,7 +21,6 @@ dist_js_DATA = \
     query.js \
     searchbar.js \
     selections.js \
-    sidebar.js \
     sources.js \
     spinnerBox.js \
     trackerController.js \

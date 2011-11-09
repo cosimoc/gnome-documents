@@ -20,7 +20,6 @@
  */
 
 let application = null;
-let categoryManager = null;
 let connection = null;
 let connectionQueue = null;
 let documentManager = null;
@@ -29,10 +28,10 @@ let goaClient = null;
 let modeController = null;
 let offsetController = null;
 let queryBuilder = null;
+let searchCategoryManager = null;
 let searchController = null;
 let searchMatchManager = null;
 let searchTypeManager = null;
-let sidebarController = null;
 let selectionController = null;
 let settings = null;
 let stage = null;

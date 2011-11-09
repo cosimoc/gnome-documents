@@ -32,7 +32,6 @@ const Embed = imports.embed;
 const Global = imports.global;
 const Searchbar = imports.searchbar;
 const Selections = imports.selections;
-const Sidebar = imports.sidebar;
 const Utils = imports.utils;
 const WindowMode = imports.windowMode;
 
@@ -108,34 +107,18 @@ MainWindow.prototype = {
         this._clutterBox.add_actor(this._searchbar.actor);
         this._clutterBoxLayout.set_fill(this._searchbar.actor, true, false);
 
-        // second child: an horizontal layout box which will
-        // contain the sidebar and the embed
-        this._horizLayout = new Clutter.BoxLayout();
-        this._horizBox = new Clutter.Box({ layout_manager: this._horizLayout });
-        this._clutterBox.add_actor(this._horizBox);
-        this._clutterBoxLayout.set_expand(this._horizBox, true);
-        this._clutterBoxLayout.set_fill(this._horizBox, true, true);
-
-        // create the sidebar and pack it as a first child into the
-        // horizontal box
-        this._sidebar = new Sidebar.Sidebar();
-        this._horizBox.add_actor(this._sidebar.actor);
-        this._horizLayout.set_fill(this._sidebar.actor, false, true);
-
-        // create the embed and pack it as the second child into
-        // the horizontal box
         this._embed = new Embed.ViewEmbed();
-        this._horizBox.add_actor(this._embed.actor);
-        this._horizLayout.set_expand(this._embed.actor, true);
-        this._horizLayout.set_fill(this._embed.actor, true, true);
+        this._clutterBox.add_actor(this._embed.actor);
+        this._clutterBoxLayout.set_expand(this._embed.actor, true);
+        this._clutterBoxLayout.set_fill(this._embed.actor, true, true);
 
         // create the dropdown for the search bar, it's hidden by default
         this._dropdownBox = new Searchbar.Dropdown();
         this._dropdownBox.actor.add_constraint(
-            new Clutter.BindConstraint({ source: this._horizBox,
+            new Clutter.BindConstraint({ source: this._embed.actor,
                                          coordinate: Clutter.BindCoordinate.Y }));
         this._dropdownBox.actor.add_constraint(
-            new Clutter.AlignConstraint({ source: this._horizBox,
+            new Clutter.AlignConstraint({ source: this._embed.actor,
                                           align_axis: Clutter.AlignAxis.X_AXIS,
                                           factor: 0.50 }));
         Global.stage.add_actor(this._dropdownBox.actor);
@@ -254,12 +237,6 @@ MainWindow.prototype = {
 
     _handleKeyOverview: function(event) {
         let keyval = event.get_keyval()[1];
-
-        if (keyval == Gdk.KEY_F9) {
-            let visible = Global.sidebarController.getSidebarVisible();
-            Global.sidebarController.setSidebarVisible(!visible);
-            return true;
-        }
 
         if (Utils.isSearchEvent(event)) {
             let visible = Global.searchController.getSearchVisible();

@@ -112,7 +112,7 @@ QueryBuilder.prototype = {
         sparql += ' && ';
         sparql += Global.sourceManager.getFilter();
         sparql += ' && ';
-        sparql += Global.categoryManager.getFilter();
+        sparql += Global.searchCategoryManager.getFilter();
         sparql += ' && ';
         sparql += Global.searchTypeManager.getFilter();
 
@@ -136,7 +136,8 @@ QueryBuilder.prototype = {
 
         if (global) {
             globalSparql +=
-                Global.sidebarController.getWhere() +
+                Global.searchCategoryManager.getWhere() +
+                Global.collectionManager.getWhere() +
                 this._buildFilterString() +
                 ' } ' +
                 'ORDER BY DESC (?mtime)' +

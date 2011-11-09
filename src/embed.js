@@ -171,50 +171,19 @@ ViewEmbed.prototype  = {
     },
 
     _windowModeChangeFlash: function() {
-        let visible = Global.sidebarController.getSidebarVisible();
-
-        // if the sidebar is visible, wait until it completed fading in before
-        // putting back the view
-        if (visible) {
-            // follow the movement of the sidebar fading the preview to white
-            this._background.raise_top();
-            Tweener.addTween(this._background,
-                { opacity: 255,
-                  time: 0.20,
-                  transition: 'easeOutQuad',
-                  onComplete: function() {
-                      this._moveOutBackground();
-                  },
-                  onCompleteScope: this });
-        } else {
-            // fade from white when returning to the view anyway
-            this._background.raise_top();
-            this._background.opacity = 255;
-            this._moveOutBackground();
-        }
+        // fade from white when returning to the view anyway
+        this._background.raise_top();
+        this._background.opacity = 255;
+        this._moveOutBackground();
     },
 
     _onWindowModeChanged: function() {
         let mode = Global.modeController.getWindowMode();
 
-        if (mode == WindowMode.WindowMode.OVERVIEW) {
-            let visible = Global.sidebarController.getSidebarVisible();
-
-            // if the sidebar is visible, wait until it completed fading in before
-            // putting back the view
-            if (visible) {
-                let sidebarInId =
-                    Global.sidebarController.connect('sidebar-in-changed', Lang.bind(this,
-                        function() {
-                            Global.sidebarController.disconnect(sidebarInId);
-                            this._prepareForOverview();
-                        }));
-            } else {
-                this._prepareForOverview();
-            }
-        } else {
+        if (mode == WindowMode.WindowMode.OVERVIEW)
+            this._prepareForOverview();
+        else
             this._prepareForPreview();
-        }
 
         this._windowModeChangeFlash();
     },

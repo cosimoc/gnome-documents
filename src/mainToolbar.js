@@ -40,7 +40,7 @@ function MainToolbar() {
 MainToolbar.prototype = {
     _init: function() {
         this._model = null;
-        this._whereId = 0;
+        this._collectionId = 0;
         this._selectionChangedId = 0;
 
         this.widget = new Gtk.Toolbar({ icon_size: Gtk.IconSize.MENU });
@@ -62,9 +62,9 @@ MainToolbar.prototype = {
     _clearToolbar: function() {
         this._model = null;
 
-        if (this._whereId != 0) {
-            Global.sidebarController.disconnect(this._whereId);
-            this._whereId = 0;
+        if (this._collectionId != 0) {
+            Global.collectionManager.disconnect(this._collectionId);
+            this._collectionId = 0;
         }
 
         if (this._selectionChangedId != 0) {
@@ -167,11 +167,11 @@ MainToolbar.prototype = {
         // set initial state
         item3.set_active(Global.selectionController.getSelectionMode());
 
-        // connect to sidebar filter changes while in this mode
-        this._whereId =
-            Global.sidebarController.connect('changed',
-                                             Lang.bind(this, this._onSideFilterChanged));
-        this._onSideFilterChanged();
+        // connect to active collection changes while in this mode
+        this._collectionId =
+            Global.collectionManager.connect('active-changed',
+                                             Lang.bind(this, this._onActiveCollection));
+        this._onActiveCollection();
 
         this.widget.show_all();
     },
@@ -239,8 +239,8 @@ MainToolbar.prototype = {
         }
     },
 
-    _onSideFilterChanged: function() {
-        let item = Global.sidebarController.getWhereItem();
+    _onActiveCollection: function() {
+        let item = Global.collectionManager.getActiveItem();
 
         if (!item)
             return;

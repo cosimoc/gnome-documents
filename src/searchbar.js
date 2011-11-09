@@ -37,6 +37,80 @@ const Utils = imports.utils;
 
 const _SEARCH_ENTRY_TIMEOUT = 200;
 
+const SearchCategoryStock = {
+    ALL: 'all',
+    FAVORITES: 'favorites',
+    SHARED: 'shared',
+    PRIVATE: 'private'
+};
+
+function SearchCategory(params) {
+    this._init(params);
+};
+
+SearchCategory.prototype = {
+    _init: function(params) {
+        this.id = params.id;
+        this.name = params.name;
+        this.icon = params.icon;
+    },
+
+    getWhere: function() {
+        if (this.id == SearchCategoryStock.FAVORITES)
+            return '{ ?urn nao:hasTag nao:predefined-tag-favorite }';
+
+        // require to have a contributor, and creator, and they should be different
+        if (this.id == SearchCategoryStock.SHARED)
+            return '{ ?urn nco:contributor ?contributor . ?urn nco:creator ?creator FILTER (?contributor != ?creator ) }';
+
+        return '';
+    },
+
+    getFilter: function() {
+        // require to be not local
+        if (this.id == SearchCategoryStock.SHARED)
+            return Global.queryBuilder.buildFilterNotLocal();
+
+        return '(true)';
+    }
+};
+
+function SearchCategoryManager() {
+    this._init();
+};
+
+SearchCategoryManager.prototype = {
+    __proto__: Manager.BaseManager.prototype,
+
+    _init: function() {
+        Manager.BaseManager.prototype._init.call(this, _("Category"));
+
+        let category, recent;
+        // Translators: this refers to new and recent documents
+        recent = new SearchCategory({ id: SearchCategoryStock.ALL,
+                                      name: _("All"),
+                                      icon: '' });
+        this.addItem(recent);
+
+        // Translators: this refers to favorite documents
+        category = new SearchCategory({ id: SearchCategoryStock.FAVORITES,
+                                        name: _("Favorites"),
+                                        icon: 'emblem-favorite-symbolic' });
+        this.addItem(category);
+        // Translators: this refers to shared documents
+        category = new SearchCategory({ id: SearchCategoryStock.SHARED,
+                                        name: _("Shared with you"),
+                                        icon: 'emblem-shared-symbolic' });
+        this.addItem(category);
+
+        // Private category: currently unimplemented
+        // category = new SearchCategory(SearchCategoryStock.PRIVATE, _("Private"), 'channel-secure-symbolic');
+        // this._categories[category.id] = category;
+
+        this.setActiveItem(recent);
+    }
+};
+
 function SearchType(params) {
     this._init(params);
 }
@@ -220,6 +294,7 @@ Dropdown.prototype = {
         this._sourceView = new Manager.BaseView(Global.sourceManager);
         this._typeView = new Manager.BaseView(Global.searchTypeManager);
         this._matchView = new Manager.BaseView(Global.searchMatchManager);
+        this._categoryView = new Manager.BaseView(Global.searchCategoryManager);
 
         this.widget = new Gtk.Frame({ shadow_type: Gtk.ShadowType.IN });
         this.actor = new GtkClutter.Actor({ contents: this.widget,
@@ -233,6 +308,7 @@ Dropdown.prototype = {
         this._grid.add(this._sourceView.widget);
         this._grid.add(this._typeView.widget);
         this._grid.add(this._matchView.widget);
+        this._grid.add(this._categoryView.widget);
 
         this.widget.show_all();
 
