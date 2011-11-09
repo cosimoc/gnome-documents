@@ -87,6 +87,9 @@ TrackerController.prototype = {
         this._miner = new GDataMiner.GDataMiner();
         this._refreshMinerNow();
 
+        // useful for debugging
+        this._lastQueryTime = 0;
+
         this._sourceManager = Global.sourceManager;
         this._sourceManager.connect('item-added', Lang.bind(this, this._onSourceAddedRemoved));
         this._sourceManager.connect('item-removed', Lang.bind(this, this._onSourceAddedRemoved));
@@ -128,6 +131,14 @@ TrackerController.prototype = {
         if (this._querying == status)
             return;
 
+        if (status) {
+            this._lastQueryTime = GLib.get_monotonic_time();
+        } else {
+            Utils.debug('Query Elapsed: '
+                        + (GLib.get_monotonic_time() - this._lastQueryTime) / 1000000);
+            this._lastQueryTime = 0;
+        }
+
         this._querying = status;
         this.emit('query-status-changed', this._querying);
     },
@@ -164,12 +175,17 @@ TrackerController.prototype = {
             return;
         }
 
+        Utils.debug('Query Cursor: '
+                    + (GLib.get_monotonic_time() - this._lastQueryTime) / 1000000);
         Global.documentManager.addDocumentFromCursor(cursor);
         cursor.next_async(this._cancellable, Lang.bind(this, this._onCursorNext));
     },
 
     _onQueryExecuted: function(object, res) {
         try {
+            Utils.debug('Query Executed: '
+                        + (GLib.get_monotonic_time() - this._lastQueryTime) / 1000000);
+
             let cursor = object.query_finish(res);
             cursor.next_async(this._cancellable, Lang.bind(this, this._onCursorNext));
         } catch (e) {
