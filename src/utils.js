@@ -21,6 +21,7 @@
 
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 
 const Documents = imports.documents;
@@ -30,6 +31,9 @@ const Lang = imports.lang;
 
 const _ICON_VIEW_SIZE = 128;
 const _LIST_VIEW_SIZE = 48;
+
+let debugInit = false;
+let debugEnabled = false;
 
 function getIconSize() {
     return Global.settings.get_boolean('list-view') ? _LIST_VIEW_SIZE : _ICON_VIEW_SIZE;
@@ -73,4 +77,17 @@ function isSearchEvent(event) {
           ((state & Gdk.ModifierType.CONTROL_MASK) != 0)));
 
     return retval;
+}
+
+function debug(str) {
+    if (!debugInit) {
+        let env = GLib.getenv('DOCUMENTS_DEBUG');
+        if (env)
+            debugEnabled = true;
+
+        debugInit = true;
+    }
+
+    if (debugEnabled)
+        log('DEBUG: ' + str);
 }
