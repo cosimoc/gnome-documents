@@ -110,20 +110,18 @@ View.prototype = {
         this._selectedURNs = null;
         this._updateSelectionId = 0;
 
-        // setup selections
-        this.setSingleClickMode(true);
-
         // create renderers
         this.createRenderers();
 
         // setup selections view => controller
-        this.setSelectionMode(Gtk.SelectionMode.SINGLE);
         this.connectToSelectionChanged(Lang.bind(this, this._onSelectionChanged));
 
         // setup selection controller => view
         this._selectionModeId =
             Global.selectionController.connect('selection-mode-changed',
                                                Lang.bind(this, this._onSelectionModeChanged));
+        this._onSelectionModeChanged();
+
         this._queryId =
             Global.trackerController.connect('query-status-changed',
                                              Lang.bind(this, this._onQueryStatusChanged));
@@ -211,7 +209,9 @@ View.prototype = {
             }));
     },
 
-    _onSelectionModeChanged: function(controller, selectionMode) {
+    _onSelectionModeChanged: function() {
+        let selectionMode = Global.selectionController.getSelectionMode();
+
         // setup the GtkSelectionMode of the view according to whether or not
         // the view is in "selection mode"
         if (selectionMode) {
@@ -219,7 +219,7 @@ View.prototype = {
             this.setSelectionMode(Gtk.SelectionMode.MULTIPLE);
         } else {
             this.setSingleClickMode(true);
-            this.setSelectionMode(Gtk.SelectionMode.SINGLE);
+            this.setSelectionMode(Gtk.SelectionMode.NONE);
         }
     },
 
