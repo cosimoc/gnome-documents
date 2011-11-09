@@ -71,7 +71,7 @@ ListView.prototype = {
     },
 
     scrollToPath: function(path) {
-        this.widget.scroll_to_cell(path, null, false, 0, 0);
+        this.widget.scroll_to_cell(path, null, true, 0.5, 0.5);
     },
 
     setSelectionMode: function(mode) {

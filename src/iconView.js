@@ -79,7 +79,7 @@ IconView.prototype = {
     },
 
     scrollToPath: function(path) {
-        this.widget.scroll_to_path(path, false, 0, 0);
+        this.widget.scroll_to_path(path, true, 0.5, 0.5);
     },
 
     createRenderers: function() {
