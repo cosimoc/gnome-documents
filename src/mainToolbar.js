@@ -40,13 +40,32 @@ function MainToolbar() {
 MainToolbar.prototype = {
     _init: function() {
         this._model = null;
+        this._overviewBack = null;
+        this._whereLabel = null;
+        this._selectionLabel = null;
+        this._pageLabel = null;
+        this._titleLabel = null;
+
         this._collectionId = 0;
         this._selectionChangedId = 0;
-        this._overviewBack = null;
 
         this.widget = new Gtk.Toolbar({ icon_size: Gtk.IconSize.MENU });
         this.widget.get_style_context().add_class(Gtk.STYLE_CLASS_MENUBAR);
         this.widget.show();
+
+        this._leftGroup = new Gtk.ToolItem();
+        this.widget.insert(this._leftGroup, -1);
+
+        this._centerGroup = new Gtk.ToolItem();
+        this._centerGroup.set_expand(true);
+        this.widget.insert(this._centerGroup, -1);
+
+        this._rightGroup = new Gtk.ToolItem();
+        this.widget.insert(this._rightGroup, -1);
+
+        this._sizeGroup = new Gtk.SizeGroup();
+        this._sizeGroup.add_widget(this._leftGroup);
+        this._sizeGroup.add_widget(this._rightGroup);
 
         this.actor = new GtkClutter.Actor({ contents: this.widget });
 
@@ -62,6 +81,10 @@ MainToolbar.prototype = {
 
     _clearToolbar: function() {
         this._model = null;
+        this._whereLabel = null;
+        this._selectionLabel = null;
+        this._pageLabel = null;
+        this._titleLabel = null;
 
         if (this._collectionId != 0) {
             Global.collectionManager.disconnect(this._collectionId);
@@ -73,72 +96,21 @@ MainToolbar.prototype = {
             this._selectionChangedId = 0;
         }
 
-        // destroy all the children
-        this.widget.foreach(Lang.bind(this, function(widget) {
-            widget.destroy();
-        }));
+        // destroy all the children of the groups
+        let child = this._leftGroup.get_child();
+        if (child)
+            child.destroy();
+
+        child = this._centerGroup.get_child();
+        if (child)
+            child.destroy();
+
+        child = this._rightGroup.get_child();
+        if (child)
+            child.destroy();
     },
 
-    _updateSelectionLabel: function() {
-        let length = Global.selectionController.getSelection().length;
-
-        if (length == 0)
-            this._selectionLabel.set_markup('<i>' + _("Click on items to select them") + '</i>');
-        else
-            this._selectionLabel.set_markup('<b>' + _("%d selected").format(length) + '</b>');
-    },
-
-    _populateForSelectionMode: function() {
-        // don't show icons in selection mode
-        this.widget.set_style(Gtk.ToolbarStyle.TEXT);
-
-        this._selectionLabel = new Gtk.Label();
-
-        let labelItem = new Gtk.ToolItem({ child: this._selectionLabel });
-        labelItem.set_expand(true);
-        this.widget.insert(labelItem, 0);
-
-        let cancel = new Gtk.ToolButton({ stock_id: 'gtk-cancel' });
-        cancel.get_style_context().add_class('raised');
-        this.widget.insert(cancel, 1);
-
-        cancel.connect('clicked', Lang.bind(this,
-            function() {
-                Global.selectionController.setSelectionMode(false);
-            }));
-
-        // connect to selection changes while in this mode
-        this._selectionChangedId =
-            Global.selectionController.connect('selection-changed',
-                                               Lang.bind(this, this._updateSelectionLabel));
-        this._updateSelectionLabel();
-
-        this.widget.show_all();
-    },
-
-    _populateForOverview: function() {
-        this.widget.set_style(Gtk.ToolbarStyle.ICONS);
-
-        this._overviewBack = new Gtk.ToolButton({ icon_name: 'go-previous-symbolic',
-                                                  no_show_all: true });
-        this._overviewBack.get_style_context().add_class('raised');
-        this.widget.insert(this._overviewBack, 0);
-
-        this._overviewBack.connect('clicked', Lang.bind(this,
-            function() {
-                // go back to the general overview
-                Global.collectionManager.setActiveItem(null);
-            }));
-
-        let item2 = new Gtk.ToolItem();
-        this._whereLabel = new Gtk.Label({ margin_left: 12 });
-        item2.add(this._whereLabel);
-        this.widget.insert(item2, 1);
-
-        let separator = new Gtk.SeparatorToolItem({ draw: false });
-        separator.set_expand(true);
-        this.widget.insert(separator, 2);
-
+    _buildViewSelector: function() {
         let iconView = new Gtk.ToggleButton({ child: new Gtk.Image({ icon_name: 'view-grid-symbolic',
                                                                      pixel_size: 16 }) });
         iconView.get_style_context().add_class('linked');
@@ -161,22 +133,103 @@ MainToolbar.prototype = {
         box.add(iconView);
         box.add(listView);
 
-        let item3 = new Gtk.ToolItem({ margin_right: 12 });
-        item3.add(box);
-        this.widget.insert(item3, 3);
+        return box;
+    },
 
-        let item4 = new Gtk.ToggleToolButton({ icon_name: 'emblem-default-symbolic' });
-        item4.get_style_context().add_class('raised');
-        this.widget.insert(item4, 4);
+    _updateSelectionLabel: function() {
+        let length = Global.selectionController.getSelection().length;
+        let collection = Global.collectionManager.getActiveItem();
 
-        item4.connect('toggled', Lang.bind(this,
+        if (collection) {
+            this._whereLabel.show();
+            this._whereLabel.set_markup ('<b>' + collection.title + '</b>');
+        }
+
+        let markup;
+
+        if (length == 0)
+            markup = ('<i>' + _("Click on items to select them") + '</i>');
+        else
+            markup = ('<b>' + _("%d selected").format(length) + '</b>');
+
+        this._selectionLabel.set_markup(markup);
+    },
+
+    _populateForSelectionMode: function() {
+        // centered label
+        this._whereLabel = new Gtk.Label({ no_show_all: true });
+        this._selectionLabel = new Gtk.Label();
+
+        let grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,
+                                  valign: Gtk.Align.CENTER,
+                                  halign: Gtk.Align.CENTER });
+        grid.add(this._whereLabel);
+        grid.add(this._selectionLabel);
+        this._centerGroup.add(grid);
+
+        // right section
+        let cancel = new Gtk.Button({ use_stock: true,
+                                      label: _("Done") });
+        cancel.get_style_context().add_class('raised');
+        this._rightGroup.add(cancel);
+
+        cancel.connect('clicked', Lang.bind(this,
+            function() {
+                Global.selectionController.setSelectionMode(false);
+            }));
+
+        // connect to selection changes while in this mode
+        this._selectionChangedId =
+            Global.selectionController.connect('selection-changed',
+                                               Lang.bind(this, this._updateSelectionLabel));
+        this._updateSelectionLabel();
+
+        this.widget.show_all();
+    },
+
+    _populateForOverview: function() {
+        // left section
+        this._overviewBack = new Gtk.Button({ child: new Gtk.Image({ icon_name: 'go-previous-symbolic',
+                                                                     pixel_size: 16,
+                                                                     visible: true }),
+                                              no_show_all: true,
+                                              halign: Gtk.Align.START });
+        this._overviewBack.get_style_context().add_class('raised');
+        this._leftGroup.add(this._overviewBack);
+
+        this._overviewBack.connect('clicked', Lang.bind(this,
+            function() {
+                // go back to the general overview
+                Global.collectionManager.setActiveItem(null);
+            }));
+
+        // centered label
+        this._whereLabel = new Gtk.Label();
+        this._centerGroup.add(this._whereLabel);
+
+        // right section
+        let grid = new Gtk.Grid({ orientation: Gtk.Orientation.HORIZONTAL,
+                                  column_spacing: 12 });
+        this._rightGroup.add(grid);
+
+        // view mode selector
+        let selector = this._buildViewSelector();
+        grid.add(selector);
+
+        // selection mode toggle
+        let button = new Gtk.ToggleButton({ child: new Gtk.Image({ icon_name: 'emblem-default-symbolic',
+                                                                   pixel_size: 16 }) });
+        button.get_style_context().add_class('raised');
+        grid.add(button);
+
+        button.connect('toggled', Lang.bind(this,
             function(button) {
                 // toggle selection mode if the button is toggled
                 let isToggled = button.get_active();
                 Global.selectionController.setSelectionMode(isToggled);
             }));
         // set initial state
-        item4.set_active(Global.selectionController.getSelectionMode());
+        button.set_active(Global.selectionController.getSelectionMode());
 
         // connect to active collection changes while in this mode
         this._collectionId =
@@ -187,21 +240,35 @@ MainToolbar.prototype = {
         this.widget.show_all();
     },
 
-    _populateForPreview: function(model) {
-        this.widget.set_style(Gtk.ToolbarStyle.ICONS);
+    _onActiveCollection: function() {
+        let item = Global.collectionManager.getActiveItem();
 
-        let back = new Gtk.ToolButton({ icon_name: 'go-previous-symbolic' });
+        if (item) {
+            this._overviewBack.show();
+            this._whereLabel.set_markup(('<b>%s</b>').format(item.title));
+        } else {
+            this._overviewBack.hide();
+            this._whereLabel.set_text('');
+        }
+    },
+
+    _populateForPreview: function(model) {
+        // left section
+        let back = new Gtk.ToggleButton({ child: new Gtk.Image({ icon_name: 'go-previous-symbolic',
+                                                                 pixel_size: 16 }) });
         back.get_style_context().add_class('raised');
-        this.widget.insert(back, 0);
+        this._leftGroup.add(back);
 
         back.connect('clicked', Lang.bind(this,
             function() {
                 Global.modeController.setWindowMode(WindowMode.WindowMode.OVERVIEW);
             }));
 
+        // centered grid with labels
         let grid = new Gtk.Grid({ orientation: Gtk.Orientation.HORIZONTAL,
                                   halign: Gtk.Align.CENTER,
                                   valign: Gtk.Align.CENTER });
+        this._centerGroup.add(grid);
 
         this._titleLabel = new Gtk.Label();
         grid.add(this._titleLabel);
@@ -210,18 +277,7 @@ MainToolbar.prototype = {
         this._pageLabel.get_style_context().add_class('dim-label');
         grid.add(this._pageLabel);
 
-        let labelItem = new Gtk.ToolItem({ child: grid });
-        labelItem.set_expand(true);
-        this.widget.insert(labelItem, 1);
-
         this._updateModelLabels();
-
-        let rightGroup = new Gtk.ToolItem();
-        this.widget.insert(rightGroup, 2);
-
-        let sizeGroup = new Gtk.SizeGroup();
-        sizeGroup.add_widget(back);
-        sizeGroup.add_widget(rightGroup);
 
         this.widget.show_all();
     },
@@ -250,18 +306,6 @@ MainToolbar.prototype = {
         }
     },
 
-    _onActiveCollection: function() {
-        let item = Global.collectionManager.getActiveItem();
-
-        if (item) {
-            this._overviewBack.show();
-            this._whereLabel.set_markup(('<b>%s</b>').format(item.title));
-        } else {
-            this._overviewBack.hide();
-            this._whereLabel.set_text('');
-        }
-    },
-
     _onWindowModeChanged: function() {
         let mode = Global.modeController.getWindowMode();
 
@@ -273,10 +317,11 @@ MainToolbar.prototype = {
             this._populateForPreview();
     },
 
-    _onSelectionModeChanged: function(controller, mode) {
+    _onSelectionModeChanged: function() {
         if (Global.modeController.getWindowMode() != WindowMode.WindowMode.OVERVIEW)
             return;
 
+        let mode = Global.selectionController.getSelectionMode();
         this._clearToolbar();
 
         if (mode)
