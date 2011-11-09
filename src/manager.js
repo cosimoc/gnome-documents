@@ -60,9 +60,6 @@ BaseManager.prototype = {
     },
 
     setActiveItem: function(item) {
-        if (!item)
-            return false;
-
         if (item != this._activeItem) {
             this._activeItem = item;
             this.emit('active-changed', this._activeItem);

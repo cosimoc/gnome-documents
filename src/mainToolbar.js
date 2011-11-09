@@ -42,6 +42,7 @@ MainToolbar.prototype = {
         this._model = null;
         this._collectionId = 0;
         this._selectionChangedId = 0;
+        this._overviewBack = null;
 
         this.widget = new Gtk.Toolbar({ icon_size: Gtk.IconSize.MENU });
         this.widget.get_style_context().add_class(Gtk.STYLE_CLASS_MENUBAR);
@@ -118,6 +119,26 @@ MainToolbar.prototype = {
     _populateForOverview: function() {
         this.widget.set_style(Gtk.ToolbarStyle.ICONS);
 
+        this._overviewBack = new Gtk.ToolButton({ icon_name: 'go-previous-symbolic',
+                                                  no_show_all: true });
+        this._overviewBack.get_style_context().add_class('raised');
+        this.widget.insert(this._overviewBack, 0);
+
+        this._overviewBack.connect('clicked', Lang.bind(this,
+            function() {
+                // go back to the general overview
+                Global.collectionManager.setActiveItem(null);
+            }));
+
+        let item2 = new Gtk.ToolItem();
+        this._whereLabel = new Gtk.Label({ margin_left: 12 });
+        item2.add(this._whereLabel);
+        this.widget.insert(item2, 1);
+
+        let separator = new Gtk.SeparatorToolItem({ draw: false });
+        separator.set_expand(true);
+        this.widget.insert(separator, 2);
+
         let iconView = new Gtk.ToggleButton({ child: new Gtk.Image({ icon_name: 'view-grid-symbolic',
                                                                      pixel_size: 16 }) });
         iconView.get_style_context().add_class('linked');
@@ -140,32 +161,22 @@ MainToolbar.prototype = {
         box.add(iconView);
         box.add(listView);
 
-        let item = new Gtk.ToolItem();
-        item.add(box);
-
-        this.widget.insert(item, 0);
-
-        let item2 = new Gtk.ToolItem();
-        this._whereLabel = new Gtk.Label({ margin_left: 12 });
-        item2.add(this._whereLabel);
-        this.widget.insert(item2, 1);
-
-        let separator = new Gtk.SeparatorToolItem({ draw: false });
-        separator.set_expand(true);
-        this.widget.insert(separator, 2);
-
-        let item3 = new Gtk.ToggleToolButton({ icon_name: 'emblem-default-symbolic' });
-        item3.get_style_context().add_class('raised');
+        let item3 = new Gtk.ToolItem({ margin_right: 12 });
+        item3.add(box);
         this.widget.insert(item3, 3);
 
-        item3.connect('toggled', Lang.bind(this,
+        let item4 = new Gtk.ToggleToolButton({ icon_name: 'emblem-default-symbolic' });
+        item4.get_style_context().add_class('raised');
+        this.widget.insert(item4, 4);
+
+        item4.connect('toggled', Lang.bind(this,
             function(button) {
                 // toggle selection mode if the button is toggled
                 let isToggled = button.get_active();
                 Global.selectionController.setSelectionMode(isToggled);
             }));
         // set initial state
-        item3.set_active(Global.selectionController.getSelectionMode());
+        item4.set_active(Global.selectionController.getSelectionMode());
 
         // connect to active collection changes while in this mode
         this._collectionId =
@@ -242,10 +253,13 @@ MainToolbar.prototype = {
     _onActiveCollection: function() {
         let item = Global.collectionManager.getActiveItem();
 
-        if (!item)
-            return;
-
-        this._whereLabel.set_markup(('<b>%s</b>').format(item.name));
+        if (item) {
+            this._overviewBack.show();
+            this._whereLabel.set_markup(('<b>%s</b>').format(item.title));
+        } else {
+            this._overviewBack.hide();
+            this._whereLabel.set_text('');
+        }
     },
 
     _onWindowModeChanged: function() {

@@ -66,6 +66,7 @@ DocCommon.prototype = {
 
         this.favorite = false;
         this.shared = false;
+        this.collection = false;
 
         this.thumbnailed = false;
 
@@ -120,8 +121,7 @@ DocCommon.prototype = {
 
         this.mimeType = cursor.get_string(Query.QueryColumns.MIMETYPE)[0];
         this.rdfType = cursor.get_string(Query.QueryColumns.RDFTYPE)[0];
-
-        this.updateTypeDescription();
+        this._updateInfoFromType();
 
         // sanitize
         if (!this.uri)
@@ -166,6 +166,13 @@ DocCommon.prototype = {
 
     refreshIcon: function() {
         this.updateIconFromType();
+    },
+
+    _updateInfoFromType: function() {
+        if (this.rdfType.indexOf('nfo#DataContainer') != -1)
+            this.collection = true;
+
+        this.updateTypeDescription();
     },
 
     _createSymbolicEmblem: function(name) {
@@ -238,6 +245,15 @@ DocCommon.prototype = {
 
     setFavorite: function(favorite) {
         TrackerUtils.setFavorite(this.id, favorite, null);
+    },
+
+    getWhere: function() {
+        let retval = '';
+
+        if (this.collection)
+            retval = '{ ?urn nie:isPartOf <' + this.id + '> }';
+
+        return retval;
     }
 };
 Signals.addSignalMethods(DocCommon.prototype);
@@ -478,6 +494,8 @@ GoogleDocument.prototype = {
             description = _("Spreadsheet");
         else if (this.rdfType.indexOf('nfo#Presentation') != -1)
             description = _("Presentation");
+        else if (this.rdfType.indexOf('nfo#DataContainer') != -1)
+            description = _("Collection");
         else
             description = _("Document");
 
@@ -568,6 +586,9 @@ DocumentManager.prototype = {
 
                     doc.destroy();
                     this.removeItemById(changeEvent.urn);
+
+                    if (doc.collection)
+                        Global.collectionManager.removeItemById(changeEvent.urn);
                 }
             }
         }
@@ -617,6 +638,9 @@ DocumentManager.prototype = {
 
         this.addItem(doc);
         this._model.documentAdded(doc);
+
+        if (doc.collection)
+            Global.collectionManager.addItem(doc);
     },
 
     clear: function() {
@@ -631,8 +655,11 @@ DocumentManager.prototype = {
 
     setActiveItem: function(doc) {
         if (Manager.BaseManager.prototype.setActiveItem.call(this, doc)) {
-            let recentManager = Gtk.RecentManager.get_default();
-            recentManager.add_item(this.getActiveItem().uri);
+
+            if (doc) {
+                let recentManager = Gtk.RecentManager.get_default();
+                recentManager.add_item(doc.uri);
+            }
         }
     },
 

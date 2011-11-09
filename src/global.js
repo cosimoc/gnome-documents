@@ -20,6 +20,7 @@
  */
 
 let application = null;
+let collectionManager = null;
 let connection = null;
 let connectionQueue = null;
 let documentManager = null;

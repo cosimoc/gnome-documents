@@ -139,6 +139,10 @@ SearchTypeManager.prototype = {
 
         this.addItem(new SearchType({ id: 'all',
                                       name: _("All") }));
+        this.addItem(new SearchType({ id: 'collections',
+                                      name: _("Collections"),
+                                      filter: '((fn:contains(rdf:type(?urn), \"nfo#DataContainer\")) && '
+                                              + '(fn:starts-with(nao:identifier(?urn), \"gd:collection\")))' }));
         this.addItem(new SearchType({ id: 'pdf',
                                       name: _("PDF Documents"),
                                       filter: 'fn:contains(nie:mimeType(?urn), \"application/pdf\")' }));

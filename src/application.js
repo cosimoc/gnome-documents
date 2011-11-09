@@ -33,7 +33,6 @@ const GLib = imports.gi.GLib;
 const Tracker = imports.gi.Tracker;
 
 const ChangeMonitor = imports.changeMonitor;
-const Collections = imports.collections;
 const Documents = imports.documents;
 const Error = imports.error;
 const Format = imports.format;
@@ -147,7 +146,7 @@ Application.prototype = {
                         Global.searchTypeManager = new Searchbar.SearchTypeManager();
                         Global.queryBuilder = new Query.QueryBuilder();
                         Global.changeMonitor = new ChangeMonitor.TrackerChangeMonitor();
-                        Global.collectionManager = new Collections.CollectionManager();
+                        Global.collectionManager = new Manager.BaseManager();
                         Global.documentManager = new Documents.DocumentManager();
                         Global.trackerController = new TrackerController.TrackerController();
                         Global.selectionController = new Selections.SelectionController();

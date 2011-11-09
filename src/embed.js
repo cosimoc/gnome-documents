@@ -215,6 +215,12 @@ ViewEmbed.prototype  = {
 
     _onActiveItemChanged: function() {
         let doc = Global.documentManager.getActiveItem();
+        let collection = Global.collectionManager.getItemById(doc.id);
+
+        if (collection) {
+            Global.collectionManager.setActiveItem(collection);
+            return;
+        }
 
         // switch to preview mode, and schedule the spinnerbox to
         // move in if the document is not loaded by the timeout

@@ -184,16 +184,5 @@ QueryBuilder.prototype = {
             '}';
 
         return new Query(sparql);
-    },
-
-    buildCollectionsQuery: function() {
-        let sparql = 'SELECT ?urn nie:title(?urn) nie:dataSource(?urn) WHERE { ' +
-            '{ ?urn a nfo:DataContainer } ' +
-            '{ ?doc nie:isPartOf ?urn } ' +
-            'FILTER ((fn:starts-with (nao:identifier(?urn), "gd:collection")) &&' +
-            Global.sourceManager.getFilter() +
-            ')}';
-
-        return new Query(sparql);
     }
 };
