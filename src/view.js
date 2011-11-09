@@ -157,17 +157,7 @@ View.prototype = {
 
             // unfreeze selection
             Global.selectionController.freezeSelection(false);
-
-            // HACK: give the view some time to setup the scrolled window
-            // allocation, as updateSelection() might call scrollToPath().
-            // Is there anything better we can do here?
-            this._updateSelectionId =
-                Mainloop.timeout_add(100, Lang.bind(this,
-                    function() {
-                        this._updateSelectionId = 0;
-                        this._updateSelection();
-                        return false;
-                    }));
+            this._updateSelection();
         } else {
             // save the last selection
             Global.selectionController.freezeSelection(true);
