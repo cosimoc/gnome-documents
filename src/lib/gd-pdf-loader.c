@@ -28,6 +28,7 @@
 #include <evince-document.h>
 #include <evince-view.h>
 #include <glib/gstdio.h>
+#include <glib/gi18n.h>
 
 typedef struct {
   GSimpleAsyncResult *result;
@@ -47,7 +48,11 @@ typedef struct {
   guint64 original_file_mtime;
 
   gboolean unlink_cache;
+  gboolean from_old_cache;
 } PdfLoadJob;
+
+static void pdf_load_job_gdata_refresh_cache (PdfLoadJob *job);
+static void pdf_load_job_openoffice_refresh_cache (PdfLoadJob *job);
 
 /* --------------------------- utils -------------------------------- */
 
@@ -143,6 +148,7 @@ pdf_load_job_new (GSimpleAsyncResult *result,
   retval->cancellable = g_object_ref (cancellable);
   retval->unoconv_pid = -1;
   retval->unlink_cache = FALSE;
+  retval->from_old_cache = FALSE;
 
   if (uri != NULL)
     retval->uri = g_strdup (uri);
@@ -173,13 +179,34 @@ pdf_load_job_complete_success (PdfLoadJob *job)
 }
 
 static void
+pdf_load_job_force_refresh_cache (PdfLoadJob *job)
+{
+  if (job->from_old_cache)
+    job->from_old_cache = FALSE;
+
+  if (job->gdata_entry != NULL)
+    pdf_load_job_gdata_refresh_cache (job);
+  else
+    pdf_load_job_openoffice_refresh_cache (job);
+}
+
+static void
 ev_load_job_done (EvJob *ev_job,
                   gpointer user_data)
 {
   PdfLoadJob *job = user_data;
 
-  if (ev_job_is_failed (ev_job)) {
-    pdf_load_job_complete_error (job, g_error_copy (ev_job->error));
+  if (ev_job_is_failed (ev_job) || (ev_job->document == NULL)) {
+    if (job->from_old_cache)
+      pdf_load_job_force_refresh_cache (job);
+    else
+      pdf_load_job_complete_error (job, (ev_job->error != NULL) ? 
+                                   g_error_copy (ev_job->error) :
+                                   g_error_new_literal (G_IO_ERROR,
+                                                        G_IO_ERROR_FAILED,
+                                                        _("Unable to load the document")));
+
+    g_clear_object (&ev_job);
     return;
   }
 
@@ -363,11 +390,14 @@ gdata_cache_query_info_ready_cb (GObject *source,
     g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
   g_object_unref (info);
 
-  if (job->original_file_mtime > cache_mtime)
+  if (job->original_file_mtime != cache_mtime) {
     pdf_load_job_gdata_refresh_cache (job);
-  else
+  } else {
+    job->from_old_cache = TRUE;
+
     /* load the cached file */
     pdf_load_job_from_pdf (job);
+  }
 }
 
 static void
@@ -513,11 +543,14 @@ openoffice_cache_query_info_ready_cb (GObject *source,
     g_file_info_get_attribute_uint64 (info, 
                                       G_FILE_ATTRIBUTE_TIME_MODIFIED);
 
-  if (job->original_file_mtime > job->pdf_cache_mtime)
+  if (job->original_file_mtime != job->pdf_cache_mtime) {
     pdf_load_job_openoffice_refresh_cache (job);
-  else
+  } else {
+    job->from_old_cache = TRUE;
+
     /* load the cached file */
     pdf_load_job_from_pdf (job);
+  }
 
   g_object_unref (info);
 }
