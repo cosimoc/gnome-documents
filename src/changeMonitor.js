@@ -109,7 +109,7 @@ TrackerChangeMonitor.prototype = {
     _updateIterator: function(event, isDelete) {
         // we're only interested in the resource URN, as we will query for
         // the item properties again, but we still want to compress deletes and inserts
-        Global.connection.query_async(
+        Global.connectionQueue.add(
             ('SELECT tracker:uri(%d) tracker:uri(%d) {}').format(event[1], event[2]),
             null, Lang.bind(this,
                 function(object, res) {

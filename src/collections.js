@@ -103,7 +103,7 @@ CollectionManager.prototype = {
 
     _refreshCollections: function() {
         this._currentQuery = Global.queryBuilder.buildCollectionsQuery();
-        Global.connection.query_async(this._currentQuery.sparql, null, Lang.bind(this,
+        Global.connectionQueue.add(this._currentQuery.sparql, null, Lang.bind(this,
             function(object, res) {
                 try {
                     let cursor = object.query_finish(res);

@@ -20,9 +20,13 @@
  */
 
 const Lang = imports.lang;
+const Mainloop = imports.mainloop;
 const Signals = imports.signals;
 
 const Global = imports.global;
+
+const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
 
 const _OFFSET_STEP = 50;
 
@@ -46,7 +50,7 @@ OffsetController.prototype = {
     resetItemCount: function() {
         let query = Global.queryBuilder.buildCountQuery();
 
-        Global.connection.query_async
+        Global.connectionQueue.add
             (query.sparql, null, Lang.bind(this,
                 function(object, res) {
                     let cursor = null;

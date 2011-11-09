@@ -22,6 +22,7 @@
 let application = null;
 let categoryManager = null;
 let connection = null;
+let connectionQueue = null;
 let documentManager = null;
 let errorHandler = null;
 let goaClient = null;

@@ -82,7 +82,7 @@ DocCommon.prototype = {
     refresh: function() {
         let query = Global.queryBuilder.buildSingleQuery(this.id);
 
-        Global.connection.query_async(query.sparql, null, Lang.bind(this,
+        Global.connectionQueue.add(query.sparql, null, Lang.bind(this,
             function(object, res) {
                 let cursor = null;
 
@@ -576,7 +576,7 @@ DocumentManager.prototype = {
     _onDocumentCreated: function(urn) {
         let query = Global.queryBuilder.buildSingleQuery(urn);
 
-        Global.connection.query_async(query.sparql, null, Lang.bind(this,
+        Global.connectionQueue.add(query.sparql, null, Lang.bind(this,
             function(object, res) {
                 let cursor = null;
 
@@ -688,9 +688,6 @@ DocumentModel.prototype = {
                                  doc.title, doc.author,
                                  doc.pixbuf, doc.mtime);
             }));
-
-        while (Gtk.events_pending())
-            Gtk.main_iteration();
     },
 
     documentRemoved: function(doc) {

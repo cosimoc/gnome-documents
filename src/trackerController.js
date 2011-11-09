@@ -30,8 +30,48 @@ const Query = imports.query;
 const Utils = imports.utils;
 
 const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
 
 const MINER_REFRESH_TIMEOUT = 60; /* seconds */
+
+function TrackerConnectionQueue() {
+    this._init();
+}
+
+TrackerConnectionQueue.prototype = {
+    _init: function() {
+        this._queue = [];
+        this._running = false;
+    },
+
+    add: function(query, cancellable, callback) {
+        let params = { query: query,
+                       cancellable: cancellable,
+                       callback: callback };
+        this._queue.push(params);
+
+        this._checkQueue();
+    },
+
+    _checkQueue: function() {
+        if (this._running)
+            return;
+
+        if (!this._queue.length)
+            return;
+
+        let params = this._queue.shift();
+        this._running = true;
+        Global.connection.query_async(params.query, params.cancellable,
+                                      Lang.bind(this, this._queueCollector, params));
+    },
+
+    _queueCollector: function(connection, res, params) {
+        params.callback(connection, res);
+        this._running = false;
+        this._checkQueue();
+    }
+};
 
 function TrackerController() {
     this._init();
@@ -43,7 +83,6 @@ TrackerController.prototype = {
         this._cancellable = new Gio.Cancellable();
         this._queryQueued = false;
         this._querying = false;
-
         // startup a refresh of the gdocs cache
         this._miner = new GDataMiner.GDataMiner();
         this._refreshMinerNow();
@@ -143,8 +182,8 @@ TrackerController.prototype = {
         this._cancellable.reset();
 
         this._setQueryStatus(true);
-        Global.connection.query_async(this._currentQuery.sparql,
-                                      this._cancellable, Lang.bind(this, this._onQueryExecuted));
+        Global.connectionQueue.add(this._currentQuery.sparql,
+                                   this._cancellable, Lang.bind(this, this._onQueryExecuted));
     },
 
     _refresh: function() {

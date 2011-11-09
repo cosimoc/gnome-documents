@@ -144,6 +144,7 @@ Application.prototype = {
                             this.quit();
                         }
 
+                        Global.connectionQueue = new TrackerController.TrackerConnectionQueue();
                         Global.sourceManager = new Sources.SourceManager();
                         Global.searchMatchManager = new Searchbar.SearchMatchManager();
                         Global.searchTypeManager = new Searchbar.SearchTypeManager();
