@@ -857,7 +857,7 @@ DocumentManager.prototype = {
     setActiveItem: function(doc) {
         if (Manager.BaseManager.prototype.setActiveItem.call(this, doc)) {
 
-            if (doc) {
+            if (doc && !doc.collection) {
                 let recentManager = Gtk.RecentManager.get_default();
                 recentManager.add_item(doc.uri);
             }

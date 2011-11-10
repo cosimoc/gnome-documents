@@ -21,6 +21,7 @@
 
 const Global = imports.global;
 
+const Gd = imports.gi.Gd;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 
@@ -43,6 +44,8 @@ const QueryFlags = {
     NONE: 0,
     UNFILTERED: 1 << 0
 };
+
+const LOCAL_COLLECTIONS_IDENTIFIER = 'gd:collection:local:';
 
 function Query(sparql) {
     this._init(sparql);
@@ -90,7 +93,8 @@ QueryBuilder.prototype = {
         let filter =
             ('((fn:starts-with (nie:url(?urn), "%s")) || ' +
              ' (fn:starts-with (nie:url(?urn), "%s")) || ' +
-             ' (fn:starts-with (nie:url(?urn), "%s")))').format(desktopURI, documentsURI, downloadsURI);
+             ' (fn:starts-with (nie:url(?urn), "%s")) || ' +
+             ' (fn:starts-with (nao:identifier(?urn), "gd:collection:local:")))').format(desktopURI, documentsURI, downloadsURI);
 
         return filter;
     },
@@ -212,6 +216,43 @@ QueryBuilder.prototype = {
              'WHERE { ?urn nie:isPartOf ?collUrn } ' +
              'ORDER BY DESC (?mtime)' +
              'LIMIT 4').replace('?collUrn', '<' + resource + '>');
+
+        return new Query(sparql);
+    },
+
+    // queries for all the collections the given item is part of
+    buildFetchCollectionsQuery: function(resource) {
+        let sparql =
+            ('SELECT ' +
+             '?urn ' +
+             'WHERE { ?urn a nfo:DataContainer . ?docUrn nie:isPartOf ?urn }'
+            ).replace('?docUrn', '<' + resource + '>');
+
+        return new Query(sparql);
+    },
+
+    // adds or removes the given item to the given collection
+    buildSetCollectionQuery: function(itemUrn, collectionUrn, setting) {
+        let sparql = ('%s { <%s> nie:isPartOf <%s> }'
+                     ).format((setting ? 'INSERT' : 'DELETE'), itemUrn, collectionUrn);
+        return new Query(sparql);
+    },
+
+    // bumps the mtime to current time for the given resource
+    buildUpdateMtimeQuery: function(resource) {
+        let time = Gd.iso8601_from_timestamp(GLib.get_real_time() / GLib.USEC_PER_SEC);
+        let sparql = ('INSERT OR REPLACE { <%s> nie:contentLastModified \"%s\" }'
+                     ).format(resource, time);
+
+        return new Query(sparql);
+    },
+
+    buildCreateCollectionQuery: function(name) {
+        let time = Gd.iso8601_from_timestamp(GLib.get_real_time() / GLib.USEC_PER_SEC);
+        let sparql = ('INSERT { _:res a nfo:DataContainer ; a nie:DataObject ; ' +
+                      'nie:contentLastModified \"' + time + '\" ; ' +
+                      'nie:title \"' + name + '\" ; ' +
+                      'nao:identifier \"' + LOCAL_COLLECTIONS_IDENTIFIER + name + '\" }');
 
         return new Query(sparql);
     }

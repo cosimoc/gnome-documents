@@ -40,6 +40,13 @@ void gd_item_store_set (GtkListStore *store,
                         const gchar *name,
                         const gchar *heading_text);
 
+GtkListStore* gd_create_organize_store (void);
+void gd_organize_store_set (GtkListStore *store,
+                            GtkTreeIter *iter,
+                            const gchar *id,
+                            const gchar *name,
+                            gint state);
+
 void gd_queue_thumbnail_job_for_file_async (GFile *file,
                                             GAsyncReadyCallback callback,
                                             gpointer user_data);
