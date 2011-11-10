@@ -39,6 +39,11 @@ const QueryColumns = {
     SHARED: 11
 };
 
+const QueryFlags = {
+    NONE: 0,
+    UNFILTERED: 1 << 0
+};
+
 function Query(sparql) {
     this._init(sparql);
 }
@@ -129,22 +134,28 @@ QueryBuilder.prototype = {
         return sparql;
     },
 
-    _buildQueryInternal: function(global) {
+    _buildQueryInternal: function(global, flags) {
         let globalSparql =
             'WHERE { ?urn a rdfs:Resource ' +
             this._buildOptional();
 
         if (global) {
+            if ((flags & QueryFlags.UNFILTERED) == 0)
+                globalSparql +=
+                    Global.searchCategoryManager.getWhere() +
+                    Global.collectionManager.getWhere() +
+                    this._buildFilterString();
+
             globalSparql +=
-                Global.searchCategoryManager.getWhere() +
-                Global.collectionManager.getWhere() +
-                this._buildFilterString() +
                 ' } ' +
                 'ORDER BY DESC (?mtime)' +
                 ('LIMIT %d OFFSET %d').format(Global.offsetController.getOffsetStep(),
                                               Global.offsetController.getOffset());
         } else {
-            globalSparql += this._buildFilterString() + ' }';
+            if ((flags & QueryFlags.UNFILTERED) == 0)
+                globalSparql += this._buildFilterString();
+
+            globalSparql += ' }';
         }
 
         let sparql =
@@ -165,15 +176,21 @@ QueryBuilder.prototype = {
         return sparql;
     },
 
-    buildSingleQuery: function(resource) {
-        let sparql = this._buildQueryInternal(false);
+    buildSingleQuery: function() {
+        let resource = arguments[0];
+        let flags = QueryFlags.NONE;
+
+        if (arguments.length == 2)
+            flags = arguments[1];
+
+        let sparql = this._buildQueryInternal(false, flags);
         sparql = sparql.replace('?urn', '<' + resource + '>', 'g');
 
         return new Query(sparql);
     },
 
     buildGlobalQuery: function() {
-        return new Query(this._buildQueryInternal(true));
+        return new Query(this._buildQueryInternal(true, QueryFlags.NONE));
     },
 
     buildCountQuery: function() {
@@ -182,6 +199,19 @@ QueryBuilder.prototype = {
             this._buildOptional() +
             this._buildFilterString() +
             '}';
+
+        return new Query(sparql);
+    },
+
+    // queries for all the items which are part of the given collection
+    buildCollectionIconQuery: function(resource) {
+        let sparql =
+            ('SELECT ' +
+             '?urn ' +
+             'tracker:coalesce(nfo:fileLastModified(?urn), nie:contentLastModified(?urn)) AS ?mtime ' +
+             'WHERE { ?urn nie:isPartOf ?collUrn } ' +
+             'ORDER BY DESC (?mtime)' +
+             'LIMIT 4').replace('?collUrn', '<' + resource + '>');
 
         return new Query(sparql);
     }

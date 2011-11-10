@@ -520,7 +520,7 @@ gd_create_collection_icon (gint base_size,
     {
       pix = l->data;
       pix_width = gdk_pixbuf_get_width (pix);
-      pix_height = gdk_pixbuf_get_width (pix);
+      pix_height = gdk_pixbuf_get_height (pix);
 
       scale_size = MIN (pix_width, pix_height);
 

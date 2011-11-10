@@ -19,6 +19,7 @@
  *
  */
 
+const Gd = imports.gi.Gd;
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -46,6 +47,8 @@ function iconFromRdfType(type) {
         iconName = 'x-office-spreadsheet';
     else if (type.indexOf('nfo#Presentation') != -1)
         iconName = 'x-office-presentation';
+    else if (type.indexOf('nfo#DataContainer') != -1)
+        return Gd.create_collection_icon(getIconSize(), []);
     else
         iconName = 'x-office-document';
 

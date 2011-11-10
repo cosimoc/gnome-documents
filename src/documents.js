@@ -95,19 +95,26 @@ SingleItemJob.prototype = {
     }
 };
 
-function CollectionIconJob(collection) {
+function CollectionIconWatcher(collection) {
     this._init(collection);
 }
 
-CollectionIconJob.prototype = {
+CollectionIconWatcher.prototype = {
     _init: function(collection) {
         this._collection = collection;
-        this._urns = [];
         this._pixbuf = null;
+
+        this._start();
     },
 
-    run: function(callback) {
-        this._callback = callback;
+    _clear: function() {
+        this._docConnections = {};
+        this._urns = [];
+        this._docs = [];
+    },
+
+    _start: function() {
+        this._clear();
 
         let query = Global.queryBuilder.buildCollectionIconQuery(this._collection.id);
         Global.connectionQueue.add(query.sparql, null, Lang.bind(this,
@@ -117,8 +124,6 @@ CollectionIconJob.prototype = {
                     cursor = object.query_finish(res);
                 } catch (e) {
                     log('Unable to query collection items ' + e.toString());
-                    this._emitCallback();
-
                     return;
                 }
 
@@ -134,8 +139,6 @@ CollectionIconJob.prototype = {
         } catch (e) {
             log('Unable to query collection items ' + e.toString());
             cursor.close();
-            this._emitCallback();
-
             return;
         }
 
@@ -153,12 +156,10 @@ CollectionIconJob.prototype = {
     },
 
     _onCollectionIconFinished: function() {
-        if (!this._urns.length) {
-            this._emitCallback();
+        if (!this._urns.length)
             return;
-        }
 
-        this._docs = [];
+        // now this._urns has all the URNs of items contained in the collection
         let toQuery = [];
 
         this._urns.forEach(Lang.bind(this,
@@ -172,7 +173,7 @@ CollectionIconJob.prototype = {
 
         this._toQueryRemaining = toQuery.length;
         if (!this._toQueryRemaining) {
-            this._createCollectionIcon();
+            this._allDocsReady();
             return;
         }
 
@@ -193,29 +194,53 @@ CollectionIconJob.prototype = {
 
     _toQueryCollector: function() {
         this._toQueryRemaining--;
+
         if (!this._toQueryRemaining)
-            this._createCollectionIcon();
+            this._allDocsReady();
+    },
+
+    _allDocsReady: function() {
+        this._docs.forEach(Lang.bind(this,
+            function(doc) {
+                let updateId = doc.connect('info-updated',
+                                           Lang.bind(this, this._createCollectionIcon));
+                this._docConnections[updateId] = doc;
+            }));
+
+        this._createCollectionIcon();
     },
 
     _createCollectionIcon: function() {
+        // now this._docs has an array of Document objects from which we will create the
+        // collection icon
         let pixbufs = [];
 
         this._docs.forEach(
             function(doc) {
                 pixbufs.push(doc.pixbuf);
-
-                if (!Global.documentManager.getItemById(doc.id))
-                    doc.destroy();
             });
 
         this._pixbuf = Gd.create_collection_icon(Utils.getIconSize(), pixbufs);
-        this._emitCallback();
+        this._emitRefresh();
     },
 
-    _emitCallback: function() {
-        this._callback(this._pixbuf);
+    _emitRefresh: function() {
+        this.emit('icon-updated', this._pixbuf);
+    },
+
+    destroy: function() {
+        for (id in this._docConnections) {
+            let doc = this._docConnections[id];
+            doc.disconnect(id);
+        }
+    },
+
+    refresh: function() {
+        this.destroy();
+        this._start();
     }
 };
+Signals.addSignalMethods(CollectionIconWatcher.prototype);
 
 function DocCommon(cursor) {
     this._init(cursor);
@@ -240,9 +265,12 @@ DocCommon.prototype = {
 
         this.favorite = false;
         this.shared = false;
+
         this.collection = false;
+        this._collectionIconWatcher = null;
 
         this.thumbnailed = false;
+        this._thumbPath = null;
 
         this.populateFromCursor(cursor);
 
@@ -325,8 +353,127 @@ DocCommon.prototype = {
         this.checkEffectsAndUpdateInfo();
     },
 
+    _refreshCollectionIcon: function() {
+        if (!this._collectionIconWatcher) {
+            this._collectionIconWatcher = new CollectionIconWatcher(this);
+
+            this._collectionIconWatcher.connect('icon-updated', Lang.bind(this,
+                function(watcher, pixbuf) {
+                    if (!pixbuf)
+                        return;
+
+                    this.pixbuf = pixbuf;
+                    this.checkEffectsAndUpdateInfo();
+                }));
+        } else {
+            this._collectionIconWatcher.refresh();
+        }
+    },
+
     refreshIcon: function() {
+        if (this._thumbPath) {
+            this._refreshThumbPath();
+            return;
+        }
+
         this.updateIconFromType();
+
+        if (this.collection) {
+            this._refreshCollectionIcon();
+            return;
+        }
+
+        if (this._failedThumbnailing)
+            return;
+
+        if (!this._triedThumbnailing)
+            this._triedThumbnailing = true;
+
+        this._file = Gio.file_new_for_uri(this.uri);
+        this._file.query_info_async(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH,
+                                    0, 0, null,
+                                    Lang.bind(this, this._onFileQueryInfo));
+    },
+
+    _onFileQueryInfo: function(object, res) {
+        let info = null;
+        let haveNewIcon = false;
+
+        try {
+            info = object.query_info_finish(res);
+        } catch (e) {
+            log('Unable to query info for file at ' + this.uri + ': ' + e.toString());
+            this._failedThumbnailing = true;
+            return;
+        }
+
+        this._thumbPath = info.get_attribute_byte_string(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH);
+        if (this._thumbPath) {
+            this._refreshThumbPath();
+        } else {
+            this.thumbnailed = false;
+
+            // try to create the thumbnail
+            Gd.queue_thumbnail_job_for_file_async(this._file,
+                                                  Lang.bind(this, this._onQueueThumbnailJob));
+        }
+    },
+
+    _onQueueThumbnailJob: function(object, res) {
+        let thumbnailed = Gd.queue_thumbnail_job_for_file_finish(res);
+
+        if (!thumbnailed) {
+            this._failedThumbnailing = true;
+            return;
+        }
+
+        // get the new thumbnail path
+        this._file.query_info_async(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH,
+                                    0, 0, null,
+                                    Lang.bind(this, this._onThumbnailPathInfo));
+    },
+
+    _onThumbnailPathInfo: function(object, res) {
+        let info = null;
+
+        try {
+            info = object.query_info_finish(res);
+        } catch (e) {
+            log('Unable to query info for file at ' + this.uri + ': ' + e.toString());
+            this._failedThumbnailing = true;
+            return;
+        }
+
+        this._thumbPath = info.get_attribute_byte_string(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH);
+        if (this._thumbPath)
+            this._refreshThumbPath();
+        else
+            this._failedThumbnailing = true;
+    },
+
+    _refreshThumbPath: function() {
+        let thumbFile = Gio.file_new_for_path(this._thumbPath);
+
+        thumbFile.read_async(GLib.PRIORITY_DEFAULT, null, Lang.bind(this,
+            function(object, res) {
+                try {
+                    let stream = object.read_finish(res);
+                    GdkPixbuf.Pixbuf.new_from_stream_at_scale_async(stream,
+                        Utils.getIconSize(), Utils.getIconSize(),
+                        true, null, Lang.bind(this,
+                            function(object, res) {
+                                try {
+                                    this.pixbuf = GdkPixbuf.Pixbuf.new_from_stream_finish(res);
+                                    this.thumbnailed = true;
+                                    this.checkEffectsAndUpdateInfo();
+                                } catch (e) {
+                                    this._failedThumbnailing = true;
+                                }
+                            }));
+                } catch (e) {
+                    this._failedThumbnailing = true;
+                }
+            }));
     },
 
     _updateInfoFromType: function() {
@@ -396,6 +543,11 @@ DocCommon.prototype = {
     },
 
     destroy: function() {
+        if (this._collectionIconWatcher) {
+            this._collectionIconWatcher.destroy();
+            this._collectionIconWatcher = null;
+        }
+
         Global.settings.disconnect(this._refreshIconId);
         Global.searchCategoryManager.disconnect(this._filterId);
     },
@@ -419,8 +571,6 @@ DocCommon.prototype = {
 };
 Signals.addSignalMethods(DocCommon.prototype);
 
-const _FILE_ATTRIBUTES = 'thumbnail::path';
-
 function LocalDocument(cursor) {
     this._init(cursor);
 }
@@ -429,7 +579,6 @@ LocalDocument.prototype = {
     __proto__: DocCommon.prototype,
 
     _init: function(cursor) {
-        this._thumbPath = null;
         this._failedThumbnailing = false;
         this._triedThumbnailing = false;
 
@@ -448,110 +597,6 @@ LocalDocument.prototype = {
     updateTypeDescription: function() {
         if (this.mimeType)
             this.typeDescription = Gio.content_type_get_description(this.mimeType);
-    },
-
-    _refreshThumbPath: function() {
-        let thumbFile = Gio.file_new_for_path(this._thumbPath);
-
-        thumbFile.read_async(GLib.PRIORITY_DEFAULT, null, Lang.bind(this,
-            function(object, res) {
-                try {
-                    let stream = object.read_finish(res);
-                    GdkPixbuf.Pixbuf.new_from_stream_at_scale_async(stream,
-                        Utils.getIconSize(), Utils.getIconSize(),
-                        true, null, Lang.bind(this,
-                            function(object, res) {
-                                try {
-                                    this.pixbuf = GdkPixbuf.Pixbuf.new_from_stream_finish(res);
-                                    this.thumbnailed = true;
-                                    this.checkEffectsAndUpdateInfo();
-                                } catch (e) {
-                                    this._failedThumbnailing = true;
-                                }
-                            }));
-                } catch (e) {
-                    this._failedThumbnailing = true;
-                }
-            }));
-    },
-
-    refreshIcon: function() {
-        if (this._thumbPath) {
-            this._refreshThumbPath();
-            return;
-        }
-
-        if (this._failedThumbnailing) {
-            this.updateIconFromType();
-            return;
-        }
-
-        if (!this._triedThumbnailing) {
-            this.updateIconFromType();
-            this._triedThumbnailing = true;
-        }
-
-        this._triedThumbnailing = true;
-        this._file = Gio.file_new_for_uri(this.uri);
-        this._file.query_info_async(_FILE_ATTRIBUTES,
-                                    0, 0, null,
-                                    Lang.bind(this, this._onFileQueryInfo));
-    },
-
-    _onFileQueryInfo: function(object, res) {
-        let info = null;
-        let haveNewIcon = false;
-
-        try {
-            info = object.query_info_finish(res);
-        } catch (e) {
-            log('Unable to query info for file at ' + this.uri + ': ' + e.toString());
-            this._failedThumbnailing = true;
-            return;
-        }
-
-        this._thumbPath = info.get_attribute_byte_string(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH);
-        if (this._thumbPath) {
-            this._refreshThumbPath();
-        } else {
-            this.thumbnailed = false;
-
-            // try to create the thumbnail
-            Gd.queue_thumbnail_job_for_file_async(this._file,
-                                                  Lang.bind(this, this._onQueueThumbnailJob));
-        }
-    },
-
-    _onQueueThumbnailJob: function(object, res) {
-        let thumbnailed = Gd.queue_thumbnail_job_for_file_finish(res);
-
-        if (!thumbnailed) {
-            this._failedThumbnailing = true;
-            return;
-        }
-
-        // get the new thumbnail path
-        this._file.query_info_async(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH,
-                                    0, 0, null,
-                                    Lang.bind(this, this._onThumbnailPathInfo));
-    },
-
-    _onThumbnailPathInfo: function(object, res) {
-        let info = null;
-
-        try {
-            info = object.query_info_finish(res);
-        } catch (e) {
-            log('Unable to query info for file at ' + this.uri + ': ' + e.toString());
-            this._failedThumbnailing = true;
-            return;
-        }
-
-        this._thumbPath = info.get_attribute_byte_string(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH);
-        if (this._thumbPath)
-            this._refreshThumbPath();
-        else
-            this._failedThumbnailing = true;
     },
 
     loadPreview: function(cancellable, callback) {
@@ -578,6 +623,9 @@ GoogleDocument.prototype = {
     __proto__: DocCommon.prototype,
 
     _init: function(cursor) {
+        this._triedThumbnailing = true;
+        this._failedThumbnailing = true;
+
         DocCommon.prototype._init.call(this, cursor);
 
         // overridden
@@ -775,7 +823,7 @@ DocumentManager.prototype = {
         return this._pixbufFrame;
     },
 
-    addDocumentFromCursor: function(cursor) {
+    createDocumentFromCursor: function(cursor) {
         let identifier = cursor.get_string(Query.QueryColumns.IDENTIFIER)[0];
         let doc;
 
@@ -784,6 +832,11 @@ DocumentManager.prototype = {
         else
             doc = new LocalDocument(cursor);
 
+        return doc;
+    },
+
+    addDocumentFromCursor: function(cursor) {
+        let doc = this.createDocumentFromCursor(cursor);
         this.addItem(doc);
         this._model.documentAdded(doc);
 
