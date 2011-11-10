@@ -232,7 +232,6 @@ BaseView.prototype = {
                 let id = this._model.model.get_value(iter, BaseModelColumns.ID);
 
                 this._manager.setActiveItemById(id);
-                this.emit('item-clicked');
             }));
 
         let col = new Gtk.TreeViewColumn();
@@ -285,4 +284,3 @@ BaseView.prototype = {
             additionalFunc(col, cell, model, iter);
     }
 };
-Signals.addSignalMethods(BaseView.prototype);
