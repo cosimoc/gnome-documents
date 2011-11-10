@@ -34,7 +34,7 @@ ErrorHandler.prototype = {
 
     addLoadError: function(doc, exception) {
         // Translators: %s is the title of a document
-        let message = _("Unable to load \"%s\" for preview").format(doc.title);
+        let message = _("Unable to load \"%s\" for preview").format(doc.name);
 
         // FIXME: we need support for error codes in GJS
         if (exception.toString().indexOf('Operation was cancelled') != -1)

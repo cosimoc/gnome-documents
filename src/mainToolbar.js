@@ -142,7 +142,7 @@ MainToolbar.prototype = {
 
         if (collection) {
             this._whereLabel.show();
-            this._whereLabel.set_markup ('<b>' + collection.title + '</b>');
+            this._whereLabel.set_markup ('<b>' + collection.name + '</b>');
         }
 
         let markup;
@@ -245,7 +245,7 @@ MainToolbar.prototype = {
 
         if (item) {
             this._overviewBack.show();
-            this._whereLabel.set_markup(('<b>%s</b>').format(item.title));
+            this._whereLabel.set_markup(('<b>%s</b>').format(item.name));
         } else {
             this._overviewBack.hide();
             this._whereLabel.set_text('');
@@ -286,7 +286,7 @@ MainToolbar.prototype = {
         let pageLabel = null;
         let doc = Global.documentManager.getActiveItem();
 
-        let titleLabel = ('<b>%s</b>').format(GLib.markup_escape_text(doc.title, -1));
+        let titleLabel = ('<b>%s</b>').format(GLib.markup_escape_text(doc.name, -1));
         this._titleLabel.set_markup(titleLabel);
 
         if (this._model) {

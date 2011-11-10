@@ -250,7 +250,7 @@ DocCommon.prototype = {
     _init: function(cursor) {
         this.id = null;
         this.uri = null;
-        this.title = null;
+        this.name = null;
         this.author = null;
         this.mtime = null;
         this.resourceUrn = null;
@@ -294,7 +294,7 @@ DocCommon.prototype = {
     },
 
     _sanitizeTitle: function() {
-        this.title = this.title.replace('Microsoft Word - ', '', 'g');
+        this.name = this.name.replace('Microsoft Word - ', '', 'g');
     },
 
     populateFromCursor: function(cursor) {
@@ -318,9 +318,9 @@ DocCommon.prototype = {
 
         let title = cursor.get_string(Query.QueryColumns.TITLE)[0];
         if (title && title != '')
-            this.title = title;
+            this.name = title;
         else
-            this.title = Gd.filename_strip_extension(
+            this.name = Gd.filename_strip_extension(
                 cursor.get_string(Query.QueryColumns.FILENAME)[0]);
 
         this._sanitizeTitle();
@@ -723,7 +723,7 @@ GoogleDocument.prototype = {
         this._createGDataEntry(null, Lang.bind(this,
             function(entry, service, exception) {
                 if (!entry) {
-                    log('Unable to call setFavorite on ' + this.title + ': ' + exception.toString());
+                    log('Unable to call setFavorite on ' + this.name + ': ' + exception.toString());
                     return;
                 }
 
@@ -751,7 +751,7 @@ GoogleDocument.prototype = {
                              try {
                                  service.update_entry_finish(res);
                              } catch (e) {
-                                 log('Unable to call setFavorite on ' + this.title + ': ' + e.toString());
+                                 log('Unable to call setFavorite on ' + this.name + ': ' + e.toString());
                              }
                          }));
             }));
@@ -897,7 +897,7 @@ DocumentModel.prototype = {
 
         Gd.store_set(this.model, iter,
                      doc.id,
-                     doc.title, doc.author,
+                     doc.name, doc.author,
                      doc.pixbuf, doc.mtime);
 
         let treePath = this.model.get_path(iter);
@@ -913,7 +913,7 @@ DocumentModel.prototype = {
                 if (objectIter)
                     Gd.store_set(this.model, iter,
                                  doc.id,
-                                 doc.title, doc.author,
+                                 doc.name, doc.author,
                                  doc.pixbuf, doc.mtime);
             }));
     },
