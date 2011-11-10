@@ -23,6 +23,7 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <string.h>
+#include <math.h>
 
 #define GNOME_DESKTOP_USE_UNSTABLE_API
 #include <libgnome-desktop/gnome-desktop-thumbnail.h>
@@ -465,6 +466,99 @@ gd_time_val_from_iso8601 (const gchar *string,
                           GTimeVal *timeval)
 {
   return g_time_val_from_iso8601 (string, timeval);
+}
+
+/**
+ * gd_create_collection_icon:
+ * @base_size:
+ * @pixbufs: (element-type GdkPixbuf):
+ *
+ * Returns: (transfer full):
+ */
+GIcon *
+gd_create_collection_icon (gint base_size,
+                           GList *pixbufs)
+{
+  cairo_surface_t *surface;
+  GIcon *retval;
+  cairo_t *cr;
+  GtkStyleContext *context;
+  GtkWidgetPath *path;
+  gint padding, tile_size, scale_size;
+  gint pix_width, pix_height;
+  gint idx, cur_x, cur_y;
+  GList *l;
+  GdkPixbuf *pix;
+
+  /* TODO: do not hardcode 4, but scale to another layout if more
+   * pixbufs are provided.
+   */
+
+  padding = MAX (floor (base_size / 10), 4);
+  tile_size = (base_size - (3 * padding)) / 2;
+
+  context = gtk_style_context_new ();
+  gtk_style_context_add_class (context, "documents-collection-icon");
+
+  path = gtk_widget_path_new ();
+  gtk_widget_path_append_type (path, GTK_TYPE_ICON_VIEW);
+  gtk_style_context_set_path (context, path);
+  gtk_widget_path_unref (path);
+
+  surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, base_size, base_size);
+  cr = cairo_create (surface);
+
+  gtk_render_background (context, cr,
+                         0, 0, base_size, base_size);
+
+  l = pixbufs;
+  idx = 0;
+  cur_x = padding;
+  cur_y = padding;
+
+  while (l != NULL && idx < 4)
+    {
+      pix = l->data;
+      pix_width = gdk_pixbuf_get_width (pix);
+      pix_height = gdk_pixbuf_get_width (pix);
+
+      scale_size = MIN (pix_width, pix_height);
+
+      cairo_save (cr);
+
+      cairo_translate (cr, cur_x, cur_y);
+
+      cairo_rectangle (cr, 0, 0,
+                       tile_size, tile_size);
+      cairo_clip (cr);
+
+      cairo_scale (cr, (gdouble) tile_size / (gdouble) scale_size, (gdouble) tile_size / (gdouble) scale_size);
+      gdk_cairo_set_source_pixbuf (cr, pix, 0, 0);
+
+      cairo_paint (cr);
+      cairo_restore (cr);
+
+      if ((idx % 2) == 0)
+        {
+          cur_x += tile_size + padding;
+        }
+      else
+        {
+          cur_x = padding;
+          cur_y += tile_size + padding;
+        }
+
+      idx++;
+      l = l->next;
+    }
+
+  retval = G_ICON (gdk_pixbuf_get_from_surface (surface, 0, 0, base_size, base_size));
+
+  cairo_surface_destroy (surface);
+  cairo_destroy (cr);
+  g_object_unref (context);
+
+  return retval;
 }
 
 #define _BG_MIN_SIZE 20

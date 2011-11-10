@@ -63,6 +63,8 @@ char *gd_filename_strip_extension (const char * filename_with_extension);
 gboolean gd_time_val_from_iso8601 (const gchar *string,
                                    GTimeVal *timeval);
 
+GIcon *gd_create_collection_icon (gint base_size,
+                                  GList *pixbufs);
 GIcon *gd_create_symbolic_icon (const gchar *name,
                                 gint base_size);
 void   gd_entry_focus_hack (GtkWidget *entry,

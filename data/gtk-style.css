@@ -11,6 +11,11 @@
     color: #ffffff;
 }
 
+.documents-collection-icon {
+    background-color: #d3d7cf;
+    border-radius: 8;
+}
+
 .osd {
     background-image: none;
     background-color: alpha(#000, 0.00);
