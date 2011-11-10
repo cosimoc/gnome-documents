@@ -35,11 +35,10 @@ BaseManager.prototype = {
     _init: function(title) {
         this._items = {};
         this._activeItem = null;
+        this._title = null;
 
         if (title)
             this._title = title;
-        else
-            this._title = '';
     },
 
     getTitle: function() {
@@ -191,9 +190,14 @@ BaseModel.prototype = {
     _refreshModel: function() {
         this.model.clear();
 
-        let iter = this.model.append();
-        Gd.item_store_set(this.model, iter,
-                          'heading', '', this._manager.getTitle());
+        let iter;
+        let title = this._manager.getTitle();
+
+        if (title) {
+            iter = this.model.append();
+            Gd.item_store_set(this.model, iter,
+                              'heading', '', title);
+        }
 
         let items = this._manager.getItems();
         for (idx in items) {
