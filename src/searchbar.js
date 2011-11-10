@@ -82,9 +82,11 @@ SearchTypeManager.prototype = {
     }
 };
 
-const SEARCH_MATCH_AUTHOR = 'author';
-const SEARCH_MATCH_TITLE = 'title';
-const SEARCH_MATCH_ALL = 'all';
+const SearchMatchStock = {
+    ALL: 'all',
+    TITLE: 'title',
+    AUTHOR: 'author'
+};
 
 function SearchMatch(params) {
     this._init(params);
@@ -97,11 +99,11 @@ SearchMatch.prototype = {
     },
 
     getFilter: function() {
-        if (this.id == SEARCH_MATCH_TITLE)
+        if (this.id == SearchMatchStock.TITLE)
             return ('fn:contains ' +
                     '(fn:lower-case (tracker:coalesce(nie:title(?urn), nfo:fileName(?urn))), ' +
                     '"%s")').format(Global.searchController.getString());
-        if (this.id == SEARCH_MATCH_AUTHOR)
+        if (this.id == SearchMatchStock.AUTHOR)
             return ('fn:contains ' +
                     '(fn:lower-case (tracker:coalesce(nco:fullname(?creator), nco:fullname(?publisher))), ' +
                     '"%s")').format(Global.searchController.getString());
@@ -120,14 +122,14 @@ SearchMatchManager.prototype = {
     _init: function() {
         Manager.BaseManager.prototype._init.call(this, _("Match"));
 
-        this.addItem(new SearchMatch({ id: SEARCH_MATCH_ALL,
+        this.addItem(new SearchMatch({ id: SearchMatchStock.ALL,
                                        name: _("All") }));
-        this.addItem(new SearchMatch({ id: SEARCH_MATCH_TITLE,
+        this.addItem(new SearchMatch({ id: SearchMatchStock.TITLE,
                                        name: _("Title") }));
-        this.addItem(new SearchMatch({ id: SEARCH_MATCH_AUTHOR,
+        this.addItem(new SearchMatch({ id: SearchMatchStock.AUTHOR,
                                        name: _("Author") }));
 
-        this.setActiveItemById(SEARCH_MATCH_ALL);
+        this.setActiveItemById(SearchMatchStock.ALL);
     }
 };
 
