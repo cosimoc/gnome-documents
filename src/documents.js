@@ -43,6 +43,180 @@ const Utils = imports.utils;
 
 const _THUMBNAIL_FRAME = 3;
 
+function SingleItemJob(doc) {
+    this._init(doc);
+}
+
+SingleItemJob.prototype = {
+    _init: function(urn) {
+        this._urn = urn;
+        this._cursor = null;
+    },
+
+    run: function(flags, callback) {
+        this._callback = callback;
+
+        let query = Global.queryBuilder.buildSingleQuery(this._urn, flags);
+        Global.connectionQueue.add(query.sparql, null, Lang.bind(this,
+            function(object, res) {
+                try {
+                    let cursor = object.query_finish(res);
+                    cursor.next_async(null, Lang.bind(this, this._onCursorNext));
+                } catch (e) {
+                    log('Unable to query single item ' + e.toString());
+                    this._emitCallback();
+                }
+            }));
+    },
+
+    _onCursorNext: function(cursor, res) {
+        let valid = false;
+
+        try {
+            valid = cursor.next_finish(res);
+        } catch (e) {
+            log('Unable to query single item ' + e.toString());
+        }
+
+        if (!valid) {
+            cursor.close();
+            this._emitCallback();
+
+            return;
+        }
+
+        this._cursor = cursor;
+        this._emitCallback();
+        cursor.close();
+    },
+
+    _emitCallback: function() {
+        this._callback(this._cursor);
+    }
+};
+
+function CollectionIconJob(collection) {
+    this._init(collection);
+}
+
+CollectionIconJob.prototype = {
+    _init: function(collection) {
+        this._collection = collection;
+        this._urns = [];
+        this._pixbuf = null;
+    },
+
+    run: function(callback) {
+        this._callback = callback;
+
+        let query = Global.queryBuilder.buildCollectionIconQuery(this._collection.id);
+        Global.connectionQueue.add(query.sparql, null, Lang.bind(this,
+            function(object, res) {
+                let cursor = null;
+                try {
+                    cursor = object.query_finish(res);
+                } catch (e) {
+                    log('Unable to query collection items ' + e.toString());
+                    this._emitCallback();
+
+                    return;
+                }
+
+                cursor.next_async(null, Lang.bind(this, this._onCursorNext));
+            }));
+    },
+
+    _onCursorNext: function(cursor, res) {
+        let valid = false;
+
+        try {
+            valid = cursor.next_finish(res);
+        } catch (e) {
+            log('Unable to query collection items ' + e.toString());
+            cursor.close();
+            this._emitCallback();
+
+            return;
+        }
+
+        if (!valid) {
+            cursor.close();
+            this._onCollectionIconFinished();
+
+            return;
+        }
+
+        let urn = cursor.get_string(0)[0];
+        this._urns.push(urn);
+
+        cursor.next_async(null, Lang.bind(this, this._onCursorNext));
+    },
+
+    _onCollectionIconFinished: function() {
+        if (!this._urns.length) {
+            this._emitCallback();
+            return;
+        }
+
+        this._docs = [];
+        let toQuery = [];
+
+        this._urns.forEach(Lang.bind(this,
+            function(urn) {
+                let doc = Global.documentManager.getItemById(urn);
+                if (doc)
+                    this._docs.push(doc);
+                else
+                    toQuery.push(urn);
+            }));
+
+        this._toQueryRemaining = toQuery.length;
+        if (!this._toQueryRemaining) {
+            this._createCollectionIcon();
+            return;
+        }
+
+        toQuery.forEach(Lang.bind(this,
+            function(urn) {
+                let job = new SingleItemJob(urn);
+                job.run(Query.QueryFlags.UNFILTERED, Lang.bind(this,
+                    function(cursor) {
+                        if (cursor) {
+                            let doc = Global.documentManager.createDocumentFromCursor(cursor);
+                            this._docs.push(doc);
+                        }
+
+                        this._toQueryCollector();
+                    }));
+            }));
+    },
+
+    _toQueryCollector: function() {
+        this._toQueryRemaining--;
+        if (!this._toQueryRemaining)
+            this._createCollectionIcon();
+    },
+
+    _createCollectionIcon: function() {
+        let pixbufs = [];
+
+        this._docs.forEach(
+            function(doc) {
+                pixbufs.push(doc.pixbuf);
+
+                if (!Global.documentManager.getItemById(doc.id))
+                    doc.destroy();
+            });
+
+        this._pixbuf = Gd.create_collection_icon(Utils.getIconSize(), pixbufs);
+        this._emitCallback();
+    },
+
+    _emitCallback: function() {
+        this._callback(this._pixbuf);
+    }
+};
+
 function DocCommon(cursor) {
     this._init(cursor);
 }
@@ -81,26 +255,13 @@ DocCommon.prototype = {
     },
 
     refresh: function() {
-        let query = Global.queryBuilder.buildSingleQuery(this.id);
-
-        Global.connectionQueue.add(query.sparql, null, Lang.bind(this,
-            function(object, res) {
-                let cursor = null;
-
-                try {
-                    cursor = object.query_finish(res);
-                    cursor.next_async(null, Lang.bind(this,
-                        function(object, res) {
-                            let valid = object.next_finish(res);
-                            if (valid)
-                                this.populateFromCursor(object);
-
-                            cursor.close();
-                        }));
-                } catch (e) {
-                    log('Unable to refresh file information: ' + e.toString());
+        let job = new SingleItemJob(this.id);
+        job.run(Query.QueryFlags.NONE, Lang.bind(this,
+            function(cursor) {
+                if (!cursor)
                     return;
-                }
+
+                this.populateFromCursor(cursor);
             }));
     },
 
@@ -595,26 +756,13 @@ DocumentManager.prototype = {
     },
 
     _onDocumentCreated: function(urn) {
-        let query = Global.queryBuilder.buildSingleQuery(urn);
-
-        Global.connectionQueue.add(query.sparql, null, Lang.bind(this,
-            function(object, res) {
-                let cursor = null;
-
-                try {
-                    cursor = object.query_finish(res);
-                    cursor.next_async(null, Lang.bind(this,
-                        function(object, res) {
-                            let valid = object.next_finish(res);
-                            if (valid)
-                                this.addDocumentFromCursor(object);
-
-                            cursor.close();
-                        }));
-                } catch (e) {
-                    log('Unable to add new document: ' + e.toString());
+        let job = new SingleItemJob(urn);
+        job.run(Query.QueryFlags.NONE, Lang.bind(this,
+            function(cursor) {
+                if (!cursor)
                     return;
-                }
+
+                this.addDocumentFromCursor(cursor);
             }));
     },
 
