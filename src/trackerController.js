@@ -197,7 +197,6 @@ TrackerController.prototype = {
         this._currentQuery = Global.queryBuilder.buildGlobalQuery();
         this._cancellable.reset();
 
-        this._setQueryStatus(true);
         Global.connectionQueue.add(this._currentQuery.sparql,
                                    this._cancellable, Lang.bind(this, this._onQueryExecuted));
     },
