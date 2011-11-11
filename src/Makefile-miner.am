@@ -11,9 +11,11 @@ gd_tracker_gdata_miner_CFLAGS = \
     -DGOA_API_IS_SUBJECT_TO_CHANGE \
     -I$(top_srcdir)/src/lib \
     $(MINER_CFLAGS) \
+    $(DOCUMENTS_CFLAGS) \
     $(NULL)
 
 gd_tracker_gdata_miner_LDADD = \
     libgdprivate-1.0.la  \
     $(MINER_LIBS) \
+    $(DOCUMENTS_LIBS) \
     $(NULL)

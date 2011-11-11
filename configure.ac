@@ -73,7 +73,6 @@ PKG_CHECK_MODULES(DOCUMENTS,
 
 PKG_CHECK_MODULES(MINER,
                   tracker-sparql-0.12
-                  tracker-miner-0.12
                   glib-2.0 >= $GLIB_MIN_VERSION
                   gio-2.0 >= $GLIB_MIN_VERSION
                   goa-1.0 >= $GOA_MIN_VERSION
