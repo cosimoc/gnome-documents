@@ -469,6 +469,22 @@ gd_time_val_from_iso8601 (const gchar *string,
 }
 
 /**
+ * gd_iso8601_from_timestamp:
+ * @timestamp:
+ *
+ * Returns: (transfer full):
+ */
+gchar *
+gd_iso8601_from_timestamp (gint64 timestamp)
+{
+  GTimeVal tv;
+
+  tv.tv_sec = timestamp;
+  tv.tv_usec = 0;
+  return g_time_val_to_iso8601 (&tv);
+}
+
+/**
  * gd_create_collection_icon:
  * @base_size:
  * @pixbufs: (element-type GdkPixbuf):

@@ -25,6 +25,7 @@
 
 #include "gd-gdata-goa-authorizer.h"
 #include "gd-gdata-miner.h"
+#include "gd-utils.h"
 
 #define MINER_IDENTIFIER "gd:gdata:miner:86ec9bc9-c242-427f-aa19-77b5a2c9b6f0"
 #define STARRED_CATEGORY_TERM "http://schemas.google.com/g/2005/labels#starred"
@@ -350,16 +351,6 @@ _tracker_sparql_connection_ensure_resource (TrackerSparqlConnection *connection,
  out:
   g_clear_object (&cursor);
   return retval;
-}
-
-static gchar *
-_tracker_utils_iso8601_from_timestamp (gint64 timestamp)
-{
-  GTimeVal tv;
-
-  tv.tv_sec = timestamp;
-  tv.tv_usec = 0;
-  return g_time_val_to_iso8601 (&tv);
 }
 
 typedef struct {
@@ -694,7 +685,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
         goto out;
     }
 
-  date = _tracker_utils_iso8601_from_timestamp (gdata_entry_get_published (entry));
+  date = gd_iso8601_from_timestamp (gdata_entry_get_published (entry));
   _tracker_sparql_connection_insert_or_replace_triple
     (job->connection, 
      job->cancellable, error,
@@ -705,7 +696,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
   if (*error != NULL)
     goto out;
 
-  date = _tracker_utils_iso8601_from_timestamp (gdata_entry_get_updated (entry));
+  date = gd_iso8601_from_timestamp (gdata_entry_get_updated (entry));
   _tracker_sparql_connection_insert_or_replace_triple
     (job->connection, 
      job->cancellable, error,
