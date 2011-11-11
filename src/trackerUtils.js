@@ -26,8 +26,7 @@ const Global = imports.global;
 function setFavorite(urn, isFavorite, callback) {
     let sparql = ('%s { <%s> nao:hasTag nao:predefined-tag-favorite }').format((isFavorite ? 'INSERT OR REPLACE' : 'DELETE'), urn);
 
-    Global.connection.update_async(sparql,
-        GLib.PRIORITY_DEFAULT, null,
+    Global.connectionQueue.update(sparql, null,
         function(object, res) {
             try {
                 object.update_finish(res);

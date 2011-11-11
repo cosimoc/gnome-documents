@@ -34,6 +34,12 @@ const GLib = imports.gi.GLib;
 
 const MINER_REFRESH_TIMEOUT = 60; /* seconds */
 
+const QueryType = {
+    SELECT: 0,
+    UPDATE: 1,
+    UPDATE_BLANK: 2
+};
+
 function TrackerConnectionQueue() {
     this._init();
 }
@@ -47,7 +53,28 @@ TrackerConnectionQueue.prototype = {
     add: function(query, cancellable, callback) {
         let params = { query: query,
                        cancellable: cancellable,
-                       callback: callback };
+                       callback: callback,
+                       queryType: QueryType.SELECT };
+        this._queue.push(params);
+
+        this._checkQueue();
+    },
+
+    update: function(query, cancellable, callback) {
+        let params = { query: query,
+                       cancellable: cancellable,
+                       callback: callback,
+                       queryType: QueryType.UPDATE };
+        this._queue.push(params);
+
+        this._checkQueue();
+    },
+
+    updateBlank: function(query, cancellable, callback) {
+        let params = { query: query,
+                       cancellable: cancellable,
+                       callback: callback,
+                       queryType: QueryType.UPDATE_BLANK };
         this._queue.push(params);
 
         this._checkQueue();
@@ -62,8 +89,16 @@ TrackerConnectionQueue.prototype = {
 
         let params = this._queue.shift();
         this._running = true;
-        Global.connection.query_async(params.query, params.cancellable,
-                                      Lang.bind(this, this._queueCollector, params));
+
+        if (params.queryType == QueryType.SELECT)
+            Global.connection.query_async(params.query, params.cancellable,
+                                          Lang.bind(this, this._queueCollector, params));
+        else if (params.queryType == QueryType.UPDATE)
+            Global.connection.update_async(params.query, GLib.PRIORITY_DEFAULT, params.cancellable,
+                                           Lang.bind(this, this._queueCollector, params));
+        else if (params.queryType == QueryType.UPDATE_BLANK)
+            Global.connection.update_blank_async(params.query, GLib.PRIORITY_DEFAULT, params.cancellable,
+                                                 Lang.bind(this, this._queueCollector, params));
     },
 
     _queueCollector: function(connection, res, params) {
