@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-10-28 19:20+0000\n"
-"PO-Revision-Date: 2011-10-30 15:20+0100\n"
+"POT-Creation-Date: 2011-11-12 00:06+0000\n"
+"PO-Revision-Date: 2011-11-12 20:11+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -78,27 +78,27 @@ msgstr "Marcadores"
 msgid "Shared with you"
 msgstr "Compartidos con usted"
 
-#: ../src/documents.js:260 ../src/sources.js:102
+#: ../src/documents.js:261 ../src/sources.js:95
 msgid "Local"
 msgstr "Locales"
 
-#: ../src/documents.js:387
+#: ../src/documents.js:408
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:388
+#: ../src/documents.js:409
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:457
+#: ../src/documents.js:478
 msgid "Spreadsheet"
 msgstr "Hoja de cálculo"
 
-#: ../src/documents.js:459
+#: ../src/documents.js:480
 msgid "Presentation"
 msgstr "Presentación"
 
-#: ../src/documents.js:461
+#: ../src/documents.js:482
 msgid "Document"
 msgstr "Documento"
 
@@ -108,9 +108,14 @@ msgstr "Documento"
 msgid "Unable to load \"%s\" for preview"
 msgstr "No se pudo cargar «%s» para su vista previa"
 
-#: ../src/error.js:44
+#: ../src/error.js:49
 msgid "Unable to fetch the list of documents"
 msgstr "No se pudo obtener la lista de documentos"
+
+#: ../src/lib/gd-pdf-loader.c:207
+#| msgid "Unable to fetch the list of documents"
+msgid "Unable to load the document"
+msgstr "No se pudo cargar el documento"
 
 #: ../src/loadMore.js:70
 #, c-format
@@ -119,50 +124,86 @@ msgid_plural "Load %d more documents"
 msgstr[0] "Cargar %d documento más"
 msgstr[1] "Cargar %d documentos más"
 
-#: ../src/mainToolbar.js:82
+#: ../src/mainToolbar.js:85
 msgid "Click on items to select them"
 msgstr "Pulse sobre los elementos para seleccionarlos"
 
-#: ../src/mainToolbar.js:84
+#: ../src/mainToolbar.js:87
 #, c-format
 msgid "%d selected"
 msgstr "%d seleccionado(s)"
 
-#: ../src/mainToolbar.js:243
+#: ../src/mainToolbar.js:231
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d de %d)"
 
-#: ../src/sidebar.js:380 ../src/sources.js:172
-msgid "Sources"
-msgstr "Fuentes"
+#: ../src/searchbar.js:64
+msgid "Type"
+msgstr "Tipo"
 
-#: ../src/sources.js:96
+#: ../src/searchbar.js:67 ../src/searchbar.js:126 ../src/sources.js:89
 msgid "All"
 msgstr "Todos"
 
-#: ../src/spinnerBox.js:47
-msgid "Loading..."
-msgstr "Cargando…"
+#: ../src/searchbar.js:69
+#| msgid "Documents"
+msgid "PDF Documents"
+msgstr "Documentos PDF"
+
+#: ../src/searchbar.js:72
+#| msgid "Presentation"
+msgid "Presentations"
+msgstr "Presentaciones"
+
+#: ../src/searchbar.js:75
+#| msgid "Spreadsheet"
+msgid "Spreadsheets"
+msgstr "Hojas de cálculo"
+
+#: ../src/searchbar.js:78
+#| msgid "Documents"
+msgid "Text Documents"
+msgstr "Documentos de texto"
+
+#: ../src/searchbar.js:123
+msgid "Match"
+msgstr "Coincidencia"
+
+#: ../src/searchbar.js:128
+msgid "Title"
+msgstr "Título"
+
+#: ../src/searchbar.js:130
+msgid "Author"
+msgstr "Autor"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:66
+#: ../src/selections.js:180 ../src/view.js:65
 #, c-format
 msgid "Open with %s"
 msgstr "Abrir con %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:69
+#: ../src/selections.js:183 ../src/view.js:68
 msgid "Open"
 msgstr "Abrir"
 
-#: ../src/view.js:79
+#: ../src/selections.js:194 ../src/view.js:78
 msgid "Remove from favorites"
 msgstr "Quitar de los marcadores"
 
-#: ../src/view.js:79
+#: ../src/selections.js:198 ../src/view.js:78
 msgid "Add to favorites"
 msgstr "Añadir a los marcadores"
+
+#: ../src/sources.js:85
+msgid "Sources"
+msgstr "Fuentes"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "Cargando…"
 
 #~ msgid "Private"
 #~ msgstr "Privado"
