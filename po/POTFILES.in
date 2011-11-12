@@ -4,9 +4,12 @@ data/org.gnome.documents.gschema.xml.in
 src/categories.js
 src/documents.js
 src/error.js
+src/lib/gd-pdf-loader.c
 src/loadMore.js
 src/mainToolbar.js
 src/mainWindow.js
+src/searchbar.js
+src/selections.js
 src/sidebar.js
 src/sources.js
 src/spinnerBox.js
