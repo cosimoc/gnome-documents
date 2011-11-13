@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-18 07:44+0200\n"
-"PO-Revision-Date: 2011-10-18 07:45+0200\n"
+"POT-Creation-Date: 2011-11-13 10:45+0100\n"
+"PO-Revision-Date: 2011-11-13 10:46+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: \n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Access, manage and share documents"
 msgstr "Aksesser, håndter og del dokumenter"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:48
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:54
 msgid "Documents"
 msgstr "Dokumenter"
 
@@ -65,42 +65,39 @@ msgstr "Vindustørrelse"
 msgid "Window size (width and height)."
 msgstr "Vindustørrelse (bredde og høyde)."
 
-#. Translators: this refers to new and recent documents
-#: ../src/categories.js:77
+#: ../src/categories.js:81
 msgid "New and Recent"
 msgstr "Nye og nylig brukte"
 
-#. Translators: this refers to favorite documents
-#: ../src/categories.js:80
+#: ../src/categories.js:87
 msgid "Favorites"
 msgstr "Favoritter"
 
-#. Translators: this refers to shared documents
-#: ../src/categories.js:83
+#: ../src/categories.js:92
 msgid "Shared with you"
 msgstr "Delt med deg"
 
-#: ../src/documents.js:253 ../src/sources.js:101
+#: ../src/documents.js:261 ../src/sources.js:95
 msgid "Local"
 msgstr "Lokalt"
 
-#: ../src/documents.js:378
+#: ../src/documents.js:408
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:379
+#: ../src/documents.js:409
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:448
+#: ../src/documents.js:478
 msgid "Spreadsheet"
 msgstr "Regneark"
 
-#: ../src/documents.js:450
+#: ../src/documents.js:480
 msgid "Presentation"
 msgstr "Presentasjon"
 
-#: ../src/documents.js:452
+#: ../src/documents.js:482
 msgid "Document"
 msgstr "Dokument"
 
@@ -110,9 +107,13 @@ msgstr "Dokument"
 msgid "Unable to load \"%s\" for preview"
 msgstr "Kan ikke laste «%s» for forhåndsvisning"
 
-#: ../src/error.js:44
+#: ../src/error.js:49
 msgid "Unable to fetch the list of documents"
 msgstr "Kan ikke hente listen med dokumenter"
+
+#: ../src/lib/gd-pdf-loader.c:207
+msgid "Unable to load the document"
+msgstr "Kan ikke laste dokumentet"
 
 #: ../src/loadMore.js:70
 #, c-format
@@ -121,38 +122,79 @@ msgid_plural "Load %d more documents"
 msgstr[0] "Last %d dokument til"
 msgstr[1] "Last %d dokumenter til"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:85
+msgid "Click on items to select them"
+msgstr "Klikk på oppføringer for å velge dem"
+
+#: ../src/mainToolbar.js:87
+#, c-format
+msgid "%d selected"
+msgstr "%d valgt"
+
+#: ../src/mainToolbar.js:231
 #, c-format
 msgid "(%d of %d)"
 msgstr "[%d av %d]"
 
-#: ../src/sidebar.js:131 ../src/sources.js:218
-msgid "Sources"
-msgstr "Kilder"
+#: ../src/searchbar.js:64
+msgid "Type"
+msgstr "Skriv"
 
-#: ../src/sources.js:96
+#: ../src/searchbar.js:67 ../src/searchbar.js:126 ../src/sources.js:89
 msgid "All"
 msgstr "Alle"
 
-#: ../src/spinnerBox.js:47
-msgid "Loading..."
-msgstr "Laster …"
+#: ../src/searchbar.js:69
+msgid "PDF Documents"
+msgstr "PDF-dokumenter"
+
+#: ../src/searchbar.js:72
+msgid "Presentations"
+msgstr "Presentasjoner"
+
+#: ../src/searchbar.js:75
+msgid "Spreadsheets"
+msgstr "Regneark"
+
+#: ../src/searchbar.js:78
+msgid "Text Documents"
+msgstr "Tekstdokumenter"
+
+#: ../src/searchbar.js:123
+msgid "Match"
+msgstr "Treff"
+
+#: ../src/searchbar.js:128
+msgid "Title"
+msgstr "Tittel"
+
+#: ../src/searchbar.js:130
+msgid "Author"
+msgstr "Forfatter"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:67
+#: ../src/selections.js:180 ../src/view.js:65
 #, c-format
 msgid "Open with %s"
 msgstr "Åpne med %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:70
+#: ../src/selections.js:183 ../src/view.js:68
 msgid "Open"
 msgstr "Åpne"
 
-#: ../src/view.js:80
+#: ../src/selections.js:194 ../src/view.js:78
 msgid "Remove from favorites"
 msgstr "Fjern fra favoritter"
 
-#: ../src/view.js:80
+#: ../src/selections.js:198 ../src/view.js:78
 msgid "Add to favorites"
 msgstr "Legg til i favoritter"
+
+#: ../src/sources.js:85
+msgid "Sources"
+msgstr "Kilder"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "Laster …"
