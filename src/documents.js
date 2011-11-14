@@ -300,6 +300,7 @@ DocCommon.prototype = {
     populateFromCursor: function(cursor) {
         this.uri = cursor.get_string(Query.QueryColumns.URI)[0];
         this.id = cursor.get_string(Query.QueryColumns.URN)[0];
+        this.identifier = cursor.get_string(Query.QueryColumns.IDENTIFIER)[0];
         this.author = cursor.get_string(Query.QueryColumns.AUTHOR)[0];
         this.resourceUrn = cursor.get_string(Query.QueryColumns.RESOURCE_URN)[0];
         this.favorite = cursor.get_boolean(Query.QueryColumns.FAVORITE);
@@ -629,7 +630,6 @@ GoogleDocument.prototype = {
         DocCommon.prototype._init.call(this, cursor);
 
         // overridden
-        this.identifier = cursor.get_string(Query.QueryColumns.IDENTIFIER)[0];
         this.defaultAppName = _("Google Docs");
         this.sourceName = _("Google");
     },
