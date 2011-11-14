@@ -127,25 +127,20 @@ BaseManager.prototype = {
         return retval;
     },
 
+    forEachItem: function(func) {
+        for (idx in this._items)
+            func(this._items[idx]);
+    },
+
     _getAllFilter: function() {
-        let filter = '';
-        let first = true;
+        let filters = [];
 
-        for (idx in this._items) {
-            let item = this._items[idx];
+        this.forEachItem(function(item) {
+            if (item.id != 'all')
+                filters.push(item.getFilter());
+        });
 
-            if (item.id == 'all')
-                continue;
-
-            if (first)
-                first = false;
-            else
-                filter += ' || ';
-
-            filter += item.getFilter();
-        }
-
-        return '(' + filter + ')';
+        return '(' + filters.join(' || ') + ')';
     },
 
     processNewItems: function(newItems) {
