@@ -28,6 +28,11 @@ const _ = imports.gettext.gettext;
 const Global = imports.global;
 const Manager = imports.manager;
 
+const SourceStock = {
+    ALL: 'all',
+    LOCAL: 'local'
+}
+
 function Source(params) {
     this._init(params);
 };
@@ -54,10 +59,10 @@ Source.prototype = {
     },
 
     getFilter: function() {
-        if (this.id == 'local')
+        if (this.id == SourceStock.LOCAL)
             return Global.queryBuilder.buildFilterLocal();
 
-        if (this.id == 'all')
+        if (this.id == SourceStock.ALL)
             return '(' + Global.queryBuilder.buildFilterLocal() + ' || '
                     + Global.queryBuilder.buildFilterNotLocal() + ')';
 
@@ -85,13 +90,13 @@ SourceManager.prototype = {
         Manager.BaseManager.prototype._init.call(this, _("Sources"));
 
         // Translators: this refers to documents
-        let source = new Source({ id: 'all',
+        let source = new Source({ id: SourceStock.ALL,
                                   name: _("All"),
                                   builtin: true });
         this.addItem(source);
 
         // Translators: this refers to local documents
-        source = new Source({ id: 'local',
+        source = new Source({ id: SourceStock.LOCAL,
                               name: _("Local"),
                               builtin: true });
         this.addItem(source);
@@ -126,7 +131,7 @@ SourceManager.prototype = {
         // fallback to 'all' if we never saved any source, or if the saved
         // source disappeared in the meantime
         if (!this.setActiveItemById(activeItemId))
-            this.setActiveItemById('all');
+            this.setActiveItemById(SourceStock.ALL);
     },
 
     setActiveItem: function(item) {
