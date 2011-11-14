@@ -174,18 +174,22 @@ SearchMatch.prototype = {
     _init: function(params) {
         this.id = params.id;
         this.name = params.name;
+        this._term = '';
+    },
+
+    setFilterTerm: function(term) {
+        this._term = term;
     },
 
     getFilter: function() {
         if (this.id == SearchMatchStock.TITLE)
             return ('fn:contains ' +
                     '(fn:lower-case (tracker:coalesce(nie:title(?urn), nfo:fileName(?urn))), ' +
-                    '"%s")').format(Global.searchController.getString());
+                    '"%s")').format(this._term);
         if (this.id == SearchMatchStock.AUTHOR)
             return ('fn:contains ' +
                     '(fn:lower-case (tracker:coalesce(nco:fullname(?creator), nco:fullname(?publisher))), ' +
-                    '"%s")').format(Global.searchController.getString());
-
+                    '"%s")').format(this._term);
         return '';
     }
 };
@@ -208,6 +212,19 @@ SearchMatchManager.prototype = {
                                        name: _("Author") }));
 
         this.setActiveItemById(SearchMatchStock.ALL);
+    },
+
+    getFilter: function() {
+        let terms = Global.searchController.getTerms();
+        let filters = [];
+
+        for (let i = 0; i < terms.length; i++) {
+            this.forEachItem(function(item) {
+                item.setFilterTerm(terms[i]);
+            });
+            filters.push(Manager.BaseManager.prototype.getFilter.call(this));
+        }
+        return filters.length ? '( ' + filters.join(' && ') + ')' : '';
     }
 };
 
@@ -234,6 +251,10 @@ SearchController.prototype = {
 
     getString: function() {
         return this._string;
+    },
+
+    getTerms: function() {
+        return this._string.replace(/ +/g, ' ').split(' ');
     },
 
     setDropownState: function(state) {
