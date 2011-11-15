@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-20 22:58+0300\n"
-"PO-Revision-Date: 2011-10-20 22:57+0300\n"
+"POT-Creation-Date: 2011-11-16 02:43+0300\n"
+"PO-Revision-Date: 2011-11-16 02:43+0300\n"
 "Last-Translator: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>\n"
 "Language-Team: Belarusian <i18n-bel-gnome@googlegroups.com>\n"
 "Language: be\n"
@@ -19,7 +19,7 @@ msgstr ""
 msgid "Access, manage and share documents"
 msgstr "Праца, кіраванне і супольны доступ да дакументаў"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:48
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:54
 msgid "Documents"
 msgstr "Дакументы"
 
@@ -75,27 +75,27 @@ msgstr "Упадабаныя"
 msgid "Shared with you"
 msgstr "Супольна даступныя вам"
 
-#: ../src/documents.js:260 ../src/sources.js:100
+#: ../src/documents.js:261 ../src/sources.js:95
 msgid "Local"
 msgstr "Мясцовыя"
 
-#: ../src/documents.js:385
+#: ../src/documents.js:408
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:386
+#: ../src/documents.js:409
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:455
+#: ../src/documents.js:478
 msgid "Spreadsheet"
 msgstr "Разліковы аркуш"
 
-#: ../src/documents.js:457
+#: ../src/documents.js:480
 msgid "Presentation"
 msgstr "Прэзентацыя"
 
-#: ../src/documents.js:459
+#: ../src/documents.js:482
 msgid "Document"
 msgstr "Дакумент"
 
@@ -105,9 +105,13 @@ msgstr "Дакумент"
 msgid "Unable to load \"%s\" for preview"
 msgstr "Не ўдалося загрузіць \"%s\" для папярэдняга агляду"
 
-#: ../src/error.js:44
+#: ../src/error.js:49
 msgid "Unable to fetch the list of documents"
 msgstr "Не ўдалося сцягнуць спіс дакументаў"
+
+#: ../src/lib/gd-pdf-loader.c:207
+msgid "Unable to load the document"
+msgstr "Не ўдалося загрузіць дакумент"
 
 #: ../src/loadMore.js:70
 #, c-format
@@ -117,38 +121,79 @@ msgstr[0] "Загрузіць яшчэ %d дакумент"
 msgstr[1] "Загрузіць яшчэ %d дакументы"
 msgstr[2] "Загрузіць яшчэ %d дакументаў"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:85
+msgid "Click on items to select them"
+msgstr "Пстрыкайце ў элементы спіса для іх вылучэння"
+
+#: ../src/mainToolbar.js:87
+#, c-format
+msgid "%d selected"
+msgstr "%d вылучана"
+
+#: ../src/mainToolbar.js:231
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d з %d)"
 
-#: ../src/sidebar.js:378 ../src/sources.js:170
-msgid "Sources"
-msgstr "Крыніцы"
+#: ../src/searchbar.js:64
+msgid "Type"
+msgstr "Тып"
 
-#: ../src/sources.js:94
+#: ../src/searchbar.js:67 ../src/searchbar.js:126 ../src/sources.js:89
 msgid "All"
 msgstr "Усе"
 
-#: ../src/spinnerBox.js:47
-msgid "Loading..."
-msgstr "Загрузка..."
+#: ../src/searchbar.js:69
+msgid "PDF Documents"
+msgstr "PDF-дакументы"
+
+#: ../src/searchbar.js:72
+msgid "Presentations"
+msgstr "Прэзентацыі"
+
+#: ../src/searchbar.js:75
+msgid "Spreadsheets"
+msgstr "Разліковыя аркушы"
+
+#: ../src/searchbar.js:78
+msgid "Text Documents"
+msgstr "Тэкставыя дакументы"
+
+#: ../src/searchbar.js:123
+msgid "Match"
+msgstr "Крытэрый пошуку"
+
+#: ../src/searchbar.js:128
+msgid "Title"
+msgstr "Загаловак"
+
+#: ../src/searchbar.js:130
+msgid "Author"
+msgstr "Аўтар"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:67
+#: ../src/selections.js:180 ../src/view.js:65
 #, c-format
 msgid "Open with %s"
 msgstr "Адкрыць у %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:70
+#: ../src/selections.js:183 ../src/view.js:68
 msgid "Open"
 msgstr "Адкрыць"
 
-#: ../src/view.js:80
+#: ../src/selections.js:194 ../src/view.js:78
 msgid "Remove from favorites"
 msgstr "Выдаліць са спіса ўпадабаных"
 
-#: ../src/view.js:80
+#: ../src/selections.js:198 ../src/view.js:78
 msgid "Add to favorites"
 msgstr "Дадаць у спіс упадабаных"
+
+#: ../src/sources.js:85
+msgid "Sources"
+msgstr "Крыніцы"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "Загрузка..."
