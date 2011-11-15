@@ -95,6 +95,33 @@ SingleItemJob.prototype = {
     }
 };
 
+function DeleteItemJob(urn) {
+    this._init(urn);
+}
+
+// deletes the given resource
+DeleteItemJob.prototype = {
+    _init: function(urn) {
+        this._urn = urn;
+    },
+
+    run: function(callback) {
+        this._callback = callback;
+
+        let query = Global.queryBuilder.buildDeleteResourceQuery(this._urn);
+        Global.connectionQueue.update(query.sparql, null, Lang.bind(this,
+            function(object, res) {
+                try {
+                    object.update_finish(res);
+                } catch (e) {
+                    log(e);
+                }
+
+                this._callback();
+            }));
+    }
+};
+
 function CollectionIconWatcher(collection) {
     this._init(collection);
 }
@@ -610,6 +637,24 @@ LocalDocument.prototype = {
                     Global.errorHandler.addLoadError(this, e);
                 }
             }));
+    },
+
+    canTrash: function() {
+        return this.collection;
+    },
+
+    trash: function() {
+        if (this.collection) {
+            let job = new DeleteItemJob(this.id);
+            job.run(Lang.bind(this,
+                function() {
+                    // FIXME: this should be done automatically when tracker
+                    // will support change notifications for collections
+                    Global.documentManager.getModel().documentRemoved(this);
+                    Global.documentManager.removeItemById(this.id);
+                    Global.collectionManager.removeItemById(this.id);
+                }));
+        }
     }
 };
 
@@ -755,6 +800,10 @@ GoogleDocument.prototype = {
                              }
                          }));
             }));
+    },
+
+    canTrash: function() {
+        return false;
     }
 };
 

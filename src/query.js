@@ -255,5 +255,11 @@ QueryBuilder.prototype = {
                       'nao:identifier \"' + LOCAL_COLLECTIONS_IDENTIFIER + name + '\" }');
 
         return new Query(sparql);
+    },
+
+    buildDeleteResourceQuery: function(resource) {
+        let sparql = ('DELETE { <%s> a rdfs:Resource }').format(resource);
+
+        return new Query(sparql);
     }
 };

@@ -646,6 +646,11 @@ SelectionToolbar.prototype = {
         this._toolbarCollection.connect('clicked', Lang.bind(this, this._onToolbarCollection));
         this._toolbarCollection.show();
 
+        this._toolbarTrash = new Gtk.ToolButton({ icon_name: 'user-trash-symbolic' });
+        this._toolbarTrash.set_tooltip_text(_("Delete"));
+        this.widget.insert(this._toolbarTrash, -1);
+        this._toolbarTrash.connect('clicked', Lang.bind(this, this._onToolbarTrash));
+
         this._toolbarOpen = new Gtk.ToolButton({ icon_name: 'document-open-symbolic' });
         this.widget.insert(this._toolbarOpen, -1);
         this._toolbarOpen.connect('clicked', Lang.bind(this, this._onToolbarOpen));
@@ -699,6 +704,7 @@ SelectionToolbar.prototype = {
         let apps = [];
         let favCount = 0;
         let showFavorite = true;
+        let canTrash = true;
 
         this._insideRefresh = true;
 
@@ -713,12 +719,17 @@ SelectionToolbar.prototype = {
                 if ((doc.defaultAppName) &&
                     (apps.indexOf(doc.defaultAppName) == -1))
                     apps.push(doc.defaultAppName);
+
+                if (!doc.canTrash())
+                    canTrash = false;
             }));
 
         showFavorite &= ((favCount == 0) || (favCount == selection.length));
 
         // if we're showing the favorite icon, also show the separator
         this._separator.set_visible(showFavorite);
+
+        this._toolbarTrash.set_visible(canTrash);
 
         let openLabel = null;
         if (apps.length == 1) {
@@ -795,6 +806,16 @@ SelectionToolbar.prototype = {
             function(urn) {
                 let doc = Global.documentManager.getItemById(urn);
                 doc.setFavorite(!doc.favorite);
+            }));
+    },
+
+    _onToolbarTrash: function(widget) {
+        let selection = Global.selectionController.getSelection();
+
+        selection.forEach(Lang.bind(this,
+            function(urn) {
+                let doc = Global.documentManager.getItemById(urn);
+                doc.trash();
             }));
     },
 
