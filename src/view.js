@@ -233,6 +233,11 @@ View.prototype = {
             }
         }
 
+        // eat double/triple click events
+        let clickCount = event.get_click_count()[1];
+        if (clickCount > 1)
+            return true;
+
         let coords = [ event.get_coords()[1] , event.get_coords()[2] ];
         let path = this.getPathAtPos(coords);
 
