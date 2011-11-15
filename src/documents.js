@@ -244,7 +244,7 @@ CollectionIconWatcher.prototype = {
 
         this._docs.forEach(
             function(doc) {
-                pixbufs.push(doc.pixbuf);
+                pixbufs.push(doc.pristinePixbuf);
             });
 
         this._pixbuf = Gd.create_collection_icon(Utils.getIconSize(), pixbufs);
@@ -283,6 +283,7 @@ DocCommon.prototype = {
         this.resourceUrn = null;
         this.favorite = null;
         this.pixbuf = null;
+        this.pristinePixbuf = null;
         this.defaultAppName = null;
 
         this.mimeType = null;
@@ -524,6 +525,9 @@ DocCommon.prototype = {
         let emblemIcons = [];
         let pixbuf = this.pixbuf;
         let activeItem;
+
+        // save the pixbuf before modifications, to use in collection icons
+        this.pristinePixbuf = pixbuf;
 
         activeItem = Global.searchCategoryManager.getActiveItem();
 
