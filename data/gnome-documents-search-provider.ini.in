@@ -1,0 +1,5 @@
+[Shell Search Provider]
+_Title=Documents
+Icon=gnome-documents
+BusName=org.gnome.Documents.SearchProvider
+ObjectPath=/org/gnome/Documents/SearchProvider

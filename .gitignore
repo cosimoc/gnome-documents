@@ -16,6 +16,7 @@ config.log
 config.status
 config
 configure
+data/gnome-documents-search-provider.ini
 data/gnome-documents.desktop
 data/gnome-documents.desktop.in
 data/org.gnome.Documents.GDataMiner.service
@@ -44,7 +45,9 @@ src/Makefile.in
 src/gd-tracker-gdata-miner
 src/gnome-documents
 src/gnome-documents-debug
+src/gnome-documents-search-provider
 src/path.js
+src/org.gnome.Documents.SearchProvider.service
 stamp-h1
 xmldocs.make
 *~

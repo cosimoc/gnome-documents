@@ -19,6 +19,7 @@ INTROSPECTION_GIRS =
 gir_DATA =
 typelib_DATA =
 libexec_PROGRAMS =
+libexec_SCRIPTS =
 
 # convenience command for doing Makefile variable substitutions in non-Makefile
 # files (scripts, service files, etc.)
@@ -58,3 +59,24 @@ CLEANFILES += \
 EXTRA_DIST += \
     gnome-documents.in \
     gnome-documents-debug.in
+
+libexec_SCRIPTS += gnome-documents-search-provider
+
+gnome-documents-search-provider: gnome-documents-search-provider.in
+	$(AM_V_GEN) $(do_subst) $< > $@
+	chmod +x $@
+
+CLEANFILES += gnome-documents-search-provider
+EXTRA_DIST += gnome-documents-search-provider.in
+
+service_in_files = org.gnome.Documents.SearchProvider.service.in
+
+servicedir = $(datadir)/dbus-1/services
+service_DATA = $(service_in_files:.service.in=.service)
+
+%.service: %.service.in Makefile
+	$(AM_V_GEN) [ -d $(@D) ] || $(mkdir_p) $(@D) ; \
+	            sed -e "s|\@libexecdir\@|$(libexecdir)|" $< > $@.tmp && mv $@.tmp $@
+
+CLEANFILES = += $(service_DATA)
+EXTRA_DIST += $(service_in_files)

@@ -1,4 +1,5 @@
 [encoding: UTF-8]
+data/gnome-documents-search-provider.ini.in
 data/gnome-documents.desktop.in.in
 data/org.gnome.documents.gschema.xml.in
 src/application.js
@@ -11,6 +12,7 @@ src/mainToolbar.js
 src/mainWindow.js
 src/searchbar.js
 src/selections.js
+src/shellSearchProvider.js
 src/sources.js
 src/spinnerBox.js
 src/view.js

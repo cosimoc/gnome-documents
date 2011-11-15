@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=org.gnome.Documents.SearchProvider
+Exec=@libexecdir@/gnome-documents-search-provider
