@@ -1,7 +1,6 @@
 [encoding: UTF-8]
 data/gnome-documents.desktop.in.in
 data/org.gnome.documents.gschema.xml.in
-src/categories.js
 src/documents.js
 src/error.js
 src/lib/gd-pdf-loader.c
@@ -10,7 +9,6 @@ src/mainToolbar.js
 src/mainWindow.js
 src/searchbar.js
 src/selections.js
-src/sidebar.js
 src/sources.js
 src/spinnerBox.js
 src/view.js
