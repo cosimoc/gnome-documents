@@ -298,7 +298,9 @@ Dropdown.prototype = {
         this._sourceView = new Manager.BaseView(Global.sourceManager);
         this._typeView = new Manager.BaseView(Global.searchTypeManager);
         this._matchView = new Manager.BaseView(Global.searchMatchManager);
-        this._categoryView = new Manager.BaseView(Global.searchCategoryManager);
+        // TODO: this is out for now, but should we move it somewhere
+        // else?
+        // this._categoryView = new Manager.BaseView(Global.searchCategoryManager);
 
         this.widget = new Gtk.Frame({ shadow_type: Gtk.ShadowType.IN });
         this.actor = new GtkClutter.Actor({ contents: this.widget,
@@ -312,7 +314,7 @@ Dropdown.prototype = {
         this._grid.add(this._sourceView.widget);
         this._grid.add(this._typeView.widget);
         this._grid.add(this._matchView.widget);
-        this._grid.add(this._categoryView.widget);
+        //this._grid.add(this._categoryView.widget);
 
         this.widget.show_all();
 
