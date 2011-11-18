@@ -19,7 +19,6 @@
  *
  */
 
-const DBus = imports.dbus;
 const Lang = imports.lang;
 const Gettext = imports.gettext;
 
@@ -50,29 +49,6 @@ const TrackerController = imports.trackerController;
 const Tweener = imports.util.tweener;
 const WindowMode = imports.windowMode;
 
-const _GD_DBUS_PATH = '/org/gnome/Documents';
-
-const GdIface = {
-    name: 'org.gnome.Documents',
-
-    methods: [ { name: 'activate',
-                 inSignature: '',
-                 outSignature: '' } ]
-};
-
-function RemoteApplication() {
-    this._init();
-}
-
-RemoteApplication.prototype = {
-    _init: function() {
-        DBus.session.proxifyObject(this,
-                                   GdIface.name,
-                                   _GD_DBUS_PATH);
-    }
-}
-
-DBus.proxifyPrototype(RemoteApplication.prototype, GdIface);
 
 function Application() {
     this._init();
@@ -80,25 +56,19 @@ function Application() {
 
 Application.prototype = {
     _init: function() {
-        DBus.session.acquire_name(GdIface.name,
-                                  DBus.SINGLE_INSTANCE,
-                                  Lang.bind(this, this._onNameAcquired),
-                                  Lang.bind(this, this._onNameNotAcquired));
+        // TODO: subclass Gtk.Application once we support GObject inheritance,
+        //       see https://bugzilla.gnome.org/show_bug.cgi?id=663492
+        this.application = new Gtk.Application({
+            application_id: 'org.gnome.Documents'
+        });
+        this.application.connect('startup', Lang.bind(this, this._onStartup));
+        this.application.connect('activate', Lang.bind(this,
+            function() {
+                this._mainWindow.window.present();
+            }));
     },
 
-    _onNameAcquired: function() {
-        DBus.session.exportObject(_GD_DBUS_PATH, this);
-        this._initReal();
-    },
-
-    _onNameNotAcquired: function() {
-        let remoteApp = new RemoteApplication();
-        remoteApp.activateRemote();
-
-        this.quit();
-    },
-
-    _initReal: function() {
+    _onStartup: function() {
         Gettext.bindtextdomain('gnome-documents', Path.LOCALE_DIR);
         Gettext.textdomain('gnome-documents');
         String.prototype.format = Format.format;
@@ -119,14 +89,14 @@ Application.prototype = {
             Global.connection = Tracker.SparqlConnection.get(null);
         } catch (e) {
             log('Unable to connect to the tracker database: ' + e.toString());
-            this.quit();
+            return;
         }
 
         try {
             Global.goaClient = Goa.Client.new_sync(null);
         } catch (e) {
             log('Unable to create the GOA client: ' + e.toString());
-            this.quit();
+            return;
         }
 
         Global.connectionQueue = new TrackerController.TrackerConnectionQueue();
@@ -143,14 +113,6 @@ Application.prototype = {
         Global.modeController = new WindowMode.ModeController();
 
         this._mainWindow = new MainWindow.MainWindow();
-        this.activate();
-    },
-
-    activate: function() {
-        this._mainWindow.window.present();
-    },
-
-    quit: function() {
-        Gtk.main_quit();
+        this.application.add_window(this._mainWindow.window);
     }
 };

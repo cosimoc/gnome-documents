@@ -211,7 +211,7 @@ MainWindow.prototype = {
 
         if ((keyval == Gdk.KEY_q) &&
             ((state & Gdk.ModifierType.CONTROL_MASK) != 0)) {
-            this._quit();
+            this.window.destroy();
             return true;
         }
 
@@ -272,6 +272,6 @@ MainWindow.prototype = {
         // always save geometry before quitting
         this._saveWindowGeometry();
 
-        Global.application.quit();
+        return false;
     }
 };
