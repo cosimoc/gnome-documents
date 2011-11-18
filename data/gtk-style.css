@@ -4,6 +4,10 @@
     border-width: 0 1 1 1;
 }
 
+.documents-main-view.view {
+    background-color: #f1f2f1;
+}
+
 .documents-selection-mode.toolbar {
     background-image: -gtk-gradient(linear, left top, left bottom,
                                     from(#8e9c80),

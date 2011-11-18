@@ -112,6 +112,7 @@ View.prototype = {
 
         // create renderers
         this.createRenderers();
+        this.widget.get_style_context().add_class('documents-main-view');
 
         // setup selections view => controller
         this.connectToSelectionChanged(Lang.bind(this, this._onSelectionChanged));
