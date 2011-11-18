@@ -304,131 +304,89 @@ gd_gtk_icon_view_set_activate_on_single_click (GtkIconView *icon_view,
   }
 }
 
-/* utility to stretch a frame to the desired size */
-
-static void
-draw_frame_row (GdkPixbuf *frame_image, int target_width, int source_width, int source_v_position, int dest_v_position, GdkPixbuf *result_pixbuf, int left_offset, int height)
-{
-	int remaining_width, h_offset, slab_width;
-	
-	remaining_width = target_width;
-	h_offset = 0;
-	while (remaining_width > 0) {	
-		slab_width = remaining_width > source_width ? source_width : remaining_width;
-		gdk_pixbuf_copy_area (frame_image, left_offset, source_v_position, slab_width, height, result_pixbuf, left_offset + h_offset, dest_v_position);
-		remaining_width -= slab_width;
-		h_offset += slab_width; 
-	}
-}
-
-/* utility to draw the middle section of the frame in a loop */
-static void
-draw_frame_column (GdkPixbuf *frame_image, int target_height, int source_height, int source_h_position, int dest_h_position, GdkPixbuf *result_pixbuf, int top_offset, int width)
-{
-	int remaining_height, v_offset, slab_height;
-	
-	remaining_height = target_height;
-	v_offset = 0;
-	while (remaining_height > 0) {	
-		slab_height = remaining_height > source_height ? source_height : remaining_height;
-		gdk_pixbuf_copy_area (frame_image, source_h_position, top_offset, width, slab_height, result_pixbuf, dest_h_position, top_offset + v_offset);
-		remaining_height -= slab_height;
-		v_offset += slab_height; 
-	}
-}
-
-static GdkPixbuf *
-gd_stretch_frame_image (GdkPixbuf *frame_image, int left_offset, int top_offset, int right_offset, int bottom_offset,
-			 int dest_width, int dest_height, gboolean fill_flag)
-{
-	GdkPixbuf *result_pixbuf;
-	guchar *pixels_ptr;
-	int frame_width, frame_height;
-	int y, row_stride;
-	int target_width, target_frame_width;
-	int target_height, target_frame_height;
-	
-	frame_width  = gdk_pixbuf_get_width  (frame_image);
-	frame_height = gdk_pixbuf_get_height (frame_image );
-	
-	if (fill_flag) {
-		result_pixbuf = gdk_pixbuf_scale_simple (frame_image, dest_width, dest_height, GDK_INTERP_NEAREST);
-	} else {
-		result_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, dest_width, dest_height);
-	}
-	row_stride = gdk_pixbuf_get_rowstride (result_pixbuf);
-	pixels_ptr = gdk_pixbuf_get_pixels (result_pixbuf);
-	
-	/* clear the new pixbuf */
-	if (!fill_flag) {
-		for (y = 0; y < dest_height; y++) {
-			memset (pixels_ptr, 255, row_stride);
-			pixels_ptr += row_stride; 
-		}
-	}
-	
-	target_width  = dest_width - left_offset - right_offset;
-	target_frame_width = frame_width - left_offset - right_offset;
-	
-	target_height  = dest_height - top_offset - bottom_offset;
-	target_frame_height = frame_height - top_offset - bottom_offset;
-	
-	/* draw the left top corner  and top row */
-	gdk_pixbuf_copy_area (frame_image, 0, 0, left_offset, top_offset, result_pixbuf, 0,  0);
-	draw_frame_row (frame_image, target_width, target_frame_width, 0, 0, result_pixbuf, left_offset, top_offset);
-	
-	/* draw the right top corner and left column */
-	gdk_pixbuf_copy_area (frame_image, frame_width - right_offset, 0, right_offset, top_offset, result_pixbuf, dest_width - right_offset,  0);
-	draw_frame_column (frame_image, target_height, target_frame_height, 0, 0, result_pixbuf, top_offset, left_offset);
-
-	/* draw the bottom right corner and bottom row */
-	gdk_pixbuf_copy_area (frame_image, frame_width - right_offset, frame_height - bottom_offset, right_offset, bottom_offset, result_pixbuf, dest_width - right_offset,  dest_height - bottom_offset);
-	draw_frame_row (frame_image, target_width, target_frame_width, frame_height - bottom_offset, dest_height - bottom_offset, result_pixbuf, left_offset, bottom_offset);
-		
-	/* draw the bottom left corner and the right column */
-	gdk_pixbuf_copy_area (frame_image, 0, frame_height - bottom_offset, left_offset, bottom_offset, result_pixbuf, 0,  dest_height - bottom_offset);
-	draw_frame_column (frame_image, target_height, target_frame_height, frame_width - right_offset, dest_width - right_offset, result_pixbuf, top_offset, right_offset);
-	
-	return result_pixbuf;
-}
-
 /**
  * gd_embed_image_in_frame: 
  * @source_image:
- * @frame_image:
- * @left_offset:
- * @top_offset:
- * @right_offset:
- * @bottom_offset:
+ * @frame_image_path:
+ * @slice_width:
+ * @border_width:
  *
  * Returns: (transfer full):
  */
-/* draw an arbitrary frame around an image, with the result passed back in a newly allocated pixbuf */
 GdkPixbuf *
 gd_embed_image_in_frame (GdkPixbuf *source_image,
-                         GdkPixbuf *frame_image,
-                         int left_offset, 
-                         int top_offset, 
-                         int right_offset, 
-                         int bottom_offset)
+                         const gchar *frame_image_path,
+                         GtkBorder *slice_width,
+                         GtkBorder *border_width)
 {
-	GdkPixbuf *result_pixbuf;
-	int source_width, source_height;
-	int dest_width, dest_height;
-	
-	source_width  = gdk_pixbuf_get_width  (source_image);
-	source_height = gdk_pixbuf_get_height (source_image);
+  cairo_surface_t *surface;
+  cairo_t *cr;
+  int source_width, source_height;
+  int dest_width, dest_height;
+  gchar *css_str;
+  GtkCssProvider *provider;
+  GtkStyleContext *context;
+  GError *error = NULL;
+  GdkPixbuf *retval;
+  GtkWidgetPath *path;
+ 
+  source_width = gdk_pixbuf_get_width (source_image);
+  source_height = gdk_pixbuf_get_height (source_image);
 
-	dest_width  = source_width  + left_offset + right_offset;
-	dest_height = source_height + top_offset  + bottom_offset;
-	
-	result_pixbuf = gd_stretch_frame_image (frame_image, left_offset, top_offset, right_offset, bottom_offset, 
-                                                dest_width, dest_height, FALSE);
-		
-	/* Finally, copy the source image into the framed area */
-	gdk_pixbuf_copy_area (source_image, 0, 0, source_width, source_height, result_pixbuf, left_offset,  top_offset);
+  dest_width = source_width +  border_width->left + border_width->right;
+  dest_height = source_height + border_width->top + border_width->bottom;
 
-	return result_pixbuf;
+  css_str = g_strdup_printf (".embedded-image { border-image: url(\"%s\") %d %d %d %d / %d %d %d %d }",
+                             frame_image_path, 
+                             slice_width->top, slice_width->right, slice_width->bottom, slice_width->left,
+                             border_width->top, border_width->right, border_width->bottom, border_width->left);
+  provider = gtk_css_provider_new ();
+  gtk_css_provider_load_from_data (provider, css_str, -1, &error);
+
+  if (error != NULL) 
+    {
+      g_warning ("Unable to create the thumbnail frame image: %s", error->message);
+      g_error_free (error);
+      g_free (css_str);
+
+      return g_object_ref (source_image);
+    }
+
+  surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, dest_width, dest_height);
+  cr = cairo_create (surface);
+
+  context = gtk_style_context_new ();
+  path = gtk_widget_path_new ();
+  gtk_widget_path_append_type (path, GTK_TYPE_ICON_VIEW);
+
+  gtk_style_context_set_path (context, path);
+  gtk_style_context_add_provider (context, GTK_STYLE_PROVIDER (provider), 600);
+
+  gtk_style_context_save (context);
+  gtk_style_context_add_class (context, "embedded-image");
+
+  gtk_render_frame (context, cr,
+                    0, 0,
+                    dest_width, dest_height);
+
+  gtk_style_context_restore (context);
+
+  gtk_render_icon (context, cr,
+                   source_image,
+                   border_width->left, border_width->top);
+
+  retval = gdk_pixbuf_get_from_surface (surface,
+                                        0, 0, dest_width, dest_height);
+
+  cairo_surface_destroy (surface);
+  cairo_destroy (cr);
+
+  gtk_widget_path_unref (path);
+  g_object_unref (provider);
+  g_object_unref (context);
+  g_free (css_str);
+
+  return retval;
 }
 
 static char *

@@ -58,12 +58,10 @@ void gd_gtk_tree_view_set_activate_on_single_click (GtkTreeView *tree_view,
 void gd_gtk_icon_view_set_activate_on_single_click (GtkIconView *icon_view,
                                                     gboolean should_activate);
 
-GdkPixbuf * gd_embed_image_in_frame (GdkPixbuf *source_image,
-                                     GdkPixbuf *frame_image,
-                                     int left_offset,
-                                     int top_offset,
-                                     int right_offset,
-                                     int bottom_offset);
+GdkPixbuf *gd_embed_image_in_frame (GdkPixbuf *source_image,
+                                    const gchar *frame_image_path,
+                                    GtkBorder *slice_width,
+                                    GtkBorder *border_width);
 
 char *gd_filename_strip_extension (const char * filename_with_extension);
 

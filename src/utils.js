@@ -40,6 +40,28 @@ function getIconSize() {
     return Global.settings.get_boolean('list-view') ? _LIST_VIEW_SIZE : _ICON_VIEW_SIZE;
 }
 
+function getThumbnailFrameBorder() {
+    let slice = new Gtk.Border();
+    let border = null;
+
+    slice.top = 3;
+    slice.right = 3;
+    slice.bottom = 6;
+    slice.left = 4;
+
+    if (Global.settings.get_boolean('list-view')) {
+        border = new Gtk.Border();
+        border.top = 1;
+        border.right = 1;
+        border.bottom = 3;
+        border.left = 2;
+    } else {
+        border = slice.copy();
+    }
+
+    return [ slice, border ];
+}
+
 function iconFromRdfType(type) {
     let iconName;
 

@@ -41,8 +41,6 @@ const Searchbar = imports.searchbar;
 const TrackerUtils = imports.trackerUtils;
 const Utils = imports.utils;
 
-const _THUMBNAIL_FRAME = 3;
-
 function SingleItemJob(doc) {
     this._init(doc);
 }
@@ -563,13 +561,14 @@ DocCommon.prototype = {
             }
         }
 
-        if (this.thumbnailed)
+        if (this.thumbnailed) {
+            let [ slice, border ] = Utils.getThumbnailFrameBorder();
             this.pixbuf = Gd.embed_image_in_frame(pixbuf,
-                Global.documentManager.getPixbufFrame(),
-                _THUMBNAIL_FRAME, _THUMBNAIL_FRAME,
-                _THUMBNAIL_FRAME, _THUMBNAIL_FRAME);
-        else
+                Path.ICONS_DIR + 'thumbnail-frame.png',
+                slice, border);
+        } else {
             this.pixbuf = pixbuf;
+        }
 
         this.emit('info-updated');
     },
@@ -825,8 +824,6 @@ DocumentManager.prototype = {
 
         Global.changeMonitor.connect('changes-pending',
                                      Lang.bind(this, this._onChangesPending));
-
-        this._pixbufFrame = GdkPixbuf.Pixbuf.new_from_file(Path.ICONS_DIR + 'thumbnail-frame.png');
     },
 
     _onChangesPending: function(monitor, changes) {
@@ -870,10 +867,6 @@ DocumentManager.prototype = {
     _identifierIsGoogle: function(identifier) {
         return (identifier &&
                 (identifier.indexOf('https://docs.google.com') != -1));
-    },
-
-    getPixbufFrame: function() {
-        return this._pixbufFrame;
     },
 
     createDocumentFromCursor: function(cursor) {
