@@ -1,20 +1,21 @@
 # German translation for gnome-documents.
 # Copyright (C) 2011 Cosimo Cecchi <cosimoc@gnome.org>.
 # This file is distributed under the same license as the gnome-documents package.
-# Mario Blättermann <mariobl@freenet.de>, 2011.
+# Mario Blättermann <mario.blaettermann@gmail.com>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-30 20:14+0200\n"
-"PO-Revision-Date: 2011-09-30 20:15+0100\n"
-"Last-Translator: Mario Blättermann <mariobl@freenet.de>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"documents&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-11-16 13:29+0000\n"
+"PO-Revision-Date: 2011-11-18 14:22+0100\n"
+"Last-Translator: Mario Blättermann <mario.blaettermann@gmail.com>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Poedit-Language: German\n"
 "X-Poedit-Country: GERMANY\n"
@@ -23,7 +24,7 @@ msgstr ""
 msgid "Access, manage and share documents"
 msgstr "Auf Dokumente zugreifen, verwalten und freigeben"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:48
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:53
 msgid "Documents"
 msgstr "Dokumente"
 
@@ -67,42 +68,32 @@ msgstr "Fenstergröße"
 msgid "Window size (width and height)."
 msgstr "Fenstergröße (Breite und Höhe)"
 
-#. Translators: this refers to new and recent documents
-#: ../src/categories.js:77
-msgid "New and Recent"
-msgstr "Neu und kürzlich geöffnet"
-
-#. Translators: this refers to favorite documents
-#: ../src/categories.js:80
-msgid "Favorites"
-msgstr "Favoriten"
-
-#. Translators: this refers to shared documents
-#: ../src/categories.js:83
-msgid "Shared with you"
-msgstr "Für Sie freigegeben"
-
-#: ../src/documents.js:253 ../src/sources.js:101
+#: ../src/documents.js:619 ../src/sources.js:100
 msgid "Local"
 msgstr "Lokal"
 
-#: ../src/documents.js:372
+#. overridden
+#: ../src/documents.js:682
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:373
+#: ../src/documents.js:683
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:442
+#: ../src/documents.js:752
 msgid "Spreadsheet"
 msgstr "Tabellendokument"
 
-#: ../src/documents.js:444
+#: ../src/documents.js:754
 msgid "Presentation"
 msgstr "Präsentation"
 
-#: ../src/documents.js:446
+#: ../src/documents.js:756
+msgid "Collection"
+msgstr "Sammlung"
+
+#: ../src/documents.js:758
 msgid "Document"
 msgstr "Dokument"
 
@@ -112,9 +103,13 @@ msgstr "Dokument"
 msgid "Unable to load \"%s\" for preview"
 msgstr "»%s« kann nicht für Vorschau geladen werden"
 
-#: ../src/error.js:44
+#: ../src/error.js:49
 msgid "Unable to fetch the list of documents"
 msgstr "Liste der Dokumente kann nicht abgerufen werden"
+
+#: ../src/lib/gd-pdf-loader.c:207
+msgid "Unable to load the document"
+msgstr "Dokument konnte nicht geladen werden"
 
 #: ../src/loadMore.js:70
 #, c-format
@@ -123,41 +118,114 @@ msgid_plural "Load %d more documents"
 msgstr[0] "%d weiteres Dokument laden"
 msgstr[1] "%d weitere Dokumente laden"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:151
+msgid "Click on items to select them"
+msgstr "Klicken Sie auf Objekte, um Sie auszuwählen"
+
+#: ../src/mainToolbar.js:153
+#, c-format
+msgid "%d selected"
+msgstr "%d ausgewählt"
+
+#: ../src/mainToolbar.js:172
+msgid "Done"
+msgstr ""
+
+#: ../src/mainToolbar.js:298
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d von %d)"
 
-#: ../src/sidebar.js:131 ../src/sources.js:218
-msgid "Sources"
-msgstr "Quellen"
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "Kategorie"
 
-#: ../src/sources.js:96
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:204
+#: ../src/sources.js:94
 msgid "All"
 msgstr "Alle"
 
-#: ../src/spinnerBox.js:47
-msgid "Loading..."
-msgstr "Ladevorgang …"
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "Favoriten"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "Für Sie freigegeben"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "Typ"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr "Sammlungen"
+
+#: ../src/searchbar.js:147
+msgid "PDF Documents"
+msgstr "PDF-Dokumente"
+
+#: ../src/searchbar.js:150
+msgid "Presentations"
+msgstr "Präsentationen"
+
+#: ../src/searchbar.js:153
+msgid "Spreadsheets"
+msgstr "Tabellendokumente"
+
+#: ../src/searchbar.js:156
+msgid "Text Documents"
+msgstr "Textdokumente"
+
+#: ../src/searchbar.js:201
+msgid "Match"
+msgstr ""
+
+#: ../src/searchbar.js:206
+msgid "Title"
+msgstr "Titel"
+
+#: ../src/searchbar.js:208
+msgid "Author"
+msgstr "Autor"
+
+#: ../src/selections.js:644
+msgid "Organize"
+msgstr "Verwalten"
+
+#: ../src/selections.js:650
+msgid "Delete"
+msgstr "Löschen"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:67
+#: ../src/selections.js:737 ../src/view.js:65
 #, c-format
 msgid "Open with %s"
 msgstr "Öffnen mit »%s«"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:70
+#: ../src/selections.js:740 ../src/view.js:68
 msgid "Open"
 msgstr "Öffnen"
 
-#: ../src/view.js:80
+#: ../src/selections.js:753 ../src/view.js:78
 msgid "Remove from favorites"
 msgstr "Aus Favoriten entfernen"
 
-#: ../src/view.js:80
+#: ../src/selections.js:757 ../src/view.js:78
 msgid "Add to favorites"
 msgstr "Zu Favoriten hinzufügen"
+
+#: ../src/sources.js:90
+msgid "Sources"
+msgstr "Quellen"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "Ladevorgang …"
+
+#~ msgid "New and Recent"
+#~ msgstr "Neu und kürzlich geöffnet"
 
 #~ msgid "Private"
 #~ msgstr "Privat"
