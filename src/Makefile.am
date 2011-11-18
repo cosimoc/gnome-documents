@@ -29,7 +29,8 @@ do_subst = sed -e 's|@abs_top_srcdir[@]|$(abs_top_srcdir)|g' \
                -e 's|@libdir[@]|$(libdir)|g' \
                -e 's|@libexecdir[@]|$(libexecdir)|g' \
                -e 's|@pkglibdir[@]|$(pkglibdir)|g' \
-               -e 's|@pkgdatadir[@]|$(pkgdatadir)|g'
+               -e 's|@pkgdatadir[@]|$(pkgdatadir)|g' \
+               -e 's|@GJS_CONSOLE[@]|$(GJS_CONSOLE)|g'
 
 include $(INTROSPECTION_MAKEFILE)
 include Makefile-lib.am
