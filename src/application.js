@@ -115,41 +115,35 @@ Application.prototype = {
         Global.errorHandler = new Error.ErrorHandler();
 
         // connect to tracker
-        Tracker.SparqlConnection.get_async(null, Lang.bind(this,
-            function(object, res) {
-                try {
-                    Global.connection = Tracker.SparqlConnection.get_finish(res);
-                } catch (e) {
-                    log('Unable to connect to the tracker database: ' + e.toString());
-                    this.quit();
-                }
+        try {
+            Global.connection = Tracker.SparqlConnection.get(null);
+        } catch (e) {
+            log('Unable to connect to the tracker database: ' + e.toString());
+            this.quit();
+        }
 
-                Goa.Client.new(null, Lang.bind(this,
-                    function(object, res) {
-                        try {
-                            Global.goaClient = Goa.Client.new_finish(res);
-                        } catch (e) {
-                            log('Unable to create the GOA client: ' + e.toString());
-                            this.quit();
-                        }
+        try {
+            Global.goaClient = Goa.Client.new_sync(null);
+        } catch (e) {
+            log('Unable to create the GOA client: ' + e.toString());
+            this.quit();
+        }
 
-                        Global.connectionQueue = new TrackerController.TrackerConnectionQueue();
-                        Global.sourceManager = new Sources.SourceManager();
-                        Global.searchCategoryManager = new Searchbar.SearchCategoryManager();
-                        Global.searchMatchManager = new Searchbar.SearchMatchManager();
-                        Global.searchTypeManager = new Searchbar.SearchTypeManager();
-                        Global.queryBuilder = new Query.QueryBuilder();
-                        Global.changeMonitor = new ChangeMonitor.TrackerChangeMonitor();
-                        Global.collectionManager = new Manager.BaseManager();
-                        Global.documentManager = new Documents.DocumentManager();
-                        Global.trackerController = new TrackerController.TrackerController();
-                        Global.selectionController = new Selections.SelectionController();
-                        Global.modeController = new WindowMode.ModeController();
+        Global.connectionQueue = new TrackerController.TrackerConnectionQueue();
+        Global.sourceManager = new Sources.SourceManager();
+        Global.searchCategoryManager = new Searchbar.SearchCategoryManager();
+        Global.searchMatchManager = new Searchbar.SearchMatchManager();
+        Global.searchTypeManager = new Searchbar.SearchTypeManager();
+        Global.queryBuilder = new Query.QueryBuilder();
+        Global.changeMonitor = new ChangeMonitor.TrackerChangeMonitor();
+        Global.collectionManager = new Manager.BaseManager();
+        Global.documentManager = new Documents.DocumentManager();
+        Global.trackerController = new TrackerController.TrackerController();
+        Global.selectionController = new Selections.SelectionController();
+        Global.modeController = new WindowMode.ModeController();
 
-                        this._mainWindow = new MainWindow.MainWindow();
-                        this.activate();
-                    }));
-            }));
+        this._mainWindow = new MainWindow.MainWindow();
+        this.activate();
     },
 
     activate: function() {
