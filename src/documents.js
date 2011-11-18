@@ -32,12 +32,12 @@ const _ = imports.gettext.gettext;
 const Lang = imports.lang;
 const Signals = imports.signals;
 
-const Categories = imports.categories;
 const ChangeMonitor = imports.changeMonitor;
 const Global = imports.global;
 const Manager = imports.manager;
 const Path = imports.path;
 const Query = imports.query;
+const Searchbar = imports.searchbar;
 const TrackerUtils = imports.trackerUtils;
 const Utils = imports.utils;
 
@@ -533,11 +533,11 @@ DocCommon.prototype = {
 
         if (this.favorite &&
             (!activeItem ||
-             (activeItem.id != Categories.StockCategories.FAVORITES)))
+             (activeItem.id != Searchbar.SearchCategoryStock.FAVORITES)))
             emblemIcons.push(this._createSymbolicEmblem('emblem-favorite'));
         if (this.shared &&
             (!activeItem ||
-             (activeItem.id != Categories.StockCategories.SHARED)))
+             (activeItem.id != Searchbar.SearchCategoryStock.SHARED)))
             emblemIcons.push(this._createSymbolicEmblem('emblem-shared'));
 
         if (emblemIcons.length > 0) {
