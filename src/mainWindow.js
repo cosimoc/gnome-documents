@@ -38,7 +38,6 @@ const WindowMode = imports.windowMode;
 const _ = imports.gettext.gettext;
 
 const _CONFIGURE_ID_TIMEOUT = 100; // msecs
-const _OSD_TOOLBAR_SPACING = 60;
 
 function MainWindow() {
     this._init();
@@ -125,21 +124,32 @@ MainWindow.prototype = {
 
         // create the OSD toolbar for selected items, it's hidden by default
         this._selectionToolbar = new Selections.SelectionToolbar();
+        let widthConstraint =
+            new Clutter.BindConstraint({ source: this._embed.actor,
+                                         coordinate: Clutter.BindCoordinate.WIDTH,
+                                         offset: - 300 });
+        this._selectionToolbar.actor.add_constraint(widthConstraint);
+        this._selectionToolbar.actor.connect('notify::width', Lang.bind(this,
+            function() {
+                let width = this._embed.actor.width;
+                let offset = 300;
+
+                if (width > 1000)
+                    offset += (width - 1000);
+                else if (width < 600)
+                    offset -= (600 - width);
+
+                widthConstraint.offset = - offset;
+            }));
+
         this._selectionToolbar.actor.add_constraint(
             new Clutter.AlignConstraint({ align_axis: Clutter.AlignAxis.X_AXIS,
                                           source: this._embed.actor,
                                           factor: 0.50 }));
-        let yConstraint =
-            new Clutter.BindConstraint({ source: this._embed.actor,
-                                         coordinate: Clutter.BindCoordinate.Y,
-                                         offset: this._embed.actor.height - _OSD_TOOLBAR_SPACING });
-        this._selectionToolbar.actor.add_constraint(yConstraint);
-
-        // refresh the constraint offset when the height of the embed actor changes
-        this._embed.actor.connect("notify::height", Lang.bind(this,
-            function() {
-                yConstraint.set_offset(this._embed.actor.height - _OSD_TOOLBAR_SPACING);
-            }));
+        this._selectionToolbar.actor.add_constraint(
+            new Clutter.AlignConstraint({ align_axis: Clutter.AlignAxis.Y_AXIS,
+                                          source: this._embed.actor,
+                                          factor: 0.95 }));
 
         Global.stage.add_actor(this._selectionToolbar.actor);
     },

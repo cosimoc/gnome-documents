@@ -632,27 +632,43 @@ SelectionToolbar.prototype = {
                                             opacity: 0 });
         let actorWidget = this.actor.get_widget();
         actorWidget.get_style_context().add_class('osd');
+        actorWidget.reset_style();
 
-        this._toolbarFavorite = new Gtk.ToggleToolButton({ icon_name: 'emblem-favorite-symbolic' });
-        this.widget.insert(this._toolbarFavorite, -1);
+        this._leftBox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL });
+        this._leftGroup = new Gtk.ToolItem({ child: this._leftBox });
+        this.widget.insert(this._leftGroup, -1);
+        this._leftGroup.show_all();
+
+        this._toolbarFavorite = new Gtk.ToggleButton({ child: new Gtk.Image ({ icon_name: 'emblem-favorite-symbolic',
+                                                                               pixel_size: 32 })});
+        this._leftBox.add(this._toolbarFavorite);
         this._toolbarFavorite.connect('clicked', Lang.bind(this, this._onToolbarFavorite));
 
-        this._separator = new Gtk.SeparatorToolItem();
+        this._separator = new Gtk.SeparatorToolItem({ draw: false });
+        this._separator.set_expand(true);
         this.widget.insert(this._separator, -1);
 
-        this._toolbarCollection = new Gtk.ToolButton({ icon_name: 'list-add-symbolic' });
-        this._toolbarCollection.set_tooltip_text(_("Organize"));
-        this.widget.insert(this._toolbarCollection, -1);
-        this._toolbarCollection.connect('clicked', Lang.bind(this, this._onToolbarCollection));
-        this._toolbarCollection.show();
+        this._rightBox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL });
+        this._rightGroup = new Gtk.ToolItem({ child: this._rightBox });
+        this.widget.insert(this._rightGroup, -1);
+        this._rightGroup.show_all();
 
-        this._toolbarTrash = new Gtk.ToolButton({ icon_name: 'user-trash-symbolic' });
+        this._toolbarCollection = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'list-add-symbolic',
+                                                                           pixel_size: 32 })});
+        this._toolbarCollection.set_tooltip_text(_("Organize"));
+        this._rightBox.add(this._toolbarCollection);
+        this._toolbarCollection.connect('clicked', Lang.bind(this, this._onToolbarCollection));
+        this._toolbarCollection.show_all();
+
+        this._toolbarTrash = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'user-trash-symbolic',
+                                                                      pixel_size: 32 })});
         this._toolbarTrash.set_tooltip_text(_("Delete"));
-        this.widget.insert(this._toolbarTrash, -1);
+        this._rightBox.add(this._toolbarTrash);
         this._toolbarTrash.connect('clicked', Lang.bind(this, this._onToolbarTrash));
 
-        this._toolbarOpen = new Gtk.ToolButton({ icon_name: 'document-open-symbolic' });
-        this.widget.insert(this._toolbarOpen, -1);
+        this._toolbarOpen = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'document-open-symbolic',
+                                                                     pixel_size: 32 })});
+        this._rightBox.add(this._toolbarOpen);
         this._toolbarOpen.connect('clicked', Lang.bind(this, this._onToolbarOpen));
 
         this.widget.show();
@@ -729,7 +745,10 @@ SelectionToolbar.prototype = {
         // if we're showing the favorite icon, also show the separator
         this._separator.set_visible(showFavorite);
 
-        this._toolbarTrash.set_visible(canTrash);
+        if (canTrash)
+            this._toolbarTrash.show_all();
+        else
+            this._toolbarTrash.hide();
 
         let openLabel = null;
         if (apps.length == 1) {
@@ -742,7 +761,7 @@ SelectionToolbar.prototype = {
 
         if (apps.length > 0) {
             this._toolbarOpen.set_tooltip_text(openLabel);
-            this._toolbarOpen.show();
+            this._toolbarOpen.show_all();
         }
 
         if (showFavorite) {
@@ -761,7 +780,7 @@ SelectionToolbar.prototype = {
 
             this._toolbarFavorite.reset_style();
             this._toolbarFavorite.set_tooltip_text(favoriteLabel);
-            this._toolbarFavorite.show();
+            this._toolbarFavorite.show_all();
         } else {
             this._toolbarFavorite.hide();
         }

@@ -46,21 +46,54 @@
 }
 
 .osd .toolbar {
-    padding: 6 6;
+    padding: 16;
     border-style: none;
     border-radius: 5;
     border-width: 0;
 
-    background-image: none;
-    background-color: alpha(@theme_tooltip_bg_color, 0.90);
-    color: @theme_tooltip_fg_color;
+    background-image: -gtk-gradient(linear, left top, left bottom,
+                                    from(alpha(#242424, 0.80)),
+                                    color-stop(0.63, alpha(#101010, 0.80)),
+                                    to(alpha(#262626, 0.80)));
+    color: #bebebe;
 
-    text-shadow: 1 1 black;
-    icon-shadow: 1 1 black;
+    -GtkToolbar-button-relief: normal;
 }
 
-.osd .toolbar .favorite {
-    color: shade(@theme_selected_bg_color, 1.20);
+.osd .toolbar .button {
+    padding: 4;
+
+    background-image: -gtk-gradient(linear, left top, left bottom,
+                                    from(alpha(#ffffff, 0.16)),
+                                    color-stop(0.68, alpha(#525252, 0.05)),
+                                    to(alpha(#ffffff, 0.12)));
+    border-width: 1 0;
+    border-style: solid;
+    border-image: none;
+    border-color: alpha(#ffffff, 0.50);
+    border-radius: 0;
+
+    text-shadow: none;
+    icon-shadow: none;
+    box-shadow: -1 0 inset #9f9f9f;
+}
+
+.osd .toolbar .button:nth-child(first) {
+    border-radius: 4 0 0 4;
+    border-left-width: 1;
+    box-shadow: -1 0 inset #9f9f9f;
+}
+
+.osd .toolbar .button:nth-child(last) {
+    box-shadow: none;
+    border-radius: 0 4 4 0;
+    border-right-width: 1;
+}
+
+.osd .toolbar .button:only-child {
+    border-width: 1;
+    border-radius: 4;
+    border-style: solid;
 }
 
 .osd .toolbar .separator {
@@ -69,34 +102,24 @@
 
 .osd .toolbar .button:hover {
     background-image: -gtk-gradient(linear, left top, left bottom,
-                                    from(alpha(@theme_tooltip_fg_color, 0.00)),
-                                    color-stop(0.50, alpha(@theme_tooltip_fg_color, 0.15)),
-                                    to(alpha(@theme_tooltip_fg_color, 0.00)));
-
-    border-image: none;
-    border-style: none;
-    border-radius: 2;
-    border-width: 0;
+                                    from(alpha(#ffffff, 0.28)),
+                                    color-stop(0.68, alpha(#525252, 0.14)),
+                                    to(alpha(#ffffff, 0.14)));
 }
 
-.osd .toolbar .button:active {
-    background-image: none;
-    background-color: alpha(@theme_tooltip_fg_color, 0.15);
-
-    border-image: none;
-    border-style: none;
-    border-radius: 2;
-    border-width: 0;    
+.osd .toolbar .button *:hover {
+    color: shade(#bebebe, 1.20);
 }
 
+.osd .toolbar .button:active,
 .osd .toolbar .button:active:hover {
     background-image: -gtk-gradient(linear, left top, left bottom,
-                                    from(alpha(@theme_tooltip_fg_color, 0.15)),
-                                    color-stop(0.50, alpha(@theme_tooltip_fg_color, 0.30)),
-                                    to(alpha(@theme_tooltip_fg_color, 0.15)));
+                                    from(alpha(#525252, 0.18)),
+                                    color-stop(0.68, alpha(#ffffff, 0.23)),
+                                    to(alpha(#525252, 0.17)));
+}
 
-    border-style: none;
-    border-image: none;
-    border-radius: 2;
-    border-width: 0;    
+.osd .toolbar .button.favorite,
+.osd .toolbar .button.favorite *:hover {
+    color: shade(@theme_selected_bg_color, 1.20);
 }
