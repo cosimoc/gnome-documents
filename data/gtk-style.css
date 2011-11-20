@@ -4,6 +4,30 @@
     border-width: 0 1 1 1;
 }
 
+.documents-selection-mode.toolbar {
+    background-image: -gtk-gradient(linear, left top, left bottom,
+                                    from(#8e9c80),
+                                    to(#4f6838));
+    color: alpha(#ffffff, 0.32);
+    border-width: 1 0 0 0;
+    border-color: #3e7b05;
+    border-style: solid;
+}
+
+.documents-selection-mode.toolbar .button {
+    background-image: -gtk-gradient(linear, left top, left bottom,
+                                    from(#7fc141),
+                                    color-stop(0.83, #47850d),
+                                    to(#4e9a06));
+    color: #ffffff;
+    text-shadow: none;
+    icon-shadow: none;
+    border-color: #3e7b05;
+    border-image: none;
+    border-style: solid;
+    border-width: 1;
+}
+
 .documents-icon-bg {
     background-color: #3465a4;
     border-radius: 4;

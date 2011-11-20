@@ -108,6 +108,12 @@ MainToolbar.prototype = {
         child = this._rightGroup.get_child();
         if (child)
             child.destroy();
+
+        let context = this.widget.get_style_context();
+        if (context.has_class('documents-selection-mode')) {
+            context.remove_class('documents-selection-mode');
+            this.widget.reset_style();
+        }
     },
 
     _buildViewSelector: function() {
@@ -156,6 +162,9 @@ MainToolbar.prototype = {
     },
 
     _populateForSelectionMode: function() {
+        this.widget.get_style_context().add_class('documents-selection-mode');
+        this.widget.reset_style();
+
         // centered label
         this._whereLabel = new Gtk.Label({ no_show_all: true });
         this._selectionLabel = new Gtk.Label();
