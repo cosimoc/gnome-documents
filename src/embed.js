@@ -77,7 +77,8 @@ ViewEmbed.prototype  = {
         this._layout.set_fill(this._embedActor, true, true);
         this.actor.add_actor(this._embedActor);
 
-        this._notebook = new Gtk.Notebook({ show_tabs: false });
+        this._notebook = new Gtk.Notebook({ show_tabs: false,
+                                            show_border: false });
         this._notebook.show();
         this._notebookActor = new GtkClutter.Actor({ contents: this._notebook });
         this._embedLayout.add(this._notebookActor, Clutter.BinAlignment.FILL, Clutter.BinAlignment.FILL);
