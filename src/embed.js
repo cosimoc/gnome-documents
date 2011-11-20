@@ -309,6 +309,7 @@ ViewEmbed.prototype  = {
                                                              shadow_type: Gtk.ShadowType.IN });
             this._scrolledWinView.get_style_context().set_junction_sides(Gtk.JunctionSides.BOTTOM);
             grid.add(this._scrolledWinView);
+            this._scrolledWinView.get_style_context().add_class('documents-scrolledwin');
 
             this._loadMore = new LoadMore.LoadMoreButton();
             grid.add(this._loadMore.widget);
@@ -403,6 +404,7 @@ ViewEmbed.prototype  = {
             this._scrolledWinPreview = new Gtk.ScrolledWindow({ hexpand: true,
                                                                 vexpand: true,
                                                                 shadow_type: Gtk.ShadowType.IN });
+            this._scrolledWinPreview.get_style_context().add_class('documents-scrolledwin');
             this._scrolledWinPreview.show();
             this._previewPage = this._notebook.append_page(this._scrolledWinPreview, null);
         } else {

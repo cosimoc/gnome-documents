@@ -4,6 +4,11 @@
     border-width: 0 1 1 1;
 }
 
+.documents-scrolledwin {
+    border-width: 1 0;
+    border-radius: 0;
+}
+
 .documents-main-view.view {
     background-color: #f1f2f1;
 }
