@@ -1,3 +1,26 @@
+0.3.2 - "Steady Diet of Nothing"
+================================
+
+- Initial support for Google Docs collections
+- Initial support for user-defined collections
+- Major UI revamp:
+  * removed the sidebar
+  * moved the search entry beneath the top bar in a hiding container
+  * use single-click activation mode in the overview
+  * first implementation of a "Selection" mode
+  * animate state changes
+- Improve query and loading speed
+- Field selection support for search filtering (author, title)
+- Fix loading of cached documents
+- Many, many minor improvements and fixes
+
+0.2.1 - "Paper Cut"
+===================
+
+- Quote the file path before passing it out to unoconv
+- Remember window state and size across app restarts
+- Fix some UI flickering and useless refreshs
+
 0.2.0 - "Dropping Out"
 ======================
 
