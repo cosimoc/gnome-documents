@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-13 18:22+0100\n"
-"PO-Revision-Date: 2011-11-13 18:22+0100\n"
+"POT-Creation-Date: 2011-11-21 01:03+0100\n"
+"PO-Revision-Date: 2011-11-21 01:04+0100\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
@@ -23,7 +23,7 @@ msgstr ""
 msgid "Access, manage and share documents"
 msgstr "Acceder, xestionar e compartir documentos"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:54
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:53
 msgid "Documents"
 msgstr "Documentos"
 
@@ -67,39 +67,32 @@ msgstr "Tamaño da xanela"
 msgid "Window size (width and height)."
 msgstr "Tamaño da xanela (ancho e alto)."
 
-#: ../src/categories.js:81
-msgid "New and Recent"
-msgstr "Novos e recentes"
-
-#: ../src/categories.js:87
-msgid "Favorites"
-msgstr "Marcadores"
-
-#: ../src/categories.js:92
-msgid "Shared with you"
-msgstr "Compartidos con vostede"
-
-#: ../src/documents.js:261 ../src/sources.js:95
+#: ../src/documents.js:619 ../src/sources.js:100
 msgid "Local"
 msgstr "Locais"
 
-#: ../src/documents.js:408
+#. overridden
+#: ../src/documents.js:682
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:409
+#: ../src/documents.js:683
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:478
+#: ../src/documents.js:752
 msgid "Spreadsheet"
 msgstr "Folla de cálculo"
 
-#: ../src/documents.js:480
+#: ../src/documents.js:754
 msgid "Presentation"
 msgstr "Presentación"
 
-#: ../src/documents.js:482
+#: ../src/documents.js:756
+msgid "Collection"
+msgstr "Colección"
+
+#: ../src/documents.js:758
 msgid "Document"
 msgstr "Documento"
 
@@ -124,82 +117,114 @@ msgid_plural "Load %d more documents"
 msgstr[0] "Cargar %d documento máis"
 msgstr[1] "Cargar %d documentos máis"
 
-#: ../src/mainToolbar.js:85
+#: ../src/mainToolbar.js:151
 msgid "Click on items to select them"
 msgstr "Prema nos elementos para seleccionalos"
 
-#: ../src/mainToolbar.js:87
+#: ../src/mainToolbar.js:153
 #, c-format
 msgid "%d selected"
 msgstr "%d seleccionados"
 
-#: ../src/mainToolbar.js:231
+#: ../src/mainToolbar.js:172
+msgid "Done"
+msgstr "Feito"
+
+#: ../src/mainToolbar.js:298
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d de %d)"
 
-#: ../src/searchbar.js:64
-msgid "Type"
-msgstr "Tipo"
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "Categoría"
 
-#: ../src/searchbar.js:67 ../src/searchbar.js:126 ../src/sources.js:89
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:204
+#: ../src/sources.js:94
 msgid "All"
 msgstr "Todos"
 
-#: ../src/searchbar.js:69
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "Marcadores"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "Compartidos con vostede"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "Tipo"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr "Coleccións"
+
+#: ../src/searchbar.js:147
 msgid "PDF Documents"
 msgstr "Documentos PDF"
 
-#: ../src/searchbar.js:72
+#: ../src/searchbar.js:150
 msgid "Presentations"
 msgstr "Presentacións"
 
-#: ../src/searchbar.js:75
+#: ../src/searchbar.js:153
 msgid "Spreadsheets"
 msgstr "Follas de cálculo"
 
-#: ../src/searchbar.js:78
+#: ../src/searchbar.js:156
 msgid "Text Documents"
 msgstr "Documentos de texto"
 
-#: ../src/searchbar.js:123
+#: ../src/searchbar.js:201
 msgid "Match"
 msgstr "Coincidir"
 
-#: ../src/searchbar.js:128
+#: ../src/searchbar.js:206
 msgid "Title"
 msgstr "Título"
 
-#: ../src/searchbar.js:130
+#: ../src/searchbar.js:208
 msgid "Author"
 msgstr "Autor"
 
+#: ../src/selections.js:644
+msgid "Organize"
+msgstr "Organizar"
+
+#: ../src/selections.js:650
+msgid "Delete"
+msgstr "Eliminar"
+
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:180 ../src/view.js:65
+#: ../src/selections.js:737 ../src/view.js:65
 #, c-format
 msgid "Open with %s"
 msgstr "Abrir con %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:183 ../src/view.js:68
+#: ../src/selections.js:740 ../src/view.js:68
 msgid "Open"
 msgstr "Abrir"
 
-#: ../src/selections.js:194 ../src/view.js:78
+#: ../src/selections.js:753 ../src/view.js:78
 msgid "Remove from favorites"
 msgstr "Quitar dos marcadores"
 
-#: ../src/selections.js:198 ../src/view.js:78
+#: ../src/selections.js:757 ../src/view.js:78
 msgid "Add to favorites"
 msgstr "Engadir aos marcadores"
 
-#: ../src/sources.js:85
+#: ../src/sources.js:90
 msgid "Sources"
 msgstr "Fontes"
 
 #: ../src/spinnerBox.js:58
 msgid "Loading..."
 msgstr "Cargando…"
+
+#~ msgid "New and Recent"
+#~ msgstr "Novos e recentes"
 
 #~ msgid "Private"
 #~ msgstr "Privado"
