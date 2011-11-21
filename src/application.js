@@ -108,12 +108,6 @@ Application.prototype = {
         EvDoc.init();
         Tweener.init();
 
-        let provider = new Gtk.CssProvider();
-        provider.load_from_path(Path.STYLE_DIR + "gtk-style.css");
-        Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(),
-                                                 provider,
-                                                 600);
-
         Global.application = this;
         Global.settings = new Gio.Settings({ schema: 'org.gnome.documents' });
         Global.offsetController = new OffsetController.OffsetController();

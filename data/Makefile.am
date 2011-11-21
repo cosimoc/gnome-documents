@@ -26,11 +26,6 @@ dist_icons_DATA = \
 @INTLTOOL_XML_NOMERGE_RULE@
 @GSETTINGS_RULES@
 
-styledir = $(pkgdatadir)/style
-
-dist_style_DATA = \
-    gtk-style.css
-
 EXTRA_DIST= \
     gnome-documents.desktop \
     $(service_in_files) \
