@@ -40,8 +40,8 @@ LoadMoreButton.prototype = {
             this._controller.connect('item-count-changed',
                                      Lang.bind(this, this._onItemCountChanged));
 
-        this.widget = new Gtk.Button({ no_show_all: true,
-                                       name: 'ViewLoadMore' });
+        this.widget = new Gtk.Button({ no_show_all: true });
+        this.widget.get_style_context().add_class('documents-load-more');
         this.widget.connect('clicked', Lang.bind(this,
             function() {
                 this._controller.increaseOffset();

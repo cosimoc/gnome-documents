@@ -306,7 +306,7 @@ Dropdown.prototype = {
         this.actor = new GtkClutter.Actor({ contents: this.widget,
                                             opacity: 0 });
         let actorWidget = this.actor.get_widget();
-        actorWidget.get_style_context().add_class('dropdown');
+        actorWidget.get_style_context().add_class('documents-dropdown');
 
         this._grid = new Gtk.Grid({ orientation: Gtk.Orientation.HORIZONTAL });
         this.widget.add(this._grid);

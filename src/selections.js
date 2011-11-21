@@ -631,7 +631,7 @@ SelectionToolbar.prototype = {
                                             show_on_set_parent: false,
                                             opacity: 0 });
         let actorWidget = this.actor.get_widget();
-        actorWidget.get_style_context().add_class('osd');
+        actorWidget.get_style_context().add_class('documents-osd');
         actorWidget.reset_style();
 
         this._leftBox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL });
