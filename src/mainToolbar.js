@@ -54,14 +54,14 @@ MainToolbar.prototype = {
         this.widget.get_style_context().add_class(Gtk.STYLE_CLASS_MENUBAR);
         this.widget.show();
 
-        this._leftGroup = new Gtk.ToolItem();
+        this._leftGroup = new Gtk.ToolItem({ margin_right: 12 });
         this.widget.insert(this._leftGroup, -1);
 
         this._centerGroup = new Gtk.ToolItem();
         this._centerGroup.set_expand(true);
         this.widget.insert(this._centerGroup, -1);
 
-        this._rightGroup = new Gtk.ToolItem();
+        this._rightGroup = new Gtk.ToolItem({ margin_left: 12 });
         this.widget.insert(this._rightGroup, -1);
 
         this._sizeGroup = new Gtk.SizeGroup();
