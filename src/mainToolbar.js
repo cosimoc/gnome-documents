@@ -23,6 +23,7 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 const GtkClutter = imports.gi.GtkClutter;
+const Pango = imports.gi.Pango;
 
 const _ = imports.gettext.gettext;
 
@@ -279,7 +280,7 @@ MainToolbar.prototype = {
                                   valign: Gtk.Align.CENTER });
         this._centerGroup.add(grid);
 
-        this._titleLabel = new Gtk.Label();
+        this._titleLabel = new Gtk.Label({ ellipsize: Pango.EllipsizeMode.END });
         grid.add(this._titleLabel);
 
         this._pageLabel = new Gtk.Label({ margin_left: 12 });
