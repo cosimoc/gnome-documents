@@ -42,10 +42,11 @@ MainToolbar.prototype = {
     _init: function() {
         this._model = null;
         this._overviewBack = null;
-        this._whereLabel = null;
+        this._selectionWhereLabel = null;
         this._selectionLabel = null;
         this._pageLabel = null;
         this._titleLabel = null;
+        this._whereLabel = null;
 
         this._collectionId = 0;
         this._selectionChangedId = 0;
@@ -84,6 +85,7 @@ MainToolbar.prototype = {
         this._model = null;
         this._whereLabel = null;
         this._selectionLabel = null;
+        this._selectionWhereLabel = null;
         this._pageLabel = null;
         this._titleLabel = null;
 
@@ -147,17 +149,41 @@ MainToolbar.prototype = {
         let length = Global.selectionController.getSelection().length;
         let collection = Global.collectionManager.getActiveItem();
 
+        // if we are inside a collection, the selected label is dim and needs to be
+        // spaced from the collection label
         if (collection) {
-            this._whereLabel.show();
-            this._whereLabel.set_markup ('<b>' + collection.name + '</b>');
+            this._selectionWhereLabel.show();
+            this._selectionWhereLabel.set_markup ('<b>' + collection.name + '</b>');
+
+            this._selectionLabel.margin_left = 12;
+        } else {
+            this._selectionWhereLabel.hide();
+            this._selectionLabel.margin_left = 0;
         }
 
-        let markup;
+        let selectionLabelCtx = this._selectionLabel.get_style_context();
+
+        if (length == 0 || collection) {
+            selectionLabelCtx.add_class('dim-label');
+            this._selectionLabel.reset_style();
+        } else {
+            if (selectionLabelCtx.has_class('dim-label')) {
+                selectionLabelCtx.remove_class('dim-label');
+                this._selectionLabel.reset_style();
+            }
+        }
+
+        let markup = '';
 
         if (length == 0)
-            markup = ('<i>' + _("Click on items to select them") + '</i>');
+            markup = _("Click on items to select them");
         else
-            markup = ('<b>' + _("%d selected").format(length) + '</b>');
+            markup = (_("%d selected").format(length));
+
+        if (collection)
+            markup = '(' + markup + ')';
+        else
+            markup = '<b>' + markup + '</b>';
 
         this._selectionLabel.set_markup(markup);
     },
@@ -167,13 +193,13 @@ MainToolbar.prototype = {
         this.widget.reset_style();
 
         // centered label
-        this._whereLabel = new Gtk.Label({ no_show_all: true });
+        this._selectionWhereLabel = new Gtk.Label({ no_show_all: true });
         this._selectionLabel = new Gtk.Label();
 
-        let grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,
+        let grid = new Gtk.Grid({ orientation: Gtk.Orientation.HORIZONTAL,
                                   valign: Gtk.Align.CENTER,
                                   halign: Gtk.Align.CENTER });
-        grid.add(this._whereLabel);
+        grid.add(this._selectionWhereLabel);
         grid.add(this._selectionLabel);
         this._centerGroup.add(grid);
 
