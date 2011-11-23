@@ -41,17 +41,10 @@ ListView.prototype = {
                                          vexpand: true,
                                          headers_visible: false });
 
-        this.widget.connect('row-activated',
-                            Lang.bind(this, this._onItemActivated));
-
         this.widget.show();
 
         // chain up to the parent
         View.View.prototype._init.call(this);
-    },
-
-    _onItemActivated: function(view, path, column) {
-        this.activateItem(path);
     },
 
     connectToSelectionChanged: function(callback) {
@@ -76,10 +69,6 @@ ListView.prototype = {
 
     setSelectionMode: function(mode) {
         this.getSelectionObject().set_mode(mode);
-    },
-
-    setSingleClickMode: function(mode) {
-        Gd.gtk_tree_view_set_activate_on_single_click(this.widget, mode);
     },
 
     createRenderers: function() {

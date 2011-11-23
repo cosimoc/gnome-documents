@@ -19,6 +19,7 @@
  *
  */
 
+const Gdk = imports.gi.Gdk;
 const Gtk = imports.gi.Gtk;
 const _ = imports.gettext.gettext;
 
@@ -127,6 +128,8 @@ View.prototype = {
             Global.trackerController.connect('query-status-changed',
                                              Lang.bind(this, this._onQueryStatusChanged));
 
+        this.widget.connect('button-release-event',
+                            Lang.bind(this, this._onButtonReleaseEvent));
         this.widget.connect('button-press-event',
                             Lang.bind(this, this._onButtonPressEvent));
         this.widget.connect('destroy', Lang.bind(this,
@@ -205,13 +208,10 @@ View.prototype = {
 
         // setup the GtkSelectionMode of the view according to whether or not
         // the view is in "selection mode"
-        if (selectionMode) {
-            this.setSingleClickMode(false);
+        if (selectionMode)
             this.setSelectionMode(Gtk.SelectionMode.MULTIPLE);
-        } else {
-            this.setSingleClickMode(true);
+        else
             this.setSelectionMode(Gtk.SelectionMode.NONE);
-        }
     },
 
     _onSelectionChanged: function() {
@@ -221,37 +221,59 @@ View.prototype = {
         Global.selectionController.setSelection(selectedURNs);
     },
 
-    _onButtonPressEvent: function(widget, event) {
+    _onButtonReleaseEvent: function(widget, event) {
         let button = event.get_button()[1];
-        let enteredMode = false;
+        let modifier = event.get_state()[1];
+        let coords = [ event.get_coords()[1] , event.get_coords()[2] ];
 
-        if (!Global.selectionController.getSelectionMode()) {
-            if (button == 3) {
-                Global.selectionController.setSelectionMode(true);
-                enteredMode = true;
-            } else {
-                return false;
-            }
-        }
+        let selectionMode = Global.selectionController.getSelectionMode();
+        let enteredMode = false;
 
         // eat double/triple click events
         let clickCount = event.get_click_count()[1];
         if (clickCount > 1)
             return true;
 
-        let coords = [ event.get_coords()[1] , event.get_coords()[2] ];
+        // don't eat events if we didn't click any path
         let path = this.getPathAtPos(coords);
+        if (!path)
+            return false;
 
-        if (path) {
-            let selectionObj = this.getSelectionObject();
-            let isSelected = selectionObj.path_is_selected(path);
-
-            if (isSelected && !enteredMode)
-                selectionObj.unselect_path(path);
-            else if (!isSelected)
-                selectionObj.select_path(path);
+        if (!selectionMode) {
+            if ((button == 3) ||
+                ((button == 1) && (modifier & Gdk.ModifierType.CONTROL_MASK))) {
+                Global.selectionController.setSelectionMode(true);
+                selectionMode = true;
+                enteredMode = true;
+            }
         }
 
+        if (selectionMode)
+            return this._selectionModeReleaseEvent(event, enteredMode, path);
+        else
+            return this._viewModeReleaseEvent(event, path);
+    },
+
+    _selectionModeReleaseEvent: function(event, enteredMode, path) {
+        let selectionObj = this.getSelectionObject();
+        let isSelected = selectionObj.path_is_selected(path);
+
+        if (isSelected && !enteredMode)
+            selectionObj.unselect_path(path);
+        else if (!isSelected)
+            selectionObj.select_path(path);
+
+        return true;
+    },
+
+    _viewModeReleaseEvent: function(event, path) {
+        this.activateItem(path);
+        return true;
+    },
+
+    _onButtonPressEvent: function(widget, event) {
+        // eat button press events for now; in the future we might
+        // want to hook up support for DnD here
         return true;
     },
 

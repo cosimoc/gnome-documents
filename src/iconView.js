@@ -47,9 +47,6 @@ IconView.prototype = {
         this.widget.column_spacing = _VIEW_COLUMN_SPACING;
         this.widget.margin = _VIEW_MARGIN;
 
-        this.widget.connect('item-activated',
-                            Lang.bind(this, this._onItemActivated));
-
         // chain up to the parent
         View.View.prototype._init.call(this);
     },
@@ -72,10 +69,6 @@ IconView.prototype = {
 
     setSelectionMode: function(mode) {
         this.getSelectionObject().set_selection_mode(mode);
-    },
-
-    setSingleClickMode: function(mode) {
-        Gd.gtk_icon_view_set_activate_on_single_click(this.widget, mode);
     },
 
     scrollToPath: function(path) {
@@ -101,9 +94,5 @@ IconView.prototype = {
                                   'text', Documents.ModelColumns.TITLE);
         this.widget.add_attribute(textRenderer,
                                   'line-two', Documents.ModelColumns.AUTHOR);
-    },
-
-    _onItemActivated: function(view, path, column) {
-        this.activateItem(path);
     }
 };
