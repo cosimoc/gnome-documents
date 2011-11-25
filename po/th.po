@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-19 01:00+0000\n"
-"PO-Revision-Date: 2011-09-19 20:44+0700\n"
+"POT-Creation-Date: 2011-11-23 19:35+0000\n"
+"PO-Revision-Date: 2011-11-25 08:56+0700\n"
 "Last-Translator: Akom Chotiphantawanon <knight2000@gmail.com>\n"
 "Language-Team: Thai <thai-l10n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "Access, manage and share documents"
 msgstr "เข้าถึง จัดการ และแบ่งปันเอกสาร"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:47
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:52
 msgid "Documents"
 msgstr "เอกสาร"
 
@@ -42,42 +42,56 @@ msgstr "ตัวกรองแหล่งที่ใช้งาน"
 msgid "The last active source filter"
 msgstr "ตัวกรองแหล่งล่าสุดที่ใช้งาน"
 
-#. Translators: this refers to new and recent documents
-#: ../src/categories.js:77
-msgid "New and Recent"
-msgstr "ใหม่และล่าสุด"
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
+msgid "Window maximized"
+msgstr "หน้าต่างขยายแผ่อยู่"
 
-#. Translators: this refers to favorite documents
-#: ../src/categories.js:80
-msgid "Favorites"
-msgstr "รายการโปรด"
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
+msgid "Window maximized state"
+msgstr "สถานะการขยายแผ่หน้าต่าง"
 
-#. Translators: this refers to shared documents
-#: ../src/categories.js:83
-msgid "Shared with you"
-msgstr "ใช้ร่วมกับคุณ"
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
+msgid "Window position"
+msgstr "ตำแหน่งหน้าต่าง"
 
-#: ../src/documents.js:253 ../src/sources.js:101
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
+msgid "Window position (x and y)."
+msgstr "ตำแหน่งของหน้าต่าง (x และ y)"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:9
+msgid "Window size"
+msgstr "ขนาดหน้าต่าง"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:10
+msgid "Window size (width and height)."
+msgstr "ขนาดของหน้าต่าง (ความกว้างและความสูง)"
+
+#: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
 msgstr "ในเครื่อง"
 
-#: ../src/documents.js:372
+#. overridden
+#: ../src/documents.js:681
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:373
+#: ../src/documents.js:682
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:442
+#: ../src/documents.js:751
 msgid "Spreadsheet"
 msgstr "ตารางคำนวณ"
 
-#: ../src/documents.js:444
+#: ../src/documents.js:753
 msgid "Presentation"
-msgstr "การนำเสนอ"
+msgstr "งานนำเสนอ"
 
-#: ../src/documents.js:446
+#: ../src/documents.js:755
+msgid "Collection"
+msgstr "ชุดเอกสาร"
+
+#: ../src/documents.js:757
 msgid "Document"
 msgstr "เอกสาร"
 
@@ -87,47 +101,125 @@ msgstr "เอกสาร"
 msgid "Unable to load \"%s\" for preview"
 msgstr "ไม่สามารถโหลด \"%s\" เพื่อแสดงตัวอย่าง"
 
-#: ../src/error.js:44
+#: ../src/error.js:49
 msgid "Unable to fetch the list of documents"
 msgstr "ไม่สามารถดึงข้อมูลรายชื่อเอกสาร"
 
+#: ../src/lib/gd-pdf-loader.c:207
+msgid "Unable to load the document"
+msgstr "ไม่สามารถโหลดเอกสาร"
+
 #: ../src/loadMore.js:70
 #, c-format
-msgid "Load %d more documents"
+msgid "Load %d more document"
 msgid_plural "Load %d more documents"
-msgstr[0] "โหลดเอกสารเพิ่มเติม %d ฉบับ"
+msgstr[0] "โหลดเอกสารเพิ่มอีก %d ฉบับ"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:179
+msgid "Click on items to select them"
+msgstr "คลิกที่รายการเพื่อเลือก"
+
+#: ../src/mainToolbar.js:181
+#, c-format
+msgid "%d selected"
+msgstr "เลือกอยู่ %d รายการ"
+
+#: ../src/mainToolbar.js:208
+msgid "Done"
+msgstr "เสร็จ"
+
+#: ../src/mainToolbar.js:334
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d จาก %d)"
 
-#: ../src/sidebar.js:131 ../src/sources.js:218
-msgid "Sources"
-msgstr "แหล่ง"
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "หมวดหมู่"
 
-#: ../src/sources.js:96
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:204
+#: ../src/sources.js:94
 msgid "All"
 msgstr "ทั้งหมด"
 
-#: ../src/spinnerBox.js:47
-msgid "Loading..."
-msgstr "กำลังโหลด..."
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "รายการโปรด"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "แบ่งปันกับคุณ"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "ชนิด"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr "ชุดเอกสาร"
+
+#: ../src/searchbar.js:147
+msgid "PDF Documents"
+msgstr "เอกสาร PDF"
+
+#: ../src/searchbar.js:150
+msgid "Presentations"
+msgstr "งานนำเสนอ"
+
+#: ../src/searchbar.js:153
+msgid "Spreadsheets"
+msgstr "ตารางคำนวณ"
+
+#: ../src/searchbar.js:156
+msgid "Text Documents"
+msgstr "เอกสารข้อเขียน"
+
+#: ../src/searchbar.js:201
+msgid "Match"
+msgstr "ตรวจหา"
+
+#: ../src/searchbar.js:206
+msgid "Title"
+msgstr "ชื่อเรื่อง"
+
+#: ../src/searchbar.js:208
+msgid "Author"
+msgstr "ผู้เขียน"
+
+#: ../src/selections.js:658
+msgid "Organize"
+msgstr "จัดระเบียบ"
+
+#: ../src/selections.js:665
+msgid "Delete"
+msgstr "ลบ"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:67
+#: ../src/selections.js:756 ../src/view.js:66
 #, c-format
 msgid "Open with %s"
 msgstr "เปิดด้วย %s"
 
-#: ../src/view.js:69
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:759 ../src/view.js:69
 msgid "Open"
 msgstr "เปิด"
 
-#: ../src/view.js:79
+#: ../src/selections.js:772 ../src/view.js:79
 msgid "Remove from favorites"
 msgstr "ลบออกจากรายการโปรด"
 
-#: ../src/view.js:79
+#: ../src/selections.js:776 ../src/view.js:79
 msgid "Add to favorites"
 msgstr "เพิ่มในรายการโปรด"
+
+#: ../src/sources.js:90
+msgid "Sources"
+msgstr "แหล่ง"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "กำลังโหลด..."
+
+#~ msgid "New and Recent"
+#~ msgstr "ใหม่และล่าสุด"
