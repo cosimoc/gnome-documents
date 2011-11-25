@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-09 21:07+0200\n"
-"PO-Revision-Date: 2011-10-09 21:08+0100\n"
+"POT-Creation-Date: 2011-11-25 09:42+0100\n"
+"PO-Revision-Date: 2011-11-25 09:43+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: \n"
@@ -22,7 +22,7 @@ msgid "Access, manage and share documents"
 msgstr "Kom åt, hantera och dela dokument"
 
 #: ../data/gnome-documents.desktop.in.in.h:2
-#: ../src/mainWindow.js:48
+#: ../src/mainWindow.js:52
 msgid "Documents"
 msgstr "Dokument"
 
@@ -66,43 +66,33 @@ msgstr "Fönstrets storlek"
 msgid "Window size (width and height)."
 msgstr "Fönsterstorlek (bredd och höjd)."
 
-#. Translators: this refers to new and recent documents
-#: ../src/categories.js:77
-msgid "New and Recent"
-msgstr "Nya och senaste"
-
-#. Translators: this refers to favorite documents
-#: ../src/categories.js:80
-msgid "Favorites"
-msgstr "Favoriter"
-
-#. Translators: this refers to shared documents
-#: ../src/categories.js:83
-msgid "Shared with you"
-msgstr "Delade med dig"
-
-#: ../src/documents.js:253
-#: ../src/sources.js:101
+#: ../src/documents.js:618
+#: ../src/sources.js:100
 msgid "Local"
 msgstr "Lokal"
 
-#: ../src/documents.js:378
+#. overridden
+#: ../src/documents.js:681
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:379
+#: ../src/documents.js:682
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:448
+#: ../src/documents.js:751
 msgid "Spreadsheet"
 msgstr "Kalkylark"
 
-#: ../src/documents.js:450
+#: ../src/documents.js:753
 msgid "Presentation"
 msgstr "Presentation"
 
-#: ../src/documents.js:452
+#: ../src/documents.js:755
+msgid "Collection"
+msgstr "Samling"
+
+#: ../src/documents.js:757
 msgid "Document"
 msgstr "Dokument"
 
@@ -112,9 +102,13 @@ msgstr "Dokument"
 msgid "Unable to load \"%s\" for preview"
 msgstr "Kunde inte läsa in \"%s\" för granskning"
 
-#: ../src/error.js:44
+#: ../src/error.js:49
 msgid "Unable to fetch the list of documents"
 msgstr "Kunde inte hämta listan över dokument"
+
+#: ../src/lib/gd-pdf-loader.c:207
+msgid "Unable to load the document"
+msgstr "Kunde inte läsa in dokumentet"
 
 #: ../src/loadMore.js:70
 #, c-format
@@ -123,43 +117,120 @@ msgid_plural "Load %d more documents"
 msgstr[0] "Läs in ytterligare %d dokument"
 msgstr[1] "Läs in ytterligare %d dokument"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:179
+msgid "Click on items to select them"
+msgstr "Klicka på objekten för att markera dem"
+
+#: ../src/mainToolbar.js:181
+#, c-format
+msgid "%d selected"
+msgstr "%d markerade"
+
+#: ../src/mainToolbar.js:208
+msgid "Done"
+msgstr "Färdig"
+
+#: ../src/mainToolbar.js:334
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d av %d)"
 
-#: ../src/sidebar.js:131
-#: ../src/sources.js:218
-msgid "Sources"
-msgstr "Källor"
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "Kategori"
 
-#: ../src/sources.js:96
+#: ../src/searchbar.js:91
+#: ../src/searchbar.js:141
+#: ../src/searchbar.js:204
+#: ../src/sources.js:94
 msgid "All"
 msgstr "Alla"
 
-#: ../src/spinnerBox.js:47
-msgid "Loading..."
-msgstr "Läser in..."
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "Favoriter"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "Delade med dig"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "Typ"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr "Samlingar"
+
+#: ../src/searchbar.js:147
+msgid "PDF Documents"
+msgstr "PDF-dokument"
+
+#: ../src/searchbar.js:150
+msgid "Presentations"
+msgstr "Presentationer"
+
+#: ../src/searchbar.js:153
+msgid "Spreadsheets"
+msgstr "Kalkylark"
+
+#: ../src/searchbar.js:156
+msgid "Text Documents"
+msgstr "Textdokument"
+
+#: ../src/searchbar.js:201
+msgid "Match"
+msgstr "Match"
+
+#: ../src/searchbar.js:206
+msgid "Title"
+msgstr "Titel"
+
+#: ../src/searchbar.js:208
+msgid "Author"
+msgstr "Författare"
+
+#: ../src/selections.js:658
+msgid "Organize"
+msgstr "Organisera"
+
+#: ../src/selections.js:665
+msgid "Delete"
+msgstr "Ta bort"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:67
+#: ../src/selections.js:756
+#: ../src/view.js:66
 #, c-format
 msgid "Open with %s"
 msgstr "Öppna med %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:70
+#: ../src/selections.js:759
+#: ../src/view.js:69
 msgid "Open"
 msgstr "Öppna"
 
-#: ../src/view.js:80
+#: ../src/selections.js:772
+#: ../src/view.js:79
 msgid "Remove from favorites"
 msgstr "Ta bort från favoriter"
 
-#: ../src/view.js:80
+#: ../src/selections.js:776
+#: ../src/view.js:79
 msgid "Add to favorites"
 msgstr "Lägg till i favoriter"
 
+#: ../src/sources.js:90
+msgid "Sources"
+msgstr "Källor"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "Läser in..."
+
+#~ msgid "New and Recent"
+#~ msgstr "Nya och senaste"
+
 #~ msgid "Private"
 #~ msgstr "Privat"
-
