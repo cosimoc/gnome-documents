@@ -238,6 +238,7 @@ BaseView.prototype = {
                 let iter = this._model.model.get_iter(path)[1];
                 let id = this._model.model.get_value(iter, BaseModelColumns.ID);
 
+                this.emit('item-activated');
                 this._manager.setActiveItemById(id);
             }));
 
@@ -291,3 +292,4 @@ BaseView.prototype = {
             additionalFunc(col, cell, model, iter);
     }
 };
+Signals.addSignalMethods(BaseView.prototype);
