@@ -520,11 +520,16 @@ Searchbar.prototype = {
         if (item.id == 'all') {
             this._searchEntry.remove_tag(id);
         } else {
-            this._searchEntry.add_tag(id, item.name);
-            this._searchEntry.connect('tag-button-clicked::' + id, Lang.bind(this,
-                function() {
-                    manager.setActiveItemById('all');
-                }));
+            let res = this._searchEntry.add_tag(id, item.name);
+
+            if (res) {
+                this._searchEntry.connect('tag-button-clicked::' + id, Lang.bind(this,
+                    function() {
+                        manager.setActiveItemById('all');
+                    }));
+            } else {
+                this._searchEntry.set_tag_label(id, item.name);
+            }
         }
     },
 
