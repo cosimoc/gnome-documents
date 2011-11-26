@@ -302,6 +302,13 @@ Dropdown.prototype = {
         // else?
         // this._categoryView = new Manager.BaseView(Global.searchCategoryManager);
 
+        this._sourceView.connect('item-activated',
+                                 Lang.bind(this, this._onItemActivated));
+        this._typeView.connect('item-activated',
+                               Lang.bind(this, this._onItemActivated));
+        this._matchView.connect('item-activated',
+                                Lang.bind(this, this._onItemActivated));
+
         this.widget = new Gtk.Frame({ shadow_type: Gtk.ShadowType.IN });
         this.actor = new GtkClutter.Actor({ contents: this.widget,
                                             opacity: 0 });
@@ -321,6 +328,10 @@ Dropdown.prototype = {
         Global.searchController.connect('search-dropdown-changed',
                                         Lang.bind(this, this._onSearchDropdown));
         this._onSearchDropdown();
+    },
+
+    _onItemActivated: function() {
+        Global.searchController.setDropownState(false);
     },
 
     _onSearchDropdown: function() {
@@ -358,6 +369,9 @@ Searchbar.prototype = {
         this._searchEventId = 0;
         this._searchFocusId = 0;
         this._searchEntryTimeout = 0;
+        this._sourcesId = 0;
+        this._searchTypeId = 0;
+        this._searchMatchId = 0;
 
         this.widget = new Gtk.Toolbar();
         this.widget.get_style_context().add_class(Gtk.STYLE_CLASS_PRIMARY_TOOLBAR);
@@ -365,12 +379,25 @@ Searchbar.prototype = {
         this.actor = new GtkClutter.Actor({ contents: this.widget,
                                             height: 0 });
 
-        this._searchEntry = new Gtk.Entry({ width_request: 260,
-                                            secondary_icon_name: 'edit-find-symbolic',
-                                            secondary_icon_sensitive: false,
-                                            secondary_icon_activatable: false,
-                                            no_show_all: true,
-                                            hexpand: true });
+        this._searchEntry = new Gd.TaggedEntry({ width_request: 260,
+                                                 secondary_icon_name: 'edit-find-symbolic',
+                                                 secondary_icon_sensitive: false,
+                                                 secondary_icon_activatable: false,
+                                                 no_show_all: true,
+                                                 hexpand: true });
+        this._searchEntry.connect('tag-clicked',
+            Lang.bind(this, this._onTagClicked));
+
+        this._sourcesId = Global.sourceManager.connect('active-changed',
+            Lang.bind(this, this._onActiveSourceChanged));
+        this._searchTypeId = Global.searchTypeManager.connect('active-changed',
+            Lang.bind(this, this._onActiveTypeChanged));
+        this._searchMatchId = Global.searchMatchManager.connect('active-changed',
+            Lang.bind(this, this._onActiveMatchChanged));
+
+        this._onActiveSourceChanged();
+        this._onActiveTypeChanged();
+        this._onActiveMatchChanged();
 
         let box = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL });
         box.add(this._searchEntry);
@@ -384,6 +411,9 @@ Searchbar.prototype = {
             }));
 
         box.add(this._dropdownButton);
+
+        this._searchDropdownId = Global.searchController.connect('search-dropdown-changed',
+            Lang.bind(this, this._onDropdownStateChanged));
 
         let container = new Gd.MarginContainer({ min_margin: 6,
                                                  max_margin: 64 });
@@ -457,7 +487,62 @@ Searchbar.prototype = {
             this._searchEventId = 0;
         }
 
+        if (this._sourcesId != 0) {
+            Global.sourceManager.disconnect(this._sourcesId);
+            this._sourcesId = 0;
+        }
+
+        if (this._searchTypeId != 0) {
+            Global.searchTypeManager.disconnect(this._searchTypeId);
+            this._searchTypeId = 0;
+        }
+
+        if (this._searchMatchId != 0) {
+            Global.searchMatchManager.disconnect(this._searchMatchId);
+            this._searchMatchId = 0;
+        }
+
+        if (this._searchDropdownId != 0) {
+            Global.searchController.disconnect(this._searchDropdownId);
+            this._searchDropdownId = 0;
+        }
+
         this.widget.destroy();
+    },
+
+    _onTagClicked: function() {
+        this._dropdownButton.set_active(true);
+    },
+
+    _onActiveChangedCommon: function(id, manager) {
+        let item = manager.getActiveItem();
+
+        if (item.id == 'all') {
+            this._searchEntry.remove_tag(id);
+        } else {
+            this._searchEntry.add_tag(id, item.name);
+            this._searchEntry.connect('tag-button-clicked::' + id, Lang.bind(this,
+                function() {
+                    manager.setActiveItemById('all');
+                }));
+        }
+    },
+
+    _onActiveSourceChanged: function() {
+        this._onActiveChangedCommon('source', Global.sourceManager);
+    },
+
+    _onActiveTypeChanged: function() {
+        this._onActiveChangedCommon('type', Global.searchTypeManager);
+    },
+
+    _onActiveMatchChanged: function() {
+        this._onActiveChangedCommon('match', Global.searchMatchManager);
+    },
+
+    _onDropdownStateChanged: function() {
+        let state = Global.searchController.getDropdownState();
+        this._dropdownButton.set_active(state);
     },
 
     _onSearchVisible: function() {
