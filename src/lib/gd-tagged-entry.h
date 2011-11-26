@@ -70,12 +70,16 @@ GType gd_tagged_entry_get_type (void) G_GNUC_CONST;
 
 GdTaggedEntry *gd_tagged_entry_new (void);
 
-void gd_tagged_entry_add_tag (GdTaggedEntry *entry,
-                              const gchar *id,
-                              const gchar *label);
+gboolean gd_tagged_entry_add_tag (GdTaggedEntry *entry,
+                                  const gchar *id,
+                                  const gchar *label);
 
 gboolean gd_tagged_entry_remove_tag (GdTaggedEntry *self,
                                      const gchar *id);
+
+gboolean gd_tagged_entry_set_tag_label (GdTaggedEntry *self,
+                                        const gchar *tag_id,
+                                        const gchar *label);
 
 G_END_DECLS
 

@@ -313,6 +313,7 @@ gd_tagged_entry_tag_get_relative_allocations (GdTaggedEntryTag *tag,
   gtk_style_context_get_padding (context, state, &padding);
   gtk_style_context_get_border (context, state, &border);  
 
+  gd_tagged_entry_tag_ensure_layout (tag, entry);
   pango_layout_get_pixel_size (tag->layout, &layout_width, &layout_height);
 
   layout_allocation.x += border.left + padding.left;
@@ -873,7 +874,7 @@ gd_tagged_entry_new (void)
   return g_object_new (GD_TYPE_TAGGED_ENTRY, NULL);
 }
 
-void
+gboolean
 gd_tagged_entry_add_tag (GdTaggedEntry *self,
                          const gchar *id,
                          const gchar *name)
@@ -881,10 +882,7 @@ gd_tagged_entry_add_tag (GdTaggedEntry *self,
   GdTaggedEntryTag *tag;
 
   if (gd_tagged_entry_find_tag_by_id (self, id) != NULL)
-    {
-      g_warning ("Tag %s already exists", id);
-      return;
-    }
+    return FALSE;
 
   tag = gd_tagged_entry_tag_new (id, name);
   self->priv->tags = g_list_append (self->priv->tags, tag);
@@ -896,6 +894,8 @@ gd_tagged_entry_add_tag (GdTaggedEntry *self,
     }
 
   gtk_widget_queue_resize (GTK_WIDGET (self));
+
+  return TRUE;
 }
 
 gboolean
@@ -916,4 +916,31 @@ gd_tagged_entry_remove_tag (GdTaggedEntry *self,
     }
 
   return res;
+}
+
+gboolean
+gd_tagged_entry_set_tag_label (GdTaggedEntry *self,
+                               const gchar *tag_id,
+                               const gchar *label)
+{
+  GdTaggedEntryTag *tag;
+  gboolean res = FALSE;
+
+  tag = gd_tagged_entry_find_tag_by_id (self, tag_id);
+
+  if (tag != NULL)
+    {
+      res = TRUE;
+
+      if (g_strcmp0 (tag->label, label) != 0)
+        {
+          g_free (tag->label);
+          tag->label = g_strdup (label);
+          g_clear_object (&tag->layout);
+
+          gtk_widget_queue_resize (GTK_WIDGET (self));
+        }
+    }
+
+  return res;  
 }
