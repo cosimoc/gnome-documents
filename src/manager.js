@@ -231,7 +231,7 @@ BaseView.prototype = {
         this._treeView.set_model(this._model.model);
 
         let selection = this._treeView.get_selection();
-        selection.set_mode(Gtk.SelectionMode.SINGLE);
+        selection.set_mode(Gtk.SelectionMode.NONE);
 
         this._treeView.connect('row-activated', Lang.bind(this,
             function(view, path) {
