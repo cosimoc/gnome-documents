@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-13 10:45+0100\n"
-"PO-Revision-Date: 2011-11-13 10:46+0100\n"
+"POT-Creation-Date: 2011-12-01 19:10+0100\n"
+"PO-Revision-Date: 2011-12-01 19:11+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: \n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Access, manage and share documents"
 msgstr "Aksesser, håndter og del dokumenter"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:54
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:52
 msgid "Documents"
 msgstr "Dokumenter"
 
@@ -65,39 +65,32 @@ msgstr "Vindustørrelse"
 msgid "Window size (width and height)."
 msgstr "Vindustørrelse (bredde og høyde)."
 
-#: ../src/categories.js:81
-msgid "New and Recent"
-msgstr "Nye og nylig brukte"
-
-#: ../src/categories.js:87
-msgid "Favorites"
-msgstr "Favoritter"
-
-#: ../src/categories.js:92
-msgid "Shared with you"
-msgstr "Delt med deg"
-
-#: ../src/documents.js:261 ../src/sources.js:95
+#: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
 msgstr "Lokalt"
 
-#: ../src/documents.js:408
+#. overridden
+#: ../src/documents.js:681
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:409
+#: ../src/documents.js:682
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:478
+#: ../src/documents.js:751
 msgid "Spreadsheet"
 msgstr "Regneark"
 
-#: ../src/documents.js:480
+#: ../src/documents.js:753
 msgid "Presentation"
 msgstr "Presentasjon"
 
-#: ../src/documents.js:482
+#: ../src/documents.js:755
+msgid "Collection"
+msgstr "Samling"
+
+#: ../src/documents.js:757
 msgid "Document"
 msgstr "Dokument"
 
@@ -122,76 +115,105 @@ msgid_plural "Load %d more documents"
 msgstr[0] "Last %d dokument til"
 msgstr[1] "Last %d dokumenter til"
 
-#: ../src/mainToolbar.js:85
+#: ../src/mainToolbar.js:179
 msgid "Click on items to select them"
 msgstr "Klikk på oppføringer for å velge dem"
 
-#: ../src/mainToolbar.js:87
+#: ../src/mainToolbar.js:181
 #, c-format
 msgid "%d selected"
 msgstr "%d valgt"
 
-#: ../src/mainToolbar.js:231
+#: ../src/mainToolbar.js:208
+msgid "Done"
+msgstr "Ferdig"
+
+#: ../src/mainToolbar.js:334
 #, c-format
 msgid "(%d of %d)"
 msgstr "[%d av %d]"
 
-#: ../src/searchbar.js:64
-msgid "Type"
-msgstr "Skriv"
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "Kategori"
 
-#: ../src/searchbar.js:67 ../src/searchbar.js:126 ../src/sources.js:89
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:204
+#: ../src/sources.js:94
 msgid "All"
 msgstr "Alle"
 
-#: ../src/searchbar.js:69
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "Favoritter"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "Delt med deg"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "Skriv"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr "Samlinger"
+
+#: ../src/searchbar.js:147
 msgid "PDF Documents"
 msgstr "PDF-dokumenter"
 
-#: ../src/searchbar.js:72
+#: ../src/searchbar.js:150
 msgid "Presentations"
 msgstr "Presentasjoner"
 
-#: ../src/searchbar.js:75
+#: ../src/searchbar.js:153
 msgid "Spreadsheets"
 msgstr "Regneark"
 
-#: ../src/searchbar.js:78
+#: ../src/searchbar.js:156
 msgid "Text Documents"
 msgstr "Tekstdokumenter"
 
-#: ../src/searchbar.js:123
+#: ../src/searchbar.js:201
 msgid "Match"
 msgstr "Treff"
 
-#: ../src/searchbar.js:128
+#: ../src/searchbar.js:206
 msgid "Title"
 msgstr "Tittel"
 
-#: ../src/searchbar.js:130
+#: ../src/searchbar.js:208
 msgid "Author"
 msgstr "Forfatter"
 
+#: ../src/selections.js:658
+msgid "Organize"
+msgstr "Organiser"
+
+#: ../src/selections.js:665
+msgid "Delete"
+msgstr "Slett"
+
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:180 ../src/view.js:65
+#: ../src/selections.js:756 ../src/view.js:66
 #, c-format
 msgid "Open with %s"
 msgstr "Åpne med %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:183 ../src/view.js:68
+#: ../src/selections.js:759 ../src/view.js:69
 msgid "Open"
 msgstr "Åpne"
 
-#: ../src/selections.js:194 ../src/view.js:78
+#: ../src/selections.js:772 ../src/view.js:79
 msgid "Remove from favorites"
 msgstr "Fjern fra favoritter"
 
-#: ../src/selections.js:198 ../src/view.js:78
+#: ../src/selections.js:776 ../src/view.js:79
 msgid "Add to favorites"
 msgstr "Legg til i favoritter"
 
-#: ../src/sources.js:85
+#: ../src/sources.js:90
 msgid "Sources"
 msgstr "Kilder"
 
