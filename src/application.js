@@ -59,9 +59,11 @@ Application.prototype = {
         // TODO: subclass Gtk.Application once we support GObject inheritance,
         //       see https://bugzilla.gnome.org/show_bug.cgi?id=663492
         this.application = new Gtk.Application({
-            application_id: 'org.gnome.Documents'
+            application_id: 'org.gnome.Documents',
+            flags: Gio.ApplicationFlags.HANDLES_COMMAND_LINE
         });
         this.application.connect('startup', Lang.bind(this, this._onStartup));
+        this.application.connect('command-line', Lang.bind(this, this._commandLine));
         this.application.connect('activate', Lang.bind(this,
             function() {
                 this._mainWindow.window.present();
@@ -114,5 +116,29 @@ Application.prototype = {
 
         this._mainWindow = new MainWindow.MainWindow();
         this.application.add_window(this._mainWindow.window);
+    },
+
+    _commandLine: function(app, commandLine) {
+        app.activate();
+
+        let args = commandLine.get_arguments();
+        if (args.length) {
+            let urn = args[0]; // gjs eats argv[0]
+            let doc = Global.documentManager.getItemById(args[0]);
+            if (doc) {
+                Global.documentManager.setActiveItem(doc);
+            } else {
+                let job = new Documents.SingleItemJob(urn);
+                job.run(Query.QueryFlags.UNFILTERED, Lang.bind(this,
+                    function(cursor) {
+                        if (!cursor)
+                            return;
+                        let doc = Global.documentManager.createDocumentFromCursor(cursor);
+                        Global.documentManager.addItem(doc);
+                        Global.documentManager.setActiveItem(doc);
+                    }));
+            }
+        }
+        return 0;
     }
 };

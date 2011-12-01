@@ -12,4 +12,4 @@ else
     export GI_TYPELIB_PATH=@libdir@/girepository-1.0:$GI_TYPELIB_PATH
 fi
 
-@GJS_CONSOLE@ -I @pkgdatadir@/js -c "const Main = imports.main; Main.start();"
+@GJS_CONSOLE@ -I @pkgdatadir@/js -c "const Main = imports.main; Main.start();" "$@"

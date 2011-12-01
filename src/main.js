@@ -23,5 +23,5 @@ const Application = imports.application;
 
 function start() {
     let application = new Application.Application();
-    application.application.run(null);
+    return application.application.run(ARGV);
 }
