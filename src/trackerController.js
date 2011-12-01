@@ -108,6 +108,11 @@ TrackerConnectionQueue.prototype = {
     }
 };
 
+const RefreshFlags = {
+    NONE: 0,
+    RESET_OFFSET: 1 << 0
+};
+
 function TrackerController() {
     this._init();
 }
@@ -128,25 +133,27 @@ TrackerController.prototype = {
         this._sourceManager = Global.sourceManager;
         this._sourceManager.connect('item-added', Lang.bind(this, this._onSourceAddedRemoved));
         this._sourceManager.connect('item-removed', Lang.bind(this, this._onSourceAddedRemoved));
-        this._sourceManager.connect('active-changed', Lang.bind(this, this._refresh));
+        this._sourceManager.connect('active-changed',
+                                    Lang.bind(this, this._refreshForObject));
 
         this._offsetController = Global.offsetController;
         this._offsetController.connect('offset-changed',
                                        Lang.bind(this, this._performCurrentQuery));
 
         Global.collectionManager.connect('active-changed',
-                                         Lang.bind(this, this._refresh));
-        Global.searchCategoryManager.connect('active-changed',
-                                             Lang.bind(this, this._refresh));
+                                         Lang.bind(this, this._refreshForObject));
         Global.searchController.connect('search-string-changed',
-                                        Lang.bind(this, this._onSearchRefresh));
+                                        Lang.bind(this, this._refreshForObject));
+        Global.searchCategoryManager.connect('active-changed',
+                                             Lang.bind(this, this._refreshForObject));
+        Global.searchTypeManager.connect('active-changed',
+                                         Lang.bind(this, this._refreshForObject));
+
         Global.searchMatchManager.connect('active-changed',
                                           Lang.bind(this, this._onSearchMatchChanged));
-        Global.searchTypeManager.connect('active-changed',
-                                         Lang.bind(this, this._onSearchRefresh));
 
         // perform initial query
-        this._refresh();
+        this._refreshInternal(RefreshFlags.NONE);
     },
 
     _refreshMinerNow: function() {
@@ -238,7 +245,10 @@ TrackerController.prototype = {
                                    this._cancellable, Lang.bind(this, this._onQueryExecuted));
     },
 
-    _refresh: function() {
+    _refreshInternal: function(flags) {
+        if (flags & RefreshFlags.RESET_OFFSET)
+            Global.offsetController.resetOffset();
+
         if (this.getQueryStatus()) {
             this._cancellable.cancel();
             this._queryQueued = true;
@@ -253,16 +263,15 @@ TrackerController.prototype = {
         this._performCurrentQuery();
     },
 
-    _onSearchRefresh: function() {
-        this._offsetController.resetOffset();
-        this._refresh();
+    _refreshForObject: function(_object, _item) {
+        this._refreshInternal(RefreshFlags.RESET_OFFSET);
     },
 
     _onSearchMatchChanged: function() {
         // when the "match" search setting changes, refresh only if
         // the search string is not empty
         if (Global.searchController.getString() != '')
-            this._onSearchRefresh();
+            this._refreshInternal(RefreshFlags.RESET_OFFSET);
     },
 
     _onSourceAddedRemoved: function(manager, item) {
@@ -272,7 +281,7 @@ TrackerController.prototype = {
         // 'active-changed' signal, so avoid refreshing twice
         if (this._currentQuery.activeSource &&
             this._currentQuery.activeSource.id == 'all')
-            this._refresh();
+            this._refreshInternal(RefreshFlags.NONE);
     }
 };
 Signals.addSignalMethods(TrackerController.prototype);
