@@ -911,6 +911,7 @@ gd_tagged_entry_remove_tag (GdTaggedEntry *self,
     {
       res = TRUE;
       self->priv->tags = g_list_remove (self->priv->tags, tag);
+      gd_tagged_entry_tag_free (tag);
 
       gtk_widget_queue_resize (GTK_WIDGET (self));
     }
