@@ -39,18 +39,18 @@ const _ = imports.gettext.gettext;
 
 const _CONFIGURE_ID_TIMEOUT = 100; // msecs
 
-function MainWindow() {
-    this._init();
+function MainWindow(app) {
+    this._init(app);
 }
 
 MainWindow.prototype = {
-    _init: function() {
+    _init: function(app) {
         this._configureId = 0;
 
-        this.window = new Gtk.Window({ type: Gtk.WindowType.TOPLEVEL,
-                                       window_position: Gtk.WindowPosition.CENTER,
-                                       hide_titlebar_when_maximized: true,
-                                       title: _("Documents") });
+        this.window = new Gtk.ApplicationWindow({ application: app,
+						  window_position: Gtk.WindowPosition.CENTER,
+                                                  hide_titlebar_when_maximized: true,
+						  title: _("Documents") });
         this._clutterEmbed = new GtkClutter.Embed();
         this.window.add(this._clutterEmbed);
         this._clutterEmbed.show();

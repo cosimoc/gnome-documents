@@ -21,6 +21,7 @@
 
 const Lang = imports.lang;
 const Gettext = imports.gettext;
+const _ = imports.gettext.gettext;
 
 const GtkClutter = imports.gi.GtkClutter;
 const EvDoc = imports.gi.EvinceDocument;
@@ -56,6 +57,12 @@ function Application() {
 
 Application.prototype = {
     _init: function() {
+        Gettext.bindtextdomain('gnome-documents', Path.LOCALE_DIR);
+        Gettext.textdomain('gnome-documents');
+        GLib.set_prgname('gnome-documents');
+
+        Global.settings = new Gio.Settings({ schema: 'org.gnome.documents' });
+
         // TODO: subclass Gtk.Application once we support GObject inheritance,
         //       see https://bugzilla.gnome.org/show_bug.cgi?id=663492
         this.application = new Gtk.Application({
@@ -69,11 +76,39 @@ Application.prototype = {
             function() {
                 this._mainWindow.window.present();
             }));
+	this._actionGroup = new Gio.SimpleActionGroup();
+	this._menu = new Gio.Menu();
+	// this._viewAs = Gio.SimpleAction.new_stateful("view-as-list",
+	// 					     GLib.VariantType.new("b"),
+	// 					     Global.settings.get_value('list-view'));
+	// this._viewAs.connect('activate', Lang.bind(this, function () {
+	//     Global.settings.set_boolean('list-view', this._viewAs.state);
+	// }));
+	// this._actionGroup.insert(this._viewAs);
+	this._fullscreen = false;
+	this._fullscreenAction = new Gio.SimpleAction({ name: 'fullscreen'  });
+	this._fullscreenAction.connect('activate', Lang.bind(this, function() {
+	    this._fullscreen = !this._fullscreen;
+	    if (this._fullscreen)
+		this._mainWindow.window.fullscreen();
+	    else
+		this._mainWindow.window.unfullscreen();
+	}));
+	this._actionGroup.insert(this._fullscreenAction);
+	this._menu.append(_('Fullscreen'), "app.fullscreen");
+
+	this._quitAction = new Gio.SimpleAction({ name: 'quit' });
+	this._quitAction.connect('activate', Lang.bind(this, function() {
+	    this.application.release();
+	}));
+	this._actionGroup.insert(this._quitAction);
+	this._menu.append(_('Quit'), "app.quit");
+
+	this.application.set_action_group(this._actionGroup);
+	this.application.set_menu(this._menu);
     },
 
     _onStartup: function() {
-        Gettext.bindtextdomain('gnome-documents', Path.LOCALE_DIR);
-        Gettext.textdomain('gnome-documents');
         String.prototype.format = Format.format;
 
         GtkClutter.init(null, null);
@@ -81,7 +116,6 @@ Application.prototype = {
         Tweener.init();
 
         Global.application = this;
-        Global.settings = new Gio.Settings({ schema: 'org.gnome.documents' });
         Global.offsetController = new OffsetController.OffsetController();
         Global.searchController = new Searchbar.SearchController();
         Global.errorHandler = new Error.ErrorHandler();
