@@ -48,7 +48,6 @@ function ViewEmbed() {
 
 ViewEmbed.prototype  = {
     _init: function() {
-        this._activeItemId = 0;
         this._adjustmentValueId = 0;
         this._adjustmentChangedId = 0;
         this._loaderCancellable = null;
@@ -106,6 +105,8 @@ ViewEmbed.prototype  = {
                                       Lang.bind(this, this._onFullscreenChanged));
         Global.trackerController.connect('query-status-changed',
                                          Lang.bind(this, this._onQueryStatusChanged));
+        Global.documentManager.connect('active-changed',
+                                       Lang.bind(this, this._onActiveItemChanged));
 
         this._onWindowModeChanged();
         this._onQueryStatusChanged();
@@ -201,6 +202,20 @@ ViewEmbed.prototype  = {
             child.destroy();
     },
 
+    _destroyPreview: function() {
+        if (this._loaderCancellable) {
+            this._loaderCancellable.cancel();
+            this._loaderCancellable = null;
+        }
+
+        if (this._preview) {
+            this._preview.destroy();
+            this._preview = null;
+        }
+
+        this._docModel = null;
+    },
+
     _initView: function() {
         this._destroyScrollViewChild();
 
@@ -216,10 +231,17 @@ ViewEmbed.prototype  = {
 
     _onActiveItemChanged: function() {
         let doc = Global.documentManager.getActiveItem();
+
+        if (!doc)
+            return;
+
+        this._destroyPreview();
+
         let collection = Global.collectionManager.getItemById(doc.id);
 
         if (collection) {
             Global.collectionManager.setActiveItem(collection);
+            Global.modeController.setWindowMode(WindowMode.WindowMode.OVERVIEW);
             return;
         }
 
@@ -278,22 +300,9 @@ ViewEmbed.prototype  = {
     },
 
     _prepareForOverview: function() {
-        if (this._loaderCancellable) {
-            this._loaderCancellable.cancel();
-            this._loaderCancellable = null;
-        }
-
-        if (this._preview) {
-            this._preview.destroy();
-            this._preview = null;
-        }
-
-        this._docModel = null;
+        this._destroyPreview();
 
         Global.documentManager.setActiveItem(null);
-        this._activeItemId =
-            Global.documentManager.connect('active-changed',
-                                           Lang.bind(this, this._onActiveItemChanged));
 
         this._viewSettingsId =
             Global.settings.connect('changed::list-view',
@@ -379,11 +388,6 @@ ViewEmbed.prototype  = {
         if (this._queryErrorId != 0) {
             Global.errorHandler.disconnect(this._queryErrorId);
             this._queryErrorId = 0;
-        }
-
-        if (this._activeItemId != 0) {
-            Global.documentManager.disconnect(this._activeItemId);
-            this._activeItemId = 0;
         }
 
         Global.searchController.setSearchVisible(false);
