@@ -158,7 +158,7 @@ ViewEmbed.prototype  = {
     },
 
     _destroyFullscreenToolbar: function() {
-        this._fsToolbar.destroy();
+        this._fsToolbar.widget.destroy();
         this._fsToolbar = null;
     },
 
