@@ -12,6 +12,10 @@ gdprivate_source_h = \
     lib/gd-gdata-goa-authorizer.h \
     lib/gd-utils.h \
     lib/gd-main-toolbar.h \
+    lib/gd-main-view-generic.h \
+    lib/gd-main-icon-view.h \
+    lib/gd-main-list-view.h \
+    lib/gd-main-view.h \
     lib/gd-margin-container.h \
     lib/gd-pdf-loader.h \
     lib/gd-tagged-entry.h \
@@ -21,6 +25,10 @@ gdprivate_source_h = \
 gdprivate_source_c = \
     lib/gd-utils.c \
     lib/gd-main-toolbar.c \
+    lib/gd-main-view-generic.c \
+    lib/gd-main-icon-view.c \
+    lib/gd-main-list-view.c \
+    lib/gd-main-view.c \
     lib/gd-margin-container.c \
     lib/gd-pdf-loader.c \
     lib/gd-tagged-entry.c \
