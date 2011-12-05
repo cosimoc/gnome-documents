@@ -68,7 +68,7 @@ struct _GdTwoLinesRendererClass
 
 GType gd_two_lines_renderer_get_type (void) G_GNUC_CONST;
 
-GdTwoLinesRenderer *gd_two_lines_renderer_new (void);
+GtkCellRenderer *gd_two_lines_renderer_new (void);
 
 G_END_DECLS
 

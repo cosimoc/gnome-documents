@@ -24,17 +24,17 @@ const Mainloop = imports.mainloop;
 
 const ErrorBox = imports.errorBox;
 const Global = imports.global;
-const IconView = imports.iconView;
-const ListView = imports.listView;
 const LoadMore = imports.loadMore;
 const MainToolbar = imports.mainToolbar;
 const Preview = imports.preview;
 const SpinnerBox = imports.spinnerBox;
 const Tweener = imports.util.tweener;
+const View = imports.view;
 const WindowMode = imports.windowMode;
 
 const Clutter = imports.gi.Clutter;
 const EvView = imports.gi.EvinceView;
+const Gd = imports.gi.Gd;
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
 const GtkClutter = imports.gi.GtkClutter;
@@ -54,7 +54,6 @@ ViewEmbed.prototype  = {
         this._motionTimeoutId = 0;
         this._queryErrorId = 0;
         this._scrollbarVisibleId = 0;
-        this._viewSettingsId = 0;
 
         this._scrolledWinView = null;
         this._scrolledWinPreview = null;
@@ -196,12 +195,6 @@ ViewEmbed.prototype  = {
             child.destroy();
     },
 
-    _destroyScrollViewChild: function() {
-        let child = this._scrolledWinView.get_child();
-        if (child)
-            child.destroy();
-    },
-
     _destroyPreview: function() {
         if (this._loaderCancellable) {
             this._loaderCancellable.cancel();
@@ -214,19 +207,6 @@ ViewEmbed.prototype  = {
         }
 
         this._docModel = null;
-    },
-
-    _initView: function() {
-        this._destroyScrollViewChild();
-
-        let isList = Global.settings.get_boolean('list-view');
-
-        if (isList)
-            this._view = new ListView.ListView(this);
-        else
-            this._view = new IconView.IconView(this);
-
-        this._scrolledWinView.add(this._view.widget);
     },
 
     _onActiveItemChanged: function() {
@@ -304,27 +284,18 @@ ViewEmbed.prototype  = {
 
         Global.documentManager.setActiveItem(null);
 
-        this._viewSettingsId =
-            Global.settings.connect('changed::list-view',
-                                    Lang.bind(this, this._initView));
         this._queryErrorId =
             Global.errorHandler.connect('query-error',
                                         Lang.bind(this, this._onQueryError));
 
         if (!this._scrolledWinView) {
             let grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
-
-            this._scrolledWinView = new Gtk.ScrolledWindow({ hexpand: true,
-                                                             vexpand: true,
-                                                             shadow_type: Gtk.ShadowType.IN });
-            this._scrolledWinView.get_style_context().set_junction_sides(Gtk.JunctionSides.BOTTOM);
+            this._view = new View.View();
+            this._scrolledWinView = this._view.widget;
             grid.add(this._scrolledWinView);
-            this._scrolledWinView.get_style_context().add_class('documents-scrolledwin');
 
             this._loadMore = new LoadMore.LoadMoreButton();
             grid.add(this._loadMore.widget);
-
-            this._initView();
 
             grid.show_all();
             this._viewPage = this._notebook.append_page(grid, null);
@@ -371,20 +342,13 @@ ViewEmbed.prototype  = {
     },
 
     _onQueryError: function(manager, message, exception) {
-        this._destroyScrollViewChild();
+        this._prepareForPreview();
 
         let errorBox = new ErrorBox.ErrorBox(message, exception.message);
-        this._scrolledWinView.add_with_viewport(errorBox.widget);
+        this._scrolledWinPreview.add_with_viewport(errorBox.widget);
     },
 
     _prepareForPreview: function() {
-        this._view = null;
-
-        if (this._viewSettingsId != 0) {
-            Global.settings.disconnect(this._viewSettingsId);
-            this._viewSettingsId = 0;
-        }
-
         if (this._queryErrorId != 0) {
             Global.errorHandler.disconnect(this._queryErrorId);
             this._queryErrorId = 0;

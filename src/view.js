@@ -19,6 +19,7 @@
  *
  */
 
+const Gd = imports.gi.Gd;
 const Gdk = imports.gi.Gdk;
 const Gtk = imports.gi.Gtk;
 const _ = imports.gettext.gettext;
@@ -111,12 +112,20 @@ View.prototype = {
         this._selectedURNs = null;
         this._updateSelectionId = 0;
 
-        // create renderers
-        this.createRenderers();
-        this.widget.get_style_context().add_class('documents-main-view');
+        this.widget = new Gd.MainView();
 
-        // setup selections view => controller
-        this.connectToSelectionChanged(Lang.bind(this, this._onSelectionChanged));
+        this.widget.connect('item-activated',
+                            Lang.bind(this, this._onItemActivated));
+        this.widget.connect('selection-mode-request',
+                            Lang.bind(this, this._onSelectionModeRequest));
+        this.widget.connect('notify::view-type',
+                            Lang.bind(this, this._onViewTypeChanged));
+
+        // connect to settings change for list/grid view
+        this._viewSettingsId =
+            Global.settings.connect('changed::list-view',
+                                    Lang.bind(this, this._updateTypeForSettings));
+        this._updateTypeForSettings();
 
         // setup selection controller => view
         this._selectionModeId =
@@ -128,27 +137,67 @@ View.prototype = {
             Global.trackerController.connect('query-status-changed',
                                              Lang.bind(this, this._onQueryStatusChanged));
 
-        this.widget.connect('button-release-event',
-                            Lang.bind(this, this._onButtonReleaseEvent));
-        this.widget.connect('button-press-event',
-                            Lang.bind(this, this._onButtonPressEvent));
-        this.widget.connect('destroy', Lang.bind(this,
-            function() {
-                // save selection when the view is destroyed
-                Global.selectionController.freezeSelection(true);
-
-                if (this._updateSelectionId != 0) {
-                    Mainloop.source_remove(this._updateSelectionId);
-                    this._updateSelectionId = 0;
-                }
-
-                Global.trackerController.disconnect(this._queryId);
-                Global.selectionController.disconnect(this._selectionModeId);
-            }));
-
         // this will create the model if we're done querying
         this._onQueryStatusChanged();
         this.widget.show();
+    },
+
+    _updateTypeForSettings: function() {
+        let isList = Global.settings.get_boolean('list-view');
+        let viewType = Gd.MainViewType.ICON;
+        if (isList)
+            viewType = Gd.MainViewType.LIST;
+
+        this.widget.set_view_type(viewType);
+    },
+
+    _addListRenderers: function() {
+        let listWidget = this.widget.get_generic_view();
+
+        let typeRenderer =
+            new Gtk.CellRendererText({ xpad: 16 });
+        listWidget.add_renderer(typeRenderer, Lang.bind(this,
+            function(col, cell, model, iter) {
+                let urn = model.get_value(iter, Documents.ModelColumns.URN);
+                let doc = Global.documentManager.getItemById(urn);
+
+                typeRenderer.text = doc.typeDescription;
+            }));
+
+        let whereRenderer =
+            new Gtk.CellRendererText({ xpad: 8 });
+        listWidget.add_renderer(whereRenderer, Lang.bind(this,
+            function(col, cell, model, iter) {
+                let urn = model.get_value(iter, Documents.ModelColumns.URN);
+                let doc = Global.documentManager.getItemById(urn);
+
+                whereRenderer.text = doc.sourceName;
+            }));
+    },
+
+    _onViewTypeChanged: function() {
+        if (this.widget.get_view_type() == Gd.MainViewType.LIST)
+            this._addListRenderers();
+
+        // setup selections view => controller
+        let generic = this.widget.get_generic_view();
+        generic.connect('view-selection-changed', Lang.bind(this, this._onSelectionChanged));
+
+        Global.selectionController.freezeSelection(false);
+
+        generic.connect('destroy', Lang.bind(this,
+            function() {
+                // save selection when the view is destroyed
+                Global.selectionController.freezeSelection(true);
+            }));
+    },
+
+    _onSelectionModeRequest: function() {
+        Global.selectionController.setSelectionMode(true);
+    },
+
+    _onItemActivated: function(widget, id) {
+        Global.documentManager.setActiveItemById(id);
     },
 
     _onQueryStatusChanged: function() {
@@ -174,12 +223,12 @@ View.prototype = {
     },
 
     _updateSelection: function() {
-        let selectionObject = this.getSelectionObject();
         let selected = Global.selectionController.getSelection().slice(0);
 
         if (!selected.length)
             return;
 
+        let generic = this.widget.get_generic_view();
         let first = true;
         this._treeModel.foreach(Lang.bind(this,
             function(model, path, iter) {
@@ -187,11 +236,11 @@ View.prototype = {
                 let urnIndex = selected.indexOf(urn);
 
                 if (urnIndex != -1) {
-                    selectionObject.select_path(path);
+                    generic.select_path(path);
                     selected.splice(urnIndex, 1);
 
                     if (first) {
-                        this.scrollToPath(path);
+                        generic.scrollToPath(path);
                         first = false;
                     }
                 }
@@ -205,87 +254,15 @@ View.prototype = {
 
     _onSelectionModeChanged: function() {
         let selectionMode = Global.selectionController.getSelectionMode();
-
-        // setup the GtkSelectionMode of the view according to whether or not
-        // the view is in "selection mode"
-        if (selectionMode)
-            this.setSelectionMode(Gtk.SelectionMode.MULTIPLE);
-        else
-            this.setSelectionMode(Gtk.SelectionMode.NONE);
+        this.widget.set_selection_mode(selectionMode);
     },
 
     _onSelectionChanged: function() {
+        let generic = this.widget.get_generic_view();
+
         // update the selection on the controller when the view signals a change
-        let selectedURNs = Utils.getURNsFromPaths(this.getSelection(),
+        let selectedURNs = Utils.getURNsFromPaths(generic.get_selection(),
                                                   this._treeModel);
         Global.selectionController.setSelection(selectedURNs);
-    },
-
-    _onButtonReleaseEvent: function(widget, event) {
-        let button = event.get_button()[1];
-        let modifier = event.get_state()[1];
-        let coords = [ event.get_coords()[1] , event.get_coords()[2] ];
-
-        let selectionMode = Global.selectionController.getSelectionMode();
-        let enteredMode = false;
-
-        // eat double/triple click events
-        let clickCount = event.get_click_count()[1];
-        if (clickCount > 1)
-            return true;
-
-        // don't eat events if we didn't click any path
-        let path = this.getPathAtPos(coords);
-        if (!path)
-            return false;
-
-        if (!selectionMode) {
-            if ((button == 3) ||
-                ((button == 1) && (modifier & Gdk.ModifierType.CONTROL_MASK))) {
-                Global.selectionController.setSelectionMode(true);
-                selectionMode = true;
-                enteredMode = true;
-            }
-        }
-
-        if (selectionMode)
-            return this._selectionModeReleaseEvent(event, enteredMode, path);
-        else
-            return this._viewModeReleaseEvent(event, path);
-    },
-
-    _selectionModeReleaseEvent: function(event, enteredMode, path) {
-        let selectionObj = this.getSelectionObject();
-        let isSelected = selectionObj.path_is_selected(path);
-
-        if (isSelected && !enteredMode)
-            selectionObj.unselect_path(path);
-        else if (!isSelected)
-            selectionObj.select_path(path);
-
-        return true;
-    },
-
-    _viewModeReleaseEvent: function(event, path) {
-        this.activateItem(path);
-        return true;
-    },
-
-    _onButtonPressEvent: function(widget, event) {
-        // eat button press events for now; in the future we might
-        // want to hook up support for DnD here
-        return true;
-    },
-
-    // this must be overridden by all implementations
-    createRenderers: function() {
-        throw new Error('Missing implementation of createRenderers in ' + this);
-    },
-
-    activateItem: function(path) {
-        let iter = this._treeModel.get_iter(path)[1];
-        let urn = this._treeModel.get_value(iter, Documents.ModelColumns.URN);
-
-        Global.documentManager.setActiveItemById(urn);
     }
 };

@@ -489,7 +489,7 @@ gd_two_lines_renderer_init (GdTwoLinesRenderer *self)
                                             GdTwoLinesRendererPrivate);
 }
 
-GdTwoLinesRenderer *
+GtkCellRenderer *
 gd_two_lines_renderer_new (void)
 {
   return g_object_new (GD_TYPE_TWO_LINES_RENDERER, NULL);
