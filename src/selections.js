@@ -471,13 +471,18 @@ OrganizeCollectionView.prototype = {
         let path = Gtk.TreePath.new_from_string(pathStr);
         let iter = this._model.model.get_iter(path)[1];
 
-        // don't insert collections with empty names
+        cell.editable = false;
+
         if (!newText || newText == '') {
+            // don't insert collections with empty names
             this._model.model.remove(iter);
             return;
+        } else {
+            // update the new name immediately
+            this._model.model.set_value(iter, OrganizeModelColumns.NAME, newText);
         }
 
-        cell.editable = false;
+        // actually create the new collection
         let job = new CreateCollectionJob(newText);
         job.run(Lang.bind(this, this._onCollectionCreated));
     },
