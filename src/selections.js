@@ -303,7 +303,8 @@ CreateCollectionJob.prototype = {
                 if (key == 'res')
                     this._createdUrn = val;
 
-                this._callback(this._createdUrn);
+                if (this._callback)
+                    this._callback(this._createdUrn);
             }));
     }
 };
@@ -482,11 +483,6 @@ OrganizeCollectionView.prototype = {
         job.run(Lang.bind(this,
             function() {
                 this._model.refreshCollectionState();
-
-                // FIXME: we shouldn't be this, but tracker doesn't
-                // notify us for collection changes...
-                let coll = Global.collectionManager.getItemById(collUrn);
-                coll.refresh();
             }));
     },
 
@@ -507,19 +503,7 @@ OrganizeCollectionView.prototype = {
 
         // actually create the new collection
         let job = new CreateCollectionJob(newText);
-        job.run(Lang.bind(this, this._onCollectionCreated));
-    },
-
-    _onCollectionCreated: function(collUrn) {
-        // FIXME: we shouldn't be doing any of this, but tracker doesn't
-        // notify us for collection changes...
-
-        let job = new Documents.SingleItemJob(collUrn);
-        job.run(Query.QueryFlags.UNFILTERED, Lang.bind(this,
-            function(cursor) {
-                if (cursor)
-                    Global.documentManager.addDocumentFromCursor(cursor);
-            }));
+        job.run(null);
     },
 
     _onTextEditCanceled: function() {
