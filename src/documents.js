@@ -115,7 +115,8 @@ DeleteItemJob.prototype = {
                     log(e);
                 }
 
-                this._callback();
+                if (this._callback)
+                    this._callback();
             }));
     }
 };
@@ -649,14 +650,7 @@ LocalDocument.prototype = {
     trash: function() {
         if (this.collection) {
             let job = new DeleteItemJob(this.id);
-            job.run(Lang.bind(this,
-                function() {
-                    // FIXME: this should be done automatically when tracker
-                    // will support change notifications for collections
-                    Global.documentManager.getModel().documentRemoved(this);
-                    Global.documentManager.removeItemById(this.id);
-                    Global.collectionManager.removeItemById(this.id);
-                }));
+            job.run(null);
         }
     }
 };
