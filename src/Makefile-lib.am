@@ -38,7 +38,8 @@ gdprivate_source_c = \
 lib_LTLIBRARIES += libgdprivate-1.0.la
 
 libgdprivate_1_0_la_LIBADD = \
-    $(DOCUMENTS_LIBS)
+    $(DOCUMENTS_LIBS) \
+    $(LIBM)
 
 libgdprivate_1_0_la_CPPFLAGS = \
     $(gdprivate_cflags)
