@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Gnome-Documents\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-22 15:02+0200\n"
-"PO-Revision-Date: 2011-10-22 15:06+0200\n"
+"POT-Creation-Date: 2011-12-10 11:46+0200\n"
+"PO-Revision-Date: 2011-12-10 11:51+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <sh.yaron@gmail.com>\n"
 "Language: he\n"
@@ -25,7 +25,7 @@ msgid "Access, manage and share documents"
 msgstr "גישה, ניהול ושיתוף של מסמכים"
 
 #: ../data/gnome-documents.desktop.in.in.h:2
-#: ../src/mainWindow.js:48
+#: ../src/mainWindow.js:52
 msgid "Documents"
 msgstr "מסמכים"
 
@@ -69,40 +69,33 @@ msgstr "Window size"
 msgid "Window size (width and height)."
 msgstr "Window size (width and height)."
 
-#: ../src/categories.js:81
-msgid "New and Recent"
-msgstr "חדש ו"
-
-#: ../src/categories.js:87
-msgid "Favorites"
-msgstr "מועדפים"
-
-#: ../src/categories.js:92
-msgid "Shared with you"
-msgstr "משותף אתך"
-
-#: ../src/documents.js:260
+#: ../src/documents.js:618
 #: ../src/sources.js:100
 msgid "Local"
 msgstr "מקומי"
 
-#: ../src/documents.js:385
+#. overridden
+#: ../src/documents.js:681
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:386
+#: ../src/documents.js:682
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:455
+#: ../src/documents.js:751
 msgid "Spreadsheet"
 msgstr "גיליון אלקטרוני"
 
-#: ../src/documents.js:457
+#: ../src/documents.js:753
 msgid "Presentation"
 msgstr "מצגת"
 
-#: ../src/documents.js:459
+#: ../src/documents.js:755
+msgid "Collection"
+msgstr "אוסף"
+
+#: ../src/documents.js:757
 msgid "Document"
 msgstr "מסמך"
 
@@ -112,9 +105,18 @@ msgstr "מסמך"
 msgid "Unable to load \"%s\" for preview"
 msgstr "לא ניתן לטעון את ”%s“ לתצוגה מקדימה"
 
-#: ../src/error.js:44
+#: ../src/error.js:49
 msgid "Unable to fetch the list of documents"
 msgstr "לא ניתן לקבל את רשימת המסמכים"
+
+#. right section
+#: ../src/lib/gd-main-toolbar.c:210
+msgid "Done"
+msgstr "בוצע"
+
+#: ../src/lib/gd-pdf-loader.c:207
+msgid "Unable to load the document"
+msgstr "לא ניתן לטעון את המסמך"
 
 #: ../src/loadMore.js:70
 #, c-format
@@ -123,40 +125,115 @@ msgid_plural "Load %d more documents"
 msgstr[0] "טעינת מסמך נוסף"
 msgstr[1] "טעינת %d מסמכים נוספים"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:150
+msgid "Click on items to select them"
+msgstr "יש ללחוץ על פריטים כדי לבחור אותם"
+
+#: ../src/mainToolbar.js:152
+#, c-format
+msgid "%d selected"
+msgstr "נבחרו %d"
+
+#: ../src/mainToolbar.js:200
+msgid "New and Recent"
+msgstr "חדש ו"
+
+#: ../src/mainToolbar.js:222
 #, c-format
 msgid "(%d of %d)"
 msgstr "‏(%d מתוך %d)"
 
-#: ../src/sidebar.js:378
-#: ../src/sources.js:170
-msgid "Sources"
-msgstr "מקורות"
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "קטגוריה"
 
+#: ../src/searchbar.js:91
+#: ../src/searchbar.js:141
+#: ../src/searchbar.js:208
 #: ../src/sources.js:94
 msgid "All"
 msgstr "הכול"
 
-#: ../src/spinnerBox.js:47
-msgid "Loading..."
-msgstr "בטעינה..."
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "מועדפים"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "משותף אתך"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "סוג"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr "אוספים"
+
+#: ../src/searchbar.js:147
+msgid "PDF Documents"
+msgstr "מסמכי PDF"
+
+#: ../src/searchbar.js:150
+msgid "Presentations"
+msgstr "מצגות"
+
+#: ../src/searchbar.js:153
+msgid "Spreadsheets"
+msgstr "גיליונות אלקטרוניים"
+
+#: ../src/searchbar.js:156
+msgid "Text Documents"
+msgstr "מסמכי טקסט"
+
+#: ../src/searchbar.js:205
+msgid "Match"
+msgstr "התאמה"
+
+#: ../src/searchbar.js:210
+msgid "Title"
+msgstr "כותרת"
+
+#: ../src/searchbar.js:212
+msgid "Author"
+msgstr "מאת"
+
+#: ../src/selections.js:663
+msgid "Organize"
+msgstr "ארגון"
+
+#: ../src/selections.js:670
+msgid "Delete"
+msgstr "מחיקה"
 
 #. Translators: this is the Open action in a context menu
+#: ../src/selections.js:761
 #: ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "פתיחה באמצעות %s"
 
 #. Translators: this is the Open action in a context menu
+#: ../src/selections.js:764
 #: ../src/view.js:70
 msgid "Open"
 msgstr "פתיחה"
 
+#: ../src/selections.js:777
 #: ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "הסרה מהמועדפים"
 
+#: ../src/selections.js:781
 #: ../src/view.js:80
 msgid "Add to favorites"
 msgstr "הוספה למועדפים"
+
+#: ../src/sources.js:90
+msgid "Sources"
+msgstr "מקורות"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "בטעינה..."
 
