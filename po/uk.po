@@ -2,13 +2,15 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Korostil Daniel <ted.korostiled@gmail.com>, 2011.
+# Alexandr Toorchyn <ilex@mail.ua>, 2011
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-28 02:35+0300\n"
-"PO-Revision-Date: 2011-09-28 02:41+0300\n"
-"Last-Translator: Korostil Daniel <ted.korostiled@gmail.com>\n"
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"documents&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2011-11-16 13:29+0000\n"
+"PO-Revision-Date: 2011-12-06 21:22+0400\n"
+"Last-Translator: Alexandr Toorchyn <ilex@mail.ua>\n"
 "Language-Team: translation@linux.org.ua\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
@@ -16,13 +18,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Virtaal 0.6.1\n"
+"X-Generator: Virtaal 0.7.0\n"
+"X-Project-Style: gnome\n"
 
 #: ../data/gnome-documents.desktop.in.in.h:1
 msgid "Access, manage and share documents"
 msgstr "Доступ, впорядкування і оприлюднення документів"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:47
+#: ../data/gnome-documents.desktop.in.in.h:2
+#: ../src/mainWindow.js:53
 msgid "Documents"
 msgstr "Документи"
 
@@ -42,42 +46,57 @@ msgstr "Увімкнутий фільтр джерел"
 msgid "The last active source filter"
 msgstr "Востаннє ввімкнутий фільтр джерел"
 
-#. Translators: this refers to new and recent documents
-#: ../src/categories.js:77
-msgid "New and Recent"
-msgstr "Нове і нещодавнє"
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
+msgid "Window maximized"
+msgstr "Вікно розгорнуто"
 
-#. Translators: this refers to favorite documents
-#: ../src/categories.js:80
-msgid "Favorites"
-msgstr "Улюблене"
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
+msgid "Window maximized state"
+msgstr "Стан розгорнутого вікна"
 
-#. Translators: this refers to shared documents
-#: ../src/categories.js:83
-msgid "Shared with you"
-msgstr "Спільне з вами"
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
+msgid "Window position"
+msgstr "Положення вікна"
 
-#: ../src/documents.js:253 ../src/sources.js:101
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
+msgid "Window position (x and y)."
+msgstr "Положення вікна (x і y)"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:9
+msgid "Window size"
+msgstr "Розмір вікна"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:10
+msgid "Window size (width and height)."
+msgstr "Розмір вікна (ширина і висота)."
+
+#: ../src/documents.js:619
+#: ../src/sources.js:100
 msgid "Local"
 msgstr "Локальне"
 
-#: ../src/documents.js:372
+#. overridden
+#: ../src/documents.js:682
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:373
+#: ../src/documents.js:683
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:442
+#: ../src/documents.js:752
 msgid "Spreadsheet"
 msgstr "Електронна таблиця"
 
-#: ../src/documents.js:444
+#: ../src/documents.js:754
 msgid "Presentation"
 msgstr "Презентація"
 
-#: ../src/documents.js:446
+#: ../src/documents.js:756
+msgid "Collection"
+msgstr "Колекція"
+
+#: ../src/documents.js:758
 msgid "Document"
 msgstr "Документ"
 
@@ -87,49 +106,140 @@ msgstr "Документ"
 msgid "Unable to load \"%s\" for preview"
 msgstr "Неможливо завантажити «%s» для перегляду"
 
-#: ../src/error.js:44
+#: ../src/error.js:49
 msgid "Unable to fetch the list of documents"
 msgstr "Неможливо одержати список документів"
 
+#: ../src/lib/gd-pdf-loader.c:207
+#| msgid "Unable to fetch the list of documents"
+msgid "Unable to load the document"
+msgstr "Не вдалось завантажити документ"
+
 #: ../src/loadMore.js:70
 #, c-format
-msgid "Load %d more documents"
+#| msgid "Load %d more documents"
+#| msgid_plural "Load %d more documents"
+msgid "Load %d more document"
 msgid_plural "Load %d more documents"
 msgstr[0] "Завантажити ще %d документ"
 msgstr[1] "Завантажити ще %d документа"
 msgstr[2] "Завантажити ще %d документів"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:151
+msgid "Click on items to select them"
+msgstr "Натисніть на об'єкти, щоб вибрати їх"
+
+#: ../src/mainToolbar.js:153
+#, c-format
+msgid "%d selected"
+msgstr "Вибрано: %d"
+
+#: ../src/mainToolbar.js:172
+msgid "Done"
+msgstr "Завершено"
+
+#: ../src/mainToolbar.js:298
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d з %d)"
 
-#: ../src/sidebar.js:131 ../src/sources.js:218
-msgid "Sources"
-msgstr "Джерела"
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "Категорія"
 
-#: ../src/sources.js:96
+#: ../src/searchbar.js:91
+#: ../src/searchbar.js:141
+#: ../src/searchbar.js:204
+#: ../src/sources.js:94
 msgid "All"
-msgstr "Усе"
+msgstr "Все"
 
-#: ../src/spinnerBox.js:47
-msgid "Loading..."
-msgstr "Завантаження…"
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "Улюблене"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "Спільне з вами"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "Тип"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr "Колекції"
+
+#: ../src/searchbar.js:147
+#| msgid "Documents"
+msgid "PDF Documents"
+msgstr "Документи PDF"
+
+#: ../src/searchbar.js:150
+#| msgid "Presentation"
+msgid "Presentations"
+msgstr "Презентації"
+
+#: ../src/searchbar.js:153
+#| msgid "Spreadsheet"
+msgid "Spreadsheets"
+msgstr "Електронні таблиці"
+
+#: ../src/searchbar.js:156
+#| msgid "Documents"
+msgid "Text Documents"
+msgstr "Текстові документи"
+
+#: ../src/searchbar.js:201
+msgid "Match"
+msgstr "Збіги"
+
+#: ../src/searchbar.js:206
+msgid "Title"
+msgstr "Заголовок"
+
+#: ../src/searchbar.js:208
+msgid "Author"
+msgstr "Автор"
+
+#: ../src/selections.js:644
+msgid "Organize"
+msgstr "Організація"
+
+#: ../src/selections.js:650
+msgid "Delete"
+msgstr "Вилучити"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:67
+#: ../src/selections.js:737
+#: ../src/view.js:65
 #, c-format
 msgid "Open with %s"
 msgstr "Відкрити через %s"
 
-#: ../src/view.js:69
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:740
+#: ../src/view.js:68
 msgid "Open"
 msgstr "Відкрити"
 
-#: ../src/view.js:79
+#: ../src/selections.js:753
+#: ../src/view.js:78
 msgid "Remove from favorites"
 msgstr "Вилучити з улюбленого"
 
-#: ../src/view.js:79
+#: ../src/selections.js:757
+#: ../src/view.js:78
 msgid "Add to favorites"
 msgstr "Додати до улюбленого"
+
+#: ../src/sources.js:90
+msgid "Sources"
+msgstr "Джерела"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "Завантаження…"
+
+#~ msgid "New and Recent"
+#~ msgstr "Нове і нещодавнє"
