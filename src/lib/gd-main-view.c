@@ -158,8 +158,9 @@ gd_main_view_class_init (GdMainViewClass *klass)
                   GD_TYPE_MAIN_VIEW,
                   G_SIGNAL_RUN_LAST,
                   0, NULL, NULL, NULL,
-                  G_TYPE_NONE, 1,
-                  G_TYPE_STRING);
+                  G_TYPE_NONE, 2,
+                  G_TYPE_STRING, 
+                  GTK_TYPE_TREE_PATH);
 
   signals[SELECTION_MODE_REQUEST] =
     g_signal_new ("selection-mode-request",
@@ -211,12 +212,14 @@ on_button_release_view_mode (GdMainView *self,
   if (self->priv->model == NULL)
     return FALSE;
 
-  gtk_tree_model_get_iter (self->priv->model, &iter, path);
+  if (!gtk_tree_model_get_iter (self->priv->model, &iter, path))
+    return FALSE;
+
   gtk_tree_model_get (self->priv->model, &iter,
                       GD_MAIN_COLUMN_ID, &id,
                       -1);
 
-  g_signal_emit (self, signals[ITEM_ACTIVATED], 0, id);
+  g_signal_emit (self, signals[ITEM_ACTIVATED], 0, id, path);
   g_free (id);
 
   return TRUE;

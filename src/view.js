@@ -196,7 +196,7 @@ View.prototype = {
         Global.selectionController.setSelectionMode(true);
     },
 
-    _onItemActivated: function(widget, id) {
+    _onItemActivated: function(widget, id, path) {
         Global.documentManager.setActiveItemById(id);
     },
 
