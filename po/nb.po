@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-01 19:10+0100\n"
-"PO-Revision-Date: 2011-12-01 19:11+0100\n"
+"POT-Creation-Date: 2011-12-14 22:42+0100\n"
+"PO-Revision-Date: 2011-12-14 22:43+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: \n"
@@ -104,6 +104,11 @@ msgstr "Kan ikke laste «%s» for forhåndsvisning"
 msgid "Unable to fetch the list of documents"
 msgstr "Kan ikke hente listen med dokumenter"
 
+#. right section
+#: ../src/lib/gd-main-toolbar.c:210
+msgid "Done"
+msgstr "Ferdig"
+
 #: ../src/lib/gd-pdf-loader.c:207
 msgid "Unable to load the document"
 msgstr "Kan ikke laste dokumentet"
@@ -115,20 +120,20 @@ msgid_plural "Load %d more documents"
 msgstr[0] "Last %d dokument til"
 msgstr[1] "Last %d dokumenter til"
 
-#: ../src/mainToolbar.js:179
+#: ../src/mainToolbar.js:150
 msgid "Click on items to select them"
 msgstr "Klikk på oppføringer for å velge dem"
 
-#: ../src/mainToolbar.js:181
+#: ../src/mainToolbar.js:152
 #, c-format
 msgid "%d selected"
 msgstr "%d valgt"
 
-#: ../src/mainToolbar.js:208
-msgid "Done"
-msgstr "Ferdig"
+#: ../src/mainToolbar.js:200
+msgid "New and Recent"
+msgstr "Nye og nylige"
 
-#: ../src/mainToolbar.js:334
+#: ../src/mainToolbar.js:222
 #, c-format
 msgid "(%d of %d)"
 msgstr "[%d av %d]"
@@ -137,7 +142,7 @@ msgstr "[%d av %d]"
 msgid "Category"
 msgstr "Kategori"
 
-#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:204
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:208
 #: ../src/sources.js:94
 msgid "All"
 msgstr "Alle"
@@ -174,42 +179,42 @@ msgstr "Regneark"
 msgid "Text Documents"
 msgstr "Tekstdokumenter"
 
-#: ../src/searchbar.js:201
+#: ../src/searchbar.js:205
 msgid "Match"
 msgstr "Treff"
 
-#: ../src/searchbar.js:206
+#: ../src/searchbar.js:210
 msgid "Title"
 msgstr "Tittel"
 
-#: ../src/searchbar.js:208
+#: ../src/searchbar.js:212
 msgid "Author"
 msgstr "Forfatter"
 
-#: ../src/selections.js:658
+#: ../src/selections.js:663
 msgid "Organize"
 msgstr "Organiser"
 
-#: ../src/selections.js:665
+#: ../src/selections.js:670
 msgid "Delete"
 msgstr "Slett"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:756 ../src/view.js:66
+#: ../src/selections.js:761 ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "Åpne med %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:759 ../src/view.js:69
+#: ../src/selections.js:764 ../src/view.js:70
 msgid "Open"
 msgstr "Åpne"
 
-#: ../src/selections.js:772 ../src/view.js:79
+#: ../src/selections.js:777 ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "Fjern fra favoritter"
 
-#: ../src/selections.js:776 ../src/view.js:79
+#: ../src/selections.js:781 ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Legg til i favoritter"
 
