@@ -62,6 +62,7 @@ Application.prototype = {
             application_id: 'org.gnome.Documents',
             flags: Gio.ApplicationFlags.HANDLES_COMMAND_LINE
         });
+        GLib.set_prgname('gnome-documents');
         this.application.connect('startup', Lang.bind(this, this._onStartup));
         this.application.connect('command-line', Lang.bind(this, this._commandLine));
         this.application.connect('activate', Lang.bind(this,
@@ -75,7 +76,6 @@ Application.prototype = {
         Gettext.textdomain('gnome-documents');
         String.prototype.format = Format.format;
 
-        GLib.set_prgname('gnome-documents');
         GtkClutter.init(null, null);
         EvDoc.init();
         Tweener.init();
