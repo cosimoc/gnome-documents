@@ -410,7 +410,7 @@ pdf_load_job_from_google_documents (PdfLoadJob *job)
   job->original_file_mtime = gdata_entry_get_updated (job->gdata_entry);
 
   tmp_name = g_strdup_printf ("gnome-documents-%u.pdf", 
-                              g_str_hash (gdata_documents_entry_get_document_id (GDATA_DOCUMENTS_ENTRY (job->gdata_entry))));
+                              g_str_hash (gdata_documents_entry_get_resource_id (GDATA_DOCUMENTS_ENTRY (job->gdata_entry))));
   tmp_path = g_build_filename (g_get_user_cache_dir (), "gnome-documents", NULL);
   job->pdf_path = pdf_path =
     g_build_filename (tmp_path, tmp_name, NULL);
