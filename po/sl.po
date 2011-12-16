@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-10-22 13:07+0000\n"
-"PO-Revision-Date: 2011-10-23 20:02+0100\n"
+"POT-Creation-Date: 2011-12-16 13:45+0000\n"
+"PO-Revision-Date: 2011-12-16 21:54+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: Slovenian\n"
@@ -26,7 +26,7 @@ msgid "Access, manage and share documents"
 msgstr "Upravljanje, dostop in souporaba dokumentov"
 
 #: ../data/gnome-documents.desktop.in.in.h:2
-#: ../src/mainWindow.js:48
+#: ../src/mainWindow.js:53
 msgid "Documents"
 msgstr "Dokumenti"
 
@@ -70,40 +70,33 @@ msgstr "Velikost okna"
 msgid "Window size (width and height)."
 msgstr "Velikost okna (širina in višina)."
 
-#: ../src/categories.js:81
-msgid "New and Recent"
-msgstr "Novo in nedavno"
-
-#: ../src/categories.js:87
-msgid "Favorites"
-msgstr "Priljubljeno"
-
-#: ../src/categories.js:92
-msgid "Shared with you"
-msgstr "V souporabi"
-
-#: ../src/documents.js:260
+#: ../src/documents.js:618
 #: ../src/sources.js:100
 msgid "Local"
 msgstr "Krajevno"
 
-#: ../src/documents.js:385
+#. overridden
+#: ../src/documents.js:681
 msgid "Google Docs"
 msgstr "Google dokumenti"
 
-#: ../src/documents.js:386
+#: ../src/documents.js:682
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:455
+#: ../src/documents.js:751
 msgid "Spreadsheet"
 msgstr "Preglednica"
 
-#: ../src/documents.js:457
+#: ../src/documents.js:753
 msgid "Presentation"
 msgstr "Predstavitev"
 
-#: ../src/documents.js:459
+#: ../src/documents.js:755
+msgid "Collection"
+msgstr "Zbirka"
+
+#: ../src/documents.js:757
 msgid "Document"
 msgstr "Dokument"
 
@@ -113,9 +106,18 @@ msgstr "Dokument"
 msgid "Unable to load \"%s\" for preview"
 msgstr "Ni mogoče naložiti \"%s\" za predogled"
 
-#: ../src/error.js:44
+#: ../src/error.js:49
 msgid "Unable to fetch the list of documents"
 msgstr "Seznama dokumentov ni mogoče pridobiti"
+
+#. right section
+#: ../src/lib/gd-main-toolbar.c:210
+msgid "Done"
+msgstr "Končano"
+
+#: ../src/lib/gd-pdf-loader.c:207
+msgid "Unable to load the document"
+msgstr "Dokumenta ni mogoče naložiti"
 
 #: ../src/loadMore.js:70
 #, c-format
@@ -126,40 +128,115 @@ msgstr[1] "Naloži še %d dokument"
 msgstr[2] "Naloži še %d dokumenta"
 msgstr[3] "Naloži še %d dokumente"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:150
+msgid "Click on items to select them"
+msgstr "S klikom se predmeti izberejo."
+
+#: ../src/mainToolbar.js:152
+#, c-format
+msgid "%d selected"
+msgstr "%d izbranih"
+
+#: ../src/mainToolbar.js:200
+msgid "New and Recent"
+msgstr "Novo in nedavno"
+
+#: ../src/mainToolbar.js:222
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d od %d)"
 
-#: ../src/sidebar.js:378
-#: ../src/sources.js:170
-msgid "Sources"
-msgstr "Viri"
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "Kategorija"
 
+#: ../src/searchbar.js:91
+#: ../src/searchbar.js:141
+#: ../src/searchbar.js:208
 #: ../src/sources.js:94
 msgid "All"
 msgstr "Vse"
 
-#: ../src/spinnerBox.js:47
-msgid "Loading..."
-msgstr "Nalaganje ..."
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "Priljubljeno"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "V souporabi"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "Vrsta"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr "Zbirke"
+
+#: ../src/searchbar.js:147
+msgid "PDF Documents"
+msgstr "Dokumenti PDF"
+
+#: ../src/searchbar.js:150
+msgid "Presentations"
+msgstr "Predstavitve"
+
+#: ../src/searchbar.js:153
+msgid "Spreadsheets"
+msgstr "Preglednice"
+
+#: ../src/searchbar.js:156
+msgid "Text Documents"
+msgstr "Besedilni dokumenti"
+
+#: ../src/searchbar.js:205
+msgid "Match"
+msgstr "Se sklada"
+
+#: ../src/searchbar.js:210
+msgid "Title"
+msgstr "Naslov"
+
+#: ../src/searchbar.js:212
+msgid "Author"
+msgstr "Avtor"
+
+#: ../src/selections.js:663
+msgid "Organize"
+msgstr "Organiziraj"
+
+#: ../src/selections.js:670
+msgid "Delete"
+msgstr "Izbriši"
 
 #. Translators: this is the Open action in a context menu
+#: ../src/selections.js:761
 #: ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "Odpri z %s"
 
 #. Translators: this is the Open action in a context menu
+#: ../src/selections.js:764
 #: ../src/view.js:70
 msgid "Open"
 msgstr "Odpri"
 
+#: ../src/selections.js:777
 #: ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "Odstrani iz priljubljenih"
 
+#: ../src/selections.js:781
 #: ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Dodaj med priljubljene"
+
+#: ../src/sources.js:90
+msgid "Sources"
+msgstr "Viri"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "Nalaganje ..."
 
