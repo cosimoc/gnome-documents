@@ -639,12 +639,14 @@ void
 gd_entry_focus_hack (GtkWidget *entry,
                      GdkDevice *device)
 {
+  GtkEntryClass *entry_class;
   GtkWidgetClass *entry_parent_class;
 
   /* Grab focus will select all the text.  We don't want that to happen, so we
    * call the parent instance and bypass the selection change.  This is probably
    * really non-kosher. */
-  entry_parent_class = g_type_class_peek_parent (GTK_ENTRY_GET_CLASS (entry));
+  entry_class = g_type_class_peek (GTK_TYPE_ENTRY);
+  entry_parent_class = g_type_class_peek_parent (entry_class);
   (entry_parent_class->grab_focus) (entry);
 
   /* send focus-in event */
