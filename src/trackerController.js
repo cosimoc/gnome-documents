@@ -122,6 +122,7 @@ TrackerController.prototype = {
         this._currentQuery = null;
         this._cancellable = new Gio.Cancellable();
         this._queryQueued = false;
+        this._queryQueuedFlags = RefreshFlags.NONE;
         this._querying = false;
         // startup a refresh of the gdocs cache
         this._miner = new GDataMiner.GDataMiner();
@@ -199,7 +200,7 @@ TrackerController.prototype = {
 
         if (this._queryQueued) {
             this._queryQueued = false;
-            this._refresh();
+            this._refreshInternal(this._queryQueuedFlags);
         }
     },
 
@@ -252,6 +253,7 @@ TrackerController.prototype = {
         if (this.getQueryStatus()) {
             this._cancellable.cancel();
             this._queryQueued = true;
+            this._queryQueuedFlags = flags;
 
             return;
         }
