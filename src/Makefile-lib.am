@@ -8,7 +8,6 @@ gdprivate_cflags = \
     $(DOCUMENTS_CFLAGS)
 
 gdprivate_source_h = \
-    lib/gd-gdata-goa-authorizer.c \
     lib/gd-gdata-goa-authorizer.h \
     lib/gd-utils.h \
     lib/gd-main-toolbar.h \
@@ -23,6 +22,7 @@ gdprivate_source_h = \
     $(NULL)
 
 gdprivate_source_c = \
+    lib/gd-gdata-goa-authorizer.c \
     lib/gd-utils.c \
     lib/gd-main-toolbar.c \
     lib/gd-main-view-generic.c \
