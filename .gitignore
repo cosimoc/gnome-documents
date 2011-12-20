@@ -43,6 +43,7 @@ src/Makefile
 src/Makefile.in
 src/gd-tracker-gdata-miner
 src/gnome-documents
+src/gnome-documents-debug
 src/path.js
 stamp-h1
 xmldocs.make
