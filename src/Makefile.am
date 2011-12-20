@@ -8,13 +8,13 @@ AM_CPPFLAGS = \
     -DGNOME_DOCUMENTS_TOP_SRCDIR=\"$(abs_top_srcdir)\" \
     -DGNOME_DOCUMENTS_BUILDDIR=\"$(abs_top_builddir)\"
 
-girdir = $(datadir)/gir-1.0
-typelibdir = $(libdir)/girepository-1.0
+girdir = $(pkgdatadir)/gir-1.0
+typelibdir = $(pkglibdir)/girepository-1.0
 
 BUILT_SOURCES =
 EXTRA_DIST =
 CLEANFILES =
-lib_LTLIBRARIES =
+pkglib_LTLIBRARIES =
 INTROSPECTION_GIRS =
 gir_DATA =
 typelib_DATA =

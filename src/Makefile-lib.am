@@ -35,11 +35,14 @@ gdprivate_source_c = \
     lib/gd-two-lines-renderer.c \
     $(NULL)
 
-lib_LTLIBRARIES += libgdprivate-1.0.la
+pkglib_LTLIBRARIES += libgdprivate-1.0.la
 
 libgdprivate_1_0_la_LIBADD = \
     $(DOCUMENTS_LIBS) \
     $(LIBM)
+
+libgdprivate_1_0_la_LDFLAGS = \
+    -avoid-version
 
 libgdprivate_1_0_la_CPPFLAGS = \
     $(gdprivate_cflags)
