@@ -1,6 +1,6 @@
 dnl -*- mode: m4 -*-
 AC_PREREQ(2.63)
-AC_INIT([gnome-documents],[0.3.2],[],[gnome-documents])
+AC_INIT([gnome-documents],[0.3.3],[],[gnome-documents])
 
 AM_CONFIG_HEADER(config/config.h)
 AC_CONFIG_SRCDIR([src/main.js])
@@ -57,7 +57,7 @@ AC_SUBST(LIBM)
 
 EVINCE_MIN_VERSION=3.3.0
 GLIB_MIN_VERSION=2.31.0
-GTK_MIN_VERSION=3.3.5
+GTK_MIN_VERSION=3.3.6
 GOBJECT_INTROSPECTION_MIN_VERSION=0.9.6
 GDATA_MIN_VERSION=0.9.1
 GOA_MIN_VERSION=3.2.0

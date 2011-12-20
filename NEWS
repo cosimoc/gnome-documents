@@ -1,3 +1,15 @@
+0.3.3 - "We Got the Beat"
+=========================
+
+- Add a tagged entry implementation for search filtering
+- Port to GtkApplication (Florian Müllner)
+- Split search into words (Florian Müllner)
+- Open previews from command line (Florian Müllner)
+- Hide titlebar when maximized (Florian Müllner)
+- Enter selection mode with Ctrl+Click
+- Rewrite main view and toolbar with generic C classes
+- Don't install libgdprivate in $libdir (Michael Biebl)
+
 0.3.2 - "Steady Diet of Nothing"
 ================================
 
