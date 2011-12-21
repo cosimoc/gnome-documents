@@ -48,8 +48,8 @@ const Selections = imports.selections;
 const Sources = imports.sources;
 const TrackerController = imports.trackerController;
 const Tweener = imports.util.tweener;
+const Utils = imports.utils;
 const WindowMode = imports.windowMode;
-
 
 function Application() {
     this._init();
@@ -76,36 +76,40 @@ Application.prototype = {
             function() {
                 this._mainWindow.window.present();
             }));
-	this._actionGroup = new Gio.SimpleActionGroup();
-	this._menu = new Gio.Menu();
-	// this._viewAs = Gio.SimpleAction.new_stateful("view-as-list",
-	// 					     GLib.VariantType.new("b"),
-	// 					     Global.settings.get_value('list-view'));
-	// this._viewAs.connect('activate', Lang.bind(this, function () {
-	//     Global.settings.set_boolean('list-view', this._viewAs.state);
-	// }));
-	// this._actionGroup.insert(this._viewAs);
-	this._fullscreen = false;
-	this._fullscreenAction = new Gio.SimpleAction({ name: 'fullscreen'  });
-	this._fullscreenAction.connect('activate', Lang.bind(this, function() {
-	    this._fullscreen = !this._fullscreen;
-	    if (this._fullscreen)
-		this._mainWindow.window.fullscreen();
-	    else
-		this._mainWindow.window.unfullscreen();
-	}));
-	this._actionGroup.insert(this._fullscreenAction);
-	this._menu.append(_('Fullscreen'), "app.fullscreen");
 
-	this._quitAction = new Gio.SimpleAction({ name: 'quit' });
-	this._quitAction.connect('activate', Lang.bind(this, function() {
-	    this.application.release();
-	}));
-	this._actionGroup.insert(this._quitAction);
-	this._menu.append(_('Quit'), "app.quit");
+        this._initMenus();
+    },
 
-	this.application.set_action_group(this._actionGroup);
-	this.application.set_app_menu(this._menu);
+    _initMenus: function() {
+	let quitAction = new Gio.SimpleAction({ name: 'quit' });
+	quitAction.connect('activate', Lang.bind(this,
+            function() {
+                this._mainWindow.window.destroy();
+	    }));
+	this.application.add_action(quitAction);
+
+        let viewAsAction = Gio.SimpleAction.new_stateful('view-as',
+                                                         GLib.VariantType.new('s'),
+                                                         Utils.listSettingToMenu());
+        viewAsAction.connect('activate', Lang.bind(this,
+            function(action, variant) {
+                Global.settings.set_boolean('list-view', Utils.listMenuToSetting(variant));
+            }));
+        Global.settings.connect('changed::list-view', Lang.bind(this,
+            function() {
+                viewAsAction.state = Utils.listSettingToMenu();
+            }));
+        this.application.add_action(viewAsAction);
+
+	let menu = new Gio.Menu();
+	menu.append(_("Quit"), 'app.quit');
+
+        let viewAs = new Gio.Menu();
+        viewAs.append(_("Grid"), 'app.view-as::grid');
+        viewAs.append(_("List"), 'app.view-as::list');
+        menu.prepend_section(_("View as"), viewAs);
+
+	this.application.set_app_menu(menu);
     },
 
     _onStartup: function() {

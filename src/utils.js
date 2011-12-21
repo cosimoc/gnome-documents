@@ -104,6 +104,18 @@ function isSearchEvent(event) {
     return retval;
 }
 
+function listSettingToMenu() {
+    let isList =  Global.settings.get_boolean('list-view');
+    let variant = GLib.Variant.new('s', isList ? 'list' : 'grid');
+
+    return variant;
+}
+
+function listMenuToSetting(variant) {
+    let string = variant.get_string()[0];
+    return (string == 'list') ? true : false;
+}
+
 function debug(str) {
     if (!debugInit) {
         let env = GLib.getenv('DOCUMENTS_DEBUG');
