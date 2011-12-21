@@ -177,9 +177,6 @@ MainToolbar.prototype = {
     _populateForOverview: function() {
         this.widget.set_mode(Gd.MainToolbarMode.OVERVIEW);
 
-        let viewSel = new ViewSelector();
-        this.widget.add_widget(viewSel.widget, Gd.MainToolbarPosition.RIGHT);
-
         // connect to active collection changes while in this mode
         this._collectionId =
             Global.collectionManager.connect('active-changed',
