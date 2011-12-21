@@ -76,8 +76,6 @@ Application.prototype = {
             function() {
                 this._mainWindow.window.present();
             }));
-
-        this._initMenus();
     },
 
     _initMenus: function() {
@@ -152,6 +150,7 @@ Application.prototype = {
         Global.selectionController = new Selections.SelectionController();
         Global.modeController = new WindowMode.ModeController();
 
+        this._initMenus();
         this._mainWindow = new MainWindow.MainWindow(this.application);
     },
 
