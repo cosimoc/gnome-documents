@@ -3,21 +3,20 @@
 # This file is distributed under the same license as the gnome-documents package.
 # Tiffany Antopolski <tiffany.antopolski@gmail.com>, 2011.
 # Kristjan SCHMIDT <kristjan.schmidt@googlemail.com>, 2011.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-11-02 22:05+0000\n"
-"PO-Revision-Date: 2011-11-03 19:52+0100\n"
-"Last-Translator: Kristjan SCHMIDT <kristjan.schmidt@googlemail.com>\n"
-"Language-Team: Esperanto <gnome-l10n-eo@lists.launchpad.net >\n"
+"POT-Creation-Date: 2011-12-15 17:20+0000\n"
+"PO-Revision-Date: 2011-12-07 22:09-0400\n"
+"Last-Translator: Tiffany Antopolski <tiffany.antopolski@gmail.com>\n"
+"Language-Team: Esperanto\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bits\n"
 "Language: eo\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Virtaal 0.7.1-rc1\n"
 "X-Project-Style: gnome\n"
 
@@ -25,7 +24,7 @@ msgstr ""
 msgid "Access, manage and share documents"
 msgstr "Aliri, administri kaj kunhavigi dokumentojn"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:54
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:53
 msgid "Documents"
 msgstr "Dokumentoj"
 
@@ -69,39 +68,32 @@ msgstr "Fenestrogrando"
 msgid "Window size (width and height)."
 msgstr "Fenestrogrando (larĝo kaj alto)."
 
-#: ../src/categories.js:81
-msgid "New and Recent"
-msgstr "Novaj kaj lastatempaj"
-
-#: ../src/categories.js:87
-msgid "Favorites"
-msgstr "Legosignoj"
-
-#: ../src/categories.js:92
-msgid "Shared with you"
-msgstr "Kunhavigite kun vi"
-
-#: ../src/documents.js:261 ../src/sources.js:95
+#: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
 msgstr "Loke"
 
-#: ../src/documents.js:408
+#. overridden
+#: ../src/documents.js:681
 msgid "Google Docs"
 msgstr "Guglo-Docs"
 
-#: ../src/documents.js:409
+#: ../src/documents.js:682
 msgid "Google"
 msgstr "Guglo"
 
-#: ../src/documents.js:478
+#: ../src/documents.js:751
 msgid "Spreadsheet"
 msgstr "Kalkultabelo"
 
-#: ../src/documents.js:480
+#: ../src/documents.js:753
 msgid "Presentation"
 msgstr "Prezentaĵo"
 
-#: ../src/documents.js:482
+#: ../src/documents.js:755
+msgid "Collection"
+msgstr "Aro"
+
+#: ../src/documents.js:757
 msgid "Document"
 msgstr "Dokumento"
 
@@ -115,6 +107,15 @@ msgstr "Ne eblis ŝargi na \"%s\" por antaŭmontro"
 msgid "Unable to fetch the list of documents"
 msgstr "Ne eblis venigi la liston de dokumentoj"
 
+#. right section
+#: ../src/lib/gd-main-toolbar.c:210
+msgid "Done"
+msgstr "Farite"
+
+#: ../src/lib/gd-pdf-loader.c:207
+msgid "Unable to load the document"
+msgstr "Ne eblis ŝargi la dokumenton"
+
 #: ../src/loadMore.js:70
 #, c-format
 msgid "Load %d more document"
@@ -122,47 +123,108 @@ msgid_plural "Load %d more documents"
 msgstr[0] "Ŝargi %d pluan dokumenton"
 msgstr[1] "Ŝargi %d pluajn dokumentojn"
 
-#: ../src/mainToolbar.js:85
+#: ../src/mainToolbar.js:150
 msgid "Click on items to select them"
 msgstr "Klaki sur eroj por elekti ilin"
 
-#: ../src/mainToolbar.js:87
+#: ../src/mainToolbar.js:152
 #, c-format
 msgid "%d selected"
 msgstr "%d elektita"
 
-#: ../src/mainToolbar.js:231
+#: ../src/mainToolbar.js:200
+msgid "New and Recent"
+msgstr "Novaj kaj lastatempaj"
+
+#: ../src/mainToolbar.js:222
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d de %d)"
 
-#: ../src/sources.js:85
-msgid "Sources"
-msgstr "Fontoj"
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "Kategorio"
 
-#: ../src/sources.js:89
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:208
+#: ../src/sources.js:94
 msgid "All"
 msgstr "Ĉiuj"
 
-#: ../src/spinnerBox.js:58
-msgid "Loading..."
-msgstr "Ŝargante..."
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "Legosignoj"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "Kunhavigite kun vi"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "Speco"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr "Aroj"
+
+#: ../src/searchbar.js:147
+msgid "PDF Documents"
+msgstr "PDF-dokumentoj"
+
+#: ../src/searchbar.js:150
+msgid "Presentations"
+msgstr "Prezentaĵoj"
+
+#: ../src/searchbar.js:153
+msgid "Spreadsheets"
+msgstr "Kalkultabeloj"
+
+#: ../src/searchbar.js:156
+msgid "Text Documents"
+msgstr "Tekstdokumentoj"
+
+#: ../src/searchbar.js:205
+msgid "Match"
+msgstr "Kongruo"
+
+#: ../src/searchbar.js:210
+msgid "Title"
+msgstr "Titolo"
+
+#: ../src/searchbar.js:212
+msgid "Author"
+msgstr "Aŭtoro"
+
+#: ../src/selections.js:663
+msgid "Organize"
+msgstr "Organizi"
+
+#: ../src/selections.js:670
+msgid "Delete"
+msgstr "Forstreki"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:66
+#: ../src/selections.js:761 ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "Malfermi per %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:69
+#: ../src/selections.js:764 ../src/view.js:70
 msgid "Open"
 msgstr "Malfermi"
 
-#: ../src/view.js:79
+#: ../src/selections.js:777 ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "Forigi de la legosignoj"
 
-#: ../src/view.js:79
+#: ../src/selections.js:781 ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Aldoni al la legosignoj"
+
+#: ../src/sources.js:90
+msgid "Sources"
+msgstr "Fontoj"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "Ŝargante..."
