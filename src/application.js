@@ -86,6 +86,18 @@ Application.prototype = {
 	    }));
 	this.application.add_action(quitAction);
 
+        let fsAction = new Gio.SimpleAction({ name: 'fullscreen' });
+        fsAction.connect('activate', Lang.bind(this,
+            function() {
+                Global.modeController.toggleFullscreen();
+            }));
+        Global.modeController.connect('window-mode-changed', Lang.bind(this,
+            function() {
+                let mode = Global.modeController.getWindowMode();
+                fsAction.set_enabled(mode == WindowMode.WindowMode.PREVIEW);
+            }));
+        this.application.add_action(fsAction);
+
         let viewAsAction = Gio.SimpleAction.new_stateful('view-as',
                                                          GLib.VariantType.new('s'),
                                                          Utils.listSettingToMenu());
@@ -100,6 +112,7 @@ Application.prototype = {
         this.application.add_action(viewAsAction);
 
 	let menu = new Gio.Menu();
+        menu.append(_("Fullscreen"), 'app.fullscreen');
 	menu.append(_("Quit"), 'app.quit');
 
         let viewAs = new Gio.Menu();
