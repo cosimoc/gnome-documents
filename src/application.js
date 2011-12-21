@@ -105,7 +105,7 @@ Application.prototype = {
 	this._menu.append(_('Quit'), "app.quit");
 
 	this.application.set_action_group(this._actionGroup);
-	this.application.set_menu(this._menu);
+	this.application.set_app_menu(this._menu);
     },
 
     _onStartup: function() {
@@ -148,8 +148,7 @@ Application.prototype = {
         Global.selectionController = new Selections.SelectionController();
         Global.modeController = new WindowMode.ModeController();
 
-        this._mainWindow = new MainWindow.MainWindow();
-        this.application.add_window(this._mainWindow.window);
+        this._mainWindow = new MainWindow.MainWindow(this.application);
     },
 
     _commandLine: function(app, commandLine) {
