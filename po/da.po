@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-21 17:56+0200\n"
-"PO-Revision-Date: 2011-09-14 17:44+0000\n"
+"POT-Creation-Date: 2012-01-02 12:29+0100\n"
+"PO-Revision-Date: 2011-12-27 22:16+0000\n"
 "Last-Translator: Kris Thomsen <lakristho@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Access, manage and share documents"
 msgstr "Tilgå, håndtér og del dokumenter"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:47
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:53
 msgid "Documents"
 msgstr "Dokumenter"
 
@@ -41,42 +41,56 @@ msgstr "Det aktive kildefilter"
 msgid "The last active source filter"
 msgstr "Det senest aktive kildefilter"
 
-#. Translators: this refers to new and recent documents
-#: ../src/categories.js:77
-msgid "New and Recent"
-msgstr "Nye og nylige"
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
+msgid "Window maximized"
+msgstr "Vindue maksimeret"
 
-#. Translators: this refers to favorite documents
-#: ../src/categories.js:80
-msgid "Favorites"
-msgstr "Favoritter"
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
+msgid "Window maximized state"
+msgstr "Maksimeringstilstand for vindue"
 
-#. Translators: this refers to shared documents
-#: ../src/categories.js:83
-msgid "Shared with you"
-msgstr "Delt med dig"
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
+msgid "Window position"
+msgstr "Vinduesposition"
 
-#: ../src/documents.js:253 ../src/sources.js:101
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
+msgid "Window position (x and y)."
+msgstr "Vinduesposition (x og y)."
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:9
+msgid "Window size"
+msgstr "Vinduesstørrelse"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:10
+msgid "Window size (width and height)."
+msgstr "Vinduesstørrelse (bredde og højde)."
+
+#: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
 msgstr "Lokal"
 
-#: ../src/documents.js:372
+#. overridden
+#: ../src/documents.js:681
 msgid "Google Docs"
 msgstr "Google Dokumenter"
 
-#: ../src/documents.js:373
+#: ../src/documents.js:682
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:442
+#: ../src/documents.js:751
 msgid "Spreadsheet"
 msgstr "Regneark"
 
-#: ../src/documents.js:444
+#: ../src/documents.js:753
 msgid "Presentation"
 msgstr "Præsentation"
 
-#: ../src/documents.js:446
+#: ../src/documents.js:755
+msgid "Collection"
+msgstr "Samling"
+
+#: ../src/documents.js:757
 msgid "Document"
 msgstr "Dokument"
 
@@ -86,48 +100,128 @@ msgstr "Dokument"
 msgid "Unable to load \"%s\" for preview"
 msgstr "Kunne ikke indlæse \"%s\" til forhåndsvisning"
 
-#: ../src/error.js:44
+#: ../src/error.js:49
 msgid "Unable to fetch the list of documents"
 msgstr "Kunne ikke hente listen over dokumenter"
 
+#. right section
+#: ../src/lib/gd-main-toolbar.c:210
+msgid "Done"
+msgstr "Færdig"
+
+#: ../src/lib/gd-pdf-loader.c:207
+msgid "Unable to load the document"
+msgstr "Kunne ikke indlæse dokumentet"
+
 #: ../src/loadMore.js:70
 #, c-format
-msgid "Load %d more documents"
+msgid "Load %d more document"
 msgid_plural "Load %d more documents"
 msgstr[0] "Indlæs %d dokument mere"
 msgstr[1] "Indlæs %d dokumenter mere"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:150
+msgid "Click on items to select them"
+msgstr "Klik på elementer for at vælge dem"
+
+#: ../src/mainToolbar.js:152
+#, c-format
+msgid "%d selected"
+msgstr "%d valgte"
+
+#: ../src/mainToolbar.js:197
+msgid "New and Recent"
+msgstr "Nye og nylige"
+
+#: ../src/mainToolbar.js:219
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d af %d)"
 
-#: ../src/sidebar.js:131 ../src/sources.js:218
-msgid "Sources"
-msgstr "Kilder"
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "Kategori"
 
-#: ../src/sources.js:96
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:208
+#: ../src/sources.js:94
 msgid "All"
 msgstr "Alle"
 
-#: ../src/spinnerBox.js:47
-msgid "Loading..."
-msgstr "Indlæser..."
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "Favoritter"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "Delt med dig"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "Type"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr "Samlinger"
+
+#: ../src/searchbar.js:147
+msgid "PDF Documents"
+msgstr "PDF-dokumenter"
+
+#: ../src/searchbar.js:150
+msgid "Presentations"
+msgstr "Præsentationer"
+
+#: ../src/searchbar.js:153
+msgid "Spreadsheets"
+msgstr "Regneark"
+
+#: ../src/searchbar.js:156
+msgid "Text Documents"
+msgstr "Tekstdokumenter"
+
+#: ../src/searchbar.js:205
+msgid "Match"
+msgstr "Match"
+
+#: ../src/searchbar.js:210
+msgid "Title"
+msgstr "Titel"
+
+#: ../src/searchbar.js:212
+msgid "Author"
+msgstr "Forfatter"
+
+#: ../src/selections.js:663
+msgid "Organize"
+msgstr "Organisér"
+
+#: ../src/selections.js:670
+msgid "Delete"
+msgstr "Slet"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:67
+#: ../src/selections.js:761 ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "Åbn med %s"
 
-#: ../src/view.js:69
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:764 ../src/view.js:70
 msgid "Open"
 msgstr "Åbn"
 
-#: ../src/view.js:79
+#: ../src/selections.js:777 ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "Fjern fra favoritter"
 
-#: ../src/view.js:79
+#: ../src/selections.js:781 ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Føj til favoritter"
+
+#: ../src/sources.js:90
+msgid "Sources"
+msgstr "Kilder"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "Indlæser..."
