@@ -1,0 +1,228 @@
+# Finnish translation for gnome-documents.
+# Copyright (C) 2012 gnome-documents's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-documents package.
+#
+# artnay <jiri.gronroos@iki.fi>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-documents master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-01-07 12:43+0200\n"
+"PO-Revision-Date: 2012-01-05 20:26+0200\n"
+"Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
+"Language-Team: Finnish <>\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 1.4\n"
+
+#: ../data/gnome-documents.desktop.in.in.h:1
+msgid "Access, manage and share documents"
+msgstr "Käytä, hallitse ja jaa asiakirjoja"
+
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:53
+msgid "Documents"
+msgstr "Asiakirjat"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1
+msgid "Enable list view"
+msgstr ""
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
+msgid "List view"
+msgstr ""
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
+msgid "The active source filter"
+msgstr "Aktiivinen lähdesuodatin"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "The last active source filter"
+msgstr "Viimeisin aktiivinen lähdesuodatin"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
+msgid "Window maximized"
+msgstr "Ikkuna suurennettu"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
+msgid "Window maximized state"
+msgstr ""
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
+msgid "Window position"
+msgstr "Ikkunan sijainti"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
+msgid "Window position (x and y)."
+msgstr "Ikkunan sijainti (x ja y)."
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:9
+msgid "Window size"
+msgstr "Ikkunan koko"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:10
+msgid "Window size (width and height)."
+msgstr "Ikkunan koko (leveys ja korkeus)."
+
+#: ../src/documents.js:618 ../src/sources.js:100
+msgid "Local"
+msgstr "Paikallinen"
+
+#. overridden
+#: ../src/documents.js:681
+msgid "Google Docs"
+msgstr "Google Docs"
+
+#: ../src/documents.js:682
+msgid "Google"
+msgstr "Google"
+
+#: ../src/documents.js:751
+msgid "Spreadsheet"
+msgstr "Taulukko"
+
+#: ../src/documents.js:753
+msgid "Presentation"
+msgstr "Esitys"
+
+#: ../src/documents.js:755
+msgid "Collection"
+msgstr "Kokoelma"
+
+#: ../src/documents.js:757
+msgid "Document"
+msgstr "Asiakirja"
+
+#. Translators: %s is the title of a document
+#: ../src/error.js:37
+#, c-format
+msgid "Unable to load \"%s\" for preview"
+msgstr "Kohteen \"%s\" lataus esikatselua varten epäonnistui"
+
+#: ../src/error.js:49
+msgid "Unable to fetch the list of documents"
+msgstr "Asiakirjalistauksen nouto epäonnistui"
+
+#. right section
+#: ../src/lib/gd-main-toolbar.c:210
+msgid "Done"
+msgstr "Valmis"
+
+#: ../src/lib/gd-pdf-loader.c:207
+msgid "Unable to load the document"
+msgstr "Asiakirjan lataus epäonnistui"
+
+#: ../src/loadMore.js:70
+#, c-format
+msgid "Load %d more document"
+msgid_plural "Load %d more documents"
+msgstr[0] "Lataa %d asiakirja enemmän"
+msgstr[1] "Lataa %d asiakirjaa enemmän"
+
+#: ../src/mainToolbar.js:150
+msgid "Click on items to select them"
+msgstr "Napsauta kohteita valitaksesi ne"
+
+#: ../src/mainToolbar.js:152
+#, c-format
+msgid "%d selected"
+msgstr "%d valittu"
+
+#: ../src/mainToolbar.js:197
+msgid "New and Recent"
+msgstr "Uudet ja viimeaikaiset"
+
+#: ../src/mainToolbar.js:219
+#, c-format
+msgid "(%d of %d)"
+msgstr "(%d/%d)"
+
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "Luokka"
+
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:208
+#: ../src/sources.js:94
+msgid "All"
+msgstr "Kaikki"
+
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "Suosikit"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "Kanssani jaetut"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "Tyyppi"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr "Kokoelmat"
+
+#: ../src/searchbar.js:147
+msgid "PDF Documents"
+msgstr "PDF-asiakirjat"
+
+#: ../src/searchbar.js:150
+msgid "Presentations"
+msgstr "Esitykset"
+
+#: ../src/searchbar.js:153
+msgid "Spreadsheets"
+msgstr "Taulukot"
+
+#: ../src/searchbar.js:156
+msgid "Text Documents"
+msgstr "Tekstiasiakirjat"
+
+#: ../src/searchbar.js:205
+msgid "Match"
+msgstr ""
+
+#: ../src/searchbar.js:210
+msgid "Title"
+msgstr "Otsikko"
+
+#: ../src/searchbar.js:212
+msgid "Author"
+msgstr "Tekijä"
+
+#: ../src/selections.js:663
+msgid "Organize"
+msgstr "Järjestä"
+
+#: ../src/selections.js:670
+msgid "Delete"
+msgstr "Poista"
+
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:761 ../src/view.js:67
+#, c-format
+msgid "Open with %s"
+msgstr "Avaa sovelluksella %s"
+
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:764 ../src/view.js:70
+msgid "Open"
+msgstr "Avaa"
+
+#: ../src/selections.js:777 ../src/view.js:80
+msgid "Remove from favorites"
+msgstr "Poista suosikeista"
+
+#: ../src/selections.js:781 ../src/view.js:80
+msgid "Add to favorites"
+msgstr "Lisää suosikkeihin"
+
+#: ../src/sources.js:90
+msgid "Sources"
+msgstr "Lähteet"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "Ladataan..."
