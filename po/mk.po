@@ -1,0 +1,235 @@
+# Macedonian translation for gnome-documents.
+# Copyright (C) 2012 gnome-documents's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-documents package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-documents master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-documents&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-01-07 10:52+0000\n"
+"PO-Revision-Date: 2012-01-08 15:25+0100\n"
+"Last-Translator: Jovan N\n"
+"Language-Team: Macedonian <ossm-members@hedona.on.net.mk>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural= n==1 || n%10==1 ? 0 : 1;\n"
+
+#: ../data/gnome-documents.desktop.in.in.h:1
+msgid "Access, manage and share documents"
+msgstr "Пристапи, менаџирај и споделувај документи"
+
+#: ../data/gnome-documents.desktop.in.in.h:2
+#: ../src/mainWindow.js:53
+msgid "Documents"
+msgstr "Документи"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1
+msgid "Enable list view"
+msgstr "Овозможи поглед на листа"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
+msgid "List view"
+msgstr "Поглед на листа"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
+msgid "The active source filter"
+msgstr "Активниот филтер на извор"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "The last active source filter"
+msgstr "Последниот активен филтер на извор"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
+msgid "Window maximized"
+msgstr "Прозорецот е максимизиран"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
+msgid "Window maximized state"
+msgstr "Максимизирана состојба на прозорецот"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
+msgid "Window position"
+msgstr "Позиција на прозорецот"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
+msgid "Window position (x and y)."
+msgstr "Позиција на прозорецот (x и y)."
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:9
+msgid "Window size"
+msgstr "Големина на прозорецот"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:10
+msgid "Window size (width and height)."
+msgstr "Големина на прозорецот (ширина и висина)."
+
+#: ../src/documents.js:618
+#: ../src/sources.js:100
+msgid "Local"
+msgstr "Локален"
+
+#. overridden
+#: ../src/documents.js:681
+msgid "Google Docs"
+msgstr "Google Docs"
+
+#: ../src/documents.js:682
+msgid "Google"
+msgstr "Google"
+
+#: ../src/documents.js:751
+msgid "Spreadsheet"
+msgstr "Табеларни пресметки"
+
+#: ../src/documents.js:753
+msgid "Presentation"
+msgstr "Презентација"
+
+#: ../src/documents.js:755
+msgid "Collection"
+msgstr "Колекција"
+
+#: ../src/documents.js:757
+msgid "Document"
+msgstr "Документ"
+
+#. Translators: %s is the title of a document
+#: ../src/error.js:37
+#, c-format
+msgid "Unable to load \"%s\" for preview"
+msgstr "Не можев да го вчитам „%s“ за преглед"
+
+#: ../src/error.js:49
+msgid "Unable to fetch the list of documents"
+msgstr "Не можев да добијам листа на документи"
+
+#. right section
+#: ../src/lib/gd-main-toolbar.c:210
+msgid "Done"
+msgstr "Готово"
+
+#: ../src/lib/gd-pdf-loader.c:207
+msgid "Unable to load the document"
+msgstr "Не можев да го вчитам документот"
+
+#: ../src/loadMore.js:70
+#, c-format
+msgid "Load %d more document"
+msgid_plural "Load %d more documents"
+msgstr[0] "Вчитај уште %d документ"
+msgstr[1] "Вчитај уште %d документи"
+
+#: ../src/mainToolbar.js:150
+msgid "Click on items to select them"
+msgstr "Кликнете на предметите за да ги изберете"
+
+#: ../src/mainToolbar.js:152
+#, c-format
+msgid "%d selected"
+msgstr "%d избрани"
+
+#: ../src/mainToolbar.js:197
+msgid "New and Recent"
+msgstr "Нови и скорешни"
+
+#: ../src/mainToolbar.js:219
+#, c-format
+msgid "(%d of %d)"
+msgstr "(%d од %d)"
+
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "Категорија"
+
+#: ../src/searchbar.js:91
+#: ../src/searchbar.js:141
+#: ../src/searchbar.js:208
+#: ../src/sources.js:94
+msgid "All"
+msgstr "Сите"
+
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "Омилени"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "Споделени со Вас"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "Тип"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr "Колекции"
+
+#: ../src/searchbar.js:147
+msgid "PDF Documents"
+msgstr "PDF документи"
+
+#: ../src/searchbar.js:150
+msgid "Presentations"
+msgstr "Презентации"
+
+#: ../src/searchbar.js:153
+msgid "Spreadsheets"
+msgstr "Табеларни пресметки"
+
+#: ../src/searchbar.js:156
+msgid "Text Documents"
+msgstr "Текстуални датотеки"
+
+#: ../src/searchbar.js:205
+msgid "Match"
+msgstr "Совпаѓање"
+
+#: ../src/searchbar.js:210
+msgid "Title"
+msgstr "Наслов"
+
+#: ../src/searchbar.js:212
+msgid "Author"
+msgstr "Автор"
+
+#: ../src/selections.js:663
+msgid "Organize"
+msgstr "Организирај"
+
+#: ../src/selections.js:670
+msgid "Delete"
+msgstr "Избриши"
+
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:761
+#: ../src/view.js:67
+#, c-format
+msgid "Open with %s"
+msgstr "Отвори со %s"
+
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:764
+#: ../src/view.js:70
+msgid "Open"
+msgstr "Отвори"
+
+#: ../src/selections.js:777
+#: ../src/view.js:80
+msgid "Remove from favorites"
+msgstr "Отстрани од омилените"
+
+#: ../src/selections.js:781
+#: ../src/view.js:80
+msgid "Add to favorites"
+msgstr "Додај во омилените"
+
+#: ../src/sources.js:90
+msgid "Sources"
+msgstr "Извори"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "Вчитувам..."
+
