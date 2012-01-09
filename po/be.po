@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-16 02:43+0300\n"
-"PO-Revision-Date: 2011-11-16 02:43+0300\n"
+"POT-Creation-Date: 2012-01-10 01:05+0300\n"
+"PO-Revision-Date: 2012-01-10 01:05+0300\n"
 "Last-Translator: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>\n"
 "Language-Team: Belarusian <i18n-bel-gnome@googlegroups.com>\n"
 "Language: be\n"
@@ -19,7 +19,7 @@ msgstr ""
 msgid "Access, manage and share documents"
 msgstr "Праца, кіраванне і супольны доступ да дакументаў"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:54
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:53
 msgid "Documents"
 msgstr "Дакументы"
 
@@ -63,39 +63,32 @@ msgstr "Памер акна"
 msgid "Window size (width and height)."
 msgstr "Памер акна (шырыня і вышыня)."
 
-#: ../src/categories.js:81
-msgid "New and Recent"
-msgstr "Новыя і нядаўнія"
-
-#: ../src/categories.js:87
-msgid "Favorites"
-msgstr "Упадабаныя"
-
-#: ../src/categories.js:92
-msgid "Shared with you"
-msgstr "Супольна даступныя вам"
-
-#: ../src/documents.js:261 ../src/sources.js:95
+#: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
 msgstr "Мясцовыя"
 
-#: ../src/documents.js:408
+#. overridden
+#: ../src/documents.js:681
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:409
+#: ../src/documents.js:682
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:478
+#: ../src/documents.js:751
 msgid "Spreadsheet"
 msgstr "Разліковы аркуш"
 
-#: ../src/documents.js:480
+#: ../src/documents.js:753
 msgid "Presentation"
 msgstr "Прэзентацыя"
 
-#: ../src/documents.js:482
+#: ../src/documents.js:755
+msgid "Collection"
+msgstr "Калекцыя"
+
+#: ../src/documents.js:757
 msgid "Document"
 msgstr "Дакумент"
 
@@ -109,6 +102,11 @@ msgstr "Не ўдалося загрузіць \"%s\" для папярэдня�
 msgid "Unable to fetch the list of documents"
 msgstr "Не ўдалося сцягнуць спіс дакументаў"
 
+#. right section
+#: ../src/lib/gd-main-toolbar.c:210
+msgid "Done"
+msgstr "Зроблена"
+
 #: ../src/lib/gd-pdf-loader.c:207
 msgid "Unable to load the document"
 msgstr "Не ўдалося загрузіць дакумент"
@@ -121,76 +119,105 @@ msgstr[0] "Загрузіць яшчэ %d дакумент"
 msgstr[1] "Загрузіць яшчэ %d дакументы"
 msgstr[2] "Загрузіць яшчэ %d дакументаў"
 
-#: ../src/mainToolbar.js:85
+#: ../src/mainToolbar.js:150
 msgid "Click on items to select them"
 msgstr "Пстрыкайце ў элементы спіса для іх вылучэння"
 
-#: ../src/mainToolbar.js:87
+#: ../src/mainToolbar.js:152
 #, c-format
 msgid "%d selected"
 msgstr "%d вылучана"
 
-#: ../src/mainToolbar.js:231
+#: ../src/mainToolbar.js:197
+msgid "New and Recent"
+msgstr "Новыя і нядаўнія"
+
+#: ../src/mainToolbar.js:219
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d з %d)"
 
-#: ../src/searchbar.js:64
-msgid "Type"
-msgstr "Тып"
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "Катэгорыя"
 
-#: ../src/searchbar.js:67 ../src/searchbar.js:126 ../src/sources.js:89
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:208
+#: ../src/sources.js:94
 msgid "All"
 msgstr "Усе"
 
-#: ../src/searchbar.js:69
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "Упадабаныя"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "Супольна даступныя вам"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "Тып"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr "Калекцыі"
+
+#: ../src/searchbar.js:147
 msgid "PDF Documents"
 msgstr "PDF-дакументы"
 
-#: ../src/searchbar.js:72
+#: ../src/searchbar.js:150
 msgid "Presentations"
 msgstr "Прэзентацыі"
 
-#: ../src/searchbar.js:75
+#: ../src/searchbar.js:153
 msgid "Spreadsheets"
 msgstr "Разліковыя аркушы"
 
-#: ../src/searchbar.js:78
+#: ../src/searchbar.js:156
 msgid "Text Documents"
 msgstr "Тэкставыя дакументы"
 
-#: ../src/searchbar.js:123
+#: ../src/searchbar.js:205
 msgid "Match"
 msgstr "Крытэрый пошуку"
 
-#: ../src/searchbar.js:128
+#: ../src/searchbar.js:210
 msgid "Title"
 msgstr "Загаловак"
 
-#: ../src/searchbar.js:130
+#: ../src/searchbar.js:212
 msgid "Author"
 msgstr "Аўтар"
 
+#: ../src/selections.js:663
+msgid "Organize"
+msgstr "Працаваць"
+
+#: ../src/selections.js:670
+msgid "Delete"
+msgstr "Выдаліць"
+
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:180 ../src/view.js:65
+#: ../src/selections.js:761 ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "Адкрыць у %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:183 ../src/view.js:68
+#: ../src/selections.js:764 ../src/view.js:70
 msgid "Open"
 msgstr "Адкрыць"
 
-#: ../src/selections.js:194 ../src/view.js:78
+#: ../src/selections.js:777 ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "Выдаліць са спіса ўпадабаных"
 
-#: ../src/selections.js:198 ../src/view.js:78
+#: ../src/selections.js:781 ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Дадаць у спіс упадабаных"
 
-#: ../src/sources.js:85
+#: ../src/sources.js:90
 msgid "Sources"
 msgstr "Крыніцы"
 
