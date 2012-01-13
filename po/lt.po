@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-10-07 08:53+0000\n"
-"PO-Revision-Date: 2011-10-09 00:48+0300\n"
+"POT-Creation-Date: 2011-12-05 21:39+0000\n"
+"PO-Revision-Date: 2012-01-14 00:11+0300\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <>\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgid "Access, manage and share documents"
 msgstr "Prieikite, tvarkykite ir bendrinkite dokumentus"
 
 #: ../data/gnome-documents.desktop.in.in.h:2
-#: ../src/mainWindow.js:48
+#: ../src/mainWindow.js:52
 msgid "Documents"
 msgstr "Dokumentai"
 
@@ -66,43 +66,33 @@ msgstr "Lango dydis"
 msgid "Window size (width and height)."
 msgstr "Lango dydis (plotis ir aukštis)."
 
-#. Translators: this refers to new and recent documents
-#: ../src/categories.js:77
-msgid "New and Recent"
-msgstr "Nauji ir neseniai naudoti"
-
-#. Translators: this refers to favorite documents
-#: ../src/categories.js:80
-msgid "Favorites"
-msgstr "Mėgiamiausi"
-
-#. Translators: this refers to shared documents
-#: ../src/categories.js:83
-msgid "Shared with you"
-msgstr "Bendrinami su jumis"
-
-#: ../src/documents.js:253
-#: ../src/sources.js:101
+#: ../src/documents.js:618
+#: ../src/sources.js:100
 msgid "Local"
 msgstr "Vietiniai"
 
-#: ../src/documents.js:378
+#. overridden
+#: ../src/documents.js:681
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:379
+#: ../src/documents.js:682
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:448
+#: ../src/documents.js:751
 msgid "Spreadsheet"
 msgstr "Skaičiuoklė"
 
-#: ../src/documents.js:450
+#: ../src/documents.js:753
 msgid "Presentation"
 msgstr "Pateiktis"
 
-#: ../src/documents.js:452
+#: ../src/documents.js:755
+msgid "Collection"
+msgstr "Kolekcija"
+
+#: ../src/documents.js:757
 msgid "Document"
 msgstr "Dokumentas"
 
@@ -112,9 +102,19 @@ msgstr "Dokumentas"
 msgid "Unable to load \"%s\" for preview"
 msgstr "Nepavyksta įkelti „%s“ peržiūrai"
 
-#: ../src/error.js:44
+#: ../src/error.js:49
 msgid "Unable to fetch the list of documents"
 msgstr "Nepavyksta gauti dokumentų sąrašo"
+
+#. right section
+#: ../src/lib/gd-main-toolbar.c:210
+msgid "Done"
+msgstr "Atlikta"
+
+#: ../src/lib/gd-pdf-loader.c:207
+#| msgid "Unable to fetch the list of documents"
+msgid "Unable to load the document"
+msgstr "Nepavyksta įkelti dokumento"
 
 #: ../src/loadMore.js:70
 #, c-format
@@ -124,40 +124,119 @@ msgstr[0] "Įkelti dar %d dokumentą"
 msgstr[1] "Įkelti dar %d dokumentus"
 msgstr[2] "Įkelti dar %d dokumentų"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:150
+msgid "Click on items to select them"
+msgstr "Spauskite ant elementų juos pažymėti"
+
+#: ../src/mainToolbar.js:152
+#, c-format
+msgid "%d selected"
+msgstr "%d pažymėta"
+
+#: ../src/mainToolbar.js:200
+msgid "New and Recent"
+msgstr "Nauji ir neseniai naudoti"
+
+#: ../src/mainToolbar.js:222
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d iš %d)"
 
-#: ../src/sidebar.js:131
-#: ../src/sources.js:218
-msgid "Sources"
-msgstr "Šaltiniai"
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "Kategorija"
 
-#: ../src/sources.js:96
+#: ../src/searchbar.js:91
+#: ../src/searchbar.js:141
+#: ../src/searchbar.js:208
+#: ../src/sources.js:94
 msgid "All"
 msgstr "Visi"
 
-#: ../src/spinnerBox.js:47
-msgid "Loading..."
-msgstr "Įkeliama..."
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "Mėgiamiausi"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "Bendrinami su jumis"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "Tipas"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr "Kolekcijos"
+
+#: ../src/searchbar.js:147
+#| msgid "Documents"
+msgid "PDF Documents"
+msgstr "PDF dokumentai"
+
+#: ../src/searchbar.js:150
+#| msgid "Presentation"
+msgid "Presentations"
+msgstr "Pateiktys"
+
+#: ../src/searchbar.js:153
+#| msgid "Spreadsheet"
+msgid "Spreadsheets"
+msgstr "Skaičiuoklės"
+
+#: ../src/searchbar.js:156
+#| msgid "Documents"
+msgid "Text Documents"
+msgstr "Teksto dokumentai"
+
+#: ../src/searchbar.js:205
+msgid "Match"
+msgstr "Atitikmuo"
+
+#: ../src/searchbar.js:210
+msgid "Title"
+msgstr "Pavadinimas"
+
+#: ../src/searchbar.js:212
+msgid "Author"
+msgstr "Autorius"
+
+#: ../src/selections.js:658
+msgid "Organize"
+msgstr "Tvarkyti"
+
+#: ../src/selections.js:665
+msgid "Delete"
+msgstr "Ištrinti"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:67
+#: ../src/selections.js:756
+#: ../src/view.js:66
 #, c-format
 msgid "Open with %s"
 msgstr "Atverti su %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:70
+#: ../src/selections.js:759
+#: ../src/view.js:69
 msgid "Open"
 msgstr "Atverti"
 
-#: ../src/view.js:80
+#: ../src/selections.js:772
+#: ../src/view.js:79
 msgid "Remove from favorites"
 msgstr "Pašalinti iš mėgiamiausių"
 
-#: ../src/view.js:80
+#: ../src/selections.js:776
+#: ../src/view.js:79
 msgid "Add to favorites"
 msgstr "Pridėti prie mėgiamiausių"
+
+#: ../src/sources.js:90
+msgid "Sources"
+msgstr "Šaltiniai"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "Įkeliama..."
 
