@@ -5,11 +5,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-documents master\n"
+"Project-Id-Version: gnome-documents 0.3.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-26 22:57+0800\n"
-"PO-Revision-Date: 2011-09-26 22:57+0800\n"
-"Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
+"POT-Creation-Date: 2012-01-14 20:32+0800\n"
+"PO-Revision-Date: 2012-01-14 20:33+0800\n"
+"Last-Translator: Cheng-Chia Tseng <pswo10680@gmail.com>\n"
 "Language-Team: Chinese (Hong Kong) <community@linuxhall.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Access, manage and share documents"
 msgstr "存取、管理、分享文件"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:47
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:53
 msgid "Documents"
 msgstr "文件"
 
@@ -41,42 +41,56 @@ msgstr "使用中來源過濾器"
 msgid "The last active source filter"
 msgstr "上個使用中來源過濾器"
 
-#. Translators: this refers to new and recent documents
-#: ../src/categories.js:77
-msgid "New and Recent"
-msgstr "新增與最近使用"
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
+msgid "Window maximized"
+msgstr "視窗已最大化"
 
-#. Translators: this refers to favorite documents
-#: ../src/categories.js:80
-msgid "Favorites"
-msgstr "喜好"
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
+msgid "Window maximized state"
+msgstr "視窗為最大化狀態"
 
-#. Translators: this refers to shared documents
-#: ../src/categories.js:83
-msgid "Shared with you"
-msgstr "與你分享"
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
+msgid "Window position"
+msgstr "視窗位置"
 
-#: ../src/documents.js:253 ../src/sources.js:101
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
+msgid "Window position (x and y)."
+msgstr "視窗位置 (x 與 y)。"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:9
+msgid "Window size"
+msgstr "視窗大小"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:10
+msgid "Window size (width and height)."
+msgstr "視窗大小 (闊度與高度)。"
+
+#: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
 msgstr "本地端"
 
-#: ../src/documents.js:372
+#. overridden
+#: ../src/documents.js:681
 msgid "Google Docs"
 msgstr "Google 文件"
 
-#: ../src/documents.js:373
+#: ../src/documents.js:682
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:442
+#: ../src/documents.js:751
 msgid "Spreadsheet"
 msgstr "試算表"
 
-#: ../src/documents.js:444
+#: ../src/documents.js:753
 msgid "Presentation"
 msgstr "簡報"
 
-#: ../src/documents.js:446
+#: ../src/documents.js:755
+msgid "Collection"
+msgstr ""
+
+#: ../src/documents.js:757
 msgid "Document"
 msgstr "文件"
 
@@ -86,50 +100,133 @@ msgstr "文件"
 msgid "Unable to load \"%s\" for preview"
 msgstr "無法載入「%s」以預覽"
 
-#: ../src/error.js:44
+#: ../src/error.js:49
 msgid "Unable to fetch the list of documents"
 msgstr "無法擷取文件清單"
 
+#. right section
+#: ../src/lib/gd-main-toolbar.c:210
+msgid "Done"
+msgstr "完成"
+
+#: ../src/lib/gd-pdf-loader.c:207
+msgid "Unable to load the document"
+msgstr "無法載入文件"
+
 #: ../src/loadMore.js:70
 #, c-format
-msgid "Load %d more documents"
+msgid "Load %d more document"
 msgid_plural "Load %d more documents"
 msgstr[0] "載入其他 %d 份文件"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:150
+#, fuzzy
+msgid "Click on items to select them"
+msgstr "點擊項目來選取它們"
+
+#: ../src/mainToolbar.js:152
+#, c-format
+msgid "%d selected"
+msgstr "已選取 %d 個"
+
+#: ../src/mainToolbar.js:197
+msgid "New and Recent"
+msgstr "新增與最近使用"
+
+#: ../src/mainToolbar.js:219
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d / %d)"
 
-#: ../src/sidebar.js:131 ../src/sources.js:218
-msgid "Sources"
-msgstr "來源"
+#: ../src/searchbar.js:86
+#, fuzzy
+msgid "Category"
+msgstr "分類"
 
-#: ../src/sources.js:96
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:208
+#: ../src/sources.js:94
 msgid "All"
 msgstr "全部"
 
-#: ../src/spinnerBox.js:47
-msgid "Loading..."
-msgstr "正在載入..."
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "喜好"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "與你分享"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "類型"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr ""
+
+#: ../src/searchbar.js:147
+msgid "PDF Documents"
+msgstr "PDF 文件"
+
+#: ../src/searchbar.js:150
+msgid "Presentations"
+msgstr "簡報"
+
+#: ../src/searchbar.js:153
+msgid "Spreadsheets"
+msgstr "試算表"
+
+#: ../src/searchbar.js:156
+msgid "Text Documents"
+msgstr "文字文件"
+
+#: ../src/searchbar.js:205
+msgid "Match"
+msgstr ""
+
+#: ../src/searchbar.js:210
+msgid "Title"
+msgstr "標題"
+
+#: ../src/searchbar.js:212
+msgid "Author"
+msgstr "作者"
+
+#: ../src/selections.js:663
+#, fuzzy
+msgid "Organize"
+msgstr "整理"
+
+#: ../src/selections.js:670
+msgid "Delete"
+msgstr "刪除"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:67
+#: ../src/selections.js:761 ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "以 %s 開啟"
 
-#: ../src/view.js:69
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:764 ../src/view.js:70
 msgid "Open"
 msgstr "開啟"
 
-#: ../src/view.js:79
+#: ../src/selections.js:777 ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "自喜好移除"
 
-#: ../src/view.js:79
+#: ../src/selections.js:781 ../src/view.js:80
 msgid "Add to favorites"
 msgstr "加入喜好"
+
+#: ../src/sources.js:90
+msgid "Sources"
+msgstr "來源"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "正在載入..."
 
 #~ msgid "Private"
 #~ msgstr "私人"
