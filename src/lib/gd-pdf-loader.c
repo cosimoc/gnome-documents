@@ -473,12 +473,24 @@ unoconv_child_watch_cb (GPid pid,
 static void
 pdf_load_job_openoffice_refresh_cache (PdfLoadJob *job)
 {
-  gchar *doc_path, *cmd, *quoted_path;
+  gchar *doc_path, *cmd, *quoted_path, *unoconv_path;
   GFile *file;
   gint argc;
   GPid pid;
   gchar **argv = NULL;
   GError *error = NULL;
+
+  unoconv_path = g_find_program_in_path ("unoconv");
+  if (unoconv_path == NULL)
+    {
+      error = g_error_new_literal (G_IO_ERROR,
+                                   G_IO_ERROR_NOT_FOUND,
+                                   _("Cannot find \"unoconv\", please check your LibreOffice installation"));
+      pdf_load_job_complete_error (job, error);
+      return;
+    }
+
+  g_free (unoconv_path);
 
   /* build the temporary PDF file path */
   file = g_file_new_for_uri (job->uri);
