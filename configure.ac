@@ -44,9 +44,6 @@ AC_PROG_LIBTOOL
 ## don't rerun to this point if we abort
 AC_CACHE_SAVE
 
-GJS_CONSOLE=`$PKG_CONFIG --variable=gjs_console gjs-1.0`
-AC_SUBST(GJS_CONSOLE)
-
 GLIB_GSETTINGS
 
 AC_CHECK_LIBM
@@ -65,6 +62,7 @@ PKG_CHECK_MODULES(DOCUMENTS,
                   clutter-gtk-1.0 >= $CLUTTER_GTK_MIN_VERSION
                   evince-document-3.0 >= $EVINCE_MIN_VERSION
                   evince-view-3.0 >= $EVINCE_MIN_VERSION
+                  gjs-1.0
                   glib-2.0 >= $GLIB_MIN_VERSION
                   gobject-introspection-1.0 >= $GOBJECT_INTROSPECTION_MIN_VERSION
                   gtk+-3.0 >= $GTK_MIN_VERSION
@@ -81,6 +79,9 @@ PKG_CHECK_MODULES(MINER,
                   goa-1.0 >= $GOA_MIN_VERSION
                   libgdata >= $GDATA_MIN_VERSION
                   oauth)
+
+GJS_CONSOLE=`$PKG_CONFIG --variable=gjs_console gjs-1.0`
+AC_SUBST(GJS_CONSOLE)
 
 AC_CONFIG_FILES([
 Makefile
