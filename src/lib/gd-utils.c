@@ -395,7 +395,7 @@ gd_filename_strip_extension (const char * filename_with_extension)
 
 /**
  * gd_time_val_from_iso8601:
- * @string:
+ * @string: (allow-none):
  * @timeval: (out):
  *
  * Returns:
@@ -404,6 +404,9 @@ gboolean
 gd_time_val_from_iso8601 (const gchar *string,
                           GTimeVal *timeval)
 {
+  if (string == NULL)
+    g_get_current_time (timeval);
+
   return g_time_val_from_iso8601 (string, timeval);
 }
 
