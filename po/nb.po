@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-14 22:42+0100\n"
-"PO-Revision-Date: 2011-12-14 22:43+0100\n"
+"POT-Creation-Date: 2012-01-17 18:18+0100\n"
+"PO-Revision-Date: 2012-01-17 18:18+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: \n"
@@ -17,21 +17,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../data/gnome-documents.desktop.in.in.h:1
-msgid "Access, manage and share documents"
-msgstr "Aksesser, håndter og del dokumenter"
-
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:52
+#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:53
 msgid "Documents"
 msgstr "Dokumenter"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "Enable list view"
-msgstr "Slå på listevisning"
+#: ../data/gnome-documents.desktop.in.in.h:2
+msgid "Access, manage and share documents"
+msgstr "Aksesser, håndter og del dokumenter"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:2
+#: ../data/org.gnome.documents.gschema.xml.in.h:1
 msgid "List view"
 msgstr "Listevisning"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
+msgid "Enable list view"
+msgstr "Slå på listevisning"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:3
 msgid "The active source filter"
@@ -42,12 +42,12 @@ msgid "The last active source filter"
 msgstr "Siste aktive kildefilter"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:5
-msgid "Window maximized"
-msgstr "Vindu maksimert"
+msgid "Window size"
+msgstr "Vindustørrelse"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:6
-msgid "Window maximized state"
-msgstr "Om vinduet er maksimert eller ikke"
+msgid "Window size (width and height)."
+msgstr "Vindustørrelse (bredde og høyde)."
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:7
 msgid "Window position"
@@ -58,12 +58,12 @@ msgid "Window position (x and y)."
 msgstr "Vinduposisjon (x og y)."
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:9
-msgid "Window size"
-msgstr "Vindustørrelse"
+msgid "Window maximized"
+msgstr "Vindu maksimert"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:10
-msgid "Window size (width and height)."
-msgstr "Vindustørrelse (bredde og høyde)."
+msgid "Window maximized state"
+msgstr "Om vinduet er maksimert eller ikke"
 
 #: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
@@ -113,6 +113,10 @@ msgstr "Ferdig"
 msgid "Unable to load the document"
 msgstr "Kan ikke laste dokumentet"
 
+#: ../src/lib/gd-pdf-loader.c:488
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr "Kan ikke finne «unoconv». Vennligst sjekk din LibreOffice installasjon"
+
 #: ../src/loadMore.js:70
 #, c-format
 msgid "Load %d more document"
@@ -129,11 +133,11 @@ msgstr "Klikk på oppføringer for å velge dem"
 msgid "%d selected"
 msgstr "%d valgt"
 
-#: ../src/mainToolbar.js:200
+#: ../src/mainToolbar.js:197
 msgid "New and Recent"
 msgstr "Nye og nylige"
 
-#: ../src/mainToolbar.js:222
+#: ../src/mainToolbar.js:219
 #, c-format
 msgid "(%d of %d)"
 msgstr "[%d av %d]"
