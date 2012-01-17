@@ -2,15 +2,15 @@
 # Copyright (C) 2011 gnome-documents's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-documents package.
 # Jorge González <jorgegonz@svn.gnome.org>, 2011.
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-11-16 13:29+0000\n"
-"PO-Revision-Date: 2011-11-17 12:36+0100\n"
+"POT-Creation-Date: 2012-01-16 18:30+0000\n"
+"PO-Revision-Date: 2012-01-17 12:49+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -66,32 +66,32 @@ msgstr "Tamaño de la ventana"
 msgid "Window size (width and height)."
 msgstr "Tamaño de la ventana (anchura y altura)."
 
-#: ../src/documents.js:619 ../src/sources.js:100
+#: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
 msgstr "Locales"
 
 #. overridden
-#: ../src/documents.js:682
+#: ../src/documents.js:681
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:683
+#: ../src/documents.js:682
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:752
+#: ../src/documents.js:751
 msgid "Spreadsheet"
 msgstr "Hoja de cálculo"
 
-#: ../src/documents.js:754
+#: ../src/documents.js:753
 msgid "Presentation"
 msgstr "Presentación"
 
-#: ../src/documents.js:756
+#: ../src/documents.js:755
 msgid "Collection"
 msgstr "Colección"
 
-#: ../src/documents.js:758
+#: ../src/documents.js:757
 msgid "Document"
 msgstr "Documento"
 
@@ -105,9 +105,18 @@ msgstr "No se pudo cargar «%s» para su vista previa"
 msgid "Unable to fetch the list of documents"
 msgstr "No se pudo obtener la lista de documentos"
 
+#. right section
+#: ../src/lib/gd-main-toolbar.c:210
+msgid "Done"
+msgstr "Hecho"
+
 #: ../src/lib/gd-pdf-loader.c:207
 msgid "Unable to load the document"
 msgstr "No se pudo cargar el documento"
+
+#: ../src/lib/gd-pdf-loader.c:488
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr "No se pudo encontrar «unoconv». Compruebe su instalación de LibreOffice"
 
 #: ../src/loadMore.js:70
 #, c-format
@@ -116,20 +125,20 @@ msgid_plural "Load %d more documents"
 msgstr[0] "Cargar %d documento más"
 msgstr[1] "Cargar %d documentos más"
 
-#: ../src/mainToolbar.js:151
+#: ../src/mainToolbar.js:150
 msgid "Click on items to select them"
 msgstr "Pulse sobre los elementos para seleccionarlos"
 
-#: ../src/mainToolbar.js:153
+#: ../src/mainToolbar.js:152
 #, c-format
 msgid "%d selected"
 msgstr "%d seleccionado(s)"
 
-#: ../src/mainToolbar.js:172
-msgid "Done"
-msgstr "Hecho"
+#: ../src/mainToolbar.js:197
+msgid "New and Recent"
+msgstr "Nuevos y recientes"
 
-#: ../src/mainToolbar.js:298
+#: ../src/mainToolbar.js:219
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d de %d)"
@@ -138,7 +147,7 @@ msgstr "(%d de %d)"
 msgid "Category"
 msgstr "Categoría"
 
-#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:204
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:208
 #: ../src/sources.js:94
 msgid "All"
 msgstr "Todos"
@@ -175,42 +184,42 @@ msgstr "Hojas de cálculo"
 msgid "Text Documents"
 msgstr "Documentos de texto"
 
-#: ../src/searchbar.js:201
+#: ../src/searchbar.js:205
 msgid "Match"
 msgstr "Coincidencia"
 
-#: ../src/searchbar.js:206
+#: ../src/searchbar.js:210
 msgid "Title"
 msgstr "Título"
 
-#: ../src/searchbar.js:208
+#: ../src/searchbar.js:212
 msgid "Author"
 msgstr "Autor"
 
-#: ../src/selections.js:644
+#: ../src/selections.js:663
 msgid "Organize"
 msgstr "Organizar"
 
-#: ../src/selections.js:650
+#: ../src/selections.js:670
 msgid "Delete"
 msgstr "Eliminar"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:737 ../src/view.js:65
+#: ../src/selections.js:761 ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "Abrir con %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:740 ../src/view.js:68
+#: ../src/selections.js:764 ../src/view.js:70
 msgid "Open"
 msgstr "Abrir"
 
-#: ../src/selections.js:753 ../src/view.js:78
+#: ../src/selections.js:777 ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "Quitar de los marcadores"
 
-#: ../src/selections.js:757 ../src/view.js:78
+#: ../src/selections.js:781 ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Añadir a los marcadores"
 
@@ -221,9 +230,6 @@ msgstr "Fuentes"
 #: ../src/spinnerBox.js:58
 msgid "Loading..."
 msgstr "Cargando…"
-
-#~ msgid "New and Recent"
-#~ msgstr "Nuevos y recientes"
 
 #~ msgid "Private"
 #~ msgstr "Privado"
