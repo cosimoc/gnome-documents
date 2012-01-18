@@ -1,6 +1,7 @@
 [encoding: UTF-8]
 data/gnome-documents.desktop.in.in
 data/org.gnome.documents.gschema.xml.in
+src/application.js
 src/documents.js
 src/error.js
 src/lib/gd-main-toolbar.c
