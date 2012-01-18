@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-25 09:42+0100\n"
-"PO-Revision-Date: 2011-11-25 09:43+0100\n"
+"POT-Creation-Date: 2012-01-18 09:46+0100\n"
+"PO-Revision-Date: 2012-01-18 09:46+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: \n"
@@ -22,7 +22,7 @@ msgid "Access, manage and share documents"
 msgstr "Kom åt, hantera och dela dokument"
 
 #: ../data/gnome-documents.desktop.in.in.h:2
-#: ../src/mainWindow.js:52
+#: ../src/mainWindow.js:53
 msgid "Documents"
 msgstr "Dokument"
 
@@ -106,9 +106,18 @@ msgstr "Kunde inte läsa in \"%s\" för granskning"
 msgid "Unable to fetch the list of documents"
 msgstr "Kunde inte hämta listan över dokument"
 
+#. right section
+#: ../src/lib/gd-main-toolbar.c:210
+msgid "Done"
+msgstr "Färdig"
+
 #: ../src/lib/gd-pdf-loader.c:207
 msgid "Unable to load the document"
 msgstr "Kunde inte läsa in dokumentet"
+
+#: ../src/lib/gd-pdf-loader.c:488
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr "Kan inte hitta \"unoconv\". Kontrollera din LibreOffice-installation"
 
 #: ../src/loadMore.js:70
 #, c-format
@@ -117,20 +126,20 @@ msgid_plural "Load %d more documents"
 msgstr[0] "Läs in ytterligare %d dokument"
 msgstr[1] "Läs in ytterligare %d dokument"
 
-#: ../src/mainToolbar.js:179
+#: ../src/mainToolbar.js:150
 msgid "Click on items to select them"
 msgstr "Klicka på objekten för att markera dem"
 
-#: ../src/mainToolbar.js:181
+#: ../src/mainToolbar.js:152
 #, c-format
 msgid "%d selected"
 msgstr "%d markerade"
 
-#: ../src/mainToolbar.js:208
-msgid "Done"
-msgstr "Färdig"
+#: ../src/mainToolbar.js:197
+msgid "New and Recent"
+msgstr "Nya och senaste"
 
-#: ../src/mainToolbar.js:334
+#: ../src/mainToolbar.js:219
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d av %d)"
@@ -141,7 +150,7 @@ msgstr "Kategori"
 
 #: ../src/searchbar.js:91
 #: ../src/searchbar.js:141
-#: ../src/searchbar.js:204
+#: ../src/searchbar.js:208
 #: ../src/sources.js:94
 msgid "All"
 msgstr "Alla"
@@ -178,46 +187,46 @@ msgstr "Kalkylark"
 msgid "Text Documents"
 msgstr "Textdokument"
 
-#: ../src/searchbar.js:201
+#: ../src/searchbar.js:205
 msgid "Match"
 msgstr "Match"
 
-#: ../src/searchbar.js:206
+#: ../src/searchbar.js:210
 msgid "Title"
 msgstr "Titel"
 
-#: ../src/searchbar.js:208
+#: ../src/searchbar.js:212
 msgid "Author"
 msgstr "Författare"
 
-#: ../src/selections.js:658
+#: ../src/selections.js:663
 msgid "Organize"
 msgstr "Organisera"
 
-#: ../src/selections.js:665
+#: ../src/selections.js:670
 msgid "Delete"
 msgstr "Ta bort"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:756
-#: ../src/view.js:66
+#: ../src/selections.js:761
+#: ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "Öppna med %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:759
-#: ../src/view.js:69
+#: ../src/selections.js:764
+#: ../src/view.js:70
 msgid "Open"
 msgstr "Öppna"
 
-#: ../src/selections.js:772
-#: ../src/view.js:79
+#: ../src/selections.js:777
+#: ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "Ta bort från favoriter"
 
-#: ../src/selections.js:776
-#: ../src/view.js:79
+#: ../src/selections.js:781
+#: ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Lägg till i favoriter"
 
@@ -228,9 +237,6 @@ msgstr "Källor"
 #: ../src/spinnerBox.js:58
 msgid "Loading..."
 msgstr "Läser in..."
-
-#~ msgid "New and Recent"
-#~ msgstr "Nya och senaste"
 
 #~ msgid "Private"
 #~ msgstr "Privat"
