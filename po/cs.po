@@ -1,15 +1,16 @@
 # Czech translation for gnome-documents.
 # Copyright (C) 2011 gnome-documents's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-documents package.
-# Marek Černocký <marek@manet.cz>, 2011.
+#
+# Marek Černocký <marek@manet.cz>, 2011, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-06 19:36+0000\n"
-"PO-Revision-Date: 2011-09-08 08:00+0200\n"
+"POT-Creation-Date: 2012-01-18 20:00+0000\n"
+"PO-Revision-Date: 2012-01-19 16:51+0100\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +23,7 @@ msgstr ""
 msgid "Access, manage and share documents"
 msgstr "Přístup k dokumentům, jejich správa a sdílení"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:47
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:53
 msgid "Documents"
 msgstr "Dokumenty"
 
@@ -42,42 +43,77 @@ msgstr "Aktivní filtr zdrojů"
 msgid "The last active source filter"
 msgstr "Poslední aktivní filtr zdrojů"
 
-#. Translators: this refers to new and recent documents
-#: ../src/categories.js:77
-msgid "New and Recent"
-msgstr "Nové a nedávné"
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
+msgid "Window maximized"
+msgstr "Maximalizace okna"
 
-#. Translators: this refers to favorite documents
-#: ../src/categories.js:80
-msgid "Favorites"
-msgstr "Oblíbené"
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
+msgid "Window maximized state"
+msgstr "Stav maximalizace okna."
 
-#. Translators: this refers to shared documents
-#: ../src/categories.js:83
-msgid "Shared with you"
-msgstr "Sdílené s vámi"
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
+msgid "Window position"
+msgstr "Poloha okna"
 
-#: ../src/documents.js:269 ../src/sources.js:116
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
+msgid "Window position (x and y)."
+msgstr "Poloha okna (x a y)."
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:9
+msgid "Window size"
+msgstr "Velikost okna"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:10
+msgid "Window size (width and height)."
+msgstr "Velikost okna (šířka a výška)."
+
+#: ../src/application.js:118
+msgid "Fullscreen"
+msgstr "Celá obrazovka"
+
+#: ../src/application.js:119
+msgid "Quit"
+msgstr "Ukončit"
+
+#: ../src/application.js:122
+msgid "Grid"
+msgstr "Mřížku"
+
+#: ../src/application.js:123
+#| msgid "List view"
+msgid "List"
+msgstr "Seznam"
+
+#: ../src/application.js:124
+msgid "View as"
+msgstr "Zobrazit jako"
+
+#: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
 msgstr "Místní"
 
-#: ../src/documents.js:388
+#. overridden
+#: ../src/documents.js:681
 msgid "Google Docs"
 msgstr "Dokumenty Google"
 
-#: ../src/documents.js:389
+#: ../src/documents.js:682
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:446
+#: ../src/documents.js:751
 msgid "Spreadsheet"
 msgstr "Sešit s tabulkami"
 
-#: ../src/documents.js:448
+#: ../src/documents.js:753
 msgid "Presentation"
 msgstr "Prezentace"
 
-#: ../src/documents.js:450
+#: ../src/documents.js:755
+msgid "Collection"
+msgstr ""
+
+#: ../src/documents.js:757
 msgid "Document"
 msgstr "Dokument"
 
@@ -87,50 +123,140 @@ msgstr "Dokument"
 msgid "Unable to load \"%s\" for preview"
 msgstr "Nelze načíst „%s“ pro náhled"
 
-#: ../src/error.js:44
+#: ../src/error.js:49
 msgid "Unable to fetch the list of documents"
 msgstr "Nelze získat seznam dokumentů"
+
+#. right section
+#: ../src/lib/gd-main-toolbar.c:210
+msgid "Done"
+msgstr ""
+
+#: ../src/lib/gd-pdf-loader.c:207
+#| msgid "Unable to fetch the list of documents"
+msgid "Unable to load the document"
+msgstr "Nelze načíst dokument"
+
+#: ../src/lib/gd-pdf-loader.c:488
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr "Nelze najít „unoconv“, zkontrolujte prosím svoji instalaci LibreOffice"
 
 #: ../src/loadMore.js:70
 #, c-format
 #| msgid "Load %d more documents"
-msgid "Load %d more documents"
+#| msgid_plural "Load %d more documents"
+msgid "Load %d more document"
 msgid_plural "Load %d more documents"
 msgstr[0] "Načíst %d další dokument"
 msgstr[1] "Načíst další %d dokumenty"
 msgstr[2] "Načíst dalších %d dokumentů"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:150
+msgid "Click on items to select them"
+msgstr "Klikáním na položky je vyberete"
+
+#: ../src/mainToolbar.js:152
+#, c-format
+msgid "%d selected"
+msgstr ""
+
+#: ../src/mainToolbar.js:197
+msgid "New and Recent"
+msgstr "Nové a nedávné"
+
+#: ../src/mainToolbar.js:219
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d z %d)"
 
-#: ../src/sidebar.js:131 ../src/sources.js:255
-msgid "Sources"
-msgstr "Zdroje"
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "Kategorie"
 
-#: ../src/sources.js:110
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:208
+#: ../src/sources.js:94
 msgid "All"
 msgstr "Vše"
 
-#: ../src/spinnerBox.js:47
-msgid "Loading..."
-msgstr "Načítá se…"
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "Oblíbené"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "Sdílené s vámi"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "Typ"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr ""
+
+#: ../src/searchbar.js:147
+#| msgid "Documents"
+msgid "PDF Documents"
+msgstr "Dokumenty PDF"
+
+#: ../src/searchbar.js:150
+#| msgid "Presentation"
+msgid "Presentations"
+msgstr "Prezentace"
+
+#: ../src/searchbar.js:153
+#| msgid "Spreadsheet"
+msgid "Spreadsheets"
+msgstr "Sešit s tabulkami"
+
+#: ../src/searchbar.js:156
+#| msgid "Documents"
+msgid "Text Documents"
+msgstr "Textové dokumenty"
+
+#: ../src/searchbar.js:205
+msgid "Match"
+msgstr ""
+
+#: ../src/searchbar.js:210
+msgid "Title"
+msgstr "Název"
+
+#: ../src/searchbar.js:212
+msgid "Author"
+msgstr "Autor"
+
+#: ../src/selections.js:663
+msgid "Organize"
+msgstr ""
+
+#: ../src/selections.js:670
+msgid "Delete"
+msgstr ""
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:46
+#: ../src/selections.js:761 ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "Otevřít pomocí %s"
 
-#: ../src/view.js:46
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:764 ../src/view.js:70
 msgid "Open"
 msgstr "Otevřít"
 
-#: ../src/view.js:56
+#: ../src/selections.js:777 ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "Odebrat z oblíbených"
 
-#: ../src/view.js:56
+#: ../src/selections.js:781 ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Přidat do oblíbených"
+
+#: ../src/sources.js:90
+msgid "Sources"
+msgstr "Zdroje"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "Načítá se…"
