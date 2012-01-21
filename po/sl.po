@@ -2,14 +2,14 @@
 # Copyright (C) 2011 gnome-documents's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-documents package.
 #
-# Matej Urbančič <mateju@svn.gnome.org>, 2011.
+# Matej Urbančič <mateju@svn.gnome.org>, 2011 - 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-12-16 13:45+0000\n"
-"PO-Revision-Date: 2011-12-16 21:54+0100\n"
+"POT-Creation-Date: 2012-01-19 16:02+0000\n"
+"PO-Revision-Date: 2012-01-21 20:49+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: Slovenian\n"
@@ -70,6 +70,26 @@ msgstr "Velikost okna"
 msgid "Window size (width and height)."
 msgstr "Velikost okna (širina in višina)."
 
+#: ../src/application.js:118
+msgid "Fullscreen"
+msgstr "Celozaslonski način"
+
+#: ../src/application.js:119
+msgid "Quit"
+msgstr "Končaj"
+
+#: ../src/application.js:122
+msgid "Grid"
+msgstr "Mreža"
+
+#: ../src/application.js:123
+msgid "List"
+msgstr "Seznam"
+
+#: ../src/application.js:124
+msgid "View as"
+msgstr "Poglej kot"
+
 #: ../src/documents.js:618
 #: ../src/sources.js:100
 msgid "Local"
@@ -119,6 +139,10 @@ msgstr "Končano"
 msgid "Unable to load the document"
 msgstr "Dokumenta ni mogoče naložiti"
 
+#: ../src/lib/gd-pdf-loader.c:488
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr "Ni mogoče najti predmeta \"unoconv\"; preveriti je treba namestitev LibreOffice."
+
 #: ../src/loadMore.js:70
 #, c-format
 msgid "Load %d more document"
@@ -137,11 +161,11 @@ msgstr "S klikom se predmeti izberejo."
 msgid "%d selected"
 msgstr "%d izbranih"
 
-#: ../src/mainToolbar.js:200
+#: ../src/mainToolbar.js:197
 msgid "New and Recent"
 msgstr "Novo in nedavno"
 
-#: ../src/mainToolbar.js:222
+#: ../src/mainToolbar.js:219
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d od %d)"
