@@ -3,14 +3,14 @@
 # This file is distributed under the same license as the gnome-documents package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # Fran Diéguez <frandieguez@gnome.org>, 2011.
-# Fran Dieguez <frandieguez@gnome.org>, 2011.
+# Fran Dieguez <frandieguez@gnome.org>, 2011, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-21 01:03+0100\n"
-"PO-Revision-Date: 2011-11-21 01:04+0100\n"
+"POT-Creation-Date: 2012-01-23 00:35+0100\n"
+"PO-Revision-Date: 2012-01-23 00:35+0100\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
@@ -19,21 +19,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
-#: ../data/gnome-documents.desktop.in.in.h:1
-msgid "Access, manage and share documents"
-msgstr "Acceder, xestionar e compartir documentos"
-
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:53
+#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:53
 msgid "Documents"
 msgstr "Documentos"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "Enable list view"
-msgstr "Activar a vista de lista"
+#: ../data/gnome-documents.desktop.in.in.h:2
+msgid "Access, manage and share documents"
+msgstr "Acceder, xestionar e compartir documentos"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:2
+#: ../data/org.gnome.documents.gschema.xml.in.h:1
 msgid "List view"
 msgstr "Vista de lista"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
+msgid "Enable list view"
+msgstr "Activar a vista de lista"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:3
 msgid "The active source filter"
@@ -44,12 +44,12 @@ msgid "The last active source filter"
 msgstr "O último filtro de fonte activo"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:5
-msgid "Window maximized"
-msgstr "Xanela maximizada"
+msgid "Window size"
+msgstr "Tamaño da xanela"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:6
-msgid "Window maximized state"
-msgstr "Estado de xanela maximizada"
+msgid "Window size (width and height)."
+msgstr "Tamaño da xanela (ancho e alto)."
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:7
 msgid "Window position"
@@ -60,39 +60,59 @@ msgid "Window position (x and y)."
 msgstr "Posición da xanela (x e y)."
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:9
-msgid "Window size"
-msgstr "Tamaño da xanela"
+msgid "Window maximized"
+msgstr "Xanela maximizada"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:10
-msgid "Window size (width and height)."
-msgstr "Tamaño da xanela (ancho e alto)."
+msgid "Window maximized state"
+msgstr "Estado de xanela maximizada"
 
-#: ../src/documents.js:619 ../src/sources.js:100
+#: ../src/application.js:118
+msgid "Fullscreen"
+msgstr "Pantalla completa"
+
+#: ../src/application.js:119
+msgid "Quit"
+msgstr "Saír"
+
+#: ../src/application.js:122
+msgid "Grid"
+msgstr "Grade"
+
+#: ../src/application.js:123
+msgid "List"
+msgstr "Lista"
+
+#: ../src/application.js:124
+msgid "View as"
+msgstr "Ver como"
+
+#: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
 msgstr "Locais"
 
 #. overridden
-#: ../src/documents.js:682
+#: ../src/documents.js:681
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:683
+#: ../src/documents.js:682
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:752
+#: ../src/documents.js:751
 msgid "Spreadsheet"
 msgstr "Folla de cálculo"
 
-#: ../src/documents.js:754
+#: ../src/documents.js:753
 msgid "Presentation"
 msgstr "Presentación"
 
-#: ../src/documents.js:756
+#: ../src/documents.js:755
 msgid "Collection"
 msgstr "Colección"
 
-#: ../src/documents.js:758
+#: ../src/documents.js:757
 msgid "Document"
 msgstr "Documento"
 
@@ -106,9 +126,19 @@ msgstr "Non foi posíbel cargar «%s» para a súa vista previa"
 msgid "Unable to fetch the list of documents"
 msgstr "Non foi posíbel obter a lista de documentos"
 
+#. right section
+#: ../src/lib/gd-main-toolbar.c:210
+msgid "Done"
+msgstr "Feito"
+
 #: ../src/lib/gd-pdf-loader.c:207
 msgid "Unable to load the document"
 msgstr "Non foi posíbel cargar o documento"
+
+#: ../src/lib/gd-pdf-loader.c:488
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr ""
+"Non foi posíbel atopar «unoconv», comprobe a súa instalación de LibreOffice"
 
 #: ../src/loadMore.js:70
 #, c-format
@@ -117,20 +147,20 @@ msgid_plural "Load %d more documents"
 msgstr[0] "Cargar %d documento máis"
 msgstr[1] "Cargar %d documentos máis"
 
-#: ../src/mainToolbar.js:151
+#: ../src/mainToolbar.js:150
 msgid "Click on items to select them"
 msgstr "Prema nos elementos para seleccionalos"
 
-#: ../src/mainToolbar.js:153
+#: ../src/mainToolbar.js:152
 #, c-format
 msgid "%d selected"
 msgstr "%d seleccionados"
 
-#: ../src/mainToolbar.js:172
-msgid "Done"
-msgstr "Feito"
+#: ../src/mainToolbar.js:197
+msgid "New and Recent"
+msgstr "Novos e recentes"
 
-#: ../src/mainToolbar.js:298
+#: ../src/mainToolbar.js:219
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d de %d)"
@@ -139,7 +169,7 @@ msgstr "(%d de %d)"
 msgid "Category"
 msgstr "Categoría"
 
-#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:204
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:208
 #: ../src/sources.js:94
 msgid "All"
 msgstr "Todos"
@@ -176,42 +206,42 @@ msgstr "Follas de cálculo"
 msgid "Text Documents"
 msgstr "Documentos de texto"
 
-#: ../src/searchbar.js:201
+#: ../src/searchbar.js:205
 msgid "Match"
 msgstr "Coincidir"
 
-#: ../src/searchbar.js:206
+#: ../src/searchbar.js:210
 msgid "Title"
 msgstr "Título"
 
-#: ../src/searchbar.js:208
+#: ../src/searchbar.js:212
 msgid "Author"
 msgstr "Autor"
 
-#: ../src/selections.js:644
+#: ../src/selections.js:663
 msgid "Organize"
 msgstr "Organizar"
 
-#: ../src/selections.js:650
+#: ../src/selections.js:670
 msgid "Delete"
 msgstr "Eliminar"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:737 ../src/view.js:65
+#: ../src/selections.js:761 ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "Abrir con %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:740 ../src/view.js:68
+#: ../src/selections.js:764 ../src/view.js:70
 msgid "Open"
 msgstr "Abrir"
 
-#: ../src/selections.js:753 ../src/view.js:78
+#: ../src/selections.js:777 ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "Quitar dos marcadores"
 
-#: ../src/selections.js:757 ../src/view.js:78
+#: ../src/selections.js:781 ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Engadir aos marcadores"
 
@@ -222,9 +252,6 @@ msgstr "Fontes"
 #: ../src/spinnerBox.js:58
 msgid "Loading..."
 msgstr "Cargando…"
-
-#~ msgid "New and Recent"
-#~ msgstr "Novos e recentes"
 
 #~ msgid "Private"
 #~ msgstr "Privado"
