@@ -1,9 +1,9 @@
 <schemalist gettext-domain="gnome-documents">
   <schema id="org.gnome.documents" path="/org/gnome/documents/">
-    <key name="list-view" type="b">
-      <default>false</default>
-      <_summary>List view</_summary>
-      <_description>Enable list view</_description>
+    <key name="view-as" enum="org.gnome.Documents.GdMainViewType">
+      <default>'icon'</default>
+      <_summary>View as</_summary>
+      <_description>View as type</_description>
     </key>
     <key name="active-source" type="s">
       <default>'all'</default>

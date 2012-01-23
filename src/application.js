@@ -101,16 +101,17 @@ Application.prototype = {
             }));
         this.application.add_action(fsAction);
 
+        /* FIXME: use GSettings.create_action() once it's introspectable */
         let viewAsAction = Gio.SimpleAction.new_stateful('view-as',
                                                          GLib.VariantType.new('s'),
-                                                         Utils.listSettingToMenu());
+                                                         Global.settings.get_value('view-as'));
         viewAsAction.connect('activate', Lang.bind(this,
             function(action, variant) {
-                Global.settings.set_boolean('list-view', Utils.listMenuToSetting(variant));
+                Global.settings.set_value('view-as', variant);
             }));
-        Global.settings.connect('changed::list-view', Lang.bind(this,
+        Global.settings.connect('changed::view-as', Lang.bind(this,
             function() {
-                viewAsAction.state = Utils.listSettingToMenu();
+                viewAsAction.state = Global.settings.get_value('view-as');
             }));
         this.application.add_action(viewAsAction);
 
@@ -119,7 +120,7 @@ Application.prototype = {
 	menu.append(_("Quit"), 'app.quit');
 
         let viewAs = new Gio.Menu();
-        viewAs.append(_("Grid"), 'app.view-as::grid');
+        viewAs.append(_("Grid"), 'app.view-as::icon');
         viewAs.append(_("List"), 'app.view-as::list');
         menu.prepend_section(_("View as"), viewAs);
 

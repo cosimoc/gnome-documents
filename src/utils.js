@@ -37,10 +37,16 @@ let debugInit = false;
 let debugEnabled = false;
 
 function getIconSize() {
-    return Global.settings.get_boolean('list-view') ? _LIST_VIEW_SIZE : _ICON_VIEW_SIZE;
+    let viewType = Global.settings.get_enum('view-as');
+
+    if (viewType == Gd.MainViewType.LIST)
+        return _LIST_VIEW_SIZE;
+    else
+        return _ICON_VIEW_SIZE;
 }
 
 function getThumbnailFrameBorder() {
+    let viewType = Global.settings.get_enum('view-as');
     let slice = new Gtk.Border();
     let border = null;
 
@@ -49,7 +55,7 @@ function getThumbnailFrameBorder() {
     slice.bottom = 6;
     slice.left = 4;
 
-    if (Global.settings.get_boolean('list-view')) {
+    if (viewType == Gd.MainViewType.LIST) {
         border = new Gtk.Border();
         border.top = 1;
         border.right = 1;
@@ -102,18 +108,6 @@ function isSearchEvent(event) {
           ((state & Gdk.ModifierType.CONTROL_MASK) != 0)));
 
     return retval;
-}
-
-function listSettingToMenu() {
-    let isList =  Global.settings.get_boolean('list-view');
-    let variant = GLib.Variant.new('s', isList ? 'list' : 'grid');
-
-    return variant;
-}
-
-function listMenuToSetting(variant) {
-    let string = variant.get_string()[0];
-    return (string == 'list') ? true : false;
 }
 
 function debug(str) {

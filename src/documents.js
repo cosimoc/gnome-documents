@@ -301,7 +301,7 @@ DocCommon.prototype = {
         this.populateFromCursor(cursor);
 
         this._refreshIconId =
-            Global.settings.connect('changed::list-view',
+            Global.settings.connect('changed::view-as',
                                     Lang.bind(this, this.refreshIcon));
         this._filterId =
             Global.searchCategoryManager.connect('active-changed',

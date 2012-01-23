@@ -15,6 +15,10 @@ $(service_DATA): $(service_in_files) Makefile
 
 service_in_files = org.gnome.Documents.GDataMiner.service.in
 
+gsettings_ENUM_NAMESPACE = org.gnome.Documents
+gsettings_ENUM_FILES = \
+    $(top_srcdir)/src/lib/gd-main-view.h
+
 gsettingsschema_in_files = org.gnome.documents.gschema.xml.in
 gsettings_SCHEMAS = $(gsettingsschema_in_files:.xml.in=.xml)
 .PRECIOUS: $(gsettings_SCHEMAS)

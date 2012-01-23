@@ -123,7 +123,7 @@ View.prototype = {
 
         // connect to settings change for list/grid view
         this._viewSettingsId =
-            Global.settings.connect('changed::list-view',
+            Global.settings.connect('changed::view-as',
                                     Lang.bind(this, this._updateTypeForSettings));
         this._updateTypeForSettings();
 
@@ -143,11 +143,7 @@ View.prototype = {
     },
 
     _updateTypeForSettings: function() {
-        let isList = Global.settings.get_boolean('list-view');
-        let viewType = Gd.MainViewType.ICON;
-        if (isList)
-            viewType = Gd.MainViewType.LIST;
-
+        let viewType = Global.settings.get_enum('view-as');
         this.widget.set_view_type(viewType);
     },
 
