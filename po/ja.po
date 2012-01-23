@@ -2,15 +2,16 @@
 # Copyright (C) 2011 the gnome-documents's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-documents package.
 # Nishio Futoshi <fut_nis@d3.dion.ne.jp>, 2011.
+# Hideki Yamane <henrich@debian.org>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-10-01 23:57+0000\n"
-"PO-Revision-Date: 2011-10-04 17:59+0900\n"
-"Last-Translator: Jiro Matsuzawa <jmatsuzawa@src.gnome.org>\n"
+"POT-Creation-Date: 2012-01-19 16:02+0000\n"
+"PO-Revision-Date: 2012-01-21 17:55+0900\n"
+"Last-Translator: Hideki Yamane <henrich@debian.org>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,7 +23,7 @@ msgstr ""
 msgid "Access, manage and share documents"
 msgstr "ドキュメントへのアクセス、管理、そして共有"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:48
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:53
 msgid "Documents"
 msgstr "ドキュメント"
 
@@ -44,64 +45,76 @@ msgstr "前回のアクティブソースフィルター"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:5
 msgid "Window maximized"
-msgstr ""
+msgstr "ウィンドウ最大化"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:6
 msgid "Window maximized state"
-msgstr ""
+msgstr "ウィンドウを最大化状態にします"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:7
 msgid "Window position"
-msgstr ""
+msgstr "ウィンドウの位置"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:8
 msgid "Window position (x and y)."
-msgstr ""
+msgstr "ウィンドウの位置 (X 軸と Y 軸) です。"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:9
 msgid "Window size"
-msgstr ""
+msgstr "ウィンドウのサイズ"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:10
 msgid "Window size (width and height)."
+msgstr "ウィンドウのサイズ (幅と高さ) です。"
+
+#: ../src/application.js:118
+msgid "Fullscreen"
 msgstr ""
 
-#. Translators: this refers to new and recent documents
-#: ../src/categories.js:77
-msgid "New and Recent"
-msgstr "新規・最近のドキュメント"
+#: ../src/application.js:119
+msgid "Quit"
+msgstr ""
 
-#. Translators: this refers to favorite documents
-#: ../src/categories.js:80
-msgid "Favorites"
-msgstr "お気に入り"
+#: ../src/application.js:122
+msgid "Grid"
+msgstr ""
 
-#. Translators: this refers to shared documents
-#: ../src/categories.js:83
-msgid "Shared with you"
-msgstr "共有ドキュメント"
+#: ../src/application.js:123
+#, fuzzy
+#| msgid "List view"
+msgid "List"
+msgstr "リスト表示"
 
-#: ../src/documents.js:253 ../src/sources.js:101
+#: ../src/application.js:124
+msgid "View as"
+msgstr ""
+
+#: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
 msgstr "ローカル"
 
-#: ../src/documents.js:372
+#. overridden
+#: ../src/documents.js:681
 msgid "Google Docs"
-msgstr "Googleドキュメント"
+msgstr "Google ドキュメント"
 
-#: ../src/documents.js:373
+#: ../src/documents.js:682
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:442
+#: ../src/documents.js:751
 msgid "Spreadsheet"
 msgstr "スプレッドシート"
 
-#: ../src/documents.js:444
+#: ../src/documents.js:753
 msgid "Presentation"
 msgstr "プレゼンテーション"
 
-#: ../src/documents.js:446
+#: ../src/documents.js:755
+msgid "Collection"
+msgstr ""
+
+#: ../src/documents.js:757
 msgid "Document"
 msgstr "ドキュメント"
 
@@ -111,9 +124,24 @@ msgstr "ドキュメント"
 msgid "Unable to load \"%s\" for preview"
 msgstr "プレビュー状態で %s を開けませんでした"
 
-#: ../src/error.js:44
+#: ../src/error.js:49
 msgid "Unable to fetch the list of documents"
 msgstr "ドキュメントのリストを取得できませんでした"
+
+#. right section
+#: ../src/lib/gd-main-toolbar.c:210
+msgid "Done"
+msgstr ""
+
+#: ../src/lib/gd-pdf-loader.c:207
+#, fuzzy
+#| msgid "Unable to fetch the list of documents"
+msgid "Unable to load the document"
+msgstr "ドキュメントのリストを取得できませんでした"
+
+#: ../src/lib/gd-pdf-loader.c:488
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr ""
 
 #: ../src/loadMore.js:70
 #, c-format
@@ -121,38 +149,116 @@ msgid "Load %d more document"
 msgid_plural "Load %d more documents"
 msgstr[0] "%d 個のドキュメントをロードします"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:150
+msgid "Click on items to select them"
+msgstr "選択するアイテムをクリックします"
+
+#: ../src/mainToolbar.js:152
+#, c-format
+msgid "%d selected"
+msgstr "%d 件選択"
+
+#: ../src/mainToolbar.js:197
+msgid "New and Recent"
+msgstr "新規・最近のドキュメント"
+
+#: ../src/mainToolbar.js:219
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%dページ/%dページ)"
 
-#: ../src/sidebar.js:131 ../src/sources.js:218
-msgid "Sources"
-msgstr "ソース"
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr ""
 
-#: ../src/sources.js:96
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:208
+#: ../src/sources.js:94
 msgid "All"
 msgstr "全て表示"
 
-#: ../src/spinnerBox.js:47
-msgid "Loading..."
-msgstr "読み込み中..."
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "お気に入り"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "共有ドキュメント"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr ""
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr ""
+
+#: ../src/searchbar.js:147
+#, fuzzy
+#| msgid "Documents"
+msgid "PDF Documents"
+msgstr "ドキュメント"
+
+#: ../src/searchbar.js:150
+#, fuzzy
+#| msgid "Presentation"
+msgid "Presentations"
+msgstr "プレゼンテーション"
+
+#: ../src/searchbar.js:153
+#, fuzzy
+#| msgid "Spreadsheet"
+msgid "Spreadsheets"
+msgstr "スプレッドシート"
+
+#: ../src/searchbar.js:156
+#, fuzzy
+#| msgid "Documents"
+msgid "Text Documents"
+msgstr "ドキュメント"
+
+#: ../src/searchbar.js:205
+msgid "Match"
+msgstr ""
+
+#: ../src/searchbar.js:210
+msgid "Title"
+msgstr ""
+
+#: ../src/searchbar.js:212
+msgid "Author"
+msgstr ""
+
+#: ../src/selections.js:663
+msgid "Organize"
+msgstr ""
+
+#: ../src/selections.js:670
+msgid "Delete"
+msgstr ""
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:67
+#: ../src/selections.js:761 ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "%s で開く"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:70
+#: ../src/selections.js:764 ../src/view.js:70
 msgid "Open"
 msgstr "開く"
 
-#: ../src/view.js:80
+#: ../src/selections.js:777 ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "お気に入りから削除する"
 
-#: ../src/view.js:80
+#: ../src/selections.js:781 ../src/view.js:80
 msgid "Add to favorites"
 msgstr "お気に入りに追加する"
+
+#: ../src/sources.js:90
+msgid "Sources"
+msgstr "ソース"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "読み込み中..."
