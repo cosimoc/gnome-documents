@@ -63,7 +63,6 @@ typedef enum {
 } GdMainColumns;
 
 typedef enum {
-  GD_MAIN_VIEW_NONE,
   GD_MAIN_VIEW_ICON,
   GD_MAIN_VIEW_LIST
 } GdMainViewType;

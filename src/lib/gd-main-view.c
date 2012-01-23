@@ -25,6 +25,8 @@
 #include "gd-main-icon-view.h"
 #include "gd-main-list-view.h"
 
+#define MAIN_VIEW_TYPE_INITIAL -1
+
 struct _GdMainViewPrivate {
   GdMainViewType current_type;
   gboolean selection_mode;
@@ -57,7 +59,9 @@ gd_main_view_init (GdMainView *self)
   GtkStyleContext *context;
 
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GD_TYPE_MAIN_VIEW, GdMainViewPrivate);
-  self->priv->current_type = GD_MAIN_VIEW_NONE;
+
+  /* so that we get constructed with the right view even at startup */
+  self->priv->current_type = MAIN_VIEW_TYPE_INITIAL;
 
   gtk_widget_set_hexpand (GTK_WIDGET (self), TRUE);
   gtk_widget_set_vexpand (GTK_WIDGET (self), TRUE);
@@ -129,10 +133,11 @@ gd_main_view_class_init (GdMainViewClass *klass)
     g_param_spec_int ("view-type",
                       "View type",
                       "View type",
-                      GD_MAIN_VIEW_NONE,
+                      GD_MAIN_VIEW_ICON,
                       GD_MAIN_VIEW_LIST,
-                      GD_MAIN_VIEW_NONE,
+                      GD_MAIN_VIEW_ICON,
                       G_PARAM_READWRITE |
+                      G_PARAM_CONSTRUCT |
                       G_PARAM_STATIC_STRINGS);
 
   properties[PROP_SELECTION_MODE] =
@@ -300,9 +305,6 @@ static void
 gd_main_view_rebuild (GdMainView *self)
 {
   GtkStyleContext *context;
-
-  if (self->priv->current_type == GD_MAIN_VIEW_NONE)
-    return;
 
   if (self->priv->current_view != NULL)
     gtk_widget_destroy (self->priv->current_view);
