@@ -1,14 +1,14 @@
 # Norwegian bokmål translation of gnome-documents.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Kjartan Maraas <kmaraas@gnome.org>, 2011.
+# Kjartan Maraas <kmaraas@gnome.org>, 2011-2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-17 18:18+0100\n"
-"PO-Revision-Date: 2012-01-17 18:18+0100\n"
+"POT-Creation-Date: 2012-01-23 13:37+0100\n"
+"PO-Revision-Date: 2012-01-23 13:37+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: \n"
@@ -64,6 +64,26 @@ msgstr "Vindu maksimert"
 #: ../data/org.gnome.documents.gschema.xml.in.h:10
 msgid "Window maximized state"
 msgstr "Om vinduet er maksimert eller ikke"
+
+#: ../src/application.js:118
+msgid "Fullscreen"
+msgstr "Fullskjerm"
+
+#: ../src/application.js:119
+msgid "Quit"
+msgstr "Avslutt"
+
+#: ../src/application.js:122
+msgid "Grid"
+msgstr "Rutenett"
+
+#: ../src/application.js:123
+msgid "List"
+msgstr "Liste"
+
+#: ../src/application.js:124
+msgid "View as"
+msgstr "Vis som"
 
 #: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
