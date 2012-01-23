@@ -35,38 +35,6 @@ const Global = imports.global;
 const Tweener = imports.util.tweener;
 const WindowMode = imports.windowMode;
 
-function ViewSelector() {
-    this._init();
-}
-
-ViewSelector.prototype = {
-    _init: function() {
-        let iconView = new Gtk.ToggleButton({ child: new Gtk.Image({ icon_name: 'view-grid-symbolic',
-                                                                     pixel_size: 16 }) });
-        iconView.get_style_context().add_class('linked');
-        iconView.get_style_context().add_class('raised');
-
-        let listView = new Gtk.ToggleButton({ child: new Gtk.Image({ icon_name: 'view-list-symbolic',
-                                                                     pixel_size: 16 }) });
-        listView.get_style_context().add_class('linked');
-        listView.get_style_context().add_class('raised');
-
-        Global.settings.bind('list-view',
-                             iconView, 'active',
-                             Gio.SettingsBindFlags.INVERT_BOOLEAN);
-        Global.settings.bind('list-view',
-                             listView, 'active',
-                             Gio.SettingsBindFlags.DEFAULT);
-
-        this.widget = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL,
-                                    spacing: 0 });
-        this.widget.add(iconView);
-        this.widget.add(listView);
-
-        this.widget.show_all();
-    }
-};
-
 function MainToolbar() {
     this._init();
 }
