@@ -318,6 +318,7 @@ ViewEmbed.prototype  = {
     _onScrolledWinChange: function() {
         let vScrollbar = this._scrolledWinView.get_vscrollbar();
         let adjustment = this._scrolledWinView.vadjustment;
+        let revealAreaHeight = 32;
 
         // if there's no vscrollbar, or if it's not visible, hide the button
         if (!vScrollbar ||
@@ -336,7 +337,7 @@ ViewEmbed.prototype  = {
         if ((value == 0) && (upper == 1) && (page_size == 1))
             end = false;
         else
-            end = !(adjustment.value < (adjustment.upper - adjustment.page_size));
+            end = !(value < (upper - page_size - revealAreaHeight));
 
         this._loadMore.setBlock(!end);
     },
