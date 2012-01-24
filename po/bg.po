@@ -1,14 +1,14 @@
 # Bulgarian translation of gnome-documents po-file.
-# Copyright (C) 2011 Free Software Foundation, Inc.
+# Copyright (C) 2011, 2012 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-documents package.
-# Ivaylo Valkov <ivaylo@e-valkov.org>, 2011.
+# Ivaylo Valkov <ivaylo@e-valkov.org>, 2011, 2012. 
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-25 17:06+0300\n"
-"PO-Revision-Date: 2011-09-25 17:06+0300\n"
+"POT-Creation-Date: 2012-01-24 07:11+0200\n"
+"PO-Revision-Date: 2012-01-24 07:09+0200\n"
 "Last-Translator: Ivaylo Valkov <ivaylo@e-valkov.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "Language: bg\n"
@@ -21,64 +21,96 @@ msgstr ""
 msgid "Access, manage and share documents"
 msgstr "Преглед, управление и споделяне на документи"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:47
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:53
 msgid "Documents"
 msgstr "Документи"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "Enable list view"
-msgstr "Включване на списъчен изглед"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:2
-msgid "List view"
-msgstr "Списъчен изглед"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:3
 msgid "The active source filter"
 msgstr "Активният изходен филтър"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:4
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
 msgid "The last active source filter"
 msgstr "Последният активен изходен филтър"
 
-#. Translators: this refers to new and recent documents
-#: ../src/categories.js:77
-msgid "New and Recent"
-msgstr "Нови и скоро отваряни"
+#: ../data/org.gnome.documents.gschema.xml.in.h:3 ../src/application.js:125
+msgid "View as"
+msgstr "Изглед като"
 
-#. Translators: this refers to favorite documents
-#: ../src/categories.js:80
-msgid "Favorites"
-msgstr "Любими"
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "View as type"
+msgstr "Изглед като"
 
-#. Translators: this refers to shared documents
-#: ../src/categories.js:83
-msgid "Shared with you"
-msgstr "Споделени с вас"
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
+msgid "Window maximized"
+msgstr "Максимизиране на прозорец"
 
-#: ../src/documents.js:253 ../src/sources.js:101
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
+msgid "Window maximized state"
+msgstr "Максимизирано състояние на прозорец"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
+msgid "Window position"
+msgstr "Местоположение"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
+msgid "Window position (x and y)."
+msgstr "Местоположение (x и y)."
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:9
+msgid "Window size"
+msgstr "Размер на прозореца"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:10
+msgid "Window size (width and height)."
+msgstr "Размер на прозореца (широчина и височина)."
+
+#: ../src/application.js:119
+msgid "Fullscreen"
+msgstr "На цял екран"
+
+#: ../src/application.js:120
+msgid "Quit"
+msgstr "Спиране на програмата"
+
+#: ../src/application.js:123
+msgid "Grid"
+msgstr "Мрежа"
+
+#: ../src/application.js:124
+msgid "List"
+msgstr "Списък"
+
+#: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
 msgstr "Местни"
 
-#: ../src/documents.js:372
+# Това е официалният превод, който използват от Google.
+# Не ми харесва, но предполагам, че друго ще създаде объркване.
+#. overridden
+#: ../src/documents.js:681
 msgid "Google Docs"
-msgstr "Google документи"
+msgstr "Документи от Google "
 
-#: ../src/documents.js:373
+#: ../src/documents.js:682
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:442
+#: ../src/documents.js:751
 msgid "Spreadsheet"
-msgstr "Електронни таблици"
+msgstr "Електронна таблица"
 
-#: ../src/documents.js:444
+#: ../src/documents.js:753
 msgid "Presentation"
-msgstr "Презентации"
+msgstr "Презентация"
 
-#: ../src/documents.js:446
+#: ../src/documents.js:755
+msgid "Collection"
+msgstr "Колекция"
+
+#: ../src/documents.js:757
 msgid "Document"
-msgstr "Документи"
+msgstr "Документ"
 
 #. Translators: %s is the title of a document
 #: ../src/error.js:37
@@ -86,48 +118,134 @@ msgstr "Документи"
 msgid "Unable to load \"%s\" for preview"
 msgstr "Неуспех при зареждането на „%s“ за преглед"
 
-#: ../src/error.js:44
+#: ../src/error.js:49
 msgid "Unable to fetch the list of documents"
 msgstr "Неуспех при извличането на списъка с документи"
 
+#. right section
+#: ../src/lib/gd-main-toolbar.c:210
+msgid "Done"
+msgstr "Готово"
+
+#: ../src/lib/gd-pdf-loader.c:207
+msgid "Unable to load the document"
+msgstr "Неуспешно зареждане на документа"
+
+#: ../src/lib/gd-pdf-loader.c:488
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr ""
+"Програмата „unoconv“. липсва Проверете дали пакетът LibreOffice е инсталиран "
+"правилно."
+
 #: ../src/loadMore.js:70
 #, c-format
-msgid "Load %d more documents"
+msgid "Load %d more document"
 msgid_plural "Load %d more documents"
 msgstr[0] "Зареждане на още %d документ"
 msgstr[1] "Зареждане на още %d документа"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:118
+msgid "Click on items to select them"
+msgstr "Натиснете върху обектите, за да ги изберете."
+
+#: ../src/mainToolbar.js:120
+#, c-format
+msgid "%d selected"
+msgstr "Избрани са %d обекта"
+
+#: ../src/mainToolbar.js:165
+msgid "New and Recent"
+msgstr "Нови и скоро отваряни"
+
+#: ../src/mainToolbar.js:187
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d от %d)"
 
-#: ../src/sidebar.js:131 ../src/sources.js:218
-msgid "Sources"
-msgstr "Изходни файлове"
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "Категория"
 
-#: ../src/sources.js:96
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:208
+#: ../src/sources.js:94
 msgid "All"
 msgstr "Всички"
 
-#: ../src/spinnerBox.js:47
-msgid "Loading..."
-msgstr "Зареждане…"
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "Любими"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "Споделени с вас"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "Вид"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr "Колекции"
+
+#: ../src/searchbar.js:147
+msgid "PDF Documents"
+msgstr "Документи — PDF"
+
+#: ../src/searchbar.js:150
+msgid "Presentations"
+msgstr "Презентации"
+
+#: ../src/searchbar.js:153
+msgid "Spreadsheets"
+msgstr "Електронни таблици"
+
+#: ../src/searchbar.js:156
+msgid "Text Documents"
+msgstr "Документи — текст"
+
+#: ../src/searchbar.js:205
+msgid "Match"
+msgstr "Търсене за"
+
+#: ../src/searchbar.js:210
+msgid "Title"
+msgstr "Заглавие"
+
+#: ../src/searchbar.js:212
+msgid "Author"
+msgstr "Автор"
+
+#: ../src/selections.js:663
+msgid "Organize"
+msgstr "Подреждане"
+
+#: ../src/selections.js:670
+msgid "Delete"
+msgstr "Изтриване"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:67
+#: ../src/selections.js:761 ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "Отваряне с %s"
 
-#: ../src/view.js:69
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:764 ../src/view.js:70
 msgid "Open"
 msgstr "Отваряне"
 
-#: ../src/view.js:79
+#: ../src/selections.js:777 ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "Премахване от „Любими“"
 
-#: ../src/view.js:79
+#: ../src/selections.js:781 ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Добавяне в „Любими“"
+
+#: ../src/sources.js:90
+msgid "Sources"
+msgstr "Изходни файлове"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "Зареждане…"
