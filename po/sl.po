@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-01-19 16:02+0000\n"
-"PO-Revision-Date: 2012-01-21 20:49+0100\n"
+"POT-Creation-Date: 2012-01-25 12:10+0000\n"
+"PO-Revision-Date: 2012-01-25 22:18+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: Slovenian\n"
@@ -31,20 +31,21 @@ msgid "Documents"
 msgstr "Dokumenti"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "Enable list view"
-msgstr "Omogoči seznamski pogled"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:2
-msgid "List view"
-msgstr "Seznamski pogled"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:3
 msgid "The active source filter"
 msgstr "Dejavni filter vira"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:4
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
 msgid "The last active source filter"
 msgstr "Zadnji dejavni filter virov"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
+#: ../src/application.js:125
+msgid "View as"
+msgstr "Poglej kot"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "View as type"
+msgstr "Poglej kot vrsto"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:5
 msgid "Window maximized"
@@ -70,25 +71,21 @@ msgstr "Velikost okna"
 msgid "Window size (width and height)."
 msgstr "Velikost okna (širina in višina)."
 
-#: ../src/application.js:118
+#: ../src/application.js:119
 msgid "Fullscreen"
 msgstr "Celozaslonski način"
 
-#: ../src/application.js:119
+#: ../src/application.js:120
 msgid "Quit"
 msgstr "Končaj"
 
-#: ../src/application.js:122
+#: ../src/application.js:123
 msgid "Grid"
 msgstr "Mreža"
 
-#: ../src/application.js:123
+#: ../src/application.js:124
 msgid "List"
 msgstr "Seznam"
-
-#: ../src/application.js:124
-msgid "View as"
-msgstr "Poglej kot"
 
 #: ../src/documents.js:618
 #: ../src/sources.js:100
@@ -152,20 +149,20 @@ msgstr[1] "Naloži še %d dokument"
 msgstr[2] "Naloži še %d dokumenta"
 msgstr[3] "Naloži še %d dokumente"
 
-#: ../src/mainToolbar.js:150
+#: ../src/mainToolbar.js:118
 msgid "Click on items to select them"
 msgstr "S klikom se predmeti izberejo."
 
-#: ../src/mainToolbar.js:152
+#: ../src/mainToolbar.js:120
 #, c-format
 msgid "%d selected"
 msgstr "%d izbranih"
 
-#: ../src/mainToolbar.js:197
+#: ../src/mainToolbar.js:165
 msgid "New and Recent"
 msgstr "Novo in nedavno"
 
-#: ../src/mainToolbar.js:219
+#: ../src/mainToolbar.js:187
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d od %d)"
@@ -264,3 +261,8 @@ msgstr "Viri"
 msgid "Loading..."
 msgstr "Nalaganje ..."
 
+#~ msgid "Enable list view"
+#~ msgstr "Omogoči seznamski pogled"
+
+#~ msgid "List view"
+#~ msgstr "Seznamski pogled"
