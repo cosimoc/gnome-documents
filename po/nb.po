@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-23 13:37+0100\n"
-"PO-Revision-Date: 2012-01-23 13:37+0100\n"
+"POT-Creation-Date: 2012-01-25 13:10+0100\n"
+"PO-Revision-Date: 2012-01-25 13:10+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: \n"
@@ -25,13 +25,13 @@ msgstr "Dokumenter"
 msgid "Access, manage and share documents"
 msgstr "Aksesser, håndter og del dokumenter"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "List view"
-msgstr "Listevisning"
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:125
+msgid "View as"
+msgstr "Vis som"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:2
-msgid "Enable list view"
-msgstr "Slå på listevisning"
+msgid "View as type"
+msgstr "Vis som type"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:3
 msgid "The active source filter"
@@ -65,25 +65,21 @@ msgstr "Vindu maksimert"
 msgid "Window maximized state"
 msgstr "Om vinduet er maksimert eller ikke"
 
-#: ../src/application.js:118
+#: ../src/application.js:119
 msgid "Fullscreen"
 msgstr "Fullskjerm"
 
-#: ../src/application.js:119
+#: ../src/application.js:120
 msgid "Quit"
 msgstr "Avslutt"
 
-#: ../src/application.js:122
+#: ../src/application.js:123
 msgid "Grid"
 msgstr "Rutenett"
 
-#: ../src/application.js:123
+#: ../src/application.js:124
 msgid "List"
 msgstr "Liste"
-
-#: ../src/application.js:124
-msgid "View as"
-msgstr "Vis som"
 
 #: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
@@ -144,20 +140,20 @@ msgid_plural "Load %d more documents"
 msgstr[0] "Last %d dokument til"
 msgstr[1] "Last %d dokumenter til"
 
-#: ../src/mainToolbar.js:150
+#: ../src/mainToolbar.js:118
 msgid "Click on items to select them"
 msgstr "Klikk på oppføringer for å velge dem"
 
-#: ../src/mainToolbar.js:152
+#: ../src/mainToolbar.js:120
 #, c-format
 msgid "%d selected"
 msgstr "%d valgt"
 
-#: ../src/mainToolbar.js:197
+#: ../src/mainToolbar.js:165
 msgid "New and Recent"
 msgstr "Nye og nylige"
 
-#: ../src/mainToolbar.js:219
+#: ../src/mainToolbar.js:187
 #, c-format
 msgid "(%d of %d)"
 msgstr "[%d av %d]"
