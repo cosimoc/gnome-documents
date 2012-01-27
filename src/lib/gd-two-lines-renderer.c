@@ -85,7 +85,9 @@ gd_two_lines_renderer_prepare_layouts (GdTwoLinesRenderer *self,
       g_strcmp0 (self->priv->line_two, "") == 0)
     {
       pango_layout_set_height (line_one, - (self->priv->text_lines));
-      pango_layout_set_text (line_one, text, -1);
+
+      if (text != NULL)
+        pango_layout_set_text (line_one, text, -1);
     }
   else
     {
@@ -93,9 +95,10 @@ gd_two_lines_renderer_prepare_layouts (GdTwoLinesRenderer *self,
 
       pango_layout_set_height (line_one, - (self->priv->text_lines - 1));
       pango_layout_set_height (line_two, -1);
-
-      pango_layout_set_text (line_one, text, -1);
       pango_layout_set_text (line_two, self->priv->line_two, -1);
+
+      if (text != NULL)
+        pango_layout_set_text (line_one, text, -1);
     }
 
   if (layout_one)
