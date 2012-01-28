@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Gnome-Documents\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-12-10 11:46+0200\n"
-"PO-Revision-Date: 2011-12-10 11:51+0200\n"
+"POT-Creation-Date: 2012-01-28 12:54+0200\n"
+"PO-Revision-Date: 2012-01-28 12:54+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <sh.yaron@gmail.com>\n"
 "Language: he\n"
@@ -25,25 +25,26 @@ msgid "Access, manage and share documents"
 msgstr "גישה, ניהול ושיתוף של מסמכים"
 
 #: ../data/gnome-documents.desktop.in.in.h:2
-#: ../src/mainWindow.js:52
+#: ../src/mainWindow.js:53
 msgid "Documents"
 msgstr "מסמכים"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "Enable list view"
-msgstr "Enable list view"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:2
-msgid "List view"
-msgstr "List view"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:3
 msgid "The active source filter"
 msgstr "The active source filter"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:4
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
 msgid "The last active source filter"
 msgstr "The last active source filter"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
+#: ../src/application.js:125
+msgid "View as"
+msgstr "צפייה בתור"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "View as type"
+msgstr "צפייה כסוג"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:5
 msgid "Window maximized"
@@ -68,6 +69,22 @@ msgstr "Window size"
 #: ../data/org.gnome.documents.gschema.xml.in.h:10
 msgid "Window size (width and height)."
 msgstr "Window size (width and height)."
+
+#: ../src/application.js:119
+msgid "Fullscreen"
+msgstr "מסך מלא"
+
+#: ../src/application.js:120
+msgid "Quit"
+msgstr "יציאה"
+
+#: ../src/application.js:123
+msgid "Grid"
+msgstr "רשת"
+
+#: ../src/application.js:124
+msgid "List"
+msgstr "רשימה"
 
 #: ../src/documents.js:618
 #: ../src/sources.js:100
@@ -118,6 +135,10 @@ msgstr "בוצע"
 msgid "Unable to load the document"
 msgstr "לא ניתן לטעון את המסמך"
 
+#: ../src/lib/gd-pdf-loader.c:488
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr "לא ניתן למצוא את \"unoconv\", נא לבדוק את התקנת ה־LibreOffice שלך"
+
 #: ../src/loadMore.js:70
 #, c-format
 msgid "Load %d more document"
@@ -125,20 +146,20 @@ msgid_plural "Load %d more documents"
 msgstr[0] "טעינת מסמך נוסף"
 msgstr[1] "טעינת %d מסמכים נוספים"
 
-#: ../src/mainToolbar.js:150
+#: ../src/mainToolbar.js:118
 msgid "Click on items to select them"
 msgstr "יש ללחוץ על פריטים כדי לבחור אותם"
 
-#: ../src/mainToolbar.js:152
+#: ../src/mainToolbar.js:120
 #, c-format
 msgid "%d selected"
 msgstr "נבחרו %d"
 
-#: ../src/mainToolbar.js:200
+#: ../src/mainToolbar.js:165
 msgid "New and Recent"
 msgstr "חדש ו"
 
-#: ../src/mainToolbar.js:222
+#: ../src/mainToolbar.js:187
 #, c-format
 msgid "(%d of %d)"
 msgstr "‏(%d מתוך %d)"
@@ -237,3 +258,5 @@ msgstr "מקורות"
 msgid "Loading..."
 msgstr "בטעינה..."
 
+#~ msgid "Enable list view"
+#~ msgstr "Enable list view"
