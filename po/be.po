@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-10 01:05+0300\n"
-"PO-Revision-Date: 2012-01-10 01:05+0300\n"
+"POT-Creation-Date: 2012-01-30 19:18+0300\n"
+"PO-Revision-Date: 2012-01-30 19:18+0300\n"
 "Last-Translator: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>\n"
 "Language-Team: Belarusian <i18n-bel-gnome@googlegroups.com>\n"
 "Language: be\n"
@@ -15,21 +15,21 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../data/gnome-documents.desktop.in.in.h:1
-msgid "Access, manage and share documents"
-msgstr "Праца, кіраванне і супольны доступ да дакументаў"
-
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:53
+#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:53
 msgid "Documents"
 msgstr "Дакументы"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "Enable list view"
-msgstr "Уключыць прагляд спісам"
+#: ../data/gnome-documents.desktop.in.in.h:2
+msgid "Access, manage and share documents"
+msgstr "Праца, кіраванне і супольны доступ да дакументаў"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:125
+msgid "View as"
+msgstr "Тып прагляду"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:2
-msgid "List view"
-msgstr "Прагляд спісам"
+msgid "View as type"
+msgstr "Тып прагляду"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:3
 msgid "The active source filter"
@@ -40,12 +40,12 @@ msgid "The last active source filter"
 msgstr "Апошні задзейнічаны фільтр крыніц"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:5
-msgid "Window maximized"
-msgstr "Максімалізацыя акна"
+msgid "Window size"
+msgstr "Памер акна"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:6
-msgid "Window maximized state"
-msgstr "Стан максімалізацыі акна"
+msgid "Window size (width and height)."
+msgstr "Памер акна (шырыня і вышыня)."
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:7
 msgid "Window position"
@@ -56,12 +56,28 @@ msgid "Window position (x and y)."
 msgstr "Размяшчэнне акна (x, y)."
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:9
-msgid "Window size"
-msgstr "Памер акна"
+msgid "Window maximized"
+msgstr "Максімалізацыя акна"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:10
-msgid "Window size (width and height)."
-msgstr "Памер акна (шырыня і вышыня)."
+msgid "Window maximized state"
+msgstr "Стан максімалізацыі акна"
+
+#: ../src/application.js:119
+msgid "Fullscreen"
+msgstr "На ўвесь экран"
+
+#: ../src/application.js:120
+msgid "Quit"
+msgstr "Выйсці"
+
+#: ../src/application.js:123
+msgid "Grid"
+msgstr "Сетка"
+
+#: ../src/application.js:124
+msgid "List"
+msgstr "Спіс"
 
 #: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
@@ -111,6 +127,12 @@ msgstr "Зроблена"
 msgid "Unable to load the document"
 msgstr "Не ўдалося загрузіць дакумент"
 
+#: ../src/lib/gd-pdf-loader.c:488
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr ""
+"Не ўдалося адшукаць \"unoconv\", праверце правільнасць усталявання "
+"LibreOffice"
+
 #: ../src/loadMore.js:70
 #, c-format
 msgid "Load %d more document"
@@ -119,20 +141,20 @@ msgstr[0] "Загрузіць яшчэ %d дакумент"
 msgstr[1] "Загрузіць яшчэ %d дакументы"
 msgstr[2] "Загрузіць яшчэ %d дакументаў"
 
-#: ../src/mainToolbar.js:150
+#: ../src/mainToolbar.js:118
 msgid "Click on items to select them"
 msgstr "Пстрыкайце ў элементы спіса для іх вылучэння"
 
-#: ../src/mainToolbar.js:152
+#: ../src/mainToolbar.js:120
 #, c-format
 msgid "%d selected"
 msgstr "%d вылучана"
 
-#: ../src/mainToolbar.js:197
+#: ../src/mainToolbar.js:165
 msgid "New and Recent"
 msgstr "Новыя і нядаўнія"
 
-#: ../src/mainToolbar.js:219
+#: ../src/mainToolbar.js:187
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d з %d)"
@@ -224,3 +246,6 @@ msgstr "Крыніцы"
 #: ../src/spinnerBox.js:58
 msgid "Loading..."
 msgstr "Загрузка..."
+
+#~ msgid "Enable list view"
+#~ msgstr "Уключыць прагляд спісам"
