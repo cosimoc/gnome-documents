@@ -148,7 +148,7 @@ msgstr "Klik op een item om het te selecteren"
 #: ../src/mainToolbar.js:120
 #, c-format
 msgid "%d selected"
-msgstr "%s geselecteerd"
+msgstr "%d geselecteerd"
 
 #: ../src/mainToolbar.js:165
 msgid "New and Recent"
