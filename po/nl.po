@@ -1,0 +1,249 @@
+# Dutch translation for Gnome Documents
+#
+# This file is distributed under the same license as the gnome-documents package.
+#
+# Wouter Bolsterlee <wbolster@gnome.org>, 2012
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-documents\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-02-04 15:33+0100\n"
+"PO-Revision-Date: 2012-02-04 15:43+0100\n"
+"Last-Translator: Wouter Bolsterlee <wbolster@gnome.org>\n"
+"Language-Team: Dutch <vertaling@vrijschrift.org>\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../data/gnome-documents.desktop.in.in.h:1
+msgid "Access, manage and share documents"
+msgstr "Documenten gebruiken, beheren en delen"
+
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:53
+msgid "Documents"
+msgstr "Documenten"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1
+msgid "The active source filter"
+msgstr "Actieve bronfilter"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
+msgid "The last active source filter"
+msgstr "Recent actieve bronfilter"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:3 ../src/application.js:125
+msgid "View as"
+msgstr "Tonen als"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "View as type"
+msgstr "Tonen als type"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
+msgid "Window maximized"
+msgstr "Gemaximaliseerd venster"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
+msgid "Window maximized state"
+msgstr "Gemaximaliseerd venster"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
+msgid "Window position"
+msgstr "Vensterpositie"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
+msgid "Window position (x and y)."
+msgstr "Vensterpositie (x en y)"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:9
+msgid "Window size"
+msgstr "Venstergrootte"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:10
+msgid "Window size (width and height)."
+msgstr "Venstergrootte (breedte en hoogte)"
+
+#: ../src/application.js:119
+msgid "Fullscreen"
+msgstr "Volledig scherm"
+
+#: ../src/application.js:120
+msgid "Quit"
+msgstr "Afsluiten"
+
+#: ../src/application.js:123
+msgid "Grid"
+msgstr "Rooster"
+
+#: ../src/application.js:124
+msgid "List"
+msgstr "Lijst"
+
+#: ../src/documents.js:618 ../src/sources.js:100
+msgid "Local"
+msgstr "Lokaal"
+
+#. overridden
+#: ../src/documents.js:681
+msgid "Google Docs"
+msgstr "Google Docs"
+
+#: ../src/documents.js:682
+msgid "Google"
+msgstr "Google"
+
+#: ../src/documents.js:751
+msgid "Spreadsheet"
+msgstr "Spreadsheet"
+
+#: ../src/documents.js:753
+msgid "Presentation"
+msgstr "Presentatie"
+
+#: ../src/documents.js:755
+msgid "Collection"
+msgstr "Verzameling"
+
+#: ../src/documents.js:757
+msgid "Document"
+msgstr "Document"
+
+#. Translators: %s is the title of a document
+#: ../src/error.js:37
+#, c-format
+msgid "Unable to load \"%s\" for preview"
+msgstr "Kon ‘%s’ niet laden voor voorbeeld"
+
+#: ../src/error.js:49
+msgid "Unable to fetch the list of documents"
+msgstr "Kon lijst van documenten niet opvragen"
+
+#. right section
+#: ../src/lib/gd-main-toolbar.c:210
+msgid "Done"
+msgstr "Gereed"
+
+#: ../src/lib/gd-pdf-loader.c:207
+msgid "Unable to load the document"
+msgstr "Kon document niet laden"
+
+#: ../src/lib/gd-pdf-loader.c:488
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr "Kon ‘unoconv’ niet vinden; controleer of LibreOffice juist geïnstalleerd is"
+
+#: ../src/loadMore.js:70
+#, c-format
+msgid "Load %d more document"
+msgid_plural "Load %d more documents"
+msgstr[0] "Nog %d document laden"
+msgstr[1] "Nog %d documenten laden"
+
+#: ../src/mainToolbar.js:118
+msgid "Click on items to select them"
+msgstr "Klik op een item om het te selecteren"
+
+#: ../src/mainToolbar.js:120
+#, c-format
+msgid "%d selected"
+msgstr "%s geselecteerd"
+
+#: ../src/mainToolbar.js:165
+msgid "New and Recent"
+msgstr "Nieuw en recent"
+
+#: ../src/mainToolbar.js:187
+#, c-format
+msgid "(%d of %d)"
+msgstr "(%d van %d)"
+
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "Categorie"
+
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:208
+#: ../src/sources.js:94
+msgid "All"
+msgstr "Alles"
+
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "Favorieten"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "Met u gedeeld"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "Type"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr "Verzamelingen"
+
+#: ../src/searchbar.js:147
+msgid "PDF Documents"
+msgstr "PDF-documenten"
+
+#: ../src/searchbar.js:150
+msgid "Presentations"
+msgstr "Presentaties"
+
+#: ../src/searchbar.js:153
+msgid "Spreadsheets"
+msgstr "Spreadsheets"
+
+#: ../src/searchbar.js:156
+msgid "Text Documents"
+msgstr "Tekstdocumenten"
+
+# ???
+#: ../src/searchbar.js:205
+msgid "Match"
+msgstr "Resultaat"
+
+#: ../src/searchbar.js:210
+msgid "Title"
+msgstr "Titel"
+
+#: ../src/searchbar.js:212
+msgid "Author"
+msgstr "Auteur"
+
+#: ../src/selections.js:663
+msgid "Organize"
+msgstr "Organiseren"
+
+#: ../src/selections.js:670
+msgid "Delete"
+msgstr "Verwijderen"
+
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:761 ../src/view.js:67
+#, c-format
+msgid "Open with %s"
+msgstr "Openen met %s"
+
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:764 ../src/view.js:70
+msgid "Open"
+msgstr "Openen"
+
+#: ../src/selections.js:777 ../src/view.js:80
+msgid "Remove from favorites"
+msgstr "Uit favorieten verwijderen"
+
+#: ../src/selections.js:781 ../src/view.js:80
+msgid "Add to favorites"
+msgstr "Aan favorieten toevoegen"
+
+#: ../src/sources.js:90
+msgid "Sources"
+msgstr "Bronnen"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "Laden…"
