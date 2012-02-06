@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-23 00:35+0100\n"
-"PO-Revision-Date: 2012-01-23 00:35+0100\n"
+"POT-Creation-Date: 2012-02-06 13:01+0100\n"
+"PO-Revision-Date: 2012-02-06 13:02+0100\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
@@ -27,13 +27,13 @@ msgstr "Documentos"
 msgid "Access, manage and share documents"
 msgstr "Acceder, xestionar e compartir documentos"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "List view"
-msgstr "Vista de lista"
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:125
+msgid "View as"
+msgstr "Ver como"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:2
-msgid "Enable list view"
-msgstr "Activar a vista de lista"
+msgid "View as type"
+msgstr "Ver como tipo"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:3
 msgid "The active source filter"
@@ -67,25 +67,21 @@ msgstr "Xanela maximizada"
 msgid "Window maximized state"
 msgstr "Estado de xanela maximizada"
 
-#: ../src/application.js:118
+#: ../src/application.js:119
 msgid "Fullscreen"
 msgstr "Pantalla completa"
 
-#: ../src/application.js:119
+#: ../src/application.js:120
 msgid "Quit"
 msgstr "Saír"
 
-#: ../src/application.js:122
+#: ../src/application.js:123
 msgid "Grid"
 msgstr "Grade"
 
-#: ../src/application.js:123
+#: ../src/application.js:124
 msgid "List"
 msgstr "Lista"
-
-#: ../src/application.js:124
-msgid "View as"
-msgstr "Ver como"
 
 #: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
@@ -147,20 +143,20 @@ msgid_plural "Load %d more documents"
 msgstr[0] "Cargar %d documento máis"
 msgstr[1] "Cargar %d documentos máis"
 
-#: ../src/mainToolbar.js:150
+#: ../src/mainToolbar.js:118
 msgid "Click on items to select them"
 msgstr "Prema nos elementos para seleccionalos"
 
-#: ../src/mainToolbar.js:152
+#: ../src/mainToolbar.js:120
 #, c-format
 msgid "%d selected"
 msgstr "%d seleccionados"
 
-#: ../src/mainToolbar.js:197
+#: ../src/mainToolbar.js:165
 msgid "New and Recent"
 msgstr "Novos e recentes"
 
-#: ../src/mainToolbar.js:219
+#: ../src/mainToolbar.js:187
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d de %d)"
@@ -252,6 +248,12 @@ msgstr "Fontes"
 #: ../src/spinnerBox.js:58
 msgid "Loading..."
 msgstr "Cargando…"
+
+#~ msgid "List view"
+#~ msgstr "Vista de lista"
+
+#~ msgid "Enable list view"
+#~ msgstr "Activar a vista de lista"
 
 #~ msgid "Private"
 #~ msgstr "Privado"
