@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-11-16 13:29+0000\n"
-"PO-Revision-Date: 2011-11-16 18:47+0300\n"
+"POT-Creation-Date: 2012-01-23 21:30+0000\n"
+"PO-Revision-Date: 2012-02-13 12:35+0300\n"
 "Last-Translator: Yuri Myasoedov <omerta13@yandex.ru>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -27,20 +27,21 @@ msgid "Documents"
 msgstr "Документы"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "Enable list view"
-msgstr "Включить списочный вид"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:2
-msgid "List view"
-msgstr "Списочный вид"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:3
 msgid "The active source filter"
 msgstr "Активный фильтр источников"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:4
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
 msgid "The last active source filter"
 msgstr "Последний активный фильтр источников"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
+#: ../src/application.js:125
+msgid "View as"
+msgstr "Вид"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "View as type"
+msgstr "Вид"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:5
 msgid "Window maximized"
@@ -66,33 +67,50 @@ msgstr "Размер окна"
 msgid "Window size (width and height)."
 msgstr "Размер окна (ширина и высота)."
 
-#: ../src/documents.js:619
+#: ../src/application.js:119
+msgid "Fullscreen"
+msgstr "На полный экран"
+
+#: ../src/application.js:120
+msgid "Quit"
+msgstr "Закончить"
+
+#: ../src/application.js:123
+msgid "Grid"
+msgstr "Сетка"
+
+#: ../src/application.js:124
+#| msgid "List view"
+msgid "List"
+msgstr "Список"
+
+#: ../src/documents.js:618
 #: ../src/sources.js:100
 msgid "Local"
 msgstr "Локальные"
 
 #. overridden
-#: ../src/documents.js:682
+#: ../src/documents.js:681
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:683
+#: ../src/documents.js:682
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:752
+#: ../src/documents.js:751
 msgid "Spreadsheet"
 msgstr "Таблица"
 
-#: ../src/documents.js:754
+#: ../src/documents.js:753
 msgid "Presentation"
 msgstr "Презентация"
 
-#: ../src/documents.js:756
+#: ../src/documents.js:755
 msgid "Collection"
 msgstr "Коллекция"
 
-#: ../src/documents.js:758
+#: ../src/documents.js:757
 msgid "Document"
 msgstr "Документ"
 
@@ -106,35 +124,41 @@ msgstr "Не удалось загрузить «%s» для просмотра"
 msgid "Unable to fetch the list of documents"
 msgstr "Не удалось получить список документов"
 
+#. right section
+#: ../src/lib/gd-main-toolbar.c:210
+msgid "Done"
+msgstr "Выполнено"
+
 #: ../src/lib/gd-pdf-loader.c:207
-#| msgid "Unable to fetch the list of documents"
 msgid "Unable to load the document"
 msgstr "Не удалось загрузить документ"
 
+#: ../src/lib/gd-pdf-loader.c:488
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr "Не удалось найти «unoconv», проверьте, установлен ли LibreOffice"
+
 #: ../src/loadMore.js:70
 #, c-format
-#| msgid "Load %d more documents"
-#| msgid_plural "Load %d more documents"
 msgid "Load %d more document"
 msgid_plural "Load %d more documents"
 msgstr[0] "Загрузить ещё %d документ"
 msgstr[1] "Загрузить ещё %d документа"
 msgstr[2] "Загрузить ещё %d документов"
 
-#: ../src/mainToolbar.js:151
+#: ../src/mainToolbar.js:118
 msgid "Click on items to select them"
 msgstr "Щёлкните по элементам, чтобы выбрать их"
 
-#: ../src/mainToolbar.js:153
+#: ../src/mainToolbar.js:120
 #, c-format
 msgid "%d selected"
 msgstr "Выбрано: %d"
 
-#: ../src/mainToolbar.js:172
-msgid "Done"
-msgstr "Выполнено"
+#: ../src/mainToolbar.js:165
+msgid "New and Recent"
+msgstr ""
 
-#: ../src/mainToolbar.js:298
+#: ../src/mainToolbar.js:187
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d из %d)"
@@ -145,7 +169,7 @@ msgstr "Категория"
 
 #: ../src/searchbar.js:91
 #: ../src/searchbar.js:141
-#: ../src/searchbar.js:204
+#: ../src/searchbar.js:208
 #: ../src/sources.js:94
 msgid "All"
 msgstr "Все"
@@ -167,65 +191,61 @@ msgid "Collections"
 msgstr "Коллекции"
 
 #: ../src/searchbar.js:147
-#| msgid "Documents"
 msgid "PDF Documents"
 msgstr "Документы PDF"
 
 #: ../src/searchbar.js:150
-#| msgid "Presentation"
 msgid "Presentations"
 msgstr "Презентации"
 
 #: ../src/searchbar.js:153
-#| msgid "Spreadsheet"
 msgid "Spreadsheets"
 msgstr "Таблицы"
 
 #: ../src/searchbar.js:156
-#| msgid "Documents"
 msgid "Text Documents"
 msgstr "Текстовые документы"
 
-#: ../src/searchbar.js:201
+#: ../src/searchbar.js:205
 msgid "Match"
 msgstr "Совпадение"
 
-#: ../src/searchbar.js:206
+#: ../src/searchbar.js:210
 msgid "Title"
 msgstr "Заголовок"
 
-#: ../src/searchbar.js:208
+#: ../src/searchbar.js:212
 msgid "Author"
 msgstr "Автор"
 
-#: ../src/selections.js:644
+#: ../src/selections.js:663
 msgid "Organize"
-msgstr ""
+msgstr "Создать"
 
-#: ../src/selections.js:650
+#: ../src/selections.js:670
 msgid "Delete"
 msgstr "Удалить"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:737
-#: ../src/view.js:65
+#: ../src/selections.js:761
+#: ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "Открыть с помощью %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:740
-#: ../src/view.js:68
+#: ../src/selections.js:764
+#: ../src/view.js:70
 msgid "Open"
 msgstr "Открыть"
 
-#: ../src/selections.js:753
-#: ../src/view.js:78
+#: ../src/selections.js:777
+#: ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "Удалить из избранного"
 
-#: ../src/selections.js:757
-#: ../src/view.js:78
+#: ../src/selections.js:781
+#: ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Добавить в избранное"
 
@@ -237,3 +257,5 @@ msgstr "Источники"
 msgid "Loading..."
 msgstr "Загрузка…"
 
+#~ msgid "Enable list view"
+#~ msgstr "Включить списочный вид"
