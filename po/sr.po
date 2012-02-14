@@ -7,10 +7,10 @@ msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-12-05 21:39+0000\n"
-"PO-Revision-Date: 2012-01-15 01:57+0200\n"
+"POT-Creation-Date: 2012-01-23 21:30+0000\n"
+"PO-Revision-Date: 2012-02-14 11:46+0200\n"
 "Last-Translator: Мирослав Николић <miroslavnikolic@rocketmail.com>\n"
-"Language-Team: Serbian <gnome@prevod.org>\n"
+"Language-Team: Serbian <gnom@prevod.org>\n"
 "Language: sr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,25 +23,25 @@ msgstr ""
 msgid "Access, manage and share documents"
 msgstr "Приступите, управљајте и делите документе"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:52
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:53
 msgid "Documents"
 msgstr "Документи"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "Enable list view"
-msgstr "Укључује преглед списком"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:2
-msgid "List view"
-msgstr "Преглед списком"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:3
 msgid "The active source filter"
 msgstr "Филтер радног извора"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:4
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
 msgid "The last active source filter"
 msgstr "Филтер последњег радног извора"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:3 ../src/application.js:125
+msgid "View as"
+msgstr "Прикажи као"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "View as type"
+msgstr "Приказивање као врсте"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:5
 msgid "Window maximized"
@@ -66,6 +66,23 @@ msgstr "Величина прозора"
 #: ../data/org.gnome.documents.gschema.xml.in.h:10
 msgid "Window size (width and height)."
 msgstr "Величина прозора (ширина и висина)."
+
+#: ../src/application.js:119
+msgid "Fullscreen"
+msgstr "Преко целог екрана"
+
+#: ../src/application.js:120
+msgid "Quit"
+msgstr "Излаз"
+
+#: ../src/application.js:123
+msgid "Grid"
+msgstr "Мрежа"
+
+#: ../src/application.js:124
+#| msgid "List view"
+msgid "List"
+msgstr "Списак"
 
 #: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
@@ -112,14 +129,15 @@ msgid "Done"
 msgstr "Обављено"
 
 #: ../src/lib/gd-pdf-loader.c:207
-#| msgid "Unable to fetch the list of documents"
 msgid "Unable to load the document"
 msgstr "Не могу да учитам документ"
 
+#: ../src/lib/gd-pdf-loader.c:488
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr "Не могу да пронађем „unoconv“, проверите вашу инсталацију Либре офиса"
+
 #: ../src/loadMore.js:70
 #, c-format
-#| msgid "Load %d more documents"
-#| msgid_plural "Load %d more documents"
 msgid "Load %d more document"
 msgid_plural "Load %d more documents"
 msgstr[0] "Учитај још %d документ"
@@ -127,20 +145,20 @@ msgstr[1] "Учитај још %d документа"
 msgstr[2] "Учитај још %d докумената"
 msgstr[3] "Учитај још један документ"
 
-#: ../src/mainToolbar.js:150
+#: ../src/mainToolbar.js:118
 msgid "Click on items to select them"
 msgstr "Кликните на ставке да их изаберете"
 
-#: ../src/mainToolbar.js:152
+#: ../src/mainToolbar.js:120
 #, c-format
 msgid "%d selected"
 msgstr "Изабраних — %d"
 
-#: ../src/mainToolbar.js:200
+#: ../src/mainToolbar.js:165
 msgid "New and Recent"
 msgstr "Нови и скоро коришћени"
 
-#: ../src/mainToolbar.js:222
+#: ../src/mainToolbar.js:187
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d од %d)"
@@ -171,22 +189,18 @@ msgid "Collections"
 msgstr "Збирке"
 
 #: ../src/searchbar.js:147
-#| msgid "Documents"
 msgid "PDF Documents"
 msgstr "ПДФ документи"
 
 #: ../src/searchbar.js:150
-#| msgid "Presentation"
 msgid "Presentations"
 msgstr "Презентације"
 
 #: ../src/searchbar.js:153
-#| msgid "Spreadsheet"
 msgid "Spreadsheets"
 msgstr "Таблице"
 
 #: ../src/searchbar.js:156
-#| msgid "Documents"
 msgid "Text Documents"
 msgstr "Документи текста"
 
@@ -202,30 +216,30 @@ msgstr "Наслов"
 msgid "Author"
 msgstr "Аутор"
 
-#: ../src/selections.js:658
+#: ../src/selections.js:663
 msgid "Organize"
 msgstr "Организуј"
 
-#: ../src/selections.js:665
+#: ../src/selections.js:670
 msgid "Delete"
 msgstr "Обриши"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:756 ../src/view.js:66
+#: ../src/selections.js:761 ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "Отвори програмом %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:759 ../src/view.js:69
+#: ../src/selections.js:764 ../src/view.js:70
 msgid "Open"
 msgstr "Отвори"
 
-#: ../src/selections.js:772 ../src/view.js:79
+#: ../src/selections.js:777 ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "Уклоните из омиљених"
 
-#: ../src/selections.js:776 ../src/view.js:79
+#: ../src/selections.js:781 ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Додајте у омиљене"
 
@@ -236,3 +250,6 @@ msgstr "Извори"
 #: ../src/spinnerBox.js:58
 msgid "Loading..."
 msgstr "Учитавам..."
+
+#~ msgid "Enable list view"
+#~ msgstr "Укључује преглед списком"
