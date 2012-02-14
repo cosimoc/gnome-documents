@@ -74,5 +74,7 @@ GIcon *gd_create_symbolic_icon (const gchar *name,
 void   gd_entry_focus_hack (GtkWidget *entry,
                             GdkDevice *device);
 
+GVariant *gd_create_variant_from_pixbuf (GdkPixbuf *pixbuf);
+
 #endif /* __GD_UTILS_H__ */
                                   

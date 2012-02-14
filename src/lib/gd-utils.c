@@ -655,3 +655,31 @@ gd_entry_focus_hack (GtkWidget *entry,
   /* send focus-in event */
   send_focus_change (entry, device, TRUE);
 }
+
+/**
+ * gd_create_variant_from_pixbuf:
+ * @pixbuf:
+ *
+ * Returns: (transfer full):
+ */
+GVariant *
+gd_create_variant_from_pixbuf (GdkPixbuf *pixbuf)
+{
+  GVariant *variant;
+  guchar *data;
+  guint   length;
+
+  data = gdk_pixbuf_get_pixels_with_length (pixbuf, &length);
+  variant = g_variant_new ("(iiibii@ay)",
+                           gdk_pixbuf_get_width (pixbuf),
+                           gdk_pixbuf_get_height (pixbuf),
+                           gdk_pixbuf_get_rowstride (pixbuf),
+                           gdk_pixbuf_get_has_alpha (pixbuf),
+                           gdk_pixbuf_get_bits_per_sample (pixbuf),
+                           gdk_pixbuf_get_n_channels (pixbuf),
+                           g_variant_new_from_data (G_VARIANT_TYPE_BYTESTRING,
+                                                    data, length, TRUE,
+                                                    (GDestroyNotify)g_object_unref,
+                                                    g_object_ref (pixbuf)));
+  return g_variant_ref_sink (variant);
+}
