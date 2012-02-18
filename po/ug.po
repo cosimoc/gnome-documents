@@ -1,0 +1,245 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-documents&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-02-16 21:16+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:53
+msgid "Documents"
+msgstr "پۈتۈكلەر"
+
+#: ../data/gnome-documents.desktop.in.in.h:2
+msgid "Access, manage and share documents"
+msgstr "پۈتۈكلەرنى زىيارەت قىلىدۇ، باشقۇرىدۇ ۋە ھەمبەھىر قىلىدۇ"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:125
+msgid "View as"
+msgstr ""
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
+msgid "View as type"
+msgstr ""
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
+msgid "The active source filter"
+msgstr "ئاكتىپ مەنبە سۈزگۈچ"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "The last active source filter"
+msgstr "ئەڭ ئاخىرقى ئاكتىپ مەنبە سۈزگۈچ"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
+msgid "Window size"
+msgstr "كۆزنەك چوڭلۇقى"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
+msgid "Window size (width and height)."
+msgstr ""
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
+msgid "Window position"
+msgstr "كۆزنەك ئورنى"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
+msgid "Window position (x and y)."
+msgstr ""
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:9
+msgid "Window maximized"
+msgstr "كۆزنەك چوڭايتىلغاندا"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:10
+msgid "Window maximized state"
+msgstr ""
+
+#: ../src/application.js:119
+msgid "Fullscreen"
+msgstr "پۈتۈن ئېكران"
+
+#: ../src/application.js:120
+msgid "Quit"
+msgstr "چېكىن"
+
+#: ../src/application.js:123
+msgid "Grid"
+msgstr "تورسىمان قاپقاق"
+
+#: ../src/application.js:124
+msgid "List"
+msgstr "تىزىم"
+
+#: ../src/documents.js:618 ../src/sources.js:100
+msgid "Local"
+msgstr "يەرلىك"
+
+#. overridden
+#: ../src/documents.js:681
+msgid "Google Docs"
+msgstr "گۇگىل Docs"
+
+#: ../src/documents.js:682
+msgid "Google"
+msgstr "Google"
+
+#: ../src/documents.js:751
+msgid "Spreadsheet"
+msgstr "ئېلېكترونلۇق جەدۋەل"
+
+#: ../src/documents.js:753
+msgid "Presentation"
+msgstr "كۆرسەتمە"
+
+#: ../src/documents.js:755
+msgid "Collection"
+msgstr "توپلام"
+
+#: ../src/documents.js:757
+msgid "Document"
+msgstr "پۈتۈك"
+
+#. Translators: %s is the title of a document
+#: ../src/error.js:37
+#, c-format
+msgid "Unable to load \"%s\" for preview"
+msgstr "%s نى ئالدىن كۆرۈدىغانغا ئاچالمىدى"
+
+#: ../src/error.js:49
+msgid "Unable to fetch the list of documents"
+msgstr "پۈتۈكلەر تىزمىنى ئالغىلى بولمىدى"
+
+#. right section
+#: ../src/lib/gd-main-toolbar.c:210
+msgid "Done"
+msgstr "تامام"
+
+#: ../src/lib/gd-pdf-loader.c:207
+msgid "Unable to load the document"
+msgstr ""
+
+#: ../src/lib/gd-pdf-loader.c:488
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr ""
+
+#: ../src/loadMore.js:70
+#, c-format
+msgid "Load %d more document"
+msgid_plural "Load %d more documents"
+msgstr[0] "يەنە %d پۈتۈك ئوقۇش"
+
+#: ../src/mainToolbar.js:118
+msgid "Click on items to select them"
+msgstr ""
+
+#: ../src/mainToolbar.js:120
+#, c-format
+msgid "%d selected"
+msgstr "%d تاللاندى"
+
+#: ../src/mainToolbar.js:165
+msgid "New and Recent"
+msgstr "يېڭى ۋە يېقىنقى"
+
+#: ../src/mainToolbar.js:187
+#, c-format
+msgid "(%d of %d)"
+msgstr "(%d / %d)"
+
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "كاتېگورىيە"
+
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:208
+#: ../src/sources.js:94
+msgid "All"
+msgstr "ھەممىسى"
+
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "يىغقۇچ"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "سىز بىلەن ھەمبەھىرلىگەن"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "تىپى"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr "توپلاملار"
+
+#: ../src/searchbar.js:147
+msgid "PDF Documents"
+msgstr "PDF پۈتۈكى"
+
+#: ../src/searchbar.js:150
+msgid "Presentations"
+msgstr "سۇنۇلمىلار"
+
+#: ../src/searchbar.js:153
+msgid "Spreadsheets"
+msgstr ""
+
+#: ../src/searchbar.js:156
+msgid "Text Documents"
+msgstr ""
+
+#: ../src/searchbar.js:205
+msgid "Match"
+msgstr "مۇۋاپىق"
+
+#: ../src/searchbar.js:210
+msgid "Title"
+msgstr "ماۋزۇ"
+
+#: ../src/searchbar.js:212
+msgid "Author"
+msgstr "يازغۇچى"
+
+#: ../src/selections.js:663
+msgid "Organize"
+msgstr "باشقۇر"
+
+#: ../src/selections.js:670
+msgid "Delete"
+msgstr "ئۆچۈر"
+
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:761 ../src/view.js:67
+#, c-format
+msgid "Open with %s"
+msgstr "%s دا ئاچ"
+
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:764 ../src/view.js:70
+msgid "Open"
+msgstr "ئاچ"
+
+#: ../src/selections.js:777 ../src/view.js:80
+msgid "Remove from favorites"
+msgstr "يىغقۇچتىن چىقىرىۋەت"
+
+#: ../src/selections.js:781 ../src/view.js:80
+msgid "Add to favorites"
+msgstr "يىغقۇچقا قوش"
+
+#: ../src/sources.js:90
+msgid "Sources"
+msgstr "مەنبەلەر"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "يۈكلەۋاتىدۇ…"
