@@ -3,37 +3,39 @@
 # This file is distributed under the same license as the gnome-documents package.
 # Nishio Futoshi <fut_nis@d3.dion.ne.jp>, 2011.
 # Hideki Yamane <henrich@debian.org>, 2011.
+# Jiro Matsuzawa <jmatsuzawa@src.gnome.org>, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-01-19 16:02+0000\n"
-"PO-Revision-Date: 2012-01-21 17:55+0900\n"
-"Last-Translator: Hideki Yamane <henrich@debian.org>\n"
+"POT-Creation-Date: 2012-02-08 09:15+0000\n"
+"PO-Revision-Date: 2012-02-09 21:59+0900\n"
+"Last-Translator: Jiro Matsuzawa <jmatsuzawa@src.gnome.org>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-DamnedLies-Scope: partial\n"
 
-#: ../data/gnome-documents.desktop.in.in.h:1
-msgid "Access, manage and share documents"
-msgstr "ドキュメントへのアクセス、管理、そして共有"
-
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:53
+#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:53
 msgid "Documents"
 msgstr "ドキュメント"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "Enable list view"
-msgstr "リスト表示を利用可能にする"
+#: ../data/gnome-documents.desktop.in.in.h:2
+msgid "Access, manage and share documents"
+msgstr "ドキュメントへのアクセス、管理、そして共有"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:125
+msgid "View as"
+msgstr "表示形式"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:2
-msgid "List view"
-msgstr "リスト表示"
+msgid "View as type"
+msgstr "表示形式"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:3
 msgid "The active source filter"
@@ -44,12 +46,12 @@ msgid "The last active source filter"
 msgstr "前回のアクティブソースフィルター"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:5
-msgid "Window maximized"
-msgstr "ウィンドウ最大化"
+msgid "Window size"
+msgstr "ウィンドウのサイズ"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:6
-msgid "Window maximized state"
-msgstr "ウィンドウを最大化状態にします"
+msgid "Window size (width and height)."
+msgstr "ウィンドウのサイズ (幅と高さ) です。"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:7
 msgid "Window position"
@@ -60,34 +62,28 @@ msgid "Window position (x and y)."
 msgstr "ウィンドウの位置 (X 軸と Y 軸) です。"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:9
-msgid "Window size"
-msgstr "ウィンドウのサイズ"
+msgid "Window maximized"
+msgstr "ウィンドウ最大化"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:10
-msgid "Window size (width and height)."
-msgstr "ウィンドウのサイズ (幅と高さ) です。"
-
-#: ../src/application.js:118
-msgid "Fullscreen"
-msgstr ""
+msgid "Window maximized state"
+msgstr "ウィンドウを最大化状態にします"
 
 #: ../src/application.js:119
-msgid "Quit"
-msgstr ""
+msgid "Fullscreen"
+msgstr "フルスクリーン"
 
-#: ../src/application.js:122
-msgid "Grid"
-msgstr ""
+#: ../src/application.js:120
+msgid "Quit"
+msgstr "終了"
 
 #: ../src/application.js:123
-#, fuzzy
-#| msgid "List view"
-msgid "List"
-msgstr "リスト表示"
+msgid "Grid"
+msgstr "グリッド"
 
 #: ../src/application.js:124
-msgid "View as"
-msgstr ""
+msgid "List"
+msgstr "一覧"
 
 #: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
@@ -112,7 +108,7 @@ msgstr "プレゼンテーション"
 
 #: ../src/documents.js:755
 msgid "Collection"
-msgstr ""
+msgstr "コレクション"
 
 #: ../src/documents.js:757
 msgid "Document"
@@ -131,17 +127,17 @@ msgstr "ドキュメントのリストを取得できませんでした"
 #. right section
 #: ../src/lib/gd-main-toolbar.c:210
 msgid "Done"
-msgstr ""
+msgstr "完了"
 
 #: ../src/lib/gd-pdf-loader.c:207
-#, fuzzy
-#| msgid "Unable to fetch the list of documents"
 msgid "Unable to load the document"
-msgstr "ドキュメントのリストを取得できませんでした"
+msgstr "ドキュメントを読み込めませんでした"
 
 #: ../src/lib/gd-pdf-loader.c:488
 msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
 msgstr ""
+"\"unoconv\" が見つかりません。LibreOffice のインストール構成を確認してくださ"
+"い。"
 
 #: ../src/loadMore.js:70
 #, c-format
@@ -149,32 +145,32 @@ msgid "Load %d more document"
 msgid_plural "Load %d more documents"
 msgstr[0] "%d 個のドキュメントをロードします"
 
-#: ../src/mainToolbar.js:150
+#: ../src/mainToolbar.js:118
 msgid "Click on items to select them"
 msgstr "選択するアイテムをクリックします"
 
-#: ../src/mainToolbar.js:152
+#: ../src/mainToolbar.js:120
 #, c-format
 msgid "%d selected"
 msgstr "%d 件選択"
 
-#: ../src/mainToolbar.js:197
+#: ../src/mainToolbar.js:165
 msgid "New and Recent"
 msgstr "新規・最近のドキュメント"
 
-#: ../src/mainToolbar.js:219
+#: ../src/mainToolbar.js:187
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%dページ/%dページ)"
 
 #: ../src/searchbar.js:86
 msgid "Category"
-msgstr ""
+msgstr "カテゴリー"
 
 #: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:208
 #: ../src/sources.js:94
 msgid "All"
-msgstr "全て表示"
+msgstr "すべて"
 
 #: ../src/searchbar.js:97
 msgid "Favorites"
@@ -186,55 +182,47 @@ msgstr "共有ドキュメント"
 
 #: ../src/searchbar.js:138
 msgid "Type"
-msgstr ""
+msgstr "種類"
 
 #: ../src/searchbar.js:143
 msgid "Collections"
-msgstr ""
+msgstr "コレクション"
 
 #: ../src/searchbar.js:147
-#, fuzzy
-#| msgid "Documents"
 msgid "PDF Documents"
-msgstr "ドキュメント"
+msgstr "PDF ドキュメント"
 
 #: ../src/searchbar.js:150
-#, fuzzy
-#| msgid "Presentation"
 msgid "Presentations"
 msgstr "プレゼンテーション"
 
 #: ../src/searchbar.js:153
-#, fuzzy
-#| msgid "Spreadsheet"
 msgid "Spreadsheets"
 msgstr "スプレッドシート"
 
 #: ../src/searchbar.js:156
-#, fuzzy
-#| msgid "Documents"
 msgid "Text Documents"
-msgstr "ドキュメント"
+msgstr "テキストドキュメント"
 
 #: ../src/searchbar.js:205
 msgid "Match"
-msgstr ""
+msgstr "一致項目"
 
 #: ../src/searchbar.js:210
 msgid "Title"
-msgstr ""
+msgstr "タイトル"
 
 #: ../src/searchbar.js:212
 msgid "Author"
-msgstr ""
+msgstr "作者"
 
 #: ../src/selections.js:663
 msgid "Organize"
-msgstr ""
+msgstr "整理する"
 
 #: ../src/selections.js:670
 msgid "Delete"
-msgstr ""
+msgstr "削除する"
 
 #. Translators: this is the Open action in a context menu
 #: ../src/selections.js:761 ../src/view.js:67
