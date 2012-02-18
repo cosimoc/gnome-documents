@@ -1,14 +1,14 @@
 # Swedish translation for gnome-documents.
-# Copyright (C) 2011 Free Software Foundation, Inc.
+# Copyright (C) 2011, 2012 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnome-documents package.
-# Daniel Nylander <po@danielnylander.se>, 2011.
+# Daniel Nylander <po@danielnylander.se>, 2011, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-18 09:46+0100\n"
-"PO-Revision-Date: 2012-01-18 09:46+0100\n"
+"POT-Creation-Date: 2012-02-19 00:47+0100\n"
+"PO-Revision-Date: 2012-02-19 00:47+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: \n"
@@ -18,21 +18,22 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/gnome-documents.desktop.in.in.h:1
-msgid "Access, manage and share documents"
-msgstr "Kom åt, hantera och dela dokument"
-
-#: ../data/gnome-documents.desktop.in.in.h:2
 #: ../src/mainWindow.js:53
 msgid "Documents"
 msgstr "Dokument"
 
+#: ../data/gnome-documents.desktop.in.in.h:2
+msgid "Access, manage and share documents"
+msgstr "Kom åt, hantera och dela dokument"
+
 #: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "Enable list view"
-msgstr "Aktivera listvy"
+#: ../src/application.js:125
+msgid "View as"
+msgstr "Visa som"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:2
-msgid "List view"
-msgstr "Listvy"
+msgid "View as type"
+msgstr "Visa som typ"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:3
 msgid "The active source filter"
@@ -43,12 +44,12 @@ msgid "The last active source filter"
 msgstr "Det senaste aktiva källfiltret"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:5
-msgid "Window maximized"
-msgstr "Fönster maximerat"
+msgid "Window size"
+msgstr "Fönstrets storlek"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:6
-msgid "Window maximized state"
-msgstr "Maximeringstillstånd för fönster"
+msgid "Window size (width and height)."
+msgstr "Fönsterstorlek (bredd och höjd)."
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:7
 msgid "Window position"
@@ -59,12 +60,28 @@ msgid "Window position (x and y)."
 msgstr "Fönstrets position (x och y)."
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:9
-msgid "Window size"
-msgstr "Fönstrets storlek"
+msgid "Window maximized"
+msgstr "Fönster maximerat"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:10
-msgid "Window size (width and height)."
-msgstr "Fönsterstorlek (bredd och höjd)."
+msgid "Window maximized state"
+msgstr "Maximeringstillstånd för fönster"
+
+#: ../src/application.js:119
+msgid "Fullscreen"
+msgstr "Helskärm"
+
+#: ../src/application.js:120
+msgid "Quit"
+msgstr "Avsluta"
+
+#: ../src/application.js:123
+msgid "Grid"
+msgstr "Rutnät"
+
+#: ../src/application.js:124
+msgid "List"
+msgstr "Lista"
 
 #: ../src/documents.js:618
 #: ../src/sources.js:100
@@ -126,20 +143,20 @@ msgid_plural "Load %d more documents"
 msgstr[0] "Läs in ytterligare %d dokument"
 msgstr[1] "Läs in ytterligare %d dokument"
 
-#: ../src/mainToolbar.js:150
+#: ../src/mainToolbar.js:118
 msgid "Click on items to select them"
 msgstr "Klicka på objekten för att markera dem"
 
-#: ../src/mainToolbar.js:152
+#: ../src/mainToolbar.js:120
 #, c-format
 msgid "%d selected"
 msgstr "%d markerade"
 
-#: ../src/mainToolbar.js:197
+#: ../src/mainToolbar.js:165
 msgid "New and Recent"
 msgstr "Nya och senaste"
 
-#: ../src/mainToolbar.js:219
+#: ../src/mainToolbar.js:187
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d av %d)"
@@ -237,6 +254,9 @@ msgstr "Källor"
 #: ../src/spinnerBox.js:58
 msgid "Loading..."
 msgstr "Läser in..."
+
+#~ msgid "Enable list view"
+#~ msgstr "Aktivera listvy"
 
 #~ msgid "Private"
 #~ msgstr "Privat"
