@@ -2,14 +2,15 @@
 # Copyright (C) 2011 gnome-documents's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-documents package.
 # Kris Thomsen <lakristho@gmail.com>, 2011.
+# Kenneth Nielsen <k.nielsen81@gmail.com>, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-02 12:29+0100\n"
-"PO-Revision-Date: 2011-12-27 22:16+0000\n"
-"Last-Translator: Kris Thomsen <lakristho@gmail.com>\n"
+"POT-Creation-Date: 2012-02-20 23:10+0100\n"
+"PO-Revision-Date: 2012-02-19 20:14+0100\n"
+"Last-Translator: Kenneth Nielsen <k.nielsen81@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
 "MIME-Version: 1.0\n"
@@ -26,20 +27,20 @@ msgid "Documents"
 msgstr "Dokumenter"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "Enable list view"
-msgstr "Aktivér listevisning"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:2
-msgid "List view"
-msgstr "Listevisning"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:3
 msgid "The active source filter"
 msgstr "Det aktive kildefilter"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:4
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
 msgid "The last active source filter"
 msgstr "Det senest aktive kildefilter"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:3 ../src/application.js:122
+msgid "View as"
+msgstr "Vis som"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "View as type"
+msgstr "Vis som type"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:5
 msgid "Window maximized"
@@ -64,6 +65,22 @@ msgstr "Vinduesstørrelse"
 #: ../data/org.gnome.documents.gschema.xml.in.h:10
 msgid "Window size (width and height)."
 msgstr "Vinduesstørrelse (bredde og højde)."
+
+#: ../src/application.js:116
+msgid "Fullscreen"
+msgstr "Fuldskærm"
+
+#: ../src/application.js:117
+msgid "Quit"
+msgstr "Afslut"
+
+#: ../src/application.js:120
+msgid "Grid"
+msgstr "Gitter"
+
+#: ../src/application.js:121
+msgid "List"
+msgstr "Liste"
 
 #: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
@@ -113,6 +130,11 @@ msgstr "Færdig"
 msgid "Unable to load the document"
 msgstr "Kunne ikke indlæse dokumentet"
 
+#: ../src/lib/gd-pdf-loader.c:488
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr ""
+"Kan ikke finde \"unoconv\". Kontroller venligst din LibreOffice-installation"
+
 #: ../src/loadMore.js:70
 #, c-format
 msgid "Load %d more document"
@@ -120,20 +142,20 @@ msgid_plural "Load %d more documents"
 msgstr[0] "Indlæs %d dokument mere"
 msgstr[1] "Indlæs %d dokumenter mere"
 
-#: ../src/mainToolbar.js:150
+#: ../src/mainToolbar.js:118
 msgid "Click on items to select them"
 msgstr "Klik på elementer for at vælge dem"
 
-#: ../src/mainToolbar.js:152
+#: ../src/mainToolbar.js:120
 #, c-format
 msgid "%d selected"
 msgstr "%d valgte"
 
-#: ../src/mainToolbar.js:197
+#: ../src/mainToolbar.js:165
 msgid "New and Recent"
 msgstr "Nye og nylige"
 
-#: ../src/mainToolbar.js:219
+#: ../src/mainToolbar.js:187
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d af %d)"
@@ -225,3 +247,6 @@ msgstr "Kilder"
 #: ../src/spinnerBox.js:58
 msgid "Loading..."
 msgstr "Indlæser..."
+
+#~ msgid "Enable list view"
+#~ msgstr "Aktivér listevisning"
