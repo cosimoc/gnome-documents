@@ -62,22 +62,17 @@ static void gd_tagged_entry_get_text_area_size (GtkEntry *entry,
                                                 gint *height);
 static gint gd_tagged_entry_tag_get_width (GdTaggedEntryTag *tag,
                                            GdTaggedEntry *entry);
+static GtkStyleContext * gd_tagged_entry_tag_get_context (GdTaggedEntry *entry);
 
 static void
-gd_tagged_entry_get_margins (GdTaggedEntry *entry,
-                             GtkBorder *space)
+gd_tagged_entry_tag_get_margin (GdTaggedEntry *entry,
+                                GtkBorder *margin)
 {
-  GtkBorder tmp;
   GtkStyleContext *context;
 
-  context = gtk_widget_get_style_context (GTK_WIDGET (entry));
-  gtk_style_context_get_padding (context, GTK_STATE_NORMAL, space);
-  gtk_style_context_get_border (context, GTK_STATE_NORMAL, &tmp);
-
-  space->left += tmp.left;
-  space->right += tmp.right;
-  space->top += tmp.top;
-  space->bottom += tmp.bottom;
+  context = gd_tagged_entry_tag_get_context (entry);
+  gtk_style_context_get_margin (context, 0, margin);
+  g_object_unref (context);
 }
 
 static void
@@ -112,15 +107,15 @@ gd_tagged_entry_tag_panel_get_height (GdTaggedEntry *entry)
   gint height, req_height;
   GtkRequisition requisition;
   GtkAllocation allocation;
-  GtkBorder space;
+  GtkBorder margin;
 
   gtk_widget_get_allocation (widget, &allocation);
   gtk_widget_get_preferred_size (widget, &requisition, NULL);
-  gd_tagged_entry_get_margins (entry, &space);
+  gd_tagged_entry_tag_get_margin (entry, &margin);
 
-  /* the tag panel height is the whole entry height, minus the entry margins */
+  /* the tag panel height is the whole entry height, minus the tag margins */
   req_height = requisition.height - gtk_widget_get_margin_top (widget) - gtk_widget_get_margin_bottom (widget);
-  height = MIN (req_height, allocation.height) - space.top - space.bottom;
+  height = MIN (req_height, allocation.height) - margin.top - margin.bottom;
 
   return height;
 }
@@ -134,20 +129,20 @@ gd_tagged_entry_tag_panel_get_position (GdTaggedEntry *self,
   gint text_x, text_y, text_width, text_height, req_height;
   GtkAllocation allocation;
   GtkRequisition requisition;
-  GtkBorder space;
+  GtkBorder margin;
 
   gtk_widget_get_allocation (widget, &allocation);
   gtk_widget_get_preferred_size (widget, &requisition, NULL);
   req_height = requisition.height - gtk_widget_get_margin_top (widget) - gtk_widget_get_margin_bottom (widget);
 
-  gd_tagged_entry_get_margins (self, &space);
   gd_tagged_entry_get_text_area_size (GTK_ENTRY (self), &text_x, &text_y, &text_width, &text_height);
+  gd_tagged_entry_tag_get_margin (self, &margin);
 
   /* allocate the panel immediately after the text area */
   if (x_out)
-    *x_out = allocation.x + text_x + text_width - space.right;
+    *x_out = allocation.x + text_x + text_width;
   if (y_out)
-    *y_out = allocation.y + text_y + space.top + (gint) floor ((allocation.height - req_height) / 2);
+    *y_out = allocation.y + margin.top + (gint) floor ((allocation.height - req_height) / 2);
 }
 
 static gint
@@ -211,8 +206,7 @@ gd_tagged_entry_tag_get_button_state (GdTaggedEntryTag *tag,
 }
 
 static GtkStyleContext *
-gd_tagged_entry_tag_get_context (GdTaggedEntryTag *tag,
-                                 GdTaggedEntry *entry)
+gd_tagged_entry_tag_get_context (GdTaggedEntry *entry)
 {
   GtkWidget *widget = GTK_WIDGET (entry);
   GtkWidgetPath *path;
@@ -244,7 +238,7 @@ gd_tagged_entry_tag_get_width (GdTaggedEntryTag *tag,
   gd_tagged_entry_tag_ensure_layout (tag, entry);
   pango_layout_get_pixel_size (tag->layout, &layout_width, NULL);
 
-  context = gd_tagged_entry_tag_get_context (tag, entry);
+  context = gd_tagged_entry_tag_get_context (entry);
   state = gd_tagged_entry_tag_get_state (tag, entry);
 
   gtk_style_context_get_padding (context, state, &button_padding);
@@ -344,7 +338,7 @@ gd_tagged_entry_tag_event_is_button (GdTaggedEntryTag *tag,
   GtkAllocation button_allocation;
   GtkStyleContext *context;
 
-  context = gd_tagged_entry_tag_get_context (tag, entry);
+  context = gd_tagged_entry_tag_get_context (entry);
   gd_tagged_entry_tag_get_relative_allocations (tag, entry, context, NULL, NULL, &button_allocation);
 
   g_object_unref (context);
@@ -368,7 +362,7 @@ gd_tagged_entry_tag_draw (GdTaggedEntryTag *tag,
   GtkStateFlags state;
   GtkAllocation background_allocation, layout_allocation, button_allocation;
 
-  context = gd_tagged_entry_tag_get_context (tag, entry);
+  context = gd_tagged_entry_tag_get_context (entry);
   gd_tagged_entry_tag_get_relative_allocations (tag, entry, context,
                                                 &background_allocation,
                                                 &layout_allocation,
