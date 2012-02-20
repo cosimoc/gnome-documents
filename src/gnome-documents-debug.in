@@ -18,4 +18,12 @@ else
     export LD_LIBRARY_PATH=@pkglibdir@:$LD_LIBRARY_PATH
 fi
 
+if test x"$GJS_DEBUG_OUTPUT" = x ; then
+    export GJS_DEBUG_OUTPUT=stderr
+fi
+
+if test x"$GJS_DEBUG_TOPICS" = x ; then
+    export GJS_DEBUG_TOPICS="JS ERROR;JS LOG"
+fi
+
 gdb --args @GJS_CONSOLE@ -I @pkgdatadir@/js -c "const Main = imports.main; Main.start();" "$@"

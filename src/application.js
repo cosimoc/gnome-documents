@@ -61,9 +61,6 @@ Application.prototype = {
         Gettext.textdomain('gnome-documents');
         GLib.set_prgname('gnome-documents');
 
-        GLib.setenv('GJS_DEBUG_OUTPUT', 'stderr', true);
-        GLib.setenv('GJS_DEBUG_TOPICS', 'JS ERROR;JS LOG', true);
-
         Global.settings = new Gio.Settings({ schema: 'org.gnome.documents' });
 
         // TODO: subclass Gtk.Application once we support GObject inheritance,
