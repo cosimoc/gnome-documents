@@ -1,3 +1,12 @@
+0.3.90 - "Saved Soul"
+=====================
+
+- Ship a ShellSearchProvider DBus service (Florian Müllner)
+- Fix interaction with the "Load more" button
+- Fix alignment of tags in GdTaggedEntry
+- Fix selection mode toolbar not showing under some cicrumstances
+- Support building against Tracker 0.14 (Vincent Untz)
+
 0.3.4 - "Six Packs"
 ===================
 
