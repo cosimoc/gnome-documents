@@ -1,0 +1,208 @@
+# Malayalam translation for gnome-documents.
+# Copyright (C) 2012 gnome-documents's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-documents package.
+# Jishnu Mohan <jishnu7@gmail.com>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-documents master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"documents&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-02-20 13:52+0000\n"
+"PO-Revision-Date: 2012-02-20 13:52+0000\n"
+"Last-Translator: Jishnu Mohan <jishnu7@gmail.com>\n"
+"Language-Team: Malayalam <discuss@lists.smc.org.in>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-DamnedLies-Scope: partial\n"
+
+#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:53
+msgid "Documents"
+msgstr "ഗ്രന്ഥങ്ങള്‍"
+
+#: ../data/gnome-documents.desktop.in.in.h:2
+msgid "Access, manage and share documents"
+msgstr "ആധാരങ്ങലിലേയ്ക്ക് പ്രവേശിക്കുക, കൈകാര്യംചെയ്യുക, പങ്കിടുക"
+
+#: ../src/application.js:119
+msgid "Fullscreen"
+msgstr "സ്ക്രീന്‍ പരമാവധി വലിപ്പത്തില്‍"
+
+#: ../src/application.js:120
+msgid "Quit"
+msgstr "പുറത്ത് കടക്കുക"
+
+#: ../src/application.js:123
+msgid "Grid"
+msgstr "കള്ളി"
+
+#: ../src/application.js:124
+msgid "List"
+msgstr "നാമാവലി"
+
+#: ../src/documents.js:618 ../src/sources.js:100
+msgid "Local"
+msgstr "പ്രാദേശികം"
+
+#. overridden
+#: ../src/documents.js:681
+msgid "Google Docs"
+msgstr "ഗൂഗിള്‍ ഡോക്സ്"
+
+#: ../src/documents.js:682
+msgid "Google"
+msgstr "ഗൂഗിള്‍"
+
+#: ../src/documents.js:751
+msgid "Spreadsheet"
+msgstr "സ്പ്രെഡ്ഷീറ്റ്"
+
+#: ../src/documents.js:753
+msgid "Presentation"
+msgstr "അവതരണം"
+
+#: ../src/documents.js:755
+msgid "Collection"
+msgstr "ശേഖരം"
+
+#: ../src/documents.js:757
+msgid "Document"
+msgstr "ഗ്രന്ഥം"
+
+#. Translators: %s is the title of a document
+#: ../src/error.js:37
+#, c-format
+msgid "Unable to load \"%s\" for preview"
+msgstr "\"%s\" മുന്‍കാഴ്ചയ്ക്കായി ലഭ്യമാക്കാന്‍ സാധിച്ചില്ല"
+
+#: ../src/error.js:49
+msgid "Unable to fetch the list of documents"
+msgstr "ഗ്രന്ഥങ്ങളുടെ പട്ടിക കൊണ്ടുവരാന്‍ സാധിച്ചില്ല"
+
+#. right section
+#: ../src/lib/gd-main-toolbar.c:210
+msgid "Done"
+msgstr "പൂര്‍ത്തിയാക്കി"
+
+#: ../src/lib/gd-pdf-loader.c:207
+msgid "Unable to load the document"
+msgstr "ഗ്രന്ഥം ലഭ്യമാക്കാന്‍ സാധിച്ചില്ല"
+
+#: ../src/lib/gd-pdf-loader.c:488
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr "\"unoconv\" കണ്ടുപിടിക്കാന്‍ കഴിഞ്ഞില്ല, ദയവായി LibreOffice ഇന്‍സ്റ്റാളേഷന്‍ പരിശോധിക്കുക"
+
+#: ../src/loadMore.js:70
+#, c-format
+msgid "Load %d more document"
+msgid_plural "Load %d more documents"
+msgstr[0] "%d ഗ്രന്ഥം കൂടി ലഭ്യമാക്കുക"
+msgstr[1] "%d ഗ്രന്ഥങ്ങള്‍ കൂടി ലഭ്യമാക്കുക"
+
+#: ../src/mainToolbar.js:118
+msgid "Click on items to select them"
+msgstr "ഇനം തിരഞ്ഞെടുക്കുവാനായി അതാത് ഇനത്തില്‍ ക്ലിക്ക് ചെയ്യുക"
+
+#: ../src/mainToolbar.js:120
+#, c-format
+msgid "%d selected"
+msgstr "%d തിരഞ്ഞെടുത്തിരിക്കുന്നു"
+
+#: ../src/mainToolbar.js:165
+msgid "New and Recent"
+msgstr "പുതിയതും അടുത്തകാലത്ത് ഉപയോഗിച്ചതും"
+
+#: ../src/mainToolbar.js:187
+#, c-format
+msgid "(%d of %d)"
+msgstr "(%2$d ല്‍ %1$d)"
+
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "വിഭാഗം"
+
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:208
+#: ../src/sources.js:94
+msgid "All"
+msgstr "എല്ലാം"
+
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "ഇഷ്ടമുള്ളവ"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "താങ്കളുമായി പങ്കിട്ടവ"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "ഇനം"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr "ശേഖരങ്ങള്‍"
+
+#: ../src/searchbar.js:147
+msgid "PDF Documents"
+msgstr "പിഡിഎഫ് ഗ്രന്ഥങ്ങള്‍"
+
+#: ../src/searchbar.js:150
+msgid "Presentations"
+msgstr "അവതരണങ്ങള്‍"
+
+#: ../src/searchbar.js:153
+msgid "Spreadsheets"
+msgstr "സ്പ്രെഡ്ഷീറ്റുകള്‍"
+
+#: ../src/searchbar.js:156
+msgid "Text Documents"
+msgstr "ടെക്സ്റ്റ് ഗ്രന്ഥങ്ങള്‍"
+
+#: ../src/searchbar.js:205
+msgid "Match"
+msgstr "പൊരുത്തം"
+
+#: ../src/searchbar.js:210
+msgid "Title"
+msgstr "ശീര്‍ഷകം"
+
+#: ../src/searchbar.js:212
+msgid "Author"
+msgstr "രചയിതാവ്"
+
+#: ../src/selections.js:663
+msgid "Organize"
+msgstr "ക്രമീകരിക്കുക"
+
+#: ../src/selections.js:670
+msgid "Delete"
+msgstr "നീക്കം ചെയ്യുക"
+
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:761 ../src/view.js:67
+#, c-format
+msgid "Open with %s"
+msgstr "%s ഉപയോഗിച്ച് തുറക്കുക"
+
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:764 ../src/view.js:70
+msgid "Open"
+msgstr "തുറക്കുക"
+
+#: ../src/selections.js:777 ../src/view.js:80
+msgid "Remove from favorites"
+msgstr "ഇഷ്ടപ്പെട്ടവയില്‍ നിന്നും നീക്കം ചെയ്യുക"
+
+#: ../src/selections.js:781 ../src/view.js:80
+msgid "Add to favorites"
+msgstr "ഇഷ്ടപ്പെട്ടവയിലേയ്ക്ക് ചേര്‍ക്കുക"
+
+#: ../src/sources.js:90
+msgid "Sources"
+msgstr "ശ്രോതസ്സ്"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "എടുത്തുകൊണ്ടിരിക്കുന്നു..."
