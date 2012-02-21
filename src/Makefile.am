@@ -78,5 +78,5 @@ service_DATA = $(service_in_files:.service.in=.service)
 	$(AM_V_GEN) [ -d $(@D) ] || $(mkdir_p) $(@D) ; \
 	            sed -e "s|\@libexecdir\@|$(libexecdir)|" $< > $@.tmp && mv $@.tmp $@
 
-CLEANFILES = += $(service_DATA)
+CLEANFILES += $(service_DATA)
 EXTRA_DIST += $(service_in_files)
