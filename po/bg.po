@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-24 07:11+0200\n"
-"PO-Revision-Date: 2012-01-24 07:09+0200\n"
+"POT-Creation-Date: 2012-02-22 19:27+0200\n"
+"PO-Revision-Date: 2012-02-22 19:27+0200\n"
 "Last-Translator: Ivaylo Valkov <ivaylo@e-valkov.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "Language: bg\n"
@@ -33,7 +33,7 @@ msgstr "Активният изходен филтър"
 msgid "The last active source filter"
 msgstr "Последният активен изходен филтър"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:3 ../src/application.js:125
+#: ../data/org.gnome.documents.gschema.xml.in.h:3 ../src/application.js:122
 msgid "View as"
 msgstr "Изглед като"
 
@@ -65,19 +65,19 @@ msgstr "Размер на прозореца"
 msgid "Window size (width and height)."
 msgstr "Размер на прозореца (широчина и височина)."
 
-#: ../src/application.js:119
+#: ../src/application.js:116
 msgid "Fullscreen"
 msgstr "На цял екран"
 
-#: ../src/application.js:120
+#: ../src/application.js:117
 msgid "Quit"
 msgstr "Спиране на програмата"
 
-#: ../src/application.js:123
+#: ../src/application.js:120
 msgid "Grid"
 msgstr "Мрежа"
 
-#: ../src/application.js:124
+#: ../src/application.js:121
 msgid "List"
 msgstr "Списък"
 
@@ -241,6 +241,10 @@ msgstr "Премахване от „Любими“"
 #: ../src/selections.js:781 ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Добавяне в „Любими“"
+
+#: ../src/shellSearchProvider.js:332
+msgid "Untitled Document"
+msgstr "Документ без име"
 
 #: ../src/sources.js:90
 msgid "Sources"
