@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-25 13:10+0100\n"
-"PO-Revision-Date: 2012-01-25 13:10+0100\n"
+"POT-Creation-Date: 2012-02-23 18:52+0100\n"
+"PO-Revision-Date: 2012-02-23 18:52+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: \n"
@@ -25,7 +25,7 @@ msgstr "Dokumenter"
 msgid "Access, manage and share documents"
 msgstr "Aksesser, håndter og del dokumenter"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:125
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:122
 msgid "View as"
 msgstr "Vis som"
 
@@ -65,19 +65,19 @@ msgstr "Vindu maksimert"
 msgid "Window maximized state"
 msgstr "Om vinduet er maksimert eller ikke"
 
-#: ../src/application.js:119
+#: ../src/application.js:116
 msgid "Fullscreen"
 msgstr "Fullskjerm"
 
-#: ../src/application.js:120
+#: ../src/application.js:117
 msgid "Quit"
 msgstr "Avslutt"
 
-#: ../src/application.js:123
+#: ../src/application.js:120
 msgid "Grid"
 msgstr "Rutenett"
 
-#: ../src/application.js:124
+#: ../src/application.js:121
 msgid "List"
 msgstr "Liste"
 
@@ -237,6 +237,10 @@ msgstr "Fjern fra favoritter"
 #: ../src/selections.js:781 ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Legg til i favoritter"
+
+#: ../src/shellSearchProvider.js:332
+msgid "Untitled Document"
+msgstr "Dokument uten navn"
 
 #: ../src/sources.js:90
 msgid "Sources"
