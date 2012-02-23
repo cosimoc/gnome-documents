@@ -2,15 +2,16 @@
 # Copyright (C) 2011 gnome-documents's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-documents package.
 #
-# Dr.T.Vasudevan <agnihot3@gmail.com>, 2011.
+# Dr.T.Vasudevan <agnihot3@gmail.com>, 2011, 2012.
+# naveenkumar palaniswamy(நவீன் குமார் கெம்ளின்)  <naveenmtp@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-13 19:42+0530\n"
-"PO-Revision-Date: 2011-09-13 19:43+0530\n"
+"POT-Creation-Date: 2012-02-22 21:16+0530\n"
+"PO-Revision-Date: 2012-02-23 07:57+0530\n"
 "Last-Translator: Dr.T.Vasudevan <agnihot3@gmail.com>\n"
-"Language-Team: Tamil <ta@li.org>\n"
+"Language-Team: Tamil <ta@ubuntu.org>\n"
 "Language: ta\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,62 +23,92 @@ msgstr ""
 msgid "Access, manage and share documents"
 msgstr "ஆவணங்களை அணுகு, மேலாளு, பகிர்"
 
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:47
+#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:53
 msgid "Documents"
 msgstr "ஆவணங்கள்"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "Enable list view"
-msgstr "பட்டியல் பார்வையை செயலாக்கு"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:2
-msgid "List view"
-msgstr "பட்டியல் பார்வை"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:3
 msgid "The active source filter"
 msgstr "செயலில் உள்ள மூல வடிப்பி"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:4
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
 msgid "The last active source filter"
 msgstr "கடைசியாக செயலில் இருந்த மூல வடிப்பி"
 
-#. Translators: this refers to new and recent documents
-#: ../src/categories.js:77
-msgid "New and Recent"
-msgstr "புதிய மற்றும் அண்மை"
+#: ../data/org.gnome.documents.gschema.xml.in.h:3 ../src/application.js:122
+msgid "View as"
+msgstr "இப்படிப்பார்க்க "
 
-#. Translators: this refers to favorite documents
-#: ../src/categories.js:80
-msgid "Favorites"
-msgstr "விருப்பங்கள்"
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "View as type"
+msgstr "இந்த வகையாக பார்க்க"
 
-#. Translators: this refers to shared documents
-#: ../src/categories.js:83
-msgid "Shared with you"
-msgstr "உங்களுடன் பகிர்ந்த"
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
+msgid "Window maximized"
+msgstr "முழுமையாக்கிய சாளரம்"
 
-#: ../src/documents.js:253 ../src/sources.js:116
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
+msgid "Window maximized state"
+msgstr "முழுமையாக்கிய சாளர நிலை"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
+msgid "Window position"
+msgstr "சாளரத்தின் நிலை"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
+msgid "Window position (x and y)."
+msgstr "சாளரத்தின் நிலை(x மற்றும் y)"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:9
+msgid "Window size"
+msgstr "சாளரத்தின் அளவு"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:10
+msgid "Window size (width and height)."
+msgstr "சாளரத்தின் அளவு(அகலம் மற்றும் உயரம்)"
+
+#: ../src/application.js:116
+msgid "Fullscreen"
+msgstr "முழுத்திரை"
+
+#: ../src/application.js:117
+msgid "Quit"
+msgstr "வெளியேறு"
+
+#: ../src/application.js:120
+msgid "Grid"
+msgstr "வலைப்பின்னல்"
+
+#: ../src/application.js:121
+msgid "List"
+msgstr "பட்டியல்"
+
+#: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
 msgstr "உள்ளமை"
 
-#: ../src/documents.js:372
+#. overridden
+#: ../src/documents.js:681
 msgid "Google Docs"
 msgstr "கூகுள் டாக்ஸ்"
 
-#: ../src/documents.js:373
+#: ../src/documents.js:682
 msgid "Google"
 msgstr "கூகுள்"
 
-#: ../src/documents.js:442
+#: ../src/documents.js:751
 msgid "Spreadsheet"
 msgstr "விரிதாள்"
 
-#: ../src/documents.js:444
+#: ../src/documents.js:753
 msgid "Presentation"
 msgstr "முன்வைப்பு"
 
-#: ../src/documents.js:446
+#: ../src/documents.js:755
+msgid "Collection"
+msgstr "சேகரம்"
+
+#: ../src/documents.js:757
 msgid "Document"
 msgstr "ஆவணம்"
 
@@ -87,51 +118,144 @@ msgstr "ஆவணம்"
 msgid "Unable to load \"%s\" for preview"
 msgstr " \"%s\"  ஐ முன்பார்வைக்கு ஏற்ற முடியவில்லை"
 
-#: ../src/error.js:44
+#: ../src/error.js:49
 msgid "Unable to fetch the list of documents"
 msgstr "ஆவணங்கள் பட்டியலை கொண்டுவர முடியவில்லை"
 
+#. right section
+#: ../src/lib/gd-main-toolbar.c:210
+msgid "Done"
+msgstr "முடிந்தது"
+
+#: ../src/lib/gd-pdf-loader.c:207
+msgid "Unable to load the document"
+msgstr "ஆவணத்தை ஏற்ற முடியவில்லை"
+
+#: ../src/lib/gd-pdf-loader.c:488
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr ""
+"\"unoconv\" ஐ கண்டுபிடிக்க முடியவில்லை, உங்கள் லிப்ரே ஆபீஸ் நிறுவலை சரி "
+"பார்க்கவும்."
+
 #: ../src/loadMore.js:70
 #, c-format
-msgid "Load %d more documents"
+msgid "Load %d more document"
 msgid_plural "Load %d more documents"
 msgstr[0] "மேலும் %d ஆவணத்தை ஏற்றுக"
 msgstr[1] "மேலும் %d ஆவணங்களை ஏற்றுக"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:118
+msgid "Click on items to select them"
+msgstr "உருப்படிகளை தேர்ந்தெடுக்க அதன் மீது சொடுக்கவும்"
+
+#: ../src/mainToolbar.js:120
+#, c-format
+msgid "%d selected"
+msgstr "%d தேர்வு செய்யப்பட்டது"
+
+#: ../src/mainToolbar.js:165
+msgid "New and Recent"
+msgstr "புதிய மற்றும் அண்மை"
+
+#: ../src/mainToolbar.js:187
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d  %dஇல் )"
 
-#: ../src/sidebar.js:131 ../src/sources.js:255
-msgid "Sources"
-msgstr "மூலங்கள் "
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "வகை"
 
-#: ../src/sources.js:110
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:208
+#: ../src/sources.js:94
 msgid "All"
 msgstr "அனைத்தும் "
 
-#: ../src/spinnerBox.js:47
-msgid "Loading..."
-msgstr "ஏற்றுகிறது..."
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "விருப்பங்கள்"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "உங்களுடன் பகிர்ந்த"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "வகை"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr "சேகரங்கள்"
+
+#: ../src/searchbar.js:147
+msgid "PDF Documents"
+msgstr "பிடிஎஃப் ஆவணங்கள்"
+
+#: ../src/searchbar.js:150
+msgid "Presentations"
+msgstr "முன்வைப்புகள்"
+
+#: ../src/searchbar.js:153
+msgid "Spreadsheets"
+msgstr "விரிதாட்கள்"
+
+#: ../src/searchbar.js:156
+msgid "Text Documents"
+msgstr "உரை ஆவணங்கள்"
+
+#: ../src/searchbar.js:205
+msgid "Match"
+msgstr "ஒப்பிடு"
+
+#: ../src/searchbar.js:210
+msgid "Title"
+msgstr "தலைப்பு"
+
+#: ../src/searchbar.js:212
+msgid "Author"
+msgstr "ஆசிரியர்"
+
+#: ../src/selections.js:663
+msgid "Organize"
+msgstr "ஒருங்கிணை"
+
+#: ../src/selections.js:670
+msgid "Delete"
+msgstr "நீக்கு"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:67
+#: ../src/selections.js:761 ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "%s ஆல் திற"
 
-#: ../src/view.js:69
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:764 ../src/view.js:70
 msgid "Open"
 msgstr "திற"
 
-#: ../src/view.js:79
+#: ../src/selections.js:777 ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "விருப்பங்களிலிருந்து நீக்கு"
 
-#: ../src/view.js:79
+#: ../src/selections.js:781 ../src/view.js:80
 msgid "Add to favorites"
 msgstr "விருப்பங்களில் சேர்"
+
+#: ../src/shellSearchProvider.js:332
+msgid "Untitled Document"
+msgstr "தலைப்பில்லா ஆவணம்"
+
+#: ../src/sources.js:90
+msgid "Sources"
+msgstr "மூலங்கள் "
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "ஏற்றுகிறது..."
+
+#~ msgid "Enable list view"
+#~ msgstr "பட்டியல் பார்வையை செயலாக்கு"
 
 #~ msgid "Private"
 #~ msgstr "அந்தரங்க"
