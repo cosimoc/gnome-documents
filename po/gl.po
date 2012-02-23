@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-06 13:01+0100\n"
-"PO-Revision-Date: 2012-02-06 13:02+0100\n"
+"POT-Creation-Date: 2012-02-23 10:33+0100\n"
+"PO-Revision-Date: 2012-02-23 10:33+0100\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
@@ -27,7 +27,7 @@ msgstr "Documentos"
 msgid "Access, manage and share documents"
 msgstr "Acceder, xestionar e compartir documentos"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:125
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:122
 msgid "View as"
 msgstr "Ver como"
 
@@ -67,19 +67,19 @@ msgstr "Xanela maximizada"
 msgid "Window maximized state"
 msgstr "Estado de xanela maximizada"
 
-#: ../src/application.js:119
+#: ../src/application.js:116
 msgid "Fullscreen"
 msgstr "Pantalla completa"
 
-#: ../src/application.js:120
+#: ../src/application.js:117
 msgid "Quit"
 msgstr "Saír"
 
-#: ../src/application.js:123
+#: ../src/application.js:120
 msgid "Grid"
 msgstr "Grade"
 
-#: ../src/application.js:124
+#: ../src/application.js:121
 msgid "List"
 msgstr "Lista"
 
@@ -240,6 +240,10 @@ msgstr "Quitar dos marcadores"
 #: ../src/selections.js:781 ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Engadir aos marcadores"
+
+#: ../src/shellSearchProvider.js:332
+msgid "Untitled Document"
+msgstr "Documento sen título"
 
 #: ../src/sources.js:90
 msgid "Sources"
