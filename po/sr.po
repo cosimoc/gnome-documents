@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-01-23 21:30+0000\n"
-"PO-Revision-Date: 2012-02-14 11:46+0200\n"
+"POT-Creation-Date: 2012-02-21 22:09+0000\n"
+"PO-Revision-Date: 2012-02-23 21:19+0200\n"
 "Last-Translator: Мирослав Николић <miroslavnikolic@rocketmail.com>\n"
 "Language-Team: Serbian <gnom@prevod.org>\n"
 "Language: sr\n"
@@ -19,37 +19,37 @@ msgstr ""
 "n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Project-Style: gnome\n"
 
-#: ../data/gnome-documents.desktop.in.in.h:1
-msgid "Access, manage and share documents"
-msgstr "Приступите, управљајте и делите документе"
-
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:53
+#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:53
 msgid "Documents"
 msgstr "Документи"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "The active source filter"
-msgstr "Филтер радног извора"
+#: ../data/gnome-documents.desktop.in.in.h:2
+msgid "Access, manage and share documents"
+msgstr "Приступите, управљајте и делите документе"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:2
-msgid "The last active source filter"
-msgstr "Филтер последњег радног извора"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:3 ../src/application.js:125
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:122
 msgid "View as"
 msgstr "Прикажи као"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:4
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
 msgid "View as type"
 msgstr "Приказивање као врсте"
 
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
+msgid "The active source filter"
+msgstr "Филтер радног извора"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "The last active source filter"
+msgstr "Филтер последњег радног извора"
+
 #: ../data/org.gnome.documents.gschema.xml.in.h:5
-msgid "Window maximized"
-msgstr "Увећан прозор"
+msgid "Window size"
+msgstr "Величина прозора"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:6
-msgid "Window maximized state"
-msgstr "Стање увећања прозора"
+msgid "Window size (width and height)."
+msgstr "Величина прозора (ширина и висина)."
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:7
 msgid "Window position"
@@ -60,27 +60,26 @@ msgid "Window position (x and y)."
 msgstr "Положај прозора (х и у)."
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:9
-msgid "Window size"
-msgstr "Величина прозора"
+msgid "Window maximized"
+msgstr "Увећан прозор"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:10
-msgid "Window size (width and height)."
-msgstr "Величина прозора (ширина и висина)."
+msgid "Window maximized state"
+msgstr "Стање увећања прозора"
 
-#: ../src/application.js:119
+#: ../src/application.js:116
 msgid "Fullscreen"
 msgstr "Преко целог екрана"
 
-#: ../src/application.js:120
+#: ../src/application.js:117
 msgid "Quit"
 msgstr "Излаз"
 
-#: ../src/application.js:123
+#: ../src/application.js:120
 msgid "Grid"
 msgstr "Мрежа"
 
-#: ../src/application.js:124
-#| msgid "List view"
+#: ../src/application.js:121
 msgid "List"
 msgstr "Списак"
 
@@ -242,6 +241,11 @@ msgstr "Уклоните из омиљених"
 #: ../src/selections.js:781 ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Додајте у омиљене"
+
+#: ../src/shellSearchProvider.js:332
+#| msgid "Text Documents"
+msgid "Untitled Document"
+msgstr "Неименован документ"
 
 #: ../src/sources.js:90
 msgid "Sources"
