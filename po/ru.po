@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-01-23 21:30+0000\n"
-"PO-Revision-Date: 2012-02-13 12:35+0300\n"
+"POT-Creation-Date: 2012-02-21 22:09+0000\n"
+"PO-Revision-Date: 2012-02-24 12:52+0300\n"
 "Last-Translator: Yuri Myasoedov <omerta13@yandex.ru>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -18,38 +18,38 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: ../data/gnome-documents.desktop.in.in.h:1
-msgid "Access, manage and share documents"
-msgstr "Управление и предоставление доступа к документам"
-
-#: ../data/gnome-documents.desktop.in.in.h:2
 #: ../src/mainWindow.js:53
 msgid "Documents"
 msgstr "Документы"
 
+#: ../data/gnome-documents.desktop.in.in.h:2
+msgid "Access, manage and share documents"
+msgstr "Управление и предоставление доступа к документам"
+
 #: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "The active source filter"
-msgstr "Активный фильтр источников"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:2
-msgid "The last active source filter"
-msgstr "Последний активный фильтр источников"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:3
-#: ../src/application.js:125
+#: ../src/application.js:122
 msgid "View as"
 msgstr "Вид"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:4
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
 msgid "View as type"
 msgstr "Вид"
 
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
+msgid "The active source filter"
+msgstr "Активный фильтр источников"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "The last active source filter"
+msgstr "Последний активный фильтр источников"
+
 #: ../data/org.gnome.documents.gschema.xml.in.h:5
-msgid "Window maximized"
-msgstr "Окно развёрнуто"
+msgid "Window size"
+msgstr "Размер окна"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:6
-msgid "Window maximized state"
-msgstr "Состояние развёрнутого окна"
+msgid "Window size (width and height)."
+msgstr "Размер окна (ширина и высота)."
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:7
 msgid "Window position"
@@ -60,27 +60,26 @@ msgid "Window position (x and y)."
 msgstr "Положение окна (x и y)."
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:9
-msgid "Window size"
-msgstr "Размер окна"
+msgid "Window maximized"
+msgstr "Окно развёрнуто"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:10
-msgid "Window size (width and height)."
-msgstr "Размер окна (ширина и высота)."
+msgid "Window maximized state"
+msgstr "Состояние развёрнутого окна"
 
-#: ../src/application.js:119
+#: ../src/application.js:116
 msgid "Fullscreen"
 msgstr "На полный экран"
 
-#: ../src/application.js:120
+#: ../src/application.js:117
 msgid "Quit"
 msgstr "Закончить"
 
-#: ../src/application.js:123
+#: ../src/application.js:120
 msgid "Grid"
 msgstr "Сетка"
 
-#: ../src/application.js:124
-#| msgid "List view"
+#: ../src/application.js:121
 msgid "List"
 msgstr "Список"
 
@@ -156,7 +155,7 @@ msgstr "Выбрано: %d"
 
 #: ../src/mainToolbar.js:165
 msgid "New and Recent"
-msgstr ""
+msgstr "Новые и недавние"
 
 #: ../src/mainToolbar.js:187
 #, c-format
@@ -248,6 +247,11 @@ msgstr "Удалить из избранного"
 #: ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Добавить в избранное"
+
+#: ../src/shellSearchProvider.js:332
+#| msgid "Text Documents"
+msgid "Untitled Document"
+msgstr "Безымянный документ"
 
 #: ../src/sources.js:90
 msgid "Sources"
