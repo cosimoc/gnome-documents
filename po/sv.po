@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-19 00:47+0100\n"
-"PO-Revision-Date: 2012-02-19 00:47+0100\n"
+"POT-Creation-Date: 2012-02-25 21:09+0100\n"
+"PO-Revision-Date: 2012-02-25 21:09+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: \n"
@@ -27,7 +27,7 @@ msgid "Access, manage and share documents"
 msgstr "Kom åt, hantera och dela dokument"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:1
-#: ../src/application.js:125
+#: ../src/application.js:122
 msgid "View as"
 msgstr "Visa som"
 
@@ -67,19 +67,19 @@ msgstr "Fönster maximerat"
 msgid "Window maximized state"
 msgstr "Maximeringstillstånd för fönster"
 
-#: ../src/application.js:119
+#: ../src/application.js:116
 msgid "Fullscreen"
 msgstr "Helskärm"
 
-#: ../src/application.js:120
+#: ../src/application.js:117
 msgid "Quit"
 msgstr "Avsluta"
 
-#: ../src/application.js:123
+#: ../src/application.js:120
 msgid "Grid"
 msgstr "Rutnät"
 
-#: ../src/application.js:124
+#: ../src/application.js:121
 msgid "List"
 msgstr "Lista"
 
@@ -246,6 +246,10 @@ msgstr "Ta bort från favoriter"
 #: ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Lägg till i favoriter"
+
+#: ../src/shellSearchProvider.js:332
+msgid "Untitled Document"
+msgstr "Namnlöst dokument"
 
 #: ../src/sources.js:90
 msgid "Sources"
