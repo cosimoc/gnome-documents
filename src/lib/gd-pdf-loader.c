@@ -145,7 +145,6 @@ pdf_load_job_new (GSimpleAsyncResult *result,
 
   retval = g_slice_new0 (PdfLoadJob);
   retval->result = g_object_ref (result);
-  retval->cancellable = g_object_ref (cancellable);
   retval->unoconv_pid = -1;
   retval->unlink_cache = FALSE;
   retval->from_old_cache = FALSE;
@@ -154,6 +153,8 @@ pdf_load_job_new (GSimpleAsyncResult *result,
     retval->uri = g_strdup (uri);
   if (entry != NULL)
     retval->gdata_entry = g_object_ref (entry);
+  if (cancellable != NULL)
+    retval->cancellable = g_object_ref (cancellable);
 
   return retval;
 }
