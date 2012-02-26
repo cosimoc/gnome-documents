@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-30 19:18+0300\n"
-"PO-Revision-Date: 2012-01-30 19:18+0300\n"
+"POT-Creation-Date: 2012-02-26 13:03+0300\n"
+"PO-Revision-Date: 2012-02-26 13:03+0300\n"
 "Last-Translator: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>\n"
 "Language-Team: Belarusian <i18n-bel-gnome@googlegroups.com>\n"
 "Language: be\n"
@@ -23,7 +23,7 @@ msgstr "Дакументы"
 msgid "Access, manage and share documents"
 msgstr "Праца, кіраванне і супольны доступ да дакументаў"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:125
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:122
 msgid "View as"
 msgstr "Тып прагляду"
 
@@ -63,19 +63,19 @@ msgstr "Максімалізацыя акна"
 msgid "Window maximized state"
 msgstr "Стан максімалізацыі акна"
 
-#: ../src/application.js:119
+#: ../src/application.js:116
 msgid "Fullscreen"
 msgstr "На ўвесь экран"
 
-#: ../src/application.js:120
+#: ../src/application.js:117
 msgid "Quit"
 msgstr "Выйсці"
 
-#: ../src/application.js:123
+#: ../src/application.js:120
 msgid "Grid"
 msgstr "Сетка"
 
-#: ../src/application.js:124
+#: ../src/application.js:121
 msgid "List"
 msgstr "Спіс"
 
@@ -239,6 +239,10 @@ msgstr "Выдаліць са спіса ўпадабаных"
 msgid "Add to favorites"
 msgstr "Дадаць у спіс упадабаных"
 
+#: ../src/shellSearchProvider.js:332
+msgid "Untitled Document"
+msgstr "Дакумент без назвы"
+
 #: ../src/sources.js:90
 msgid "Sources"
 msgstr "Крыніцы"
@@ -246,6 +250,3 @@ msgstr "Крыніцы"
 #: ../src/spinnerBox.js:58
 msgid "Loading..."
 msgstr "Загрузка..."
-
-#~ msgid "Enable list view"
-#~ msgstr "Уключыць прагляд спісам"
