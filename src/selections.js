@@ -19,6 +19,7 @@
  *
  */
 
+const EvView = imports.gi.EvinceView;
 const Gd = imports.gi.Gd;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
@@ -663,6 +664,11 @@ SelectionToolbar.prototype = {
         this._leftBox.add(this._toolbarFavorite);
         this._toolbarFavorite.connect('clicked', Lang.bind(this, this._onToolbarFavorite));
 
+        this._toolbarPrint = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'printer-symbolic',
+                                                                      pixel_size: 32 })});
+        this._leftBox.add(this._toolbarPrint);
+        this._toolbarPrint.connect('clicked', Lang.bind(this, this._onToolbarPrint));
+
         this._separator = new Gtk.SeparatorToolItem({ draw: false });
         this._separator.set_expand(true);
         this.widget.insert(this._separator, -1);
@@ -740,6 +746,7 @@ SelectionToolbar.prototype = {
         let favCount = 0;
         let showFavorite = true;
         let canTrash = true;
+        let showPrint = false;
 
         this._insideRefresh = true;
 
@@ -760,6 +767,17 @@ SelectionToolbar.prototype = {
             }));
 
         showFavorite &= ((favCount == 0) || (favCount == selection.length));
+
+        if (selection.length == 1) {
+            let urn = selection[0];
+            if (!Global.collectionManager.getItemById(urn))
+                showPrint = true;
+        }
+
+        if (showPrint)
+            this._toolbarPrint.show_all();
+        else
+            this._toolbarPrint.hide();
 
         // if we're showing the favorite icon, also show the separator
         this._separator.set_visible(showFavorite);
@@ -854,6 +872,26 @@ SelectionToolbar.prototype = {
             function(urn) {
                 let doc = Global.documentManager.getItemById(urn);
                 doc.trash();
+            }));
+    },
+
+    _onToolbarPrint: function(widget) {
+        let selection = Global.selectionController.getSelection();
+
+        if (selection.length != 1)
+            return;
+
+        let doc = Global.documentManager.getItemById(selection[0]);
+        doc.load(null, Lang.bind(this,
+            function(doc, evDoc, error) {
+                if (!evDoc) {
+                    // TODO: handle error here!
+                    return;
+                }
+
+                let printOp = EvView.PrintOperation.new(evDoc);
+                let toplevel = this.widget.get_toplevel();
+                printOp.run(toplevel);
             }));
     },
 
