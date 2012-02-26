@@ -635,9 +635,9 @@ LocalDocument.prototype = {
             function(source, res) {
                 try {
                     let document = Gd.pdf_loader_load_uri_finish(res);
-                    callback(document);
+                    callback(this, document, null);
                 } catch (e) {
-                    Global.errorHandler.addLoadError(this, e);
+                    callback(this, null, e);
                 }
             }));
     },
@@ -720,10 +720,10 @@ GoogleDocument.prototype = {
                         function(source, res) {
                             try {
                                 let document = Gd.pdf_loader_load_uri_finish(res);
-                                callback(document);
+                                callback(this, document, null);
                             } catch (e) {
                                 // report the outmost error only
-                                Global.errorHandler.addLoadError(this, exception);
+                                callback(this, null, exception);
                                 return;
                             }
                         }));
@@ -736,9 +736,9 @@ GoogleDocument.prototype = {
                         function(source, res) {
                             try {
                                 let document = Gd.pdf_loader_load_entry_finish(res);
-                                callback(document);
+                                callback(this, document, null);
                             } catch (e) {
-                                Global.errorHandler.addLoadError(this, e);
+                                callback(this, null, e);
                             }
                         }));
             }));

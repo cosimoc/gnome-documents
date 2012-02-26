@@ -234,9 +234,13 @@ ViewEmbed.prototype  = {
         doc.loadPreview(this._loaderCancellable, Lang.bind(this, this._onDocumentLoaded));
     },
 
-    _onDocumentLoaded: function(document) {
-        this._loaderCancellable = null;
-        this._docModel = EvView.DocumentModel.new_with_document(document);
+    _onDocumentLoaded: function(doc, evDoc, error) {
+        if (!evDoc) {
+            Global.errorHandler.addLoadError(doc, error);
+            return;
+        }
+
+        this._docModel = EvView.DocumentModel.new_with_document(evDoc);
 
         this._spinnerBox.moveOut();
         Global.modeController.setCanFullscreen(true);
