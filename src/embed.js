@@ -231,7 +231,7 @@ ViewEmbed.prototype  = {
         this._spinnerBox.moveInDelayed(_PDF_LOADER_TIMEOUT);
 
         this._loaderCancellable = new Gio.Cancellable();
-        doc.loadPreview(this._loaderCancellable, Lang.bind(this, this._onDocumentLoaded));
+        doc.load(this._loaderCancellable, Lang.bind(this, this._onDocumentLoaded));
     },
 
     _onDocumentLoaded: function(doc, evDoc, error) {

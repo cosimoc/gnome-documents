@@ -630,7 +630,7 @@ LocalDocument.prototype = {
             this.typeDescription = Gio.content_type_get_description(this.mimeType);
     },
 
-    loadPreview: function(cancellable, callback) {
+    load: function(cancellable, callback) {
         Gd.pdf_loader_load_uri_async(this.uri, cancellable, Lang.bind(this,
             function(source, res) {
                 try {
@@ -711,7 +711,7 @@ GoogleDocument.prototype = {
                  }));
     },
 
-    loadPreview: function(cancellable, callback) {
+    load: function(cancellable, callback) {
         this._createGDataEntry(cancellable, Lang.bind(this,
             function(entry, service, exception) {
                 if (exception) {
