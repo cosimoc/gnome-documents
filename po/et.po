@@ -1,7 +1,6 @@
 # Estonian translation for gnome-documents.
 # Copyright (C) 2012 gnome-documents's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-documents package.
-#
 # Mattias Põldaru <mahfiaz@gmail.com>, 2012.
 #
 msgid ""
@@ -9,8 +8,8 @@ msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-02-06 12:02+0000\n"
-"PO-Revision-Date: 2012-02-08 08:38+0200\n"
+"POT-Creation-Date: 2012-02-26 10:04+0000\n"
+"PO-Revision-Date: 2012-02-27 11:06+0200\n"
 "Last-Translator: Mattias Põldaru <mahfiaz@gmail.com>\n"
 "Language-Team: Estonian <>\n"
 "Language: et\n"
@@ -19,17 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bits\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
-msgid "Access, manage and share documents"
-msgstr "Dokumentide haldus ja jagamine"
-
 msgid "Documents"
 msgstr "Dokumendid"
 
-msgid "The active source filter"
-msgstr "Aktiivne lähtefilter"
-
-msgid "The last active source filter"
-msgstr "Viimane aktiivne lähtefilter"
+msgid "Access, manage and share documents"
+msgstr "Dokumentide haldus ja jagamine"
 
 msgid "View as"
 msgstr "Kuvatakse kui"
@@ -37,11 +30,17 @@ msgstr "Kuvatakse kui"
 msgid "View as type"
 msgstr "Kuvatakse liigina"
 
-msgid "Window maximized"
-msgstr "Aken maksimeeritud"
+msgid "The active source filter"
+msgstr "Aktiivne lähtefilter"
 
-msgid "Window maximized state"
-msgstr "Akna maksimeeritud olek"
+msgid "The last active source filter"
+msgstr "Viimane aktiivne lähtefilter"
+
+msgid "Window size"
+msgstr "Akna suurus"
+
+msgid "Window size (width and height)."
+msgstr "Akna suurus (laius ja kõrgus)."
 
 msgid "Window position"
 msgstr "Akna asukoht"
@@ -49,11 +48,11 @@ msgstr "Akna asukoht"
 msgid "Window position (x and y)."
 msgstr "Akna asukoht (x ja y)."
 
-msgid "Window size"
-msgstr "Akna suurus"
+msgid "Window maximized"
+msgstr "Aken maksimeeritud"
 
-msgid "Window size (width and height)."
-msgstr "Akna suurus (laius ja kõrgus)."
+msgid "Window maximized state"
+msgstr "Akna maksimeeritud olek"
 
 msgid "Fullscreen"
 msgstr "Täisekraan"
@@ -186,6 +185,9 @@ msgstr "Eemalda lemmikutest"
 
 msgid "Add to favorites"
 msgstr "Lisa lemmikutesse"
+
+msgid "Untitled Document"
+msgstr "Pealkirjata dokument"
 
 msgid "Sources"
 msgstr "Allikad"
