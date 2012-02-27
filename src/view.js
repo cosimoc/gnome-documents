@@ -151,7 +151,8 @@ View.prototype = {
         let listWidget = this.widget.get_generic_view();
 
         let typeRenderer =
-            new Gtk.CellRendererText({ xpad: 16 });
+            new Gd.StyledTextRenderer({ xpad: 16 });
+        typeRenderer.add_class('dim-label');
         listWidget.add_renderer(typeRenderer, Lang.bind(this,
             function(col, cell, model, iter) {
                 let urn = model.get_value(iter, Documents.ModelColumns.URN);
@@ -161,7 +162,8 @@ View.prototype = {
             }));
 
         let whereRenderer =
-            new Gtk.CellRendererText({ xpad: 8 });
+            new Gd.StyledTextRenderer({ xpad: 8 });
+        whereRenderer.add_class('dim-label');
         listWidget.add_renderer(whereRenderer, Lang.bind(this,
             function(col, cell, model, iter) {
                 let urn = model.get_value(iter, Documents.ModelColumns.URN);
