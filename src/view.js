@@ -236,7 +236,7 @@ View.prototype = {
                     selected.splice(urnIndex, 1);
 
                     if (first) {
-                        generic.scrollToPath(path);
+                        generic.scroll_to_path(path);
                         first = false;
                     }
                 }
