@@ -60,22 +60,6 @@ gd_main_view_generic_set_model (GdMainViewGeneric *self,
   (* iface->set_model) (self, model);
 }
 
-/**
- * gd_main_view_generic_get_selection:
- * @self:
- *
- * Returns: (element-type GtkTreePath) (transfer full):
- */
-GList *
-gd_main_view_generic_get_selection (GdMainViewGeneric *self)
-{
-  GdMainViewGenericInterface *iface;
-
-  iface = GD_MAIN_VIEW_GENERIC_GET_IFACE (self);
-
-  return (* iface->get_selection) (self);
-}
-
 GtkTreePath *
 gd_main_view_generic_get_path_at_pos (GdMainViewGeneric *self,
                                       gint x,
@@ -108,37 +92,4 @@ gd_main_view_generic_scroll_to_path (GdMainViewGeneric *self,
   iface = GD_MAIN_VIEW_GENERIC_GET_IFACE (self);
 
   (* iface->scroll_to_path) (self, path);
-}
-
-gboolean
-gd_main_view_generic_path_is_selected (GdMainViewGeneric *self,
-                                       GtkTreePath *path)
-{
-  GdMainViewGenericInterface *iface;
-
-  iface = GD_MAIN_VIEW_GENERIC_GET_IFACE (self);
-
-  return (* iface->path_is_selected) (self, path);
-}
-
-void
-gd_main_view_generic_select_path (GdMainViewGeneric *self,
-                                  GtkTreePath *path)
-{
-  GdMainViewGenericInterface *iface;
-
-  iface = GD_MAIN_VIEW_GENERIC_GET_IFACE (self);
-
-  (* iface->select_path) (self, path);
-}
-
-void
-gd_main_view_generic_unselect_path (GdMainViewGeneric *self,
-                                    GtkTreePath *path)
-{
-  GdMainViewGenericInterface *iface;
-
-  iface = GD_MAIN_VIEW_GENERIC_GET_IFACE (self);
-
-  (* iface->unselect_path) (self, path);
 }

@@ -71,13 +71,6 @@ struct _GdMainViewGenericIface
                                           GtkTreePath       *path);
   void          (* set_selection_mode)   (GdMainViewGeneric *view,
                                           gboolean           selection_mode);
-  GList *       (* get_selection)        (GdMainViewGeneric *view);
-  gboolean      (* path_is_selected)     (GdMainViewGeneric *view,
-                                          GtkTreePath       *path);
-  void          (* select_path)          (GdMainViewGeneric *view,
-                                          GtkTreePath       *path);
-  void          (* unselect_path)        (GdMainViewGeneric *view,
-                                          GtkTreePath       *path);
 };
 
 GType gd_main_view_generic_get_type (void) G_GNUC_CONST;
@@ -92,13 +85,6 @@ void gd_main_view_generic_set_selection_mode (GdMainViewGeneric *self,
 GtkTreePath * gd_main_view_generic_get_path_at_pos (GdMainViewGeneric *self,
                                                     gint x,
                                                     gint y);
-GList * gd_main_view_generic_get_selection (GdMainViewGeneric *self);
-gboolean gd_main_view_generic_path_is_selected (GdMainViewGeneric *self,
-                                                GtkTreePath *path);
-void gd_main_view_generic_select_path (GdMainViewGeneric *self,
-                                       GtkTreePath *path);
-void gd_main_view_generic_unselect_path (GdMainViewGeneric *self,
-                                         GtkTreePath *path);
 
 G_END_DECLS
 

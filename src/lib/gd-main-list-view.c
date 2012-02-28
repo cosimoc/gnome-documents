@@ -37,14 +37,6 @@ G_DEFINE_TYPE_WITH_CODE (GdMainListView, gd_main_list_view, GTK_TYPE_TREE_VIEW,
                                                 gd_main_view_generic_iface_init))
 
 static void
-on_tree_selection_changed (GtkTreeSelection *selection,
-                           gpointer user_data)
-{
-  GdMainListView *self = user_data;
-  g_signal_emit_by_name (self, "view-selection-changed");
-}
-
-static void
 gd_main_list_view_constructed (GObject *obj)
 {
   GdMainListView *self = GD_MAIN_LIST_VIEW (obj);
@@ -115,15 +107,6 @@ gd_main_list_view_init (GdMainListView *self)
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GD_TYPE_MAIN_LIST_VIEW, GdMainListViewPrivate);
 }
 
-static GList *
-gd_main_list_view_get_selection (GdMainViewGeneric *mv)
-{
-  GtkTreeSelection *selection;
-
-  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (mv));
-  return gtk_tree_selection_get_selected_rows (selection, NULL);
-}
-
 static GtkTreePath *
 gd_main_list_view_get_path_at_pos (GdMainViewGeneric *mv,
                                    gint x,
@@ -156,36 +139,6 @@ gd_main_list_view_scroll_to_path (GdMainViewGeneric *mv,
   gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (mv), path, NULL, TRUE, 0.5, 0.5);
 }
 
-static gboolean
-gd_main_list_view_path_is_selected (GdMainViewGeneric *mv,
-                                    GtkTreePath *path)
-{
-  GtkTreeSelection *selection;
-
-  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (mv));
-  return gtk_tree_selection_path_is_selected (selection, path);
-}
-
-static void
-gd_main_list_view_select_path (GdMainViewGeneric *mv,
-                               GtkTreePath *path)
-{
-  GtkTreeSelection *selection;
-
-  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (mv));
-  gtk_tree_selection_select_path (selection, path);
-}
-
-static void
-gd_main_list_view_unselect_path (GdMainViewGeneric *mv,
-                                 GtkTreePath *path)
-{
-  GtkTreeSelection *selection;
-
-  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (mv));
-  gtk_tree_selection_unselect_path (selection, path);
-}
-
 static void
 gd_main_list_view_set_model (GdMainViewGeneric *mv,
                              GtkTreeModel *model)
@@ -197,13 +150,9 @@ static void
 gd_main_view_generic_iface_init (GdMainViewGenericIface *iface)
 {
   iface->set_model = gd_main_list_view_set_model;
-  iface->get_selection = gd_main_list_view_get_selection;
   iface->get_path_at_pos = gd_main_list_view_get_path_at_pos;
   iface->scroll_to_path = gd_main_list_view_scroll_to_path;
   iface->set_selection_mode = gd_main_list_view_set_selection_mode;
-  iface->select_path = gd_main_list_view_select_path;
-  iface->unselect_path = gd_main_list_view_unselect_path;
-  iface->path_is_selected = gd_main_list_view_path_is_selected;
 }
 
 void

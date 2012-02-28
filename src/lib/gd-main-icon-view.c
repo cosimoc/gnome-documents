@@ -120,14 +120,6 @@ gd_main_icon_view_init (GdMainIconView *self)
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GD_TYPE_MAIN_ICON_VIEW, GdMainIconViewPrivate);
 }
 
-static GList *
-gd_main_icon_view_get_selection (GdMainViewGeneric *mv)
-{
-  GtkIconView *iv = GTK_ICON_VIEW (mv);
-
-  return gtk_icon_view_get_selected_items (iv);
-}
-
 static GtkTreePath *
 gd_main_icon_view_get_path_at_pos (GdMainViewGeneric *mv,
                                    gint x,
@@ -155,27 +147,6 @@ gd_main_icon_view_scroll_to_path (GdMainViewGeneric *mv,
   gtk_icon_view_scroll_to_path (GTK_ICON_VIEW (mv), path, TRUE, 0.5, 0.5);
 }
 
-static gboolean
-gd_main_icon_view_path_is_selected (GdMainViewGeneric *mv,
-                                    GtkTreePath *path)
-{
-  return gtk_icon_view_path_is_selected (GTK_ICON_VIEW (mv), path);
-}
-
-static void
-gd_main_icon_view_select_path (GdMainViewGeneric *mv,
-                               GtkTreePath *path)
-{
-  gtk_icon_view_select_path (GTK_ICON_VIEW (mv), path);
-}
-
-static void
-gd_main_icon_view_unselect_path (GdMainViewGeneric *mv,
-                                 GtkTreePath *path)
-{
-  gtk_icon_view_unselect_path (GTK_ICON_VIEW (mv), path);
-}
-
 static void
 gd_main_icon_view_set_model (GdMainViewGeneric *mv,
                              GtkTreeModel *model)
@@ -187,13 +158,9 @@ static void
 gd_main_view_generic_iface_init (GdMainViewGenericIface *iface)
 {
   iface->set_model = gd_main_icon_view_set_model;
-  iface->get_selection = gd_main_icon_view_get_selection;
   iface->get_path_at_pos = gd_main_icon_view_get_path_at_pos;
   iface->scroll_to_path = gd_main_icon_view_scroll_to_path;
   iface->set_selection_mode = gd_main_icon_view_set_selection_mode;
-  iface->path_is_selected = gd_main_icon_view_path_is_selected;
-  iface->select_path = gd_main_icon_view_select_path;
-  iface->unselect_path = gd_main_icon_view_unselect_path;
 }
 
 GtkWidget *
