@@ -28,6 +28,7 @@ G_DEFINE_TYPE (GdMainToolbar, gd_main_toolbar, GTK_TYPE_TOOLBAR)
 
 struct _GdMainToolbarPrivate {
   GtkSizeGroup *size_group;
+  GtkSizeGroup *vertical_size_group;
 
   GtkToolItem *left_group;
   GtkToolItem *center_group;
@@ -54,6 +55,76 @@ enum {
 static guint signals[NUM_SIGNALS] = { 0, };
 
 static void
+gd_main_toolbar_dispose (GObject *obj)
+{
+  GdMainToolbar *self = GD_MAIN_TOOLBAR (obj);
+
+  g_clear_object (&self->priv->size_group);
+  g_clear_object (&self->priv->vertical_size_group);
+
+  G_OBJECT_CLASS (gd_main_toolbar_parent_class)->dispose (obj);
+}
+
+static gint
+get_icon_margin (void)
+{
+  gint toolbar_size, menu_size;
+
+  gtk_icon_size_lookup (GTK_ICON_SIZE_MENU, &menu_size, NULL);
+  gtk_icon_size_lookup (GTK_ICON_SIZE_LARGE_TOOLBAR, &toolbar_size, NULL);
+  return (gint) floor ((toolbar_size - menu_size) / 2.0);
+}
+
+static GtkSizeGroup *
+get_vertical_size_group (void)
+{
+  GtkSizeGroup *retval;
+  GtkWidget *w, *dummy;
+  gint icon_margin;
+
+  icon_margin = get_icon_margin ();
+
+  dummy = gtk_toggle_button_new ();
+  w = gtk_image_new_from_stock (GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU);
+  g_object_set (w, "margin", icon_margin, NULL);
+  gtk_container_add (GTK_CONTAINER (dummy), w);
+  gtk_widget_show_all (dummy);
+
+  retval = gtk_size_group_new (GTK_SIZE_GROUP_VERTICAL);
+  gtk_size_group_add_widget (retval, dummy);
+
+  return retval;
+}
+
+static GtkWidget *
+get_symbolic_button (const gchar *icon_name)
+{
+  GtkWidget *button, *w;
+
+  button = gtk_button_new ();
+  gtk_style_context_add_class (gtk_widget_get_style_context (button), "raised");
+
+  w = gtk_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_MENU);
+  g_object_set (w, "margin", get_icon_margin (), NULL);
+  gtk_widget_show (w);
+  gtk_container_add (GTK_CONTAINER (button), w);
+
+  return button;
+}
+
+static GtkWidget *
+get_text_button (const gchar *label)
+{
+  GtkWidget *w;
+
+  w = gtk_button_new_with_label (label);
+  gtk_widget_set_vexpand (w, TRUE);
+  gtk_style_context_add_class (gtk_widget_get_style_context (w), "raised");
+
+  return w;
+}
+
+static void
 on_back_button_clicked (GtkButton *b,
                         gpointer user_data)
 {
@@ -62,44 +133,31 @@ on_back_button_clicked (GtkButton *b,
 }
 
 static void
-gd_main_toolbar_dispose (GObject *obj)
-{
-  GdMainToolbar *self = GD_MAIN_TOOLBAR (obj);
-
-  g_clear_object (&self->priv->size_group);
-
-  G_OBJECT_CLASS (gd_main_toolbar_parent_class)->dispose (obj);
-}
-
-static void
 gd_main_toolbar_constructed (GObject *obj)
 {
   GdMainToolbar *self = GD_MAIN_TOOLBAR (obj);
   GtkToolbar *tb = GTK_TOOLBAR (obj);
-  GtkWidget *w, *grid;
+  GtkWidget *grid;
 
   G_OBJECT_CLASS (gd_main_toolbar_parent_class)->constructed (obj);
+
+  self->priv->vertical_size_group = get_vertical_size_group ();
 
   /* left section */
   self->priv->left_group = gtk_tool_item_new ();
   gtk_widget_set_margin_right (GTK_WIDGET (self->priv->left_group), 12);
   gtk_toolbar_insert (tb, self->priv->left_group, -1);
+  gtk_size_group_add_widget (self->priv->vertical_size_group,
+                             GTK_WIDGET (self->priv->left_group));
 
   /* left button group */
   self->priv->left_grid = gtk_grid_new ();
   gtk_grid_set_column_spacing (GTK_GRID (self->priv->left_grid), 12);
   gtk_container_add (GTK_CONTAINER (self->priv->left_group), self->priv->left_grid);
 
-  self->priv->back = gtk_button_new ();
-  gtk_style_context_add_class (gtk_widget_get_style_context (self->priv->back), "raised");
+  self->priv->back = get_symbolic_button ("go-previous-symbolic");
   gtk_widget_set_no_show_all (self->priv->back, TRUE);
-  gtk_widget_set_halign (self->priv->back, GTK_ALIGN_START);
   gtk_container_add (GTK_CONTAINER (self->priv->left_grid), self->priv->back);
-
-  w = gtk_image_new_from_icon_name ("go-previous-symbolic", GTK_ICON_SIZE_MENU);
-  gtk_widget_show (w);
-  gtk_image_set_pixel_size (GTK_IMAGE (w), 16);
-  gtk_container_add (GTK_CONTAINER (self->priv->back), w);
 
   g_signal_connect (self->priv->back, "clicked",
                     G_CALLBACK (on_back_button_clicked), self);
@@ -108,6 +166,8 @@ gd_main_toolbar_constructed (GObject *obj)
   self->priv->center_group = gtk_tool_item_new ();
   gtk_tool_item_set_expand (self->priv->center_group, TRUE);
   gtk_toolbar_insert (tb, self->priv->center_group, -1);
+  gtk_size_group_add_widget (self->priv->vertical_size_group,
+                             GTK_WIDGET (self->priv->center_group));
 
   /* centered label group */
   grid = gtk_grid_new ();
@@ -129,6 +189,8 @@ gd_main_toolbar_constructed (GObject *obj)
   self->priv->right_group = gtk_tool_item_new ();
   gtk_widget_set_margin_left (GTK_WIDGET (self->priv->right_group), 12);
   gtk_toolbar_insert (tb, self->priv->right_group, -1);
+  gtk_size_group_add_widget (self->priv->vertical_size_group,
+                             GTK_WIDGET (self->priv->right_group));
 
   self->priv->right_grid = gtk_grid_new ();
   gtk_grid_set_column_spacing (GTK_GRID (self->priv->right_grid), 12);
@@ -179,14 +241,11 @@ gd_main_toolbar_class_init (GdMainToolbarClass *klass)
 }
 
 static void
-on_selection_mode_button_toggled (GtkToggleButton *tb,
+on_selection_mode_button_clicked (GtkButton *b,
                                   gpointer user_data)
 {
   GdMainToolbar *self = user_data;
-  gboolean toggled;
-
-  toggled = gtk_toggle_button_get_active (tb);
-  g_signal_emit (self, signals[SELECTION_MODE_REQUEST], 0, toggled);
+  g_signal_emit (self, signals[SELECTION_MODE_REQUEST], 0, TRUE);
 }
 
 static void
@@ -207,8 +266,7 @@ gd_main_toolbar_populate_for_selection (GdMainToolbar *self)
   gtk_widget_reset_style (GTK_WIDGET (self));
 
   /* right section */
-  w = gtk_button_new_with_label (_("Done"));
-  gtk_style_context_add_class (gtk_widget_get_style_context (w), "raised");
+  w = get_text_button (_("Done"));
   gtk_container_add (GTK_CONTAINER (self->priv->right_grid), w);
 
   g_signal_connect (w, "clicked",
@@ -220,18 +278,14 @@ gd_main_toolbar_populate_for_selection (GdMainToolbar *self)
 static void
 gd_main_toolbar_populate_for_overview (GdMainToolbar *self)
 {
-  GtkWidget *selection_mode_button, *w;
+  GtkWidget *button;
 
   /* right section */
-  selection_mode_button = gtk_toggle_button_new ();
-  w = gtk_image_new_from_icon_name ("emblem-default-symbolic", GTK_ICON_SIZE_MENU);
-  gtk_image_set_pixel_size (GTK_IMAGE (w), 16);
-  gtk_container_add (GTK_CONTAINER (selection_mode_button), w);
+  button = get_symbolic_button ("emblem-default-symbolic");
+  gtk_container_add (GTK_CONTAINER (self->priv->right_grid), button);
 
-  gtk_container_add (GTK_CONTAINER (self->priv->right_grid), selection_mode_button);
-
-  g_signal_connect (selection_mode_button, "toggled",
-                    G_CALLBACK (on_selection_mode_button_toggled), self);
+  g_signal_connect (button, "clicked",
+                    G_CALLBACK (on_selection_mode_button_clicked), self);
 
   gtk_widget_show_all (GTK_WIDGET (self));
 }
@@ -256,7 +310,6 @@ on_left_grid_clear (GtkWidget *w,
 static void
 gd_main_toolbar_clear (GdMainToolbar *self)
 {
-  GtkWidget *w;
   GtkStyleContext *context;
 
   /* reset labels */
