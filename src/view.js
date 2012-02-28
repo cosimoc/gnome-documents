@@ -234,7 +234,7 @@ View.prototype = {
                 let urnIndex = selected.indexOf(urn);
 
                 if (urnIndex != -1) {
-                    generic.select_path(path);
+                    this._treeModel.set_value(iter, Gd.MainColumns.SELECTED, true);
                     selected.splice(urnIndex, 1);
 
                     if (first) {
@@ -256,10 +256,8 @@ View.prototype = {
     },
 
     _onSelectionChanged: function() {
-        let generic = this.widget.get_generic_view();
-
         // update the selection on the controller when the view signals a change
-        let selectedURNs = Utils.getURNsFromPaths(generic.get_selection(),
+        let selectedURNs = Utils.getURNsFromPaths(this.widget.get_selection(),
                                                   this._treeModel);
         Global.selectionController.setSelection(selectedURNs);
     }
