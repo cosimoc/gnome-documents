@@ -66,6 +66,9 @@ gd_main_view_init (GdMainView *self)
   gtk_widget_set_hexpand (GTK_WIDGET (self), TRUE);
   gtk_widget_set_vexpand (GTK_WIDGET (self), TRUE);
   gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (self), GTK_SHADOW_IN);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (self),
+                                  GTK_POLICY_NEVER,
+                                  GTK_POLICY_AUTOMATIC);
 
   context = gtk_widget_get_style_context (GTK_WIDGET (self));
   gtk_style_context_add_class (context, "documents-scrolledwin");
