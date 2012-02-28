@@ -28,6 +28,7 @@
 
 struct _GdMainListViewPrivate {
   GtkTreeViewColumn *tree_col;
+  GtkCellRenderer *selection_cell;
 };
 
 static void gd_main_view_generic_iface_init (GdMainViewGenericIface *iface);
@@ -61,11 +62,19 @@ gd_main_list_view_constructed (GObject *obj)
                 NULL);
 
   selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self));
-  g_signal_connect (selection, "changed",
-                    G_CALLBACK (on_tree_selection_changed), self);
+  gtk_tree_selection_set_mode (selection, GTK_SELECTION_NONE);
 
   self->priv->tree_col = gtk_tree_view_column_new ();
   gtk_tree_view_append_column (GTK_TREE_VIEW (self), self->priv->tree_col);
+
+  self->priv->selection_cell = cell = gtk_cell_renderer_toggle_new ();
+  g_object_set (cell, 
+                "visible", FALSE,
+                "xpad", 12,
+                NULL);
+  gtk_tree_view_column_pack_start (self->priv->tree_col, cell, FALSE);
+  gtk_tree_view_column_add_attribute (self->priv->tree_col, cell,
+                                      "active", GD_MAIN_COLUMN_SELECTED);
 
   cell = gtk_cell_renderer_pixbuf_new ();
   g_object_set (cell,
@@ -130,12 +139,14 @@ gd_main_list_view_get_path_at_pos (GdMainViewGeneric *mv,
 
 static void
 gd_main_list_view_set_selection_mode (GdMainViewGeneric *mv,
-                                      GtkSelectionMode mode)
+                                      gboolean selection_mode)
 {
-  GtkTreeSelection *selection;
+  GdMainListView *self = GD_MAIN_LIST_VIEW (mv);
 
-  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (mv));
-  gtk_tree_selection_set_mode (selection, mode);
+  g_object_set (self->priv->selection_cell,
+                "visible", selection_mode,
+                NULL);
+  gtk_tree_view_column_queue_resize (self->priv->tree_col);
 }
 
 static void
