@@ -22,6 +22,7 @@
 #include "gd-main-icon-view.h"
 #include "gd-main-view.h"
 #include "gd-main-view-generic.h"
+#include "gd-toggle-pixbuf-renderer.h"
 #include "gd-two-lines-renderer.h"
 
 #include <math.h>
@@ -31,6 +32,10 @@
 #define VIEW_ITEM_WRAP_WIDTH 128
 #define VIEW_COLUMN_SPACING 20
 #define VIEW_MARGIN 16
+
+struct _GdMainIconViewPrivate {
+  GtkCellRenderer *pixbuf_cell;
+};
 
 static void gd_main_view_generic_iface_init (GdMainViewGenericIface *iface);
 G_DEFINE_TYPE_WITH_CODE (GdMainIconView, gd_main_icon_view, GTK_TYPE_ICON_VIEW,
@@ -55,9 +60,9 @@ gd_main_icon_view_constructed (GObject *obj)
 
   gtk_widget_set_hexpand (GTK_WIDGET (self), TRUE);
   gtk_widget_set_vexpand (GTK_WIDGET (self), TRUE);
+  gtk_icon_view_set_selection_mode (GTK_ICON_VIEW (self), GTK_SELECTION_NONE);
 
   g_object_set (self,
-                "item-width", VIEW_ITEM_WIDTH,
                 "column-spacing", VIEW_COLUMN_SPACING,
                 "margin", VIEW_MARGIN,
                 NULL);
@@ -65,13 +70,15 @@ gd_main_icon_view_constructed (GObject *obj)
   g_signal_connect (self, "selection-changed",
                     G_CALLBACK (on_icon_selection_changed), self);
 
-  cell = gtk_cell_renderer_pixbuf_new ();
+  self->priv->pixbuf_cell = cell = gd_toggle_pixbuf_renderer_new ();
   g_object_set (cell,
                 "xalign", 0.5,
                 "yalign", 0.5,
                 NULL);
 
   gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (self), cell, FALSE);
+  gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (self), cell,
+                                 "active", GD_MAIN_COLUMN_SELECTED);
   gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (self), cell,
                                  "pixbuf", GD_MAIN_COLUMN_ICON);
 
@@ -93,14 +100,24 @@ static void
 gd_main_icon_view_class_init (GdMainIconViewClass *klass)
 {
   GObjectClass *oclass = G_OBJECT_CLASS (klass);
+  GtkWidgetClass *wclass = GTK_WIDGET_CLASS (klass);
 
   oclass->constructed = gd_main_icon_view_constructed;
+
+  gtk_widget_class_install_style_property (wclass,
+                                           g_param_spec_int ("check-icon-size",
+                                                             "Check icon size",
+                                                             "Check icon size",
+                                                             -1, G_MAXINT, 40,
+                                                             G_PARAM_READWRITE));
+
+  g_type_class_add_private (klass, sizeof (GdMainIconViewPrivate));
 }
 
 static void
 gd_main_icon_view_init (GdMainIconView *self)
 {
-  /* nothing */
+  self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GD_TYPE_MAIN_ICON_VIEW, GdMainIconViewPrivate);
 }
 
 static GList *
@@ -121,9 +138,14 @@ gd_main_icon_view_get_path_at_pos (GdMainViewGeneric *mv,
 
 static void
 gd_main_icon_view_set_selection_mode (GdMainViewGeneric *mv,
-                                      GtkSelectionMode mode)
+                                      gboolean selection_mode)
 {
-  gtk_icon_view_set_selection_mode (GTK_ICON_VIEW (mv), mode);
+  GdMainIconView *self = GD_MAIN_ICON_VIEW (mv);
+
+  g_object_set (self->priv->pixbuf_cell,
+                "toggle-visible", selection_mode,
+                NULL);
+  gtk_widget_queue_draw (GTK_WIDGET (self));
 }
 
 static void
