@@ -424,23 +424,6 @@ gd_main_toolbar_set_back_visible (GdMainToolbar *self,
 
 }
 
-void
-gd_main_toolbar_add_widget (GdMainToolbar         *self,
-                            GtkWidget             *widget,
-                            GdMainToolbarPosition  position)
-{
-  if (position == GD_MAIN_TOOLBAR_POSITION_LEFT)
-    /* append on the left grid */
-    gtk_container_add (GTK_CONTAINER (self->priv->left_grid), widget);
-  else if (position == GD_MAIN_TOOLBAR_POSITION_RIGHT)
-    {
-      /* prepend on the right grid */
-      gtk_grid_insert_column (GTK_GRID (self->priv->right_grid), 0);
-      gtk_grid_attach (GTK_GRID (self->priv->right_grid), widget,
-                       0, 0, 1, 1);
-    }
-}
-
 GtkWidget *
 gd_main_toolbar_new (void)
 {

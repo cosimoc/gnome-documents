@@ -61,11 +61,6 @@ typedef enum {
   GD_MAIN_TOOLBAR_MODE_PREVIEW
 } GdMainToolbarMode;
 
-typedef enum {
-  GD_MAIN_TOOLBAR_POSITION_LEFT,
-  GD_MAIN_TOOLBAR_POSITION_RIGHT
-} GdMainToolbarPosition;
-
 struct _GdMainToolbar
 {
   GtkToolbar parent;
@@ -89,10 +84,6 @@ void           gd_main_toolbar_set_labels (GdMainToolbar *self,
                                            const gchar *detail);
 void           gd_main_toolbar_set_back_visible (GdMainToolbar *self,
                                                  gboolean visible);
-
-void           gd_main_toolbar_add_widget (GdMainToolbar         *self,
-                                           GtkWidget             *widget,
-                                           GdMainToolbarPosition  position);
 
 G_END_DECLS
 
