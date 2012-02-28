@@ -70,7 +70,7 @@ struct _GdMainViewGenericIface
   void          (* scroll_to_path)       (GdMainViewGeneric *view,
                                           GtkTreePath       *path);
   void          (* set_selection_mode)   (GdMainViewGeneric *view,
-                                          GtkSelectionMode   selection_mode);
+                                          gboolean           selection_mode);
   GList *       (* get_selection)        (GdMainViewGeneric *view);
   gboolean      (* path_is_selected)     (GdMainViewGeneric *view,
                                           GtkTreePath       *path);
@@ -88,7 +88,7 @@ void gd_main_view_generic_set_model (GdMainViewGeneric *self,
 void gd_main_view_generic_scroll_to_path (GdMainViewGeneric *self,
                                           GtkTreePath *path);
 void gd_main_view_generic_set_selection_mode (GdMainViewGeneric *self,
-                                              GtkSelectionMode mode);
+                                              gboolean selection_mode);
 GtkTreePath * gd_main_view_generic_get_path_at_pos (GdMainViewGeneric *self,
                                                     gint x,
                                                     gint y);

@@ -39,12 +39,13 @@
 GtkListStore *
 gd_create_list_store (void)
 {
-  return gtk_list_store_new (5,
+  return gtk_list_store_new (6,
                              G_TYPE_STRING, // URN
                              G_TYPE_STRING, // TITLE
                              G_TYPE_STRING, // AUTHOR
                              GDK_TYPE_PIXBUF, // ICON
-                             G_TYPE_LONG); // MTIME
+                             G_TYPE_LONG, // MTIME
+                             G_TYPE_BOOLEAN); // SELECTED
 }
 
 void

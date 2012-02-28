@@ -222,13 +222,25 @@ on_button_release_selection_mode (GdMainView *self,
 {
   GdMainViewGeneric *generic = get_generic (self);
   gboolean selected;
+  GtkTreeIter iter;
 
-  selected = gd_main_view_generic_path_is_selected (generic, path);
+  if (!gtk_tree_model_get_iter (self->priv->model, &iter, path))
+    return FALSE;
+
+  gtk_tree_model_get (self->priv->model, &iter,
+                      GD_MAIN_COLUMN_SELECTED, &selected,
+                      -1);
 
   if (selected && !entered_mode)
-    gd_main_view_generic_unselect_path (generic, path);
+    gtk_list_store_set (GTK_LIST_STORE (self->priv->model), &iter,
+                        GD_MAIN_COLUMN_SELECTED, FALSE,
+                        -1);
   else if (!selected)
-    gd_main_view_generic_select_path (generic, path);
+    gtk_list_store_set (GTK_LIST_STORE (self->priv->model), &iter,
+                        GD_MAIN_COLUMN_SELECTED, TRUE,
+                        -1);
+
+  g_signal_emit_by_name (generic, "view-selection-changed");
 
   return TRUE;
 }
@@ -361,10 +373,7 @@ gd_main_view_apply_selection_mode (GdMainView *self)
 {
   GdMainViewGeneric *generic = get_generic (self);
 
-  if (self->priv->selection_mode)
-    gd_main_view_generic_set_selection_mode (generic, GTK_SELECTION_MULTIPLE);
-  else
-    gd_main_view_generic_set_selection_mode (generic, GTK_SELECTION_NONE);
+  gd_main_view_generic_set_selection_mode (generic, self->priv->selection_mode);
 }
 
 static void
@@ -487,4 +496,41 @@ GtkWidget *
 gd_main_view_get_generic_view (GdMainView *self)
 {
   return self->priv->current_view;
+}
+
+static gboolean
+build_selection_list_foreach (GtkTreeModel *model,
+                              GtkTreePath *path,
+                              GtkTreeIter *iter,
+                              gpointer user_data)
+{
+  GList **sel = user_data;
+  gboolean is_selected;
+
+  gtk_tree_model_get (model, iter,
+                      GD_MAIN_COLUMN_SELECTED, &is_selected,
+                      -1);
+
+  if (is_selected)
+    *sel = g_list_prepend (*sel, gtk_tree_path_copy (path));
+
+  return FALSE;
+}
+
+/**
+ * gd_main_view_get_selection:
+ * @self:
+ *
+ * Returns: (element-type GtkTreePath) (transfer full):
+ */
+GList *
+gd_main_view_get_selection (GdMainView *self)
+{
+  GList *retval = NULL;
+
+  gtk_tree_model_foreach (self->priv->model,
+                          build_selection_list_foreach,
+                          &retval);
+
+  return g_list_reverse (retval);
 }

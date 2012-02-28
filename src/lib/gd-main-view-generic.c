@@ -90,13 +90,13 @@ gd_main_view_generic_get_path_at_pos (GdMainViewGeneric *self,
 
 void
 gd_main_view_generic_set_selection_mode (GdMainViewGeneric *self,
-                                         GtkSelectionMode mode)
+                                         gboolean selection_mode)
 {
   GdMainViewGenericInterface *iface;
 
   iface = GD_MAIN_VIEW_GENERIC_GET_IFACE (self);
 
-  (* iface->set_selection_mode) (self, mode);
+  (* iface->set_selection_mode) (self, selection_mode);
 }
 
 void
