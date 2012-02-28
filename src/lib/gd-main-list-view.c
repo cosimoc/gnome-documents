@@ -47,7 +47,6 @@ static void
 gd_main_list_view_constructed (GObject *obj)
 {
   GdMainListView *self = GD_MAIN_LIST_VIEW (obj);
-  GtkTreeViewColumn *col;
   GtkCellRenderer *cell;
   GtkTreeSelection *selection;
 
