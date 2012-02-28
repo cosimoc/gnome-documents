@@ -19,6 +19,7 @@ gdprivate_source_h = \
     lib/gd-pdf-loader.h \
     lib/gd-styled-text-renderer.h \
     lib/gd-tagged-entry.h \
+    lib/gd-toggle-pixbuf-renderer.h \
     lib/gd-two-lines-renderer.h \
     $(NULL)
 
@@ -34,6 +35,7 @@ gdprivate_source_c = \
     lib/gd-pdf-loader.c \
     lib/gd-styled-text-renderer.c \
     lib/gd-tagged-entry.c \
+    lib/gd-toggle-pixbuf-renderer.c \
     lib/gd-two-lines-renderer.c \
     $(NULL)
 
