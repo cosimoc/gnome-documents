@@ -20,6 +20,7 @@
  */
 
 const EvView = imports.gi.EvinceView;
+const Gdk = imports.gi.Gdk;
 const Gtk = imports.gi.Gtk;
 
 const Lang = imports.lang;
@@ -43,7 +44,20 @@ PreviewView.prototype = {
                             Lang.bind(this, this._onButtonPressEvent));
         this.widget.connect('button-release-event',
                             Lang.bind(this, this._onButtonReleaseEvent));
+        this.widget.connect('key-press-event',
+                            Lang.bind(this, this._onKeyPressEvent));
     },
+
+    _onKeyPressEvent: function(widget, event) {
+        let keyval = event.get_keyval()[1];
+
+        if (keyval == Gdk.KEY_space) {
+            this.widget.scroll(Gtk.ScrollType.PAGE_FORWARD, false);
+            return true;
+        }
+
+        return false;
+     },
 
     _onButtonReleaseEvent: function(widget, event) {
         let button = event.get_button()[1];
