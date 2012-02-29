@@ -1,6 +1,7 @@
 *.la
 *.lo
 *.o
+*.tar.xz
 .deps
 .libs
 ABOUT-NLS
@@ -19,6 +20,7 @@ configure
 data/gnome-documents-search-provider.ini
 data/gnome-documents.desktop
 data/gnome-documents.desktop.in
+data/org.gnome.Documents.enums.xml
 data/org.gnome.Documents.GDataMiner.service
 data/org.gnome.documents.gschema.valid
 data/org.gnome.documents.gschema.xml
@@ -40,6 +42,7 @@ po/Rules-quot
 po/stamp-it
 src/*.gir
 src/*.typelib
+src/config.js
 src/Makefile
 src/Makefile.in
 src/gd-tracker-gdata-miner
