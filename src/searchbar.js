@@ -202,6 +202,8 @@ SearchMatchManager.prototype = {
     __proto__: Manager.BaseManager.prototype,
 
     _init: function() {
+        // Translators: this is a verb that refers to "All", "Title" and "Author",
+        // as in "Match All", "Match Title" and "Match Author"
         Manager.BaseManager.prototype._init.call(this, _("Match"));
 
         this.addItem(new SearchMatch({ id: SearchMatchStock.ALL,
