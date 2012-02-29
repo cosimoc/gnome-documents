@@ -86,6 +86,13 @@ Application.prototype = {
 	    }));
 	this.application.add_action(quitAction);
 
+        let aboutAction = new Gio.SimpleAction({ name: 'about' });
+        aboutAction.connect('activate', Lang.bind(this,
+            function() {
+                this._mainWindow.showAbout();
+            }));
+        this.application.add_action(aboutAction);
+
         let fsAction = new Gio.SimpleAction({ name: 'fullscreen' });
         fsAction.connect('activate', Lang.bind(this,
             function() {
@@ -113,13 +120,18 @@ Application.prototype = {
         this.application.add_action(viewAsAction);
 
 	let menu = new Gio.Menu();
-        menu.append(_("Fullscreen"), 'app.fullscreen');
-	menu.append(_("Quit"), 'app.quit');
 
         let viewAs = new Gio.Menu();
         viewAs.append(_("Grid"), 'app.view-as::icon');
         viewAs.append(_("List"), 'app.view-as::list');
-        menu.prepend_section(_("View as"), viewAs);
+        menu.append_section(_("View as"), viewAs);
+
+        let docActions = new Gio.Menu();
+        docActions.append(_("Fullscreen"), 'app.fullscreen');
+        menu.append_section(null, docActions);
+
+        menu.append(_("About Documents"), 'app.about');
+        menu.append(_("Quit"), 'app.quit');
 
 	this.application.set_app_menu(menu);
     },

@@ -37,12 +37,16 @@ BUILT_SOURCES += path.js
 
 path.js: Makefile path.js.in
 	$(AM_V_GEN) $(do_subst) $(srcdir)/path.js.in > $@
+config.js: Makefile config.js.in
+	$(AM_V_GEN) $(do_subst) $(srcdir)/config.js.in > $@
 
 nodist_js_DATA = \
-    path.js
+    path.js \
+    config.js
 
 CLEANFILES += \
     $(BUILT_SOURCES)
 
 EXTRA_DIST += \
-    path.js.in
+    path.js.in \
+    config.js.in

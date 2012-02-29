@@ -28,6 +28,7 @@ const GtkClutter = imports.gi.GtkClutter;
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
 
+const Config = imports.config;
 const Embed = imports.embed;
 const Global = imports.global;
 const Searchbar = imports.searchbar;
@@ -283,5 +284,31 @@ MainWindow.prototype = {
         this._saveWindowGeometry();
 
         return false;
+    },
+
+    showAbout: function() {
+        let aboutDialog = new Gtk.AboutDialog();
+
+        aboutDialog.artists = [ 'Jakub Steiner <jimmac@gmail.com>' ];
+        aboutDialog.authors = [ 'Cosimo Cecchi <cosimoc@gnome.org>',
+                                'Florian M' + String.fromCharCode(0x00FC) + 'llner <fmuellner@gnome.org>',
+                                'William Jon McCann <william.jon.mccann@gmail.com>' ];
+        aboutDialog.translator_credits = _("translator-credits");
+        aboutDialog.program_name = _("GNOME Documents");
+        aboutDialog.comments = _("A document manager application");
+        aboutDialog.copyright = 'Copyright ' + String.fromCharCode(0x00A9) + ' 2011' + String.fromCharCode(0x2013) + '2012 Red Hat, Inc.';
+        aboutDialog.license_type = Gtk.License.GPL_2_0;
+        aboutDialog.logo_icon_name = 'gnome-documents';
+        aboutDialog.version = Config.PACKAGE_VERSION;
+        aboutDialog.website = 'http://live.gnome.org/GnomeDocuments';
+        aboutDialog.wrap_license = true;
+
+        aboutDialog.modal = true;
+        aboutDialog.transient_for = this.window;
+
+        aboutDialog.show();
+        aboutDialog.connect('response', function() {
+            aboutDialog.destroy();
+        });
     }
 };
