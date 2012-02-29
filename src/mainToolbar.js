@@ -26,6 +26,7 @@ const Gtk = imports.gi.Gtk;
 const GtkClutter = imports.gi.GtkClutter;
 const Pango = imports.gi.Pango;
 
+const Gettext = imports.gettext;
 const _ = imports.gettext.gettext;
 
 const Lang = imports.lang;
@@ -117,7 +118,9 @@ MainToolbar.prototype = {
         if (length == 0)
             detail = _("Click on items to select them");
         else
-            detail = (_("%d selected").format(length));
+            detail = Gettext.ngettext("%d selected",
+                                      "%d selected",
+                                      length).format(length);
 
         if (collection) {
             primary = collection.name;
