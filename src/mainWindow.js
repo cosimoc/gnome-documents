@@ -257,7 +257,16 @@ MainWindow.prototype = {
 
         if (!Global.searchController.getSearchIn()) {
             Global.searchController.deliverEvent(event);
-            return Global.searchController.getEventHandled();
+            let handled = Global.searchController.getEventHandled();
+
+            if (handled)
+                return true;
+        }
+
+        if (Global.selectionController.getSelectionMode() &&
+            keyval == Gdk.KEY_Escape) {
+            Global.selectionController.setSelectionMode(false);
+            return true;
         }
 
         return false;
