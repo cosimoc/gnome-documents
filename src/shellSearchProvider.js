@@ -272,7 +272,7 @@ ShellSearchProvider.prototype = {
     },
 
     _doSearch: function(terms) {
-        Global.searchController.setString(terms.join(' '));
+        Global.searchController.setString(terms.join(' ').toLowerCase());
         let query = Global.queryBuilder.buildGlobalQuery();
         let cursor = Global.connection.query(query.sparql, null);
         let ids = [];

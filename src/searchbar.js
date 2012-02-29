@@ -477,7 +477,7 @@ Searchbar.prototype = {
                 function() {
                     this._searchEntryTimeout = 0;
 
-                    let currentText = this._searchEntry.get_text();
+                    let currentText = this._searchEntry.get_text().toLowerCase();
                     Global.searchController.setString(currentText);
             }));
         }));
