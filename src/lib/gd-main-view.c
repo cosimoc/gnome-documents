@@ -33,6 +33,8 @@ struct _GdMainViewPrivate {
 
   GtkWidget *current_view;
   GtkTreeModel *model;
+
+  gchar *button_press_id;
 };
 
 enum {
@@ -61,6 +63,17 @@ gd_main_view_dispose (GObject *obj)
   g_clear_object (&self->priv->model);
 
   G_OBJECT_CLASS (gd_main_view_parent_class)->dispose (obj);
+}
+
+static void
+gd_main_view_finalize (GObject *obj)
+{
+  GdMainView *self = GD_MAIN_VIEW (obj);
+
+  g_free (self->priv->button_press_id);
+  self->priv->button_press_id = NULL;
+
+  G_OBJECT_CLASS (gd_main_view_parent_class)->finalize (obj);
 }
 
 static void
@@ -142,6 +155,7 @@ gd_main_view_class_init (GdMainViewClass *klass)
   oclass->get_property = gd_main_view_get_property;
   oclass->set_property = gd_main_view_set_property;
   oclass->dispose = gd_main_view_dispose;
+  oclass->finalize = gd_main_view_finalize;
 
   properties[PROP_VIEW_TYPE] =
     g_param_spec_int ("view-type",
@@ -252,7 +266,8 @@ on_button_release_event (GtkWidget *view,
   GdMainViewGeneric *generic = get_generic (self);
   GtkTreePath *path;
   gboolean entered_mode = FALSE, selection_mode;
-  gboolean res;
+  gboolean res, same_item = FALSE;
+  gchar *button_release_id = NULL;
 
   /* eat double/triple click events */
   if (event->type != GDK_BUTTON_RELEASE)
@@ -260,7 +275,25 @@ on_button_release_event (GtkWidget *view,
 
   path = gd_main_view_generic_get_path_at_pos (generic, event->x, event->y);
 
-  if (path == NULL)
+  if (path != NULL)
+    {
+      GtkTreeIter iter;
+
+      res = gtk_tree_model_get_iter (self->priv->model, &iter, path);
+
+      if (res)
+        gtk_tree_model_get (self->priv->model, &iter,
+                            GD_MAIN_COLUMN_ID, &button_release_id,
+                            -1);
+
+      if (g_strcmp0 (button_release_id, self->priv->button_press_id) == 0)
+        same_item = TRUE;
+    }
+
+  g_free (self->priv->button_press_id);
+  self->priv->button_press_id = NULL;
+
+  if (!same_item)
     return FALSE;
 
   selection_mode = self->priv->selection_mode;
@@ -287,9 +320,29 @@ on_button_release_event (GtkWidget *view,
 
 static gboolean
 on_button_press_event (GtkWidget *view,
-                       GdkEventButton *event_button,
+                       GdkEventButton *event,
                        gpointer user_data)
 {
+  GdMainView *self = user_data;
+  GdMainViewGeneric *generic = get_generic (self);
+  GtkTreePath *path;
+
+  g_free (self->priv->button_press_id);
+  path = gd_main_view_generic_get_path_at_pos (generic, event->x, event->y);
+
+  if (path != NULL)
+    {
+      GtkTreeIter iter;
+      gboolean res;
+
+      res = gtk_tree_model_get_iter (self->priv->model, &iter, path);
+
+      if (res)
+        gtk_tree_model_get (self->priv->model, &iter,
+                            GD_MAIN_COLUMN_ID, &self->priv->button_press_id,
+                            -1);
+    }
+  
   /* TODO: eat button press events for now; in the future we might want
    * to add support for DnD.
    */
