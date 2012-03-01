@@ -29,6 +29,8 @@
 struct _GdMainListViewPrivate {
   GtkTreeViewColumn *tree_col;
   GtkCellRenderer *selection_cell;
+
+  gboolean selection_mode;
 };
 
 static void gd_main_view_generic_iface_init (GdMainViewGenericIface *iface);
@@ -125,6 +127,8 @@ gd_main_list_view_set_selection_mode (GdMainViewGeneric *mv,
                                       gboolean selection_mode)
 {
   GdMainListView *self = GD_MAIN_LIST_VIEW (mv);
+
+  self->priv->selection_mode = selection_mode;
 
   g_object_set (self->priv->selection_cell,
                 "visible", selection_mode,

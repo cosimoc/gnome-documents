@@ -35,6 +35,7 @@
 
 struct _GdMainIconViewPrivate {
   GtkCellRenderer *pixbuf_cell;
+  gboolean selection_mode;
 };
 
 static void gd_main_view_generic_iface_init (GdMainViewGenericIface *iface);
@@ -133,6 +134,8 @@ gd_main_icon_view_set_selection_mode (GdMainViewGeneric *mv,
                                       gboolean selection_mode)
 {
   GdMainIconView *self = GD_MAIN_ICON_VIEW (mv);
+
+  self->priv->selection_mode = selection_mode;
 
   g_object_set (self->priv->pixbuf_cell,
                 "toggle-visible", selection_mode,
