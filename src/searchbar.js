@@ -417,6 +417,8 @@ Searchbar.prototype = {
             Lang.bind(this, this._onActiveTypeChanged));
         this._searchMatchId = Global.searchMatchManager.connect('active-changed',
             Lang.bind(this, this._onActiveMatchChanged));
+        this._collectionId = Global.collectionManager.connect('active-changed',
+            Lang.bind(this, this._onActiveCollectionChanged));
 
         this._onActiveSourceChanged();
         this._onActiveTypeChanged();
@@ -499,6 +501,16 @@ Searchbar.prototype = {
         this.widget.show_all();
     },
 
+    _onActiveCollectionChanged: function() {
+        let searchType = Global.sourceManager.getActiveItem();
+
+        if (Global.searchController.getString() != '' ||
+            searchType.id != 'all') {
+            Global.searchTypeManager.setActiveItemById('all');
+            this._searchEntry.set_text('');
+        }
+    },
+
     destroy: function() {
         if (this._searchFocusId != 0) {
             Global.searchController.disconnect(this._searchFocusId);
@@ -528,6 +540,11 @@ Searchbar.prototype = {
         if (this._searchDropdownId != 0) {
             Global.searchController.disconnect(this._searchDropdownId);
             this._searchDropdownId = 0;
+        }
+
+        if (this._collectionId != 0) {
+            Global.searchController.disconnect(this._collectionId);
+            this._collectionId = 0;
         }
 
         this.widget.destroy();
