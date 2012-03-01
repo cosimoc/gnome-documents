@@ -54,6 +54,16 @@ static guint signals[NUM_SIGNALS] = { 0, };
 G_DEFINE_TYPE (GdMainView, gd_main_view, GTK_TYPE_SCROLLED_WINDOW)
 
 static void
+gd_main_view_dispose (GObject *obj)
+{
+  GdMainView *self = GD_MAIN_VIEW (obj);
+
+  g_clear_object (&self->priv->model);
+
+  G_OBJECT_CLASS (gd_main_view_parent_class)->dispose (obj);
+}
+
+static void
 gd_main_view_init (GdMainView *self)
 {
   GtkStyleContext *context;
@@ -131,6 +141,7 @@ gd_main_view_class_init (GdMainViewClass *klass)
 
   oclass->get_property = gd_main_view_get_property;
   oclass->set_property = gd_main_view_set_property;
+  oclass->dispose = gd_main_view_dispose;
 
   properties[PROP_VIEW_TYPE] =
     g_param_spec_int ("view-type",
