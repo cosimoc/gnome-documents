@@ -442,6 +442,12 @@ OrganizeCollectionView.prototype = {
         this._viewCol.add_attribute(this._rendererText,
                                     'text', OrganizeModelColumns.NAME);
 
+        this._rendererDetail = new Gd.StyledTextRenderer({ xpad: 16 });
+        this._rendererDetail.add_class('dim-label');
+        this._viewCol.pack_start(this._rendererDetail, false);
+        this._viewCol.set_cell_data_func(this._rendererDetail,
+                                         Lang.bind(this, this._detailCellFunc));
+
         this._rendererText.connect('edited', Lang.bind(this, this._onTextEdited));
         this._rendererText.connect('editing-canceled', Lang.bind(this, this._onTextEditCanceled));
         this._rendererText.connect('editing-started', Lang.bind(this, this._onTextEditStarted));
@@ -519,6 +525,19 @@ OrganizeCollectionView.prototype = {
 
         cell.active = (state & OrganizeCollectionState.ACTIVE);
         cell.inconsistent = (state & OrganizeCollectionState.INCONSISTENT);
+    },
+
+    _detailCellFunc: function(col, cell, model, iter) {
+        let id = model.get_value(iter, OrganizeModelColumns.ID);
+        let item = Global.collectionManager.getItemById(id);
+
+        if (item.identifier.indexOf(Query.LOCAL_COLLECTIONS_IDENTIFIER) == -1) {
+            cell.text = Global.sourceManager.getItemById(item.resourceUrn).name;
+            cell.visible = true;
+        } else {
+            cell.text = '';
+            cell.visible = false;
+        }
     },
 
     addCollection: function() {
