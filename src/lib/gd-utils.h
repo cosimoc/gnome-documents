@@ -28,6 +28,7 @@ GtkListStore* gd_create_list_store (void);
 void gd_store_set (GtkListStore *store,
                    GtkTreeIter *iter,
                    const gchar *urn,
+                   const gchar *uri,
                    const gchar *title,
                    const gchar *author,
                    GdkPixbuf *icon,

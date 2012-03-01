@@ -934,7 +934,7 @@ DocumentModel.prototype = {
         let iter = this.model.append();
 
         Gd.store_set(this.model, iter,
-                     doc.id,
+                     doc.id, doc.uri,
                      doc.name, doc.author,
                      doc.pixbuf, doc.mtime);
 
@@ -950,7 +950,7 @@ DocumentModel.prototype = {
                 let objectIter = this.model.get_iter(objectPath)[1];
                 if (objectIter)
                     Gd.store_set(this.model, iter,
-                                 doc.id,
+                                 doc.id, doc.uri,
                                  doc.name, doc.author,
                                  doc.pixbuf, doc.mtime);
             }));

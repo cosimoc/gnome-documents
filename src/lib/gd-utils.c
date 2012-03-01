@@ -39,8 +39,9 @@
 GtkListStore *
 gd_create_list_store (void)
 {
-  return gtk_list_store_new (6,
+  return gtk_list_store_new (7,
                              G_TYPE_STRING, // URN
+                             G_TYPE_STRING, // URI
                              G_TYPE_STRING, // TITLE
                              G_TYPE_STRING, // AUTHOR
                              GDK_TYPE_PIXBUF, // ICON
@@ -52,6 +53,7 @@ void
 gd_store_set (GtkListStore *store,
               GtkTreeIter *iter,
               const gchar *urn,
+              const gchar *uri,
               const gchar *title,
               const gchar *author,
               GdkPixbuf *icon,
@@ -59,10 +61,11 @@ gd_store_set (GtkListStore *store,
 {
   gtk_list_store_set (store, iter,
                       0, urn,
-                      1, title,
-                      2, author,
-                      3, icon,
-                      4, mtime,
+                      1, uri,
+                      2, title,
+                      3, author,
+                      4, icon,
+                      5, mtime,
                       -1);
 }
 
