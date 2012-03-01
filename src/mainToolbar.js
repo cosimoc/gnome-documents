@@ -54,6 +54,9 @@ MainToolbar.prototype = {
         this.actor = new GtkClutter.Actor({ contents: this.widget });
 
         // setup listeners to mode changes that affect the toolbar layout
+        this._searchStringId =
+            Global.searchController.connect('search-string-changed',
+                                            Lang.bind(this, this._setToolbarTitle));
         this._selectionModeId =
             Global.selectionController.connect('selection-mode-changed',
                                                Lang.bind(this, this._onSelectionModeChanged));
@@ -74,6 +77,11 @@ MainToolbar.prototype = {
                 if (this._selectionModeId != 0) {
                     Global.selectionController.disconnect(this._selectionModeId);
                     this._selectionModeId = 0;
+                }
+
+                if (this._searchStringId != 0) {
+                    Global.searchController.disconnect(this._searchStringId);
+                    this._searchStringId = 0;
                 }
             }));
 
@@ -109,38 +117,14 @@ MainToolbar.prototype = {
         }
     },
 
-    _updateSelectionLabel: function() {
-        let length = Global.selectionController.getSelection().length;
-        let collection = Global.collectionManager.getActiveItem();
-        let primary = null;
-        let detail = null;
-
-        if (length == 0)
-            detail = _("Click on items to select them");
-        else
-            detail = Gettext.ngettext("%d selected",
-                                      "%d selected",
-                                      length).format(length);
-
-        if (collection) {
-            primary = collection.name;
-            detail = '(' + detail + ')';
-        } else if (length != 0) {
-            primary = detail;
-            detail = null;
-        }
-
-        this.widget.set_labels(primary, detail);
-    },
-
     _populateForSelectionMode: function() {
         this.widget.set_mode(Gd.MainToolbarMode.SELECTION);
 
         // connect to selection changes while in this mode
         this._selectionChangedId =
             Global.selectionController.connect('selection-changed',
-                                               Lang.bind(this, this._updateSelectionLabel));
-        this._updateSelectionLabel();
+                                               Lang.bind(this, this._setToolbarTitle));
+        this._setToolbarTitle();
 
         this.widget.show_all();
     },
@@ -151,46 +135,75 @@ MainToolbar.prototype = {
         // connect to active collection changes while in this mode
         this._collectionId =
             Global.collectionManager.connect('active-changed',
-                                             Lang.bind(this, this._onActiveCollection));
-        this._onActiveCollection();
+                                             Lang.bind(this, this._onActiveCollectionChanged));
+        this._onActiveCollectionChanged();
 
         this.widget.show_all();
     },
 
-    _onActiveCollection: function() {
+    _onActiveCollectionChanged: function() {
         let item = Global.collectionManager.getActiveItem();
+        this.widget.set_back_visible(item != null);
 
-        if (item) {
-            this.widget.set_back_visible(true);
-            this.widget.set_labels(item.name, null);
-        } else {
-            this.widget.set_back_visible(false);
-            this.widget.set_labels(_("New and Recent"), null);
+        this._setToolbarTitle();
+    },
+
+    _setToolbarTitle: function() {
+        let mode = this.widget.get_mode();
+        let activeCollection = Global.collectionManager.getActiveItem();
+        let primary = null;
+        let detail = null;
+
+        if (mode == Gd.MainToolbarMode.OVERVIEW) {
+            if (activeCollection) {
+                primary = activeCollection.name;
+            } else {
+                let string = Global.searchController.getString();
+
+                if (string == '')
+                    primary = _("New and Recent");
+                else
+                    primary = _("Results for \"%s\"").format(string);
+            }
+        } else if (mode == Gd.MainToolbarMode.PREVIEW) {
+            let doc = Global.documentManager.getActiveItem();
+            primary = doc.name;
+
+            if (this._model) {
+                let curPage, totPages;
+
+                curPage = this._model.get_page();
+                totPages = this._model.get_document().get_n_pages();
+
+                detail = _("(%d of %d)").format(curPage + 1, totPages);
+            }
+        } else if (mode == Gd.MainToolbarMode.SELECTION) {
+            let length = Global.selectionController.getSelection().length;
+
+            if (length == 0)
+                detail = _("Click on items to select them");
+            else
+                detail = Gettext.ngettext("%d selected",
+                                          "%d selected",
+                                          length).format(length);
+
+            if (activeCollection) {
+                primary = activeCollection.name;
+                detail = '(' + detail + ')';
+            } else if (length != 0) {
+                primary = detail;
+                detail = null;
+            }
         }
+
+        this.widget.set_labels(primary, detail);
     },
 
     _populateForPreview: function(model) {
         this.widget.set_mode(Gd.MainToolbarMode.PREVIEW);
-
-        this._updateModelLabels();
+        this._setToolbarTitle();
 
         this.widget.show_all();
-    },
-
-    _updateModelLabels: function() {
-        let pageLabel = null;
-        let doc = Global.documentManager.getActiveItem();
-
-        if (this._model) {
-            let curPage, totPages;
-
-            curPage = this._model.get_page();
-            totPages = this._model.get_document().get_n_pages();
-
-            pageLabel = _("(%d of %d)").format(curPage + 1, totPages);
-        }
-
-        this.widget.set_labels(doc.name, pageLabel);
     },
 
     _onWindowModeChanged: function() {
@@ -221,10 +234,10 @@ MainToolbar.prototype = {
         this._model = model;
         this._model.connect('page-changed', Lang.bind(this,
             function() {
-                this._updateModelLabels();
+                this._setToolbarTitle();
             }));
 
-        this._updateModelLabels();
+        this._setToolbarTitle();
     }
 };
 
