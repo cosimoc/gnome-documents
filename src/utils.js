@@ -92,9 +92,9 @@ function getURNsFromPaths(paths, model) {
 
 function getURNFromPath(path, model) {
     let iter = model.get_iter(path)[1];
-    let urn = model.get_value(iter, Documents.ModelColumns.URN);
+    let id = model.get_value(iter, Gd.MainColumns.ID);
 
-    return urn;
+    return id;
 }
 
 function isSearchEvent(event) {

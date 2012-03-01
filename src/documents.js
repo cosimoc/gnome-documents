@@ -915,14 +915,6 @@ DocumentManager.prototype = {
     }
 };
 
-const ModelColumns = {
-    URN: 0,
-    TITLE: 1,
-    AUTHOR: 2,
-    ICON: 3,
-    MTIME: 4
-};
-
 function DocumentModel() {
     this._init();
 }
@@ -930,7 +922,7 @@ function DocumentModel() {
 DocumentModel.prototype = {
     _init: function() {
         this.model = Gd.create_list_store();
-        this.model.set_sort_column_id(ModelColumns.MTIME,
+        this.model.set_sort_column_id(Gd.MainColumns.MTIME,
                                       Gtk.SortType.DESCENDING);
     },
 
@@ -967,9 +959,9 @@ DocumentModel.prototype = {
     documentRemoved: function(doc) {
         this.model.foreach(Lang.bind(this,
             function(model, path, iter) {
-                let urn = model.get_value(iter, ModelColumns.URN);
+                let id = model.get_value(iter, Gd.MainColumns.ID);
 
-                if (urn == doc.id) {
+                if (id == doc.id) {
                     this.model.remove(iter);
                     return true;
                 }

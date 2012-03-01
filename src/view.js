@@ -155,8 +155,8 @@ View.prototype = {
         typeRenderer.add_class('dim-label');
         listWidget.add_renderer(typeRenderer, Lang.bind(this,
             function(col, cell, model, iter) {
-                let urn = model.get_value(iter, Documents.ModelColumns.URN);
-                let doc = Global.documentManager.getItemById(urn);
+                let id = model.get_value(iter, Gd.MainColumns.ID);
+                let doc = Global.documentManager.getItemById(id);
 
                 typeRenderer.text = doc.typeDescription;
             }));
@@ -166,8 +166,8 @@ View.prototype = {
         whereRenderer.add_class('dim-label');
         listWidget.add_renderer(whereRenderer, Lang.bind(this,
             function(col, cell, model, iter) {
-                let urn = model.get_value(iter, Documents.ModelColumns.URN);
-                let doc = Global.documentManager.getItemById(urn);
+                let id = model.get_value(iter, Gd.MainColumns.ID);
+                let doc = Global.documentManager.getItemById(id);
 
                 whereRenderer.text = doc.sourceName;
             }));
@@ -230,12 +230,12 @@ View.prototype = {
         let first = true;
         this._treeModel.foreach(Lang.bind(this,
             function(model, path, iter) {
-                let urn = this._treeModel.get_value(iter, Documents.ModelColumns.URN);
-                let urnIndex = selected.indexOf(urn);
+                let id = this._treeModel.get_value(iter, Gd.MainColumns.ID);
+                let idIndex = selected.indexOf(id);
 
-                if (urnIndex != -1) {
+                if (idIndex != -1) {
                     this._treeModel.set_value(iter, Gd.MainColumns.SELECTED, true);
-                    selected.splice(urnIndex, 1);
+                    selected.splice(idIndex, 1);
 
                     if (first) {
                         generic.scroll_to_path(path);
