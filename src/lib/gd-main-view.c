@@ -242,7 +242,7 @@ on_button_release_selection_mode (GdMainView *self,
 
   g_signal_emit_by_name (generic, "view-selection-changed");
 
-  return TRUE;
+  return FALSE;
 }
 
 static gboolean
@@ -266,7 +266,7 @@ on_button_release_view_mode (GdMainView *self,
   g_signal_emit (self, signals[ITEM_ACTIVATED], 0, id, path);
   g_free (id);
 
-  return TRUE;
+  return FALSE;
 }
 
 static gboolean
@@ -358,7 +358,7 @@ on_button_press_event (GtkWidget *view,
   /* TODO: eat button press events for now; in the future we might want
    * to add support for DnD.
    */
-  return TRUE;
+  return FALSE;
 }
 
 static void

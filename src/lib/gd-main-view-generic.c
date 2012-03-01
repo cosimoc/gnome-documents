@@ -19,6 +19,7 @@
  *
  */
 
+#include "gd-main-view.h"
 #include "gd-main-view-generic.h"
 
 enum {
@@ -92,4 +93,76 @@ gd_main_view_generic_scroll_to_path (GdMainViewGeneric *self,
   iface = GD_MAIN_VIEW_GENERIC_GET_IFACE (self);
 
   (* iface->scroll_to_path) (self, path);
+}
+
+static gboolean
+build_selection_uris_foreach (GtkTreeModel *model,
+                              GtkTreePath *path,
+                              GtkTreeIter *iter,
+                              gpointer user_data)
+{
+  GPtrArray *ptr_array = user_data;
+  gchar *uri;
+  gboolean is_selected;
+
+  gtk_tree_model_get (model, iter,
+                      GD_MAIN_COLUMN_URI, &uri,
+                      GD_MAIN_COLUMN_SELECTED, &is_selected,
+                      -1);
+
+  if (is_selected)
+    g_ptr_array_add (ptr_array, uri);
+  else
+    g_free (uri);
+
+  return FALSE;
+}
+
+static gchar **
+model_get_selection_uris (GtkTreeModel *model)
+{
+  GPtrArray *ptr_array = g_ptr_array_new ();
+
+  gtk_tree_model_foreach (model,
+                          build_selection_uris_foreach,
+                          ptr_array);
+  
+  g_ptr_array_add (ptr_array, NULL);
+  return (gchar **) g_ptr_array_free (ptr_array, FALSE);
+}
+
+void
+_gd_main_view_generic_dnd_common (GtkTreeModel *model,
+                                  gboolean selection_mode,
+                                  GtkTreePath *path,
+                                  GtkSelectionData *data)
+{
+  gchar **uris;
+
+  if (selection_mode)
+    {
+      uris = model_get_selection_uris (model);
+    }
+  else
+    {
+      GtkTreeIter iter;
+      gboolean res;
+      gchar *uri = NULL;
+
+      if (path != NULL)
+        {
+          res = gtk_tree_model_get_iter (model, &iter, path);
+          if (res)
+            gtk_tree_model_get (model, &iter,
+                                GD_MAIN_COLUMN_URI, &uri,
+                                -1);
+        }
+
+      uris = g_new0 (gchar *, 2);
+      uris[0] = uri;
+      uris[1] = NULL;
+    }
+
+  gtk_selection_data_set_uris (data, uris);
+  g_strfreev (uris);
 }

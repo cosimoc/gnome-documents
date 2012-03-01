@@ -38,12 +38,48 @@ G_DEFINE_TYPE_WITH_CODE (GdMainListView, gd_main_list_view, GTK_TYPE_TREE_VIEW,
                          G_IMPLEMENT_INTERFACE (GD_TYPE_MAIN_VIEW_GENERIC,
                                                 gd_main_view_generic_iface_init))
 
+static GtkTreePath*
+get_source_row (GdkDragContext *context)
+{
+  GtkTreeRowReference *ref =
+    g_object_get_data (G_OBJECT (context), "gtk-tree-view-source-row");
+
+  if (ref)
+    return gtk_tree_row_reference_get_path (ref);
+  else
+    return NULL;
+}
+
+static void
+gd_main_list_view_drag_data_get (GtkWidget *widget,
+                                 GdkDragContext *drag_context,
+                                 GtkSelectionData *data,
+                                 guint info,
+                                 guint time)
+{
+  GdMainListView *self = GD_MAIN_LIST_VIEW (widget);
+  GtkTreeModel *model = gtk_tree_view_get_model (GTK_TREE_VIEW (self));
+
+  if (info != 0)
+    return;
+
+  _gd_main_view_generic_dnd_common (model,
+                                    self->priv->selection_mode,
+                                    get_source_row (drag_context), data);
+
+  GTK_WIDGET_CLASS (gd_main_list_view_parent_class)->drag_data_get (widget, drag_context,
+                                                                    data, info, time);
+}
+
 static void
 gd_main_list_view_constructed (GObject *obj)
 {
   GdMainListView *self = GD_MAIN_LIST_VIEW (obj);
   GtkCellRenderer *cell;
   GtkTreeSelection *selection;
+  const GtkTargetEntry targets[] = {
+    { "text/uri-list", GTK_TARGET_OTHER_APP, 0 }
+  };
 
   G_OBJECT_CLASS (gd_main_list_view_parent_class)->constructed (obj);
 
@@ -91,14 +127,21 @@ gd_main_list_view_constructed (GObject *obj)
                                       "text", GD_MAIN_COLUMN_TITLE);
   gtk_tree_view_column_add_attribute (self->priv->tree_col, cell,
                                       "line-two", GD_MAIN_COLUMN_AUTHOR);
+
+  gtk_tree_view_enable_model_drag_source (GTK_TREE_VIEW (self),
+                                          GDK_BUTTON1_MASK,
+                                          targets, 1,
+                                          GDK_ACTION_COPY);
 }
 
 static void
 gd_main_list_view_class_init (GdMainListViewClass *klass)
 {
   GObjectClass *oclass = G_OBJECT_CLASS (klass);
+  GtkWidgetClass *wclass = GTK_WIDGET_CLASS (klass);
 
   oclass->constructed = gd_main_list_view_constructed;
+  wclass->drag_data_get = gd_main_list_view_drag_data_get;
 
   g_type_class_add_private (klass, sizeof (GdMainListViewPrivate));
 }

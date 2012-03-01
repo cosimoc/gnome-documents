@@ -86,6 +86,12 @@ GtkTreePath * gd_main_view_generic_get_path_at_pos (GdMainViewGeneric *self,
                                                     gint x,
                                                     gint y);
 
+/* private */
+void _gd_main_view_generic_dnd_common (GtkTreeModel *model,
+                                       gboolean selection_mode,
+                                       GtkTreePath *path,
+                                       GtkSelectionData *data);
+
 G_END_DECLS
 
 #endif /* __GD_MAIN_VIEW_GENERIC_H__ */
