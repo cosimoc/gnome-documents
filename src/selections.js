@@ -440,7 +440,7 @@ OrganizeCollectionView.prototype = {
         this._rendererText = new Gtk.CellRendererText();
         this._viewCol.pack_start(this._rendererText, true);
         this._viewCol.add_attribute(this._rendererText,
-                                    'text', Manager.BaseModelColumns.NAME);
+                                    'text', OrganizeModelColumns.NAME);
 
         this._rendererText.connect('edited', Lang.bind(this, this._onTextEdited));
         this._rendererText.connect('editing-canceled', Lang.bind(this, this._onTextEditCanceled));
