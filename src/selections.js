@@ -97,7 +97,7 @@ const OrganizeCollectionState = {
     NORMAL: 0,
     ACTIVE: 1 << 0,
     INCONSISTENT: 1 << 1,
-    INSENSITIVE: 1 << 2
+    HIDDEN: 1 << 2
 };
 
 function FetchCollectionStateForSelectionJob() {
@@ -169,7 +169,7 @@ FetchCollectionStateForSelectionJob.prototype = {
                 state |= OrganizeCollectionState.ACTIVE;
 
             if (!sameResource)
-                state |= OrganizeCollectionState.INSENSITIVE;
+                state |= OrganizeCollectionState.HIDDEN;
 
             collectionState[collIdx] = state;
         }
@@ -356,6 +356,9 @@ OrganizeCollectionModel.prototype = {
             let item = Global.collectionManager.getItemById(idx);
             let iter = null;
 
+            if ((collectionState[item.id] & OrganizeCollectionState.HIDDEN) != 0)
+                continue;
+
             iter = this._findCollectionIter(item);
             if (!iter)
                 iter = this.model.append();
@@ -438,8 +441,6 @@ OrganizeCollectionView.prototype = {
         this._viewCol.pack_start(this._rendererText, true);
         this._viewCol.add_attribute(this._rendererText,
                                     'text', Manager.BaseModelColumns.NAME);
-        this._viewCol.set_cell_data_func(this._rendererText,
-                                         Lang.bind(this, this._textCellFunc));
 
         this._rendererText.connect('edited', Lang.bind(this, this._onTextEdited));
         this._rendererText.connect('editing-canceled', Lang.bind(this, this._onTextEditCanceled));
@@ -518,12 +519,6 @@ OrganizeCollectionView.prototype = {
 
         cell.active = (state & OrganizeCollectionState.ACTIVE);
         cell.inconsistent = (state & OrganizeCollectionState.INCONSISTENT);
-        cell.sensitive = !(state & OrganizeCollectionState.INSENSITIVE);
-    },
-
-    _textCellFunc: function(col, cell, model, iter) {
-        let state = model.get_value(iter, OrganizeModelColumns.STATE);
-        cell.sensitive = !(state & OrganizeCollectionState.INSENSITIVE);
     },
 
     addCollection: function() {
