@@ -79,6 +79,7 @@ GtkWidget     *gd_main_toolbar_new (void);
 
 void           gd_main_toolbar_set_mode (GdMainToolbar *self,
                                          GdMainToolbarMode mode);
+GdMainToolbarMode gd_main_toolbar_get_mode (GdMainToolbar *self);
 void           gd_main_toolbar_set_labels (GdMainToolbar *self,
                                            const gchar *primary,
                                            const gchar *detail);

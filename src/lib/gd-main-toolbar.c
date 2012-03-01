@@ -367,6 +367,12 @@ gd_main_toolbar_set_mode (GdMainToolbar *self,
     }
 }
 
+GdMainToolbarMode
+gd_main_toolbar_get_mode (GdMainToolbar *self)
+{
+  return self->priv->mode;
+}
+
 /**
  * gd_main_toolbar_set_labels:
  * @self:
