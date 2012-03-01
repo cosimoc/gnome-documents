@@ -21,6 +21,7 @@
 
 const Gd = imports.gi.Gd;
 const Gdk = imports.gi.Gdk;
+const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 const _ = imports.gettext.gettext;
 
@@ -162,7 +163,7 @@ View.prototype = {
             }));
 
         let whereRenderer =
-            new Gd.StyledTextRenderer({ xpad: 8 });
+            new Gd.StyledTextRenderer({ xpad: 16 });
         whereRenderer.add_class('dim-label');
         listWidget.add_renderer(whereRenderer, Lang.bind(this,
             function(col, cell, model, iter) {
@@ -170,6 +171,43 @@ View.prototype = {
                 let doc = Global.documentManager.getItemById(id);
 
                 whereRenderer.text = doc.sourceName;
+            }));
+
+        let dateRenderer =
+            new Gtk.CellRendererText({ xpad: 32 });
+        listWidget.add_renderer(dateRenderer, Lang.bind(this,
+            function(col, cell, model, iter) {
+                let id = model.get_value(iter, Gd.MainColumns.ID);
+                let doc = Global.documentManager.getItemById(id);
+                let DAY = 86400000000;
+
+                let now = GLib.DateTime.new_now_local();
+                let mtime = GLib.DateTime.new_from_unix_local(doc.mtime);
+                let difference = now.difference(mtime);
+                let days = Math.floor(difference / DAY);
+                let weeks = Math.floor(difference / (7 * DAY));
+                let months = Math.floor(difference / (30 * DAY));
+                let years = Math.floor(difference / (365 * DAY));
+
+                if (difference < DAY) {
+                    dateRenderer.text = mtime.format('%X');
+                } else if (difference < 2 * DAY) {
+                    dateRenderer.text = _("Yesterday");
+                } else if (difference < 7 * DAY) {
+                    dateRenderer.text = _("%s days ago").format(days.toString());
+                } else if (difference < 14 * DAY) {
+                    dateRenderer.text = _("Last week");
+                } else if (difference < 30 * DAY) {
+                    dateRenderer.text = _("%s weeks ago").format(weeks.toString());
+                } else if (difference < 60 * DAY) {
+                    dateRenderer.text = _("Last month");
+                } else if (difference < 365 * DAY) {
+                    dateRenderer.text = _("%d months ago").format(months);
+                } else if (difference < 730 * DAY) {
+                    dateRenderer.text = _("Last year");
+                } else {
+                    dateRenderer.text = _("%d years ago").format(years);
+                }
             }));
     },
 
