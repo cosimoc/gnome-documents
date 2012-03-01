@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-25 21:09+0100\n"
-"PO-Revision-Date: 2012-02-25 21:09+0100\n"
+"POT-Creation-Date: 2012-03-01 13:13+0100\n"
+"PO-Revision-Date: 2012-03-01 13:28+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: \n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/gnome-documents.desktop.in.in.h:1
-#: ../src/mainWindow.js:53
+#: ../src/mainWindow.js:54
 msgid "Documents"
 msgstr "Dokument"
 
@@ -26,8 +26,12 @@ msgstr "Dokument"
 msgid "Access, manage and share documents"
 msgstr "Kom åt, hantera och dela dokument"
 
+#: ../data/gnome-documents.desktop.in.in.h:3
+msgid "Docs;PDF;Document;"
+msgstr "Dok;PDF;Dokument;"
+
 #: ../data/org.gnome.documents.gschema.xml.in.h:1
-#: ../src/application.js:122
+#: ../src/application.js:127
 msgid "View as"
 msgstr "Visa som"
 
@@ -67,21 +71,25 @@ msgstr "Fönster maximerat"
 msgid "Window maximized state"
 msgstr "Maximeringstillstånd för fönster"
 
-#: ../src/application.js:116
-msgid "Fullscreen"
-msgstr "Helskärm"
-
-#: ../src/application.js:117
-msgid "Quit"
-msgstr "Avsluta"
-
-#: ../src/application.js:120
+#: ../src/application.js:125
 msgid "Grid"
 msgstr "Rutnät"
 
-#: ../src/application.js:121
+#: ../src/application.js:126
 msgid "List"
 msgstr "Lista"
+
+#: ../src/application.js:130
+msgid "Fullscreen"
+msgstr "Helskärm"
+
+#: ../src/application.js:133
+msgid "About Documents"
+msgstr "Om Dokument"
+
+#: ../src/application.js:134
+msgid "Quit"
+msgstr "Avsluta"
 
 #: ../src/documents.js:618
 #: ../src/sources.js:100
@@ -124,15 +132,15 @@ msgid "Unable to fetch the list of documents"
 msgstr "Kunde inte hämta listan över dokument"
 
 #. right section
-#: ../src/lib/gd-main-toolbar.c:210
+#: ../src/lib/gd-main-toolbar.c:269
 msgid "Done"
 msgstr "Färdig"
 
-#: ../src/lib/gd-pdf-loader.c:207
+#: ../src/lib/gd-pdf-loader.c:208
 msgid "Unable to load the document"
 msgstr "Kunde inte läsa in dokumentet"
 
-#: ../src/lib/gd-pdf-loader.c:488
+#: ../src/lib/gd-pdf-loader.c:489
 msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
 msgstr "Kan inte hitta \"unoconv\". Kontrollera din LibreOffice-installation"
 
@@ -143,23 +151,41 @@ msgid_plural "Load %d more documents"
 msgstr[0] "Läs in ytterligare %d dokument"
 msgstr[1] "Läs in ytterligare %d dokument"
 
-#: ../src/mainToolbar.js:118
+#: ../src/mainToolbar.js:119
 msgid "Click on items to select them"
 msgstr "Klicka på objekten för att markera dem"
 
-#: ../src/mainToolbar.js:120
+#: ../src/mainToolbar.js:121
 #, c-format
 msgid "%d selected"
-msgstr "%d markerade"
+msgid_plural "%d selected"
+msgstr[0] "%d markerat"
+msgstr[1] "%d markerade"
 
-#: ../src/mainToolbar.js:165
+#: ../src/mainToolbar.js:168
 msgid "New and Recent"
 msgstr "Nya och senaste"
 
-#: ../src/mainToolbar.js:187
+#: ../src/mainToolbar.js:190
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d av %d)"
+
+#: ../src/mainWindow.js:296
+msgid "translator-credits"
+msgstr ""
+"Daniel Nylander <po@danielnylander.se>\n"
+"\n"
+"Skicka synpunkter på översättningen till\n"
+"<tp-sv@listor.tp-sv.se>."
+
+#: ../src/mainWindow.js:297
+msgid "GNOME Documents"
+msgstr "GNOME-dokument"
+
+#: ../src/mainWindow.js:298
+msgid "A document manager application"
+msgstr "Ett program för dokumenthantering"
 
 #: ../src/searchbar.js:86
 msgid "Category"
@@ -167,7 +193,7 @@ msgstr "Kategori"
 
 #: ../src/searchbar.js:91
 #: ../src/searchbar.js:141
-#: ../src/searchbar.js:208
+#: ../src/searchbar.js:210
 #: ../src/sources.js:94
 msgid "All"
 msgstr "Alla"
@@ -204,15 +230,17 @@ msgstr "Kalkylark"
 msgid "Text Documents"
 msgstr "Textdokument"
 
-#: ../src/searchbar.js:205
+#. Translators: this is a verb that refers to "All", "Title" and "Author",
+#. as in "Match All", "Match Title" and "Match Author"
+#: ../src/searchbar.js:207
 msgid "Match"
 msgstr "Match"
 
-#: ../src/searchbar.js:210
+#: ../src/searchbar.js:212
 msgid "Title"
 msgstr "Titel"
 
-#: ../src/searchbar.js:212
+#: ../src/searchbar.js:214
 msgid "Author"
 msgstr "Författare"
 
