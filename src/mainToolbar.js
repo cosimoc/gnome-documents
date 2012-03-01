@@ -57,6 +57,15 @@ MainToolbar.prototype = {
         this._searchStringId =
             Global.searchController.connect('search-string-changed',
                                             Lang.bind(this, this._setToolbarTitle));
+        this._searchTypeId =
+            Global.searchTypeManager.connect('active-changed',
+                                             Lang.bind(this, this._setToolbarTitle));
+        this._searchMatchId =
+            Global.searchMatchManager.connect('active-changed',
+                                              Lang.bind(this, this._setToolbarTitle));
+        this._searchSourceId =
+            Global.sourceManager.connect('active-changed',
+                                         Lang.bind(this, this._setToolbarTitle));
         this._selectionModeId =
             Global.selectionController.connect('selection-mode-changed',
                                                Lang.bind(this, this._onSelectionModeChanged));
@@ -82,6 +91,21 @@ MainToolbar.prototype = {
                 if (this._searchStringId != 0) {
                     Global.searchController.disconnect(this._searchStringId);
                     this._searchStringId = 0;
+                }
+
+                if (this._searchTypeId != 0) {
+                    Global.searchController.disconnect(this._searchTypeId);
+                    this._searchTypeId = 0;
+                }
+
+                if (this._searchMatchId != 0) {
+                    Global.searchController.disconnect(this._searchMatchId);
+                    this._searchMatchId = 0;
+                }
+
+                if (this._searchSourceId != 0) {
+                    Global.searchController.disconnect(this._searchSourceId);
+                    this._searchSourceId = 0;
                 }
             }));
 
@@ -160,10 +184,26 @@ MainToolbar.prototype = {
             } else {
                 let string = Global.searchController.getString();
 
-                if (string == '')
-                    primary = _("New and Recent");
-                else
+                if (string == '') {
+                    let searchType = Global.searchTypeManager.getActiveItem();
+                    let searchSource = Global.sourceManager.getActiveItem();
+
+                    if (searchType.id != 'all')
+                        primary = searchType.name;
+                    else
+                        primary = _("New and Recent");
+
+                    if (searchSource.id != 'all')
+                        detail = searchSource.name;
+                } else {
+                    let searchMatch = Global.searchMatchManager.getActiveItem();
+
                     primary = _("Results for \"%s\"").format(string);
+                    if (searchMatch.id == 'title')
+                        detail = _("filtered by title");
+                    else if (searchMatch.id == 'author')
+                        detail = _("filtered by author");
+                }
             }
         } else if (mode == Gd.MainToolbarMode.PREVIEW) {
             let doc = Global.documentManager.getActiveItem();
@@ -175,7 +215,7 @@ MainToolbar.prototype = {
                 curPage = this._model.get_page();
                 totPages = this._model.get_document().get_n_pages();
 
-                detail = _("(%d of %d)").format(curPage + 1, totPages);
+                detail = _("%d of %d").format(curPage + 1, totPages);
             }
         } else if (mode == Gd.MainToolbarMode.SELECTION) {
             let length = Global.selectionController.getSelection().length;
@@ -189,12 +229,14 @@ MainToolbar.prototype = {
 
             if (activeCollection) {
                 primary = activeCollection.name;
-                detail = '(' + detail + ')';
             } else if (length != 0) {
                 primary = detail;
                 detail = null;
             }
         }
+
+        if (detail)
+            detail = '(' + detail + ')';
 
         this.widget.set_labels(primary, detail);
     },
