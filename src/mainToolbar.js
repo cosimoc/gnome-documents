@@ -94,17 +94,17 @@ MainToolbar.prototype = {
                 }
 
                 if (this._searchTypeId != 0) {
-                    Global.searchController.disconnect(this._searchTypeId);
+                    Global.searchTypeManager.disconnect(this._searchTypeId);
                     this._searchTypeId = 0;
                 }
 
                 if (this._searchMatchId != 0) {
-                    Global.searchController.disconnect(this._searchMatchId);
+                    Global.searchMatchManager.disconnect(this._searchMatchId);
                     this._searchMatchId = 0;
                 }
 
                 if (this._searchSourceId != 0) {
-                    Global.searchController.disconnect(this._searchSourceId);
+                    Global.sourceManager.disconnect(this._searchSourceId);
                     this._searchSourceId = 0;
                 }
             }));
