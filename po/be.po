@@ -1,21 +1,22 @@
-# Ihar Hrachyshka <ihar.hrachyshka@gmail.com>, 2011.
+# Ihar Hrachyshka <ihar.hrachyshka@gmail.com>, 2011-2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents.master\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-26 13:03+0300\n"
-"PO-Revision-Date: 2012-02-26 13:03+0300\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"documents&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-02-29 22:24+0000\n"
+"PO-Revision-Date: 2012-03-02 12:16+0300\n"
 "Last-Translator: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>\n"
 "Language-Team: Belarusian <i18n-bel-gnome@googlegroups.com>\n"
-"Language: be\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: be\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:53
+#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:54
 msgid "Documents"
 msgstr "Дакументы"
 
@@ -23,7 +24,11 @@ msgstr "Дакументы"
 msgid "Access, manage and share documents"
 msgstr "Праца, кіраванне і супольны доступ да дакументаў"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:122
+#: ../data/gnome-documents.desktop.in.in.h:3
+msgid "Docs;PDF;Document;"
+msgstr "Дакументы;PDF;"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:127
 msgid "View as"
 msgstr "Тып прагляду"
 
@@ -63,21 +68,25 @@ msgstr "Максімалізацыя акна"
 msgid "Window maximized state"
 msgstr "Стан максімалізацыі акна"
 
-#: ../src/application.js:116
-msgid "Fullscreen"
-msgstr "На ўвесь экран"
-
-#: ../src/application.js:117
-msgid "Quit"
-msgstr "Выйсці"
-
-#: ../src/application.js:120
+#: ../src/application.js:125
 msgid "Grid"
 msgstr "Сетка"
 
-#: ../src/application.js:121
+#: ../src/application.js:126
 msgid "List"
 msgstr "Спіс"
+
+#: ../src/application.js:130
+msgid "Fullscreen"
+msgstr "На ўвесь экран"
+
+#: ../src/application.js:133
+msgid "About Documents"
+msgstr "Аб Дакументах"
+
+#: ../src/application.js:134
+msgid "Quit"
+msgstr "Выйсці"
 
 #: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
@@ -119,15 +128,15 @@ msgid "Unable to fetch the list of documents"
 msgstr "Не ўдалося сцягнуць спіс дакументаў"
 
 #. right section
-#: ../src/lib/gd-main-toolbar.c:210
+#: ../src/lib/gd-main-toolbar.c:269
 msgid "Done"
 msgstr "Зроблена"
 
-#: ../src/lib/gd-pdf-loader.c:207
+#: ../src/lib/gd-pdf-loader.c:208
 msgid "Unable to load the document"
 msgstr "Не ўдалося загрузіць дакумент"
 
-#: ../src/lib/gd-pdf-loader.c:488
+#: ../src/lib/gd-pdf-loader.c:489
 msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
 msgstr ""
 "Не ўдалося адшукаць \"unoconv\", праверце правільнасць усталявання "
@@ -141,29 +150,44 @@ msgstr[0] "Загрузіць яшчэ %d дакумент"
 msgstr[1] "Загрузіць яшчэ %d дакументы"
 msgstr[2] "Загрузіць яшчэ %d дакументаў"
 
-#: ../src/mainToolbar.js:118
+#: ../src/mainToolbar.js:119
 msgid "Click on items to select them"
 msgstr "Пстрыкайце ў элементы спіса для іх вылучэння"
 
-#: ../src/mainToolbar.js:120
+#: ../src/mainToolbar.js:121
 #, c-format
 msgid "%d selected"
-msgstr "%d вылучана"
+msgid_plural "%d selected"
+msgstr[0] "%d вылучаны дакумент"
+msgstr[1] "%d вылучаныя дакументы"
+msgstr[2] "%d вылучаных дакументаў"
 
-#: ../src/mainToolbar.js:165
+#: ../src/mainToolbar.js:168
 msgid "New and Recent"
 msgstr "Новыя і нядаўнія"
 
-#: ../src/mainToolbar.js:187
+#: ../src/mainToolbar.js:190
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d з %d)"
+
+#: ../src/mainWindow.js:296
+msgid "translator-credits"
+msgstr "Ihar Hrachyshka <ihar.hrachyshka@gmail.com>"
+
+#: ../src/mainWindow.js:297
+msgid "GNOME Documents"
+msgstr "Дакументы GNOME"
+
+#: ../src/mainWindow.js:298
+msgid "A document manager application"
+msgstr "Праграма кіравання дакументамі"
 
 #: ../src/searchbar.js:86
 msgid "Category"
 msgstr "Катэгорыя"
 
-#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:208
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:210
 #: ../src/sources.js:94
 msgid "All"
 msgstr "Усе"
@@ -200,15 +224,17 @@ msgstr "Разліковыя аркушы"
 msgid "Text Documents"
 msgstr "Тэкставыя дакументы"
 
-#: ../src/searchbar.js:205
+#. Translators: this is a verb that refers to "All", "Title" and "Author",
+#. as in "Match All", "Match Title" and "Match Author"
+#: ../src/searchbar.js:207
 msgid "Match"
 msgstr "Крытэрый пошуку"
 
-#: ../src/searchbar.js:210
+#: ../src/searchbar.js:212
 msgid "Title"
 msgstr "Загаловак"
 
-#: ../src/searchbar.js:212
+#: ../src/searchbar.js:214
 msgid "Author"
 msgstr "Аўтар"
 
