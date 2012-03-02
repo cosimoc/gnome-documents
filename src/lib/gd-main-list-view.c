@@ -101,6 +101,7 @@ gd_main_list_view_constructed (GObject *obj)
   g_object_set (cell, 
                 "visible", FALSE,
                 "xpad", 12,
+                "xalign", 1.0,
                 NULL);
   gtk_tree_view_column_pack_start (self->priv->tree_col, cell, FALSE);
   gtk_tree_view_column_add_attribute (self->priv->tree_col, cell,
@@ -110,6 +111,8 @@ gd_main_list_view_constructed (GObject *obj)
   g_object_set (cell,
                 "xalign", 0.5,
                 "yalign", 0.5,
+                "xpad", 12,
+                "ypad", 2,
                 NULL);
   gtk_tree_view_column_pack_start (self->priv->tree_col, cell, FALSE);
   gtk_tree_view_column_add_attribute (self->priv->tree_col, cell,
@@ -122,7 +125,7 @@ gd_main_list_view_constructed (GObject *obj)
                 "xpad", 12,
                 "text-lines", 2,
                 NULL);
-  gtk_tree_view_column_pack_start (self->priv->tree_col, cell, FALSE);
+  gtk_tree_view_column_pack_start (self->priv->tree_col, cell, TRUE);
   gtk_tree_view_column_add_attribute (self->priv->tree_col, cell,
                                       "text", GD_MAIN_COLUMN_TITLE);
   gtk_tree_view_column_add_attribute (self->priv->tree_col, cell,
