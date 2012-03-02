@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Gnome-Documents\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-28 12:54+0200\n"
-"PO-Revision-Date: 2012-01-28 12:54+0200\n"
+"POT-Creation-Date: 2012-03-02 14:56+0200\n"
+"PO-Revision-Date: 2012-03-02 14:58+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <sh.yaron@gmail.com>\n"
 "Language: he\n"
@@ -25,7 +25,11 @@ msgid "Access, manage and share documents"
 msgstr "גישה, ניהול ושיתוף של מסמכים"
 
 #: ../data/gnome-documents.desktop.in.in.h:2
-#: ../src/mainWindow.js:53
+msgid "Docs;PDF;Document;"
+msgstr "מסמכים;PDF;מסמך;"
+
+#: ../data/gnome-documents.desktop.in.in.h:3
+#: ../src/mainWindow.js:54
 msgid "Documents"
 msgstr "מסמכים"
 
@@ -38,7 +42,7 @@ msgid "The last active source filter"
 msgstr "The last active source filter"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:3
-#: ../src/application.js:125
+#: ../src/application.js:127
 msgid "View as"
 msgstr "צפייה בתור"
 
@@ -70,21 +74,25 @@ msgstr "Window size"
 msgid "Window size (width and height)."
 msgstr "Window size (width and height)."
 
-#: ../src/application.js:119
-msgid "Fullscreen"
-msgstr "מסך מלא"
-
-#: ../src/application.js:120
-msgid "Quit"
-msgstr "יציאה"
-
-#: ../src/application.js:123
+#: ../src/application.js:125
 msgid "Grid"
 msgstr "רשת"
 
-#: ../src/application.js:124
+#: ../src/application.js:126
 msgid "List"
 msgstr "רשימה"
+
+#: ../src/application.js:130
+msgid "Fullscreen"
+msgstr "מסך מלא"
+
+#: ../src/application.js:133
+msgid "About Documents"
+msgstr "על אודות מסמכים"
+
+#: ../src/application.js:134
+msgid "Quit"
+msgstr "יציאה"
 
 #: ../src/documents.js:618
 #: ../src/sources.js:100
@@ -127,15 +135,15 @@ msgid "Unable to fetch the list of documents"
 msgstr "לא ניתן לקבל את רשימת המסמכים"
 
 #. right section
-#: ../src/lib/gd-main-toolbar.c:210
+#: ../src/lib/gd-main-toolbar.c:269
 msgid "Done"
 msgstr "בוצע"
 
-#: ../src/lib/gd-pdf-loader.c:207
+#: ../src/lib/gd-pdf-loader.c:208
 msgid "Unable to load the document"
 msgstr "לא ניתן לטעון את המסמך"
 
-#: ../src/lib/gd-pdf-loader.c:488
+#: ../src/lib/gd-pdf-loader.c:489
 msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
 msgstr "לא ניתן למצוא את \"unoconv\", נא לבדוק את התקנת ה־LibreOffice שלך"
 
@@ -146,23 +154,37 @@ msgid_plural "Load %d more documents"
 msgstr[0] "טעינת מסמך נוסף"
 msgstr[1] "טעינת %d מסמכים נוספים"
 
-#: ../src/mainToolbar.js:118
+#: ../src/mainToolbar.js:119
 msgid "Click on items to select them"
 msgstr "יש ללחוץ על פריטים כדי לבחור אותם"
 
-#: ../src/mainToolbar.js:120
+#: ../src/mainToolbar.js:121
 #, c-format
 msgid "%d selected"
-msgstr "נבחרו %d"
+msgid_plural "%d selected"
+msgstr[0] "נבחר אחד"
+msgstr[1] "נבחרו %d"
 
-#: ../src/mainToolbar.js:165
+#: ../src/mainToolbar.js:168
 msgid "New and Recent"
 msgstr "חדש ו"
 
-#: ../src/mainToolbar.js:187
+#: ../src/mainToolbar.js:190
 #, c-format
 msgid "(%d of %d)"
 msgstr "‏(%d מתוך %d)"
+
+#: ../src/mainWindow.js:296
+msgid "translator-credits"
+msgstr "ירון שהרבני <sh.yaron@gmail.com>"
+
+#: ../src/mainWindow.js:297
+msgid "GNOME Documents"
+msgstr "מסמכים מבית GNOME"
+
+#: ../src/mainWindow.js:298
+msgid "A document manager application"
+msgstr "יישום לניהול מסמכים"
 
 #: ../src/searchbar.js:86
 msgid "Category"
@@ -170,7 +192,7 @@ msgstr "קטגוריה"
 
 #: ../src/searchbar.js:91
 #: ../src/searchbar.js:141
-#: ../src/searchbar.js:208
+#: ../src/searchbar.js:210
 #: ../src/sources.js:94
 msgid "All"
 msgstr "הכול"
@@ -207,48 +229,54 @@ msgstr "גיליונות אלקטרוניים"
 msgid "Text Documents"
 msgstr "מסמכי טקסט"
 
-#: ../src/searchbar.js:205
+#. Translators: this is a verb that refers to "All", "Title" and "Author",
+#. as in "Match All", "Match Title" and "Match Author"
+#: ../src/searchbar.js:207
 msgid "Match"
 msgstr "התאמה"
 
-#: ../src/searchbar.js:210
+#: ../src/searchbar.js:212
 msgid "Title"
 msgstr "כותרת"
 
-#: ../src/searchbar.js:212
+#: ../src/searchbar.js:214
 msgid "Author"
 msgstr "מאת"
 
-#: ../src/selections.js:663
+#: ../src/selections.js:658
 msgid "Organize"
 msgstr "ארגון"
 
-#: ../src/selections.js:670
+#: ../src/selections.js:665
 msgid "Delete"
 msgstr "מחיקה"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:761
+#: ../src/selections.js:756
 #: ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "פתיחה באמצעות %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:764
+#: ../src/selections.js:759
 #: ../src/view.js:70
 msgid "Open"
 msgstr "פתיחה"
 
-#: ../src/selections.js:777
+#: ../src/selections.js:772
 #: ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "הסרה מהמועדפים"
 
-#: ../src/selections.js:781
+#: ../src/selections.js:776
 #: ../src/view.js:80
 msgid "Add to favorites"
 msgstr "הוספה למועדפים"
+
+#: ../src/shellSearchProvider.js:332
+msgid "Untitled Document"
+msgstr "מסמך ללא שם"
 
 #: ../src/sources.js:90
 msgid "Sources"
