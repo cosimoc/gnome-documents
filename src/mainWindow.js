@@ -112,48 +112,6 @@ MainWindow.prototype = {
         this._clutterBox.add_actor(this._embed.actor);
         this._clutterBoxLayout.set_expand(this._embed.actor, true);
         this._clutterBoxLayout.set_fill(this._embed.actor, true, true);
-
-        // create the dropdown for the search bar, it's hidden by default
-        this._dropdownBox = new Searchbar.Dropdown();
-        this._dropdownBox.actor.add_constraint(
-            new Clutter.BindConstraint({ source: this._embed.actor,
-                                         coordinate: Clutter.BindCoordinate.Y }));
-        this._dropdownBox.actor.add_constraint(
-            new Clutter.AlignConstraint({ source: this._embed.actor,
-                                          align_axis: Clutter.AlignAxis.X_AXIS,
-                                          factor: 0.50 }));
-        Global.stage.add_actor(this._dropdownBox.actor);
-
-        // create the OSD toolbar for selected items, it's hidden by default
-        this._selectionToolbar = new Selections.SelectionToolbar();
-        let widthConstraint =
-            new Clutter.BindConstraint({ source: this._embed.actor,
-                                         coordinate: Clutter.BindCoordinate.WIDTH,
-                                         offset: - 300 });
-        this._selectionToolbar.actor.add_constraint(widthConstraint);
-        this._selectionToolbar.actor.connect('notify::width', Lang.bind(this,
-            function() {
-                let width = this._embed.actor.width;
-                let offset = 300;
-
-                if (width > 1000)
-                    offset += (width - 1000);
-                else if (width < 600)
-                    offset -= (600 - width);
-
-                widthConstraint.offset = - offset;
-            }));
-
-        this._selectionToolbar.actor.add_constraint(
-            new Clutter.AlignConstraint({ align_axis: Clutter.AlignAxis.X_AXIS,
-                                          source: this._embed.actor,
-                                          factor: 0.50 }));
-        this._selectionToolbar.actor.add_constraint(
-            new Clutter.AlignConstraint({ align_axis: Clutter.AlignAxis.Y_AXIS,
-                                          source: this._embed.actor,
-                                          factor: 0.95 }));
-
-        Global.stage.add_actor(this._selectionToolbar.actor);
     },
 
     _saveWindowGeometry: function() {

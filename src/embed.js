@@ -27,6 +27,8 @@ const Global = imports.global;
 const LoadMore = imports.loadMore;
 const MainToolbar = imports.mainToolbar;
 const Preview = imports.preview;
+const Searchbar = imports.searchbar;
+const Selections = imports.selections;
 const SpinnerBox = imports.spinnerBox;
 const Tweener = imports.util.tweener;
 const View = imports.view;
@@ -59,30 +61,35 @@ ViewEmbed.prototype  = {
         this._scrolledWinPreview = null;
 
         // the embed is a vertical ClutterBox
-        this._layout = new Clutter.BoxLayout({ vertical: true });
-        this.actor = new Clutter.Box({ layout_manager: this._layout });
+        this._overlayLayout = new Clutter.BinLayout();
+        this.actor = new Clutter.Box({ layout_manager: this._overlayLayout });
+
+        this._contentsLayout = new Clutter.BoxLayout({ vertical: true });
+        this._contentsActor = new Clutter.Box({ layout_manager: this._contentsLayout });
+        this._overlayLayout.add(this._contentsActor,
+            Clutter.BinAlignment.FILL, Clutter.BinAlignment.FILL);
 
         // pack the toolbar
         this._toolbar = new MainToolbar.MainToolbar();
-        this.actor.add_actor(this._toolbar.actor);
-        this._layout.set_fill(this._toolbar.actor, true, false);
+        this._contentsActor.add_actor(this._toolbar.actor);
+        this._contentsLayout.set_fill(this._toolbar.actor, true, false);
 
         // pack the main GtkNotebook and a spinnerbox in a BinLayout, so that
         // we can easily bring them front/back
-        this._embedLayout = new Clutter.BinLayout();
-        this._embedActor = new Clutter.Box({ layout_manager: this._embedLayout });
-        this._layout.set_expand(this._embedActor, true);
-        this._layout.set_fill(this._embedActor, true, true);
-        this.actor.add_actor(this._embedActor);
+        this._viewLayout = new Clutter.BinLayout();
+        this._viewActor = new Clutter.Box({ layout_manager: this._viewLayout });
+        this._contentsLayout.set_expand(this._viewActor, true);
+        this._contentsLayout.set_fill(this._viewActor, true, true);
+        this._contentsActor.add_actor(this._viewActor);
 
         this._notebook = new Gtk.Notebook({ show_tabs: false,
                                             show_border: false });
         this._notebook.show();
         this._notebookActor = new GtkClutter.Actor({ contents: this._notebook });
-        this._embedLayout.add(this._notebookActor, Clutter.BinAlignment.FILL, Clutter.BinAlignment.FILL);
+        this._viewLayout.add(this._notebookActor, Clutter.BinAlignment.FILL, Clutter.BinAlignment.FILL);
 
         this._spinnerBox = new SpinnerBox.SpinnerBox();
-        this._embedLayout.add(this._spinnerBox.actor, Clutter.BinAlignment.FILL, Clutter.BinAlignment.FILL);
+        this._viewLayout.add(this._spinnerBox.actor, Clutter.BinAlignment.FILL, Clutter.BinAlignment.FILL);
         this._spinnerBox.actor.lower_bottom();
 
         // also pack a white background to use for spotlights between window modes
@@ -91,9 +98,45 @@ ViewEmbed.prototype  = {
                                                                 blue: 255,
                                                                 green: 255,
                                                                 alpha: 255 }) });
-        this._embedLayout.add(this._background,
+        this._viewLayout.add(this._background,
             Clutter.BinAlignment.FILL, Clutter.BinAlignment.FILL);
         this._background.lower_bottom();
+
+        // create the dropdown for the search bar, it's hidden by default
+        this._dropdownBox = new Searchbar.Dropdown();
+        this._overlayLayout.add(this._dropdownBox.actor,
+            Clutter.BinAlignment.CENTER, Clutter.BinAlignment.START);
+
+        // create the OSD toolbar for selected items, it's hidden by default
+        this._selectionToolbar = new Selections.SelectionToolbar();
+        let widthConstraint =
+            new Clutter.BindConstraint({ source: this._contentsActor,
+                                         coordinate: Clutter.BindCoordinate.WIDTH,
+                                         offset: - 300 });
+        this._selectionToolbar.actor.add_constraint(widthConstraint);
+        this._selectionToolbar.actor.connect('notify::width', Lang.bind(this,
+            function() {
+                let width = this._contentsActor.width;
+                let offset = 300;
+
+                if (width > 1000)
+                    offset += (width - 1000);
+                else if (width < 600)
+                    offset -= (600 - width);
+
+                widthConstraint.offset = - offset;
+            }));
+
+        this._selectionToolbar.actor.add_constraint(
+            new Clutter.AlignConstraint({ align_axis: Clutter.AlignAxis.X_AXIS,
+                                          source: this._contentsActor,
+                                          factor: 0.50 }));
+        this._selectionToolbar.actor.add_constraint(
+            new Clutter.AlignConstraint({ align_axis: Clutter.AlignAxis.Y_AXIS,
+                                          source: this._contentsActor,
+                                          factor: 0.95 }));
+        this._overlayLayout.add(this._selectionToolbar.actor,
+            Clutter.BinAlignment.FIXED, Clutter.BinAlignment.FIXED);
 
         Global.errorHandler.connect('load-error',
                                     Lang.bind(this, this._onLoadError));
