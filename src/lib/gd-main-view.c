@@ -26,6 +26,7 @@
 #include "gd-main-list-view.h"
 
 #define MAIN_VIEW_TYPE_INITIAL -1
+#define MAIN_VIEW_DND_ICON_OFFSET 20
 
 struct _GdMainViewPrivate {
   GdMainViewType current_type;
@@ -34,7 +35,8 @@ struct _GdMainViewPrivate {
   GtkWidget *current_view;
   GtkTreeModel *model;
 
-  gchar *button_press_id;
+  gdouble button_press_x;
+  gdouble button_press_y;
 };
 
 enum {
@@ -63,17 +65,6 @@ gd_main_view_dispose (GObject *obj)
   g_clear_object (&self->priv->model);
 
   G_OBJECT_CLASS (gd_main_view_parent_class)->dispose (obj);
-}
-
-static void
-gd_main_view_finalize (GObject *obj)
-{
-  GdMainView *self = GD_MAIN_VIEW (obj);
-
-  g_free (self->priv->button_press_id);
-  self->priv->button_press_id = NULL;
-
-  G_OBJECT_CLASS (gd_main_view_parent_class)->finalize (obj);
 }
 
 static void
@@ -155,7 +146,6 @@ gd_main_view_class_init (GdMainViewClass *klass)
   oclass->get_property = gd_main_view_get_property;
   oclass->set_property = gd_main_view_set_property;
   oclass->dispose = gd_main_view_dispose;
-  oclass->finalize = gd_main_view_finalize;
 
   properties[PROP_VIEW_TYPE] =
     g_param_spec_int ("view-type",
@@ -203,6 +193,100 @@ gd_main_view_class_init (GdMainViewClass *klass)
 
   g_type_class_add_private (klass, sizeof (GdMainViewPrivate));
   g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
+}
+
+static GdkPixbuf *
+gd_main_view_get_counter_icon (GdMainView *self,
+                               GdkPixbuf *base,
+                               gint number)
+{
+  GtkStyleContext *context;
+  cairo_t *cr, *emblem_cr;
+  cairo_surface_t *surface, *emblem_surface;
+  GdkPixbuf *retval;
+  gint width, height;
+  gint layout_width, layout_height;
+  gint emblem_size;
+  gdouble scale;
+  gchar *str;
+  PangoLayout *layout;
+  PangoAttrList *attr_list;
+  PangoAttribute *attr;
+  const PangoFontDescription *desc;
+  GdkRGBA color;
+
+  context = gtk_widget_get_style_context (GTK_WIDGET (self));
+  gtk_style_context_save (context);
+  gtk_style_context_add_class (context, "documents-counter");
+
+  width = gdk_pixbuf_get_width (base);
+  height = gdk_pixbuf_get_height (base);
+
+  surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32,
+                                        width, height);
+  cr = cairo_create (surface);
+  gdk_cairo_set_source_pixbuf (cr, base, 0, 0);
+  cairo_paint (cr);
+
+  emblem_size = MIN (width / 2, height / 2);
+  emblem_surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32,
+                                               emblem_size, emblem_size);
+  emblem_cr = cairo_create (emblem_surface);
+  gtk_render_background (context, emblem_cr,
+                         0, 0, emblem_size, emblem_size);
+
+  if (number > 99)
+    number = 99;
+  if (number < -99)
+    number = -99;
+
+  str = g_strdup_printf ("%d", number);
+  layout = gtk_widget_create_pango_layout (GTK_WIDGET (self), str);
+  g_free (str);
+
+  pango_layout_get_pixel_size (layout, &layout_width, &layout_height);
+
+  /* scale the layout to be 0.5 of the size still available for drawing */
+  scale = (emblem_size * 0.50) / (MAX (layout_width, layout_height));
+  attr_list = pango_attr_list_new ();
+
+  attr = pango_attr_scale_new (scale);
+  pango_attr_list_insert (attr_list, attr);
+  pango_layout_set_attributes (layout, attr_list);
+
+  desc = gtk_style_context_get_font (context, 0);
+  pango_layout_set_font_description (layout, desc);
+
+  gtk_style_context_get_color (context, 0, &color);
+  gdk_cairo_set_source_rgba (emblem_cr, &color);
+
+  /* update these values */
+  pango_layout_get_pixel_size (layout, &layout_width, &layout_height);
+
+  cairo_move_to (emblem_cr,
+                 emblem_size / 2 - layout_width / 2,
+                 emblem_size / 2 - layout_height / 2);
+
+  pango_cairo_show_layout (emblem_cr, layout);
+
+  g_object_unref (layout);
+  pango_attr_list_unref (attr_list);
+  cairo_destroy (emblem_cr);
+
+  cairo_set_source_surface (cr, emblem_surface, 
+                            width - emblem_size, height - emblem_size);
+  cairo_paint (cr);
+  cairo_destroy (cr);
+
+  retval = gdk_pixbuf_get_from_surface (surface,
+                                        0, 0,
+                                        width, height);
+
+  cairo_surface_destroy (emblem_surface);
+  cairo_surface_destroy (surface);
+  gtk_style_context_restore (context);
+
+  return retval;
 }
 
 static GdMainViewGeneric *
@@ -279,7 +363,6 @@ on_button_release_event (GtkWidget *view,
   GtkTreePath *path;
   gboolean entered_mode = FALSE, selection_mode;
   gboolean res, same_item = FALSE;
-  gchar *button_release_id = NULL;
 
   /* eat double/triple click events */
   if (event->type != GDK_BUTTON_RELEASE)
@@ -289,24 +372,18 @@ on_button_release_event (GtkWidget *view,
 
   if (path != NULL)
     {
-      GtkTreeIter iter;
-
-      res = gtk_tree_model_get_iter (self->priv->model, &iter, path);
-
-      if (res)
-        gtk_tree_model_get (self->priv->model, &iter,
-                            GD_MAIN_COLUMN_ID, &button_release_id,
-                            -1);
-
-      if (g_strcmp0 (button_release_id, self->priv->button_press_id) == 0)
+      if (event->x == self->priv->button_press_x &&
+          event->y == self->priv->button_press_y)
         same_item = TRUE;
     }
 
-  g_free (self->priv->button_press_id);
-  self->priv->button_press_id = NULL;
+  self->priv->button_press_x = self->priv->button_press_y = 0;
 
   if (!same_item)
-    return FALSE;
+    {
+      res = FALSE;
+      goto out;
+    }
 
   selection_mode = self->priv->selection_mode;
 
@@ -326,6 +403,7 @@ on_button_release_event (GtkWidget *view,
   else
     res = on_button_release_view_mode (self, event, path);
 
+ out:
   gtk_tree_path_free (path);
   return res;
 }
@@ -338,27 +416,106 @@ on_button_press_event (GtkWidget *view,
   GdMainView *self = user_data;
   GdMainViewGeneric *generic = get_generic (self);
   GtkTreePath *path;
+  GList *selection, *l;
+  GtkTreePath *sel_path;
+  gboolean found = FALSE;
+  gdouble event_x = 0, event_y = 0;
 
-  g_free (self->priv->button_press_id);
+  self->priv->button_press_x = event->x;
+  self->priv->button_press_y = event->y;
+
   path = gd_main_view_generic_get_path_at_pos (generic, event->x, event->y);
 
   if (path != NULL)
     {
-      GtkTreeIter iter;
+      event_x = event->x;
+      event_y = event->y;
+    }
+
+  self->priv->button_press_x = event_x;
+  self->priv->button_press_y = event_y;
+
+  if (!self->priv->selection_mode ||
+      path == NULL)
+    {
+      gtk_tree_path_free (path);
+      return FALSE;
+    }
+
+  selection = gd_main_view_get_selection (self);
+
+  for (l = selection; l != NULL; l = l->next)
+    {
+      sel_path = l->data;
+      if (gtk_tree_path_compare (path, sel_path) == 0)
+        {
+          found = TRUE;
+          break;
+        }
+    }
+
+  if (selection != NULL)
+    g_list_free_full (selection, (GDestroyNotify) gtk_tree_path_free);
+
+  /* if we did not find the item in the selection, block
+   * drag and drop, while in selection mode
+   */
+  return !found;
+}
+
+static void
+on_drag_begin (GdMainViewGeneric *generic,
+               GdkDragContext *drag_context,
+               gpointer user_data)
+{
+  GdMainView *self = user_data;
+  GtkTreePath *path;
+
+  path = gd_main_view_generic_get_path_at_pos (generic,
+                                               self->priv->button_press_x,
+                                               self->priv->button_press_y);
+
+  if (path != NULL)
+    {
       gboolean res;
+      GtkTreeIter iter;
+      GdkPixbuf *icon = NULL;
 
-      res = gtk_tree_model_get_iter (self->priv->model, &iter, path);
-
+      res = gtk_tree_model_get_iter (self->priv->model,
+                                     &iter, path);
       if (res)
         gtk_tree_model_get (self->priv->model, &iter,
-                            GD_MAIN_COLUMN_ID, &self->priv->button_press_id,
+                            GD_MAIN_COLUMN_ICON, &icon,
                             -1);
+
+      if (self->priv->selection_mode && 
+          icon != NULL)
+        {
+          GList *selection;
+          GdkPixbuf *counter;
+
+          selection = gd_main_view_get_selection (self);
+
+          if (g_list_length (selection) > 1)
+            {
+              counter = gd_main_view_get_counter_icon (self, icon, g_list_length (selection));
+              g_clear_object (&icon);
+              icon = counter;
+            }
+
+          if (selection != NULL)
+            g_list_free_full (selection, (GDestroyNotify) gtk_tree_path_free);
+        }
+
+      if (icon != NULL)
+        {
+          gtk_drag_set_icon_pixbuf (drag_context, icon,
+                                    MAIN_VIEW_DND_ICON_OFFSET, MAIN_VIEW_DND_ICON_OFFSET);
+          g_object_unref (icon);
+        }
+
+      gtk_tree_path_free (path);
     }
-  
-  /* TODO: eat button press events for now; in the future we might want
-   * to add support for DnD.
-   */
-  return FALSE;
 }
 
 static void
@@ -398,6 +555,8 @@ gd_main_view_rebuild (GdMainView *self)
                     G_CALLBACK (on_button_press_event), self);
   g_signal_connect (self->priv->current_view, "button-release-event",
                     G_CALLBACK (on_button_release_event), self);
+  g_signal_connect_after (self->priv->current_view, "drag-begin",
+                          G_CALLBACK (on_drag_begin), self);
 
   gd_main_view_apply_selection_mode (self);
   gd_main_view_apply_model (self);
