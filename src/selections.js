@@ -533,7 +533,7 @@ OrganizeCollectionView.prototype = {
         let id = model.get_value(iter, OrganizeModelColumns.ID);
         let item = Global.collectionManager.getItemById(id);
 
-        if (item.identifier.indexOf(Query.LOCAL_COLLECTIONS_IDENTIFIER) == -1) {
+        if (item && item.identifier.indexOf(Query.LOCAL_COLLECTIONS_IDENTIFIER) == -1) {
             cell.text = Global.sourceManager.getItemById(item.resourceUrn).name;
             cell.visible = true;
         } else {
