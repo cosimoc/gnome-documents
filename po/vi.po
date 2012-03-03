@@ -1,7 +1,7 @@
 # Vietnamese translation for gnome-documents.
 # Copyright (C) 2011 gnome-documents's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-documents package.
-# Nguyễn Thái Ngọc Duy <pclouds@gmail.com>, 2011.
+# Nguyễn Thái Ngọc Duy <pclouds@gmail.com>, 2011-2012.
 #
 msgid ""
 msgstr ""
@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2012-02-29 22:24+0000\n"
-"PO-Revision-Date: 2012-03-03 23:06+0700\n"
+"PO-Revision-Date: 2012-03-03 23:11+0700\n"
 "Last-Translator: Nguyễn Thái Ngọc Duy <pclouds@gmail.com>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -26,18 +26,17 @@ msgid "Access, manage and share documents"
 msgstr "Truy cập, quản lý và chia sẻ tài liệu"
 
 #: ../data/gnome-documents.desktop.in.in.h:3
-#, fuzzy
 #| msgid "Document"
 msgid "Docs;PDF;Document;"
-msgstr "Tài liệu"
+msgstr "Docs;Tài;liệu;PDF;Document;"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:127
 msgid "View as"
-msgstr ""
+msgstr "Xem kiểu"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:2
 msgid "View as type"
-msgstr ""
+msgstr "Xem kiểu"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:3
 msgid "The active source filter"
@@ -49,51 +48,49 @@ msgstr "Bộ lọc nguồn tích cực cuối cùng"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:5
 msgid "Window size"
-msgstr ""
+msgstr "Kích thước cửa sổ"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:6
 msgid "Window size (width and height)."
-msgstr ""
+msgstr "Kích thước cửa sổ (rộng và cao)."
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:7
 msgid "Window position"
-msgstr ""
+msgstr "Vị trí cửa sổ"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:8
 msgid "Window position (x and y)."
-msgstr ""
+msgstr "Vị trí cửa sổ (x và y)."
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:9
 msgid "Window maximized"
-msgstr ""
+msgstr "Cửa sổ đã phóng to"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:10
 msgid "Window maximized state"
-msgstr ""
+msgstr "Trạng thái phóng to cửa sổ"
 
 #: ../src/application.js:125
 msgid "Grid"
-msgstr ""
+msgstr "Lưới"
 
 #: ../src/application.js:126
-#, fuzzy
 #| msgid "List view"
 msgid "List"
-msgstr "Trình bày dạng danh sách"
+msgstr "Danh sách"
 
 #: ../src/application.js:130
 msgid "Fullscreen"
-msgstr ""
+msgstr "Toàn màn hình"
 
 #: ../src/application.js:133
-#, fuzzy
 #| msgid "Documents"
 msgid "About Documents"
-msgstr "Tài liệu"
+msgstr "Giới thiệu Tài liệu"
 
 #: ../src/application.js:134
 msgid "Quit"
-msgstr ""
+msgstr "Thoát"
 
 #: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
@@ -118,7 +115,7 @@ msgstr "Trình diễn"
 
 #: ../src/documents.js:755
 msgid "Collection"
-msgstr ""
+msgstr "Bộ sưu tập"
 
 #: ../src/documents.js:757
 msgid "Document"
@@ -137,20 +134,21 @@ msgstr "Không thể lấy danh sách tài liệu"
 #. right section
 #: ../src/lib/gd-main-toolbar.c:269
 msgid "Done"
-msgstr ""
+msgstr "Hoàn tất"
 
 #: ../src/lib/gd-pdf-loader.c:208
-#, fuzzy
 #| msgid "Unable to fetch the list of documents"
 msgid "Unable to load the document"
-msgstr "Không thể lấy danh sách tài liệu"
+msgstr "Không thể tải tài liệu"
 
 #: ../src/lib/gd-pdf-loader.c:489
 msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
 msgstr ""
+"Không thể tìm \"unoconv\", vui lòng kiểm tra lại bản cài đặt LibreOffice của "
+"bạn"
 
 #: ../src/loadMore.js:70
-#, fuzzy, c-format
+#, c-format
 #| msgid "Load %d more documents"
 #| msgid_plural "Load %d more documents"
 msgid "Load %d more document"
@@ -159,13 +157,13 @@ msgstr[0] "Nạp %d tài liệu nữa"
 
 #: ../src/mainToolbar.js:119
 msgid "Click on items to select them"
-msgstr ""
+msgstr "Nhấn để chọn"
 
 #: ../src/mainToolbar.js:121
 #, c-format
 msgid "%d selected"
 msgid_plural "%d selected"
-msgstr[0] ""
+msgstr[0] "chọn %d"
 
 #: ../src/mainToolbar.js:168
 msgid "New and Recent"
@@ -178,21 +176,20 @@ msgstr "(%d trên %d)"
 
 #: ../src/mainWindow.js:296
 msgid "translator-credits"
-msgstr ""
+msgstr "Nhóm Việt hoá GNOME"
 
 #: ../src/mainWindow.js:297
-#, fuzzy
 #| msgid "Documents"
 msgid "GNOME Documents"
-msgstr "Tài liệu"
+msgstr "Tài liệu GNOME"
 
 #: ../src/mainWindow.js:298
 msgid "A document manager application"
-msgstr ""
+msgstr "Ứng dụng quản lý tài liệu"
 
 #: ../src/searchbar.js:86
 msgid "Category"
-msgstr ""
+msgstr "Phân loại"
 
 #: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:210
 #: ../src/sources.js:94
@@ -209,57 +206,53 @@ msgstr "Chia sẻ với bạn"
 
 #: ../src/searchbar.js:138
 msgid "Type"
-msgstr ""
+msgstr "Loại"
 
 #: ../src/searchbar.js:143
 msgid "Collections"
-msgstr ""
+msgstr "Bộ sưu tập"
 
 #: ../src/searchbar.js:147
-#, fuzzy
 #| msgid "Documents"
 msgid "PDF Documents"
-msgstr "Tài liệu"
+msgstr "Tài liệu PDF"
 
 #: ../src/searchbar.js:150
-#, fuzzy
 #| msgid "Presentation"
 msgid "Presentations"
 msgstr "Trình diễn"
 
 #: ../src/searchbar.js:153
-#, fuzzy
 #| msgid "Spreadsheet"
 msgid "Spreadsheets"
 msgstr "Bảng tính"
 
 #: ../src/searchbar.js:156
-#, fuzzy
 #| msgid "Documents"
 msgid "Text Documents"
-msgstr "Tài liệu"
+msgstr "Văn bản"
 
 #. Translators: this is a verb that refers to "All", "Title" and "Author",
 #. as in "Match All", "Match Title" and "Match Author"
 #: ../src/searchbar.js:207
 msgid "Match"
-msgstr ""
+msgstr "Khớp"
 
 #: ../src/searchbar.js:212
 msgid "Title"
-msgstr ""
+msgstr "Tựa đề"
 
 #: ../src/searchbar.js:214
 msgid "Author"
-msgstr ""
+msgstr "Tác giả"
 
 #: ../src/selections.js:663
 msgid "Organize"
-msgstr ""
+msgstr "Tổ chức"
 
 #: ../src/selections.js:670
 msgid "Delete"
-msgstr ""
+msgstr "Xoá"
 
 #. Translators: this is the Open action in a context menu
 #: ../src/selections.js:761 ../src/view.js:67
@@ -281,10 +274,9 @@ msgid "Add to favorites"
 msgstr "Đánh dấu yêu thích"
 
 #: ../src/shellSearchProvider.js:332
-#, fuzzy
 #| msgid "Document"
 msgid "Untitled Document"
-msgstr "Tài liệu"
+msgstr "Tài liệu không tên"
 
 #: ../src/sources.js:90
 msgid "Sources"
