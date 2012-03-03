@@ -16,6 +16,7 @@ gdprivate_source_h = \
     lib/gd-main-list-view.h \
     lib/gd-main-view.h \
     lib/gd-margin-container.h \
+    lib/gd-notification.h \
     lib/gd-pdf-loader.h \
     lib/gd-styled-text-renderer.h \
     lib/gd-tagged-entry.h \
@@ -32,6 +33,7 @@ gdprivate_source_c = \
     lib/gd-main-list-view.c \
     lib/gd-main-view.c \
     lib/gd-margin-container.c \
+    lib/gd-notification.c \
     lib/gd-pdf-loader.c \
     lib/gd-styled-text-renderer.c \
     lib/gd-tagged-entry.c \
