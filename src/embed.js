@@ -138,6 +138,10 @@ ViewEmbed.prototype  = {
         this._overlayLayout.add(this._selectionToolbar.actor,
             Clutter.BinAlignment.FIXED, Clutter.BinAlignment.FIXED);
 
+        // pack the OSD notification actor
+        this._viewLayout.add(Global.notificationManager.actor,
+            Clutter.BinAlignment.CENTER, Clutter.BinAlignment.START);
+
         Global.errorHandler.connect('load-error',
                                     Lang.bind(this, this._onLoadError));
 

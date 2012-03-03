@@ -30,6 +30,7 @@ const _ = imports.gettext.gettext;
 const Documents = imports.documents;
 const Global = imports.global;
 const Manager = imports.manager;
+const Notifications = imports.notifications;
 const Query = imports.query;
 const Tweener = imports.util.tweener;
 const Utils = imports.utils;
@@ -890,6 +891,8 @@ SelectionToolbar.prototype = {
                 }
 
                 let printOp = EvView.PrintOperation.new(evDoc);
+                let printNotification = new Notifications.PrintNotification(printOp, doc);
+
                 let toplevel = this.widget.get_toplevel();
                 printOp.run(toplevel);
             }));

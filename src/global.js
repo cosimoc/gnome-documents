@@ -27,6 +27,7 @@ let documentManager = null;
 let errorHandler = null;
 let goaClient = null;
 let modeController = null;
+let notificationManager = null;
 let offsetController = null;
 let queryBuilder = null;
 let searchCategoryManager = null;

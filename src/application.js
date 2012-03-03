@@ -40,6 +40,7 @@ const Global = imports.global;
 const Main = imports.main;
 const MainWindow = imports.mainWindow;
 const Manager = imports.manager;
+const Notifications = imports.notifications;
 const OffsetController = imports.offsetController;
 const Path = imports.path;
 const Query = imports.query;
@@ -175,6 +176,7 @@ Application.prototype = {
         Global.trackerController = new TrackerController.TrackerController();
         Global.selectionController = new Selections.SelectionController();
         Global.modeController = new WindowMode.ModeController();
+        Global.notificationManager = new Notifications.NotificationManager();
 
         this._initMenus();
         this._mainWindow = new MainWindow.MainWindow(this.application);
