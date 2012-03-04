@@ -56,7 +56,7 @@ MainWindow.prototype = {
         this.window.add(this._clutterEmbed);
         this._clutterEmbed.show();
 
-        Global.stage = this._clutterEmbed.get_stage();
+        let stage = this._clutterEmbed.get_stage();
 
         Global.modeController.setWindowMode(WindowMode.WindowMode.OVERVIEW);
 
@@ -99,9 +99,9 @@ MainWindow.prototype = {
         this._clutterBox = new Clutter.Box({ layout_manager: this._clutterBoxLayout });
         this._clutterBox.add_constraint(
             new Clutter.BindConstraint({ coordinate: Clutter.BindCoordinate.SIZE,
-                                         source: Global.stage }));
+                                         source: stage }));
 
-        Global.stage.add_actor(this._clutterBox);
+        stage.add_actor(this._clutterBox);
 
         // first child: searchbar filling the X axis
         this._searchbar = new Searchbar.Searchbar();
