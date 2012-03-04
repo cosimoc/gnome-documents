@@ -1,16 +1,15 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Korostil Daniel <ted.korostiled@gmail.com>, 2011.
+# Korostil Daniel <ted.korostiled@gmail.com>, 2011, 2012.
 # Alexandr Toorchyn <ilex@mail.ua>, 2011
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
-"documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-11-16 13:29+0000\n"
-"PO-Revision-Date: 2011-12-06 21:22+0400\n"
-"Last-Translator: Alexandr Toorchyn <ilex@mail.ua>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-03-04 19:33+0200\n"
+"PO-Revision-Date: 2012-03-04 19:51+0300\n"
+"Last-Translator: Korostil Daniel <ted.korostiled@gmail.com>\n"
 "Language-Team: translation@linux.org.ua\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
@@ -18,25 +17,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Virtaal 0.7.0\n"
+"X-Generator: Virtaal 0.7.1\n"
 "X-Project-Style: gnome\n"
 
-#: ../data/gnome-documents.desktop.in.in.h:1
-msgid "Access, manage and share documents"
-msgstr "Доступ, впорядкування і оприлюднення документів"
-
-#: ../data/gnome-documents.desktop.in.in.h:2
-#: ../src/mainWindow.js:53
+#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:54
 msgid "Documents"
 msgstr "Документи"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "Enable list view"
-msgstr "Увімкнути список"
+#: ../data/gnome-documents.desktop.in.in.h:2
+msgid "Access, manage and share documents"
+msgstr "Доступ, впорядкування і оприлюднення документів"
+
+#: ../data/gnome-documents.desktop.in.in.h:3
+msgid "Docs;PDF;Document;"
+msgstr "Доки;PDF;Документ;"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:127
+msgid "View as"
+msgstr "Переглянути як"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:2
-msgid "List view"
-msgstr "Список"
+msgid "View as type"
+msgstr "Переглянути як тип"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:3
 msgid "The active source filter"
@@ -47,12 +49,12 @@ msgid "The last active source filter"
 msgstr "Востаннє ввімкнутий фільтр джерел"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:5
-msgid "Window maximized"
-msgstr "Вікно розгорнуто"
+msgid "Window size"
+msgstr "Розмір вікна"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:6
-msgid "Window maximized state"
-msgstr "Стан розгорнутого вікна"
+msgid "Window size (width and height)."
+msgstr "Розмір вікна (ширина і висота)."
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:7
 msgid "Window position"
@@ -63,40 +65,59 @@ msgid "Window position (x and y)."
 msgstr "Положення вікна (x і y)"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:9
-msgid "Window size"
-msgstr "Розмір вікна"
+msgid "Window maximized"
+msgstr "Вікно розгорнуто"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:10
-msgid "Window size (width and height)."
-msgstr "Розмір вікна (ширина і висота)."
+msgid "Window maximized state"
+msgstr "Стан розгорнутого вікна"
 
-#: ../src/documents.js:619
-#: ../src/sources.js:100
+#: ../src/application.js:125
+msgid "Grid"
+msgstr "Сітка"
+
+#: ../src/application.js:126
+msgid "List"
+msgstr "Список"
+
+#: ../src/application.js:130
+msgid "Fullscreen"
+msgstr "На весь екран"
+
+#: ../src/application.js:133
+msgid "About Documents"
+msgstr "Про програму"
+
+#: ../src/application.js:134
+msgid "Quit"
+msgstr "Вийти"
+
+#: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
 msgstr "Локальне"
 
 #. overridden
-#: ../src/documents.js:682
+#: ../src/documents.js:681
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:683
+#: ../src/documents.js:682
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:752
+#: ../src/documents.js:751
 msgid "Spreadsheet"
 msgstr "Електронна таблиця"
 
-#: ../src/documents.js:754
+#: ../src/documents.js:753
 msgid "Presentation"
 msgstr "Презентація"
 
-#: ../src/documents.js:756
+#: ../src/documents.js:755
 msgid "Collection"
 msgstr "Колекція"
 
-#: ../src/documents.js:758
+#: ../src/documents.js:757
 msgid "Document"
 msgstr "Документ"
 
@@ -110,46 +131,65 @@ msgstr "Неможливо завантажити «%s» для перегляд
 msgid "Unable to fetch the list of documents"
 msgstr "Неможливо одержати список документів"
 
-#: ../src/lib/gd-pdf-loader.c:207
-#| msgid "Unable to fetch the list of documents"
+#. right section
+#: ../src/lib/gd-main-toolbar.c:269
+msgid "Done"
+msgstr "Завершено"
+
+#: ../src/lib/gd-pdf-loader.c:208
 msgid "Unable to load the document"
 msgstr "Не вдалось завантажити документ"
 
+#: ../src/lib/gd-pdf-loader.c:489
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr "Неможливо знайти «unoconv», перевірте, чи встановлено LibreOffice"
+
 #: ../src/loadMore.js:70
 #, c-format
-#| msgid "Load %d more documents"
-#| msgid_plural "Load %d more documents"
 msgid "Load %d more document"
 msgid_plural "Load %d more documents"
 msgstr[0] "Завантажити ще %d документ"
 msgstr[1] "Завантажити ще %d документа"
 msgstr[2] "Завантажити ще %d документів"
 
-#: ../src/mainToolbar.js:151
+#: ../src/mainToolbar.js:119
 msgid "Click on items to select them"
 msgstr "Натисніть на об'єкти, щоб вибрати їх"
 
-#: ../src/mainToolbar.js:153
+#: ../src/mainToolbar.js:121
 #, c-format
 msgid "%d selected"
-msgstr "Вибрано: %d"
+msgid_plural "%d selected"
+msgstr[0] "%d вибрано"
+msgstr[1] "%d вибрано"
+msgstr[2] "%d вибрано"
 
-#: ../src/mainToolbar.js:172
-msgid "Done"
-msgstr "Завершено"
+#: ../src/mainToolbar.js:168
+msgid "New and Recent"
+msgstr "Нове і нещодавнє"
 
-#: ../src/mainToolbar.js:298
+#: ../src/mainToolbar.js:190
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d з %d)"
+
+#: ../src/mainWindow.js:296
+msgid "translator-credits"
+msgstr "Daniel Korostil <ted.korostiled@gmail.com>"
+
+#: ../src/mainWindow.js:297
+msgid "GNOME Documents"
+msgstr "Документи GNOME"
+
+#: ../src/mainWindow.js:298
+msgid "A document manager application"
+msgstr "Організатор документів "
 
 #: ../src/searchbar.js:86
 msgid "Category"
 msgstr "Категорія"
 
-#: ../src/searchbar.js:91
-#: ../src/searchbar.js:141
-#: ../src/searchbar.js:204
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:210
 #: ../src/sources.js:94
 msgid "All"
 msgstr "Все"
@@ -171,67 +211,65 @@ msgid "Collections"
 msgstr "Колекції"
 
 #: ../src/searchbar.js:147
-#| msgid "Documents"
 msgid "PDF Documents"
 msgstr "Документи PDF"
 
 #: ../src/searchbar.js:150
-#| msgid "Presentation"
 msgid "Presentations"
 msgstr "Презентації"
 
 #: ../src/searchbar.js:153
-#| msgid "Spreadsheet"
 msgid "Spreadsheets"
 msgstr "Електронні таблиці"
 
 #: ../src/searchbar.js:156
-#| msgid "Documents"
 msgid "Text Documents"
 msgstr "Текстові документи"
 
-#: ../src/searchbar.js:201
+#. Translators: this is a verb that refers to "All", "Title" and "Author",
+#. as in "Match All", "Match Title" and "Match Author"
+#: ../src/searchbar.js:207
 msgid "Match"
 msgstr "Збіги"
 
-#: ../src/searchbar.js:206
+#: ../src/searchbar.js:212
 msgid "Title"
 msgstr "Заголовок"
 
-#: ../src/searchbar.js:208
+#: ../src/searchbar.js:214
 msgid "Author"
 msgstr "Автор"
 
-#: ../src/selections.js:644
+#: ../src/selections.js:658
 msgid "Organize"
 msgstr "Організація"
 
-#: ../src/selections.js:650
+#: ../src/selections.js:665
 msgid "Delete"
 msgstr "Вилучити"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:737
-#: ../src/view.js:65
+#: ../src/selections.js:756 ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "Відкрити через %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:740
-#: ../src/view.js:68
+#: ../src/selections.js:759 ../src/view.js:70
 msgid "Open"
 msgstr "Відкрити"
 
-#: ../src/selections.js:753
-#: ../src/view.js:78
+#: ../src/selections.js:772 ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "Вилучити з улюбленого"
 
-#: ../src/selections.js:757
-#: ../src/view.js:78
+#: ../src/selections.js:776 ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Додати до улюбленого"
+
+#: ../src/shellSearchProvider.js:332
+msgid "Untitled Document"
+msgstr "Неназваний документ"
 
 #: ../src/sources.js:90
 msgid "Sources"
@@ -241,5 +279,5 @@ msgstr "Джерела"
 msgid "Loading..."
 msgstr "Завантаження…"
 
-#~ msgid "New and Recent"
-#~ msgstr "Нове і нещодавнє"
+#~ msgid "Enable list view"
+#~ msgstr "Увімкнути список"
