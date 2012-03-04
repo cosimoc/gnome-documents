@@ -19,6 +19,7 @@ gdprivate_source_h = \
     lib/gd-margin-container.h \
     lib/gd-notification.h \
     lib/gd-pdf-loader.h \
+    lib/gd-sidebar-thumbnails.h \
     lib/gd-styled-text-renderer.h \
     lib/gd-tagged-entry.h \
     lib/gd-toggle-pixbuf-renderer.h \
@@ -37,6 +38,7 @@ gdprivate_source_c = \
     lib/gd-margin-container.c \
     lib/gd-notification.c \
     lib/gd-pdf-loader.c \
+    lib/gd-sidebar-thumbnails.c \
     lib/gd-styled-text-renderer.c \
     lib/gd-tagged-entry.c \
     lib/gd-toggle-pixbuf-renderer.c \
