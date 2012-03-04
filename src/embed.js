@@ -183,13 +183,14 @@ ViewEmbed.prototype  = {
         this._fsToolbar = new MainToolbar.FullscreenToolbar();
         this._fsToolbar.setModel(this._docModel);
 
-        Global.stage.add_actor(this._fsToolbar.actor);
+        this._overlayLayout.add(this._fsToolbar.actor,
+            Clutter.BinAlignment.FIXED, Clutter.BinAlignment.FIXED);
 
         let vScrollbar = this._scrolledWinPreview.get_vscrollbar();
 
         let sizeConstraint = new Clutter.BindConstraint
             ({ coordinate: Clutter.BindCoordinate.WIDTH,
-               source: Global.stage,
+               source: this.actor,
                offset: (vScrollbar.get_visible() ?
                         (- (vScrollbar.get_preferred_width()[1])) : 0 ) });
 
