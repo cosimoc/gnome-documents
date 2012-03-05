@@ -35,6 +35,7 @@ ModeController.prototype = {
     _init: function() {
         this._mode = WindowMode.NONE;
         this._fullscreen = false;
+        this._canFullscreen = false;
     },
 
     setWindowMode: function(mode) {
@@ -57,6 +58,8 @@ ModeController.prototype = {
 
         if (!this._canFullscreen && this._fullscreen)
             this.setFullscreen(false);
+
+        this.emit('can-fullscreen-changed');
     },
 
     setFullscreen: function(fullscreen) {
@@ -79,6 +82,10 @@ ModeController.prototype = {
 
     getFullscreen: function() {
         return this._fullscreen;
+    },
+
+    getCanFullscreen: function() {
+        return this._canFullscreen;
     }
 };
 Signals.addSignalMethods(ModeController.prototype);

@@ -99,10 +99,10 @@ Application.prototype = {
             function() {
                 Global.modeController.toggleFullscreen();
             }));
-        Global.modeController.connect('window-mode-changed', Lang.bind(this,
+        Global.modeController.connect('can-fullscreen-changed', Lang.bind(this,
             function() {
-                let mode = Global.modeController.getWindowMode();
-                fsAction.set_enabled(mode == WindowMode.WindowMode.PREVIEW);
+                let canFullscreen = Global.modeController.getCanFullscreen();
+                fsAction.set_enabled(canFullscreen);
             }));
         this.application.add_action(fsAction);
 
