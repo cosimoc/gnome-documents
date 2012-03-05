@@ -143,7 +143,17 @@ FetchCollectionStateForSelectionJob.prototype = {
 
             let found = false;
             let notFound = false;
-            let sameResource = true;
+            let hidden = false;
+
+            // if the only object we are fetching collection state for is a
+            // collection itself, hide this if it's the same collection.
+            if (Object.keys(this._collectionsForItems).length == 1) {
+                let itemIdx = Object.keys(this._collectionsForItems)[0];
+                let item = Global.documentManager.getItemById(itemIdx);
+
+                if (item.id == collection.id)
+                    hidden = true;
+            }
 
             for (itemIdx in this._collectionsForItems) {
                 let item = Global.documentManager.getItemById(itemIdx);
@@ -157,7 +167,7 @@ FetchCollectionStateForSelectionJob.prototype = {
 
                 if ((item.resourceUrn != collection.resourceUrn) &&
                     (collection.identifier.indexOf(Query.LOCAL_COLLECTIONS_IDENTIFIER) == -1)) {
-                    sameResource = false;
+                    hidden = true;
                 }
             }
 
@@ -170,7 +180,7 @@ FetchCollectionStateForSelectionJob.prototype = {
                 // if all items are part of this collection...
                 state |= OrganizeCollectionState.ACTIVE;
 
-            if (!sameResource)
+            if (hidden)
                 state |= OrganizeCollectionState.HIDDEN;
 
             collectionState[collIdx] = state;
@@ -225,6 +235,10 @@ SetCollectionForSelectionJob.prototype = {
         let urns = Global.selectionController.getSelection();
         urns.forEach(Lang.bind(this,
             function(urn) {
+                // never add a collection to itself!!
+                if (urn == this._collectionUrn)
+                    return;
+
                 let query = Global.queryBuilder.buildSetCollectionQuery(urn,
                     this._collectionUrn, this._setting);
                 this._runningJobs++;
