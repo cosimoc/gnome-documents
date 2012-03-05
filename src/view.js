@@ -21,6 +21,7 @@
 
 const Gd = imports.gi.Gd;
 const Gdk = imports.gi.Gdk;
+const Gettext = imports.gettext;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 const _ = imports.gettext.gettext;
@@ -194,19 +195,27 @@ View.prototype = {
                 } else if (difference < 2 * DAY) {
                     dateRenderer.text = _("Yesterday");
                 } else if (difference < 7 * DAY) {
-                    dateRenderer.text = _("%d days ago").format(days);
+                    dateRenderer.text = Gettext.ngettext("%d day ago",
+                                                         "%d days ago",
+                                                         days).format(days);
                 } else if (difference < 14 * DAY) {
                     dateRenderer.text = _("Last week");
                 } else if (difference < 28 * DAY) {
-                    dateRenderer.text = _("%d weeks ago").format(weeks);
+                    dateRenderer.text = Gettext.ngettext("%d week ago",
+                                                         "%d weeks ago",
+                                                         weeks).format(weeks);
                 } else if (difference < 60 * DAY) {
                     dateRenderer.text = _("Last month");
                 } else if (difference < 360 * DAY) {
-                    dateRenderer.text = _("%d months ago").format(months);
+                    dateRenderer.text = Gettext.ngettext("%d month ago",
+                                                         "%d months ago",
+                                                         months).format(months);
                 } else if (difference < 730 * DAY) {
                     dateRenderer.text = _("Last year");
                 } else {
-                    dateRenderer.text = _("%d years ago").format(years);
+                    dateRenderer.text = Gettext.ngettext("%d year ago",
+                                                         "%d years ago",
+                                                         years).format(years);
                 }
             }));
     },
