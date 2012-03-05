@@ -60,6 +60,9 @@ ViewEmbed.prototype  = {
         this._scrolledWinView = null;
         this._scrolledWinPreview = null;
 
+        this._filter = new Gd.FullscreenFilter();
+        this._filter.connect('motion-event', Lang.bind(this, this._fullscreenMotionHandler));
+
         // the embed is a vertical ClutterBox
         this._overlayLayout = new Clutter.BinLayout();
         this.actor = new Clutter.Box({ layout_manager: this._overlayLayout });
@@ -170,10 +173,13 @@ ViewEmbed.prototype  = {
     _onFullscreenChanged: function(controller, fullscreen) {
         this._motionTimeoutId = 0;
 
-        if (fullscreen)
+        if (fullscreen) {
             this._createFullscreenToolbar();
-        else
+            this._filter.start();
+        } else {
+            this._filter.stop();
             this._destroyFullscreenToolbar();
+        }
 
         Gtk.Settings.get_default().gtk_application_prefer_dark_theme = fullscreen;
         this._toolbar.widget.visible = !fullscreen;
@@ -299,16 +305,14 @@ ViewEmbed.prototype  = {
 
         this._toolbar.setModel(this._docModel);
 
-        this._preview.widget.connect('motion-notify-event',
-                                     Lang.bind(this, this._fullscreenMotionHandler));
 
         this._scrolledWinPreview.add(this._preview.widget);
         this._preview.widget.grab_focus();
     },
 
-    _fullscreenMotionHandler: function(widget, event) {
+    _fullscreenMotionHandler: function() {
         if (!Global.modeController.getFullscreen())
-            return false;
+            return;
 
         // if we were idle fade in the toolbar, otherwise reset
         // the timeout
@@ -327,8 +331,6 @@ ViewEmbed.prototype  = {
 
                     return false;
             }));
-
-        return false;
     },
 
     _prepareForOverview: function() {
