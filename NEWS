@@ -1,3 +1,22 @@
+0.3.91 - "Cheesy Ghost"
+=======================
+
+- Add a thumbnail list OSD in preview
+- Add support for DnD of items out of the view
+- Add support for printing documents
+- Use checkboxes to render selections
+- Add an About dialog
+- Display date/time information in list view
+- Improve toolbar labels when searching or restricting search criteria
+- Add keywords to the desktop file for identification by desktop shells
+- Hide unavailable collections from the Organize collections dialog
+- Show source name for non-local collections in the Organize dialog
+- Don't fade out overlay controls when hovering over them in preview
+- Use ngettext() for plural strings where appropriate
+- Don't allow circular references in collections
+- Fix search by uppercase letters (Adel Gadllah)
+- Scroll down on space bar press in preview (Felipe Borges)
+
 0.3.90 - "Saved Soul"
 =====================
 
