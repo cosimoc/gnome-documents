@@ -21,7 +21,6 @@
 
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
-const _ = imports.gettext.gettext;
 
 const _ICON_SIZE = 128;
 
