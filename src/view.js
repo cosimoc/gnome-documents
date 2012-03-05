@@ -194,14 +194,14 @@ View.prototype = {
                 } else if (difference < 2 * DAY) {
                     dateRenderer.text = _("Yesterday");
                 } else if (difference < 7 * DAY) {
-                    dateRenderer.text = _("%s days ago").format(days.toString());
+                    dateRenderer.text = _("%d days ago").format(days);
                 } else if (difference < 14 * DAY) {
                     dateRenderer.text = _("Last week");
-                } else if (difference < 30 * DAY) {
-                    dateRenderer.text = _("%s weeks ago").format(weeks.toString());
+                } else if (difference < 28 * DAY) {
+                    dateRenderer.text = _("%d weeks ago").format(weeks);
                 } else if (difference < 60 * DAY) {
                     dateRenderer.text = _("Last month");
-                } else if (difference < 365 * DAY) {
+                } else if (difference < 360 * DAY) {
                     dateRenderer.text = _("%d months ago").format(months);
                 } else if (difference < 730 * DAY) {
                     dateRenderer.text = _("Last year");
