@@ -171,15 +171,20 @@ ViewEmbed.prototype  = {
     },
 
     _onFullscreenChanged: function(controller, fullscreen) {
-        this._motionTimeoutId = 0;
+        if (this._motionTimeoutId != 0) {
+            Mainloop.source_remove(this._motionTimeoutId);
+            this._motionTimeoutId = 0;
+        }
 
         if (fullscreen)
             this._filter.start();
         else
             this._filter.stop();
 
-        if (!fullscreen)
+        if (!fullscreen) {
             this._destroyFullscreenToolbar();
+            this._destroyPreviewEmbed();
+        }
 
         Gtk.Settings.get_default().gtk_application_prefer_dark_theme = fullscreen;
         this._toolbar.widget.visible = !fullscreen;
@@ -213,6 +218,13 @@ ViewEmbed.prototype  = {
     _destroyFullscreenToolbar: function() {
         this._fsToolbar.widget.destroy();
         this._fsToolbar = null;
+    },
+
+    _destroyPreviewEmbed: function() {
+        if (this._previewEmbed) {
+            this._previewEmbed.actor.destroy();
+            this._previewEmbed = null;
+        }
     },
 
     _moveOutBackground: function() {
@@ -300,6 +312,8 @@ ViewEmbed.prototype  = {
         this._spinnerBox.moveOut();
         Global.modeController.setCanFullscreen(true);
         this._preview = new Preview.PreviewView(this._docModel);
+        this._previewEmbed = new Preview.PreviewEmbed(this._docModel,
+            this._overlayLayout, this._contentsActor);
         this._createFullscreenToolbar();
 
         this._scrolledWinPreview.add(this._preview.widget);
@@ -312,10 +326,12 @@ ViewEmbed.prototype  = {
 
         // if we were idle fade in the toolbar, otherwise reset
         // the timeout
-        if (this._motionTimeoutId == 0)
+        if (this._motionTimeoutId == 0) {
             this._fsToolbar.show();
-        else
+            this._previewEmbed.thumbBar.show();
+        } else {
             Mainloop.source_remove(this._motionTimeoutId);
+        }
 
         this._motionTimeoutId = Mainloop.timeout_add_seconds
             (_FULLSCREEN_TOOLBAR_TIMEOUT, Lang.bind(this,
@@ -324,6 +340,8 @@ ViewEmbed.prototype  = {
 
                     if (this._fsToolbar)
                         this._fsToolbar.hide();
+
+                    this._previewEmbed.thumbBar.hide();
 
                     return false;
             }));
