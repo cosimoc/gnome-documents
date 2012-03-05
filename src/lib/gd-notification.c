@@ -100,9 +100,6 @@ static void     gd_notification_add                            (GtkContainer    
 /* signals handlers */
 static void     gd_notification_close_button_clicked_cb        (GtkWidget       *widget,
                                                                  gpointer         user_data);
-static void     gd_notification_action_button_clicked_cb       (GtkWidget       *widget,
-                                                                 gpointer         user_data);
-
 
 G_DEFINE_TYPE(GdNotification, gd_notification, GTK_TYPE_BIN);
 
@@ -196,12 +193,10 @@ gd_notification_realize (GtkWidget *widget)
   GdNotificationPrivate *priv = notification->priv;
   GtkBin *bin = GTK_BIN (widget);
   GtkAllocation allocation;
-  GtkAllocation view_allocation;
   GtkWidget *child;
   GdkWindow *window;
   GdkWindowAttr attributes;
   gint attributes_mask;
-  gint event_mask;
 
   gtk_widget_set_realized (widget, TRUE);
 
@@ -410,7 +405,7 @@ gd_notification_visibility_notify_event (GtkWidget          *widget,
   GdNotificationPrivate *priv = notification->priv;
 
   if (!gtk_widget_get_visible (widget))
-    return;
+    return FALSE;
 
   if (priv->waiting_for_viewable)
     {
@@ -440,6 +435,7 @@ gd_notification_class_init (GdNotificationClass *klass)
   object_class->get_property = gd_notification_get_property;
 
   widget_class->show = gd_notification_show;
+  widget_class->hide = gd_notification_hide;
   widget_class->destroy = gd_notification_destroy;
   widget_class->get_preferred_width = gd_notification_get_preferred_width;
   widget_class->get_preferred_height_for_width = gd_notification_get_preferred_height_for_width;
@@ -817,8 +813,6 @@ gd_notification_size_allocate (GtkWidget *widget,
   GtkBorder padding;
   GtkRequisition button_req;
   GtkWidget *child;
-  int button_width;
-  int button_height;
 
   gtk_widget_set_allocation (widget, allocation);
 
@@ -923,7 +917,6 @@ static void
 gd_notification_close_button_clicked_cb (GtkWidget *widget, gpointer user_data)
 {
   GdNotification *notification = GD_NOTIFICATION(user_data);
-  GdNotificationPrivate *priv = notification->priv;
 
   gd_notification_dismiss (notification);
 }
