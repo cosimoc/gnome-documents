@@ -173,13 +173,13 @@ ViewEmbed.prototype  = {
     _onFullscreenChanged: function(controller, fullscreen) {
         this._motionTimeoutId = 0;
 
-        if (fullscreen) {
-            this._createFullscreenToolbar();
+        if (fullscreen)
             this._filter.start();
-        } else {
+        else
             this._filter.stop();
+
+        if (!fullscreen)
             this._destroyFullscreenToolbar();
-        }
 
         Gtk.Settings.get_default().gtk_application_prefer_dark_theme = fullscreen;
         this._toolbar.widget.visible = !fullscreen;
@@ -295,16 +295,12 @@ ViewEmbed.prototype  = {
         }
 
         this._docModel = EvView.DocumentModel.new_with_document(evDoc);
+        this._toolbar.setModel(this._docModel);
 
         this._spinnerBox.moveOut();
         Global.modeController.setCanFullscreen(true);
         this._preview = new Preview.PreviewView(this._docModel);
-
-        if (this._fsToolbar)
-            this._fsToolbar.setModel(this._docModel);
-
-        this._toolbar.setModel(this._docModel);
-
+        this._createFullscreenToolbar();
 
         this._scrolledWinPreview.add(this._preview.widget);
         this._preview.widget.grab_focus();
