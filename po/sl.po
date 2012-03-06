@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-03-01 18:30+0000\n"
-"PO-Revision-Date: 2012-03-01 21:30+0100\n"
+"POT-Creation-Date: 2012-03-06 10:41+0000\n"
+"PO-Revision-Date: 2012-03-06 13:00+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
-"Language: Slovenian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: Slovenian\n"
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0);\n"
 "X-Poedit-Country: SLOVENIA\n"
 "X-Poedit-Language: Slovenian\n"
@@ -35,7 +35,7 @@ msgid "Docs;PDF;Document;"
 msgstr "Doc;PDF;Dokumenti;Word"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:1
-#: ../src/application.js:127
+#: ../src/application.js:128
 msgid "View as"
 msgstr "Poglej kot"
 
@@ -75,23 +75,23 @@ msgstr "Razpeto okno"
 msgid "Window maximized state"
 msgstr "Razpeto glavno okno"
 
-#: ../src/application.js:125
+#: ../src/application.js:126
 msgid "Grid"
 msgstr "Mreža"
 
-#: ../src/application.js:126
+#: ../src/application.js:127
 msgid "List"
 msgstr "Seznam"
 
-#: ../src/application.js:130
+#: ../src/application.js:131
 msgid "Fullscreen"
 msgstr "Celozaslonski način"
 
-#: ../src/application.js:133
+#: ../src/application.js:134
 msgid "About Documents"
 msgstr "O programu"
 
-#: ../src/application.js:134
+#: ../src/application.js:135
 msgid "Quit"
 msgstr "Končaj"
 
@@ -157,11 +157,33 @@ msgstr[1] "Naloži še %d dokument"
 msgstr[2] "Naloži še %d dokumenta"
 msgstr[3] "Naloži še %d dokumente"
 
-#: ../src/mainToolbar.js:119
+#: ../src/mainToolbar.js:194
+msgid "New and Recent"
+msgstr "Novo in nedavno"
+
+#: ../src/mainToolbar.js:201
+#, c-format
+msgid "Results for \"%s\""
+msgstr "Resultati za \"%s\""
+
+#: ../src/mainToolbar.js:203
+msgid "filtered by title"
+msgstr "filtrirano po naslovu"
+
+#: ../src/mainToolbar.js:205
+msgid "filtered by author"
+msgstr "filtrirano po avtorju"
+
+#: ../src/mainToolbar.js:218
+#, c-format
+msgid "%d of %d"
+msgstr "%d od %d"
+
+#: ../src/mainToolbar.js:224
 msgid "Click on items to select them"
 msgstr "S klikom se predmeti izberejo."
 
-#: ../src/mainToolbar.js:121
+#: ../src/mainToolbar.js:226
 #, c-format
 msgid "%d selected"
 msgid_plural "%d selected"
@@ -170,26 +192,22 @@ msgstr[1] "%d izbran"
 msgstr[2] "%d izbrana"
 msgstr[3] "%d izbrani"
 
-#: ../src/mainToolbar.js:168
-msgid "New and Recent"
-msgstr "Novo in nedavno"
-
-#: ../src/mainToolbar.js:190
-#, c-format
-msgid "(%d of %d)"
-msgstr "(%d od %d)"
-
-#: ../src/mainWindow.js:296
+#: ../src/mainWindow.js:254
 msgid "translator-credits"
 msgstr "Matej Urbančič <mateju@svn.gnome.org>"
 
-#: ../src/mainWindow.js:297
+#: ../src/mainWindow.js:255
 msgid "GNOME Documents"
 msgstr "Dokumenti GNOME"
 
-#: ../src/mainWindow.js:298
+#: ../src/mainWindow.js:256
 msgid "A document manager application"
 msgstr "Program za upravljanje z dokumenti"
+
+#: ../src/notifications.js:85
+#, c-format
+msgid "Printing \"%s\": %s"
+msgstr "Tiskanje \"%s\": %s"
 
 #: ../src/searchbar.js:86
 msgid "Category"
@@ -248,34 +266,34 @@ msgstr "Naslov"
 msgid "Author"
 msgstr "Avtor"
 
-#: ../src/selections.js:658
+#: ../src/selections.js:698
 msgid "Organize"
 msgstr "Organiziraj"
 
-#: ../src/selections.js:665
+#: ../src/selections.js:705
 msgid "Delete"
 msgstr "Izbriši"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:756
-#: ../src/view.js:67
+#: ../src/selections.js:808
+#: ../src/view.js:69
 #, c-format
 msgid "Open with %s"
 msgstr "Odpri z %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:759
-#: ../src/view.js:70
+#: ../src/selections.js:811
+#: ../src/view.js:72
 msgid "Open"
 msgstr "Odpri"
 
-#: ../src/selections.js:772
-#: ../src/view.js:80
+#: ../src/selections.js:824
+#: ../src/view.js:82
 msgid "Remove from favorites"
 msgstr "Odstrani iz priljubljenih"
 
-#: ../src/selections.js:776
-#: ../src/view.js:80
+#: ../src/selections.js:828
+#: ../src/view.js:82
 msgid "Add to favorites"
 msgstr "Dodaj med priljubljene"
 
@@ -290,6 +308,58 @@ msgstr "Viri"
 #: ../src/spinnerBox.js:58
 msgid "Loading..."
 msgstr "Nalaganje ..."
+
+#: ../src/view.js:196
+msgid "Yesterday"
+msgstr "Včeraj"
+
+#: ../src/view.js:198
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%d dni nazaj"
+msgstr[1] "%d dan nazaj"
+msgstr[2] "%d dneva nazaj"
+msgstr[3] "%d dni nazaj"
+
+#: ../src/view.js:202
+msgid "Last week"
+msgstr "Prejšnji teden"
+
+#: ../src/view.js:204
+#, c-format
+msgid "%d week ago"
+msgid_plural "%d weeks ago"
+msgstr[0] "%d tednov nazaj"
+msgstr[1] "%d teden nazaj"
+msgstr[2] "%d tedna nazaj"
+msgstr[3] "%d tedne nazaj"
+
+#: ../src/view.js:208
+msgid "Last month"
+msgstr "Prejšnji mesec"
+
+#: ../src/view.js:210
+#, c-format
+msgid "%d month ago"
+msgid_plural "%d months ago"
+msgstr[0] "%d mesecev nazaj"
+msgstr[1] "%d mesec nazaj"
+msgstr[2] "%d meseca nazaj"
+msgstr[3] "%d mesece nazaj"
+
+#: ../src/view.js:214
+msgid "Last year"
+msgstr "Lansko leto"
+
+#: ../src/view.js:216
+#, c-format
+msgid "%d year ago"
+msgid_plural "%d years ago"
+msgstr[0] "%d let nazaj"
+msgstr[1] "%d leto nazaj"
+msgstr[2] "%d leti nazaj"
+msgstr[3] "%d leta nazaj"
 
 #~ msgid "Enable list view"
 #~ msgstr "Omogoči seznamski pogled"
