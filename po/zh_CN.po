@@ -4,36 +4,43 @@
 # 甘 露 <rhythm.gan@gmail.com>, 2011.
 # YunQiang Su <wzssyqa@gmail.com>, 2011.
 # Wylmer Wang <wantinghard@gmail.com>, 2011.
+# EL8LatSPQ <el8latspq@hotmail.com>, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-11-23 19:35+0000\n"
-"PO-Revision-Date: 2011-11-25 21:50+0800\n"
-"Last-Translator: Wylmer Wang <wantinghard@gmail.com>\n"
+"POT-Creation-Date: 2012-03-05 22:21+0000\n"
+"PO-Revision-Date: 2012-03-05 19:37+0800\n"
+"Last-Translator: EL8LatSPQ <el8latspq@hotmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bits\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../data/gnome-documents.desktop.in.in.h:1
-msgid "Access, manage and share documents"
-msgstr "访问，管理以及分享文档"
-
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:52
+#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:54
 msgid "Documents"
 msgstr "文档"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "Enable list view"
-msgstr "启用列表视图"
+#: ../data/gnome-documents.desktop.in.in.h:2
+msgid "Access, manage and share documents"
+msgstr "访问，管理以及分享文档"
+
+#: ../data/gnome-documents.desktop.in.in.h:3
+msgid "Docs;PDF;Document;"
+msgstr "Docs;PDF;Document;文件;文档;"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:128
+#, fuzzy
+msgid "View as"
+msgstr "查看为"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:2
-msgid "List view"
-msgstr "列表视图"
+#, fuzzy
+msgid "View as type"
+msgstr "查看为类型"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:3
 msgid "The active source filter"
@@ -44,12 +51,12 @@ msgid "The last active source filter"
 msgstr "最后活动的源过滤器"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:5
-msgid "Window maximized"
-msgstr "窗口已最大化"
+msgid "Window size"
+msgstr "窗口大小"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:6
-msgid "Window maximized state"
-msgstr "窗口最大化状态"
+msgid "Window size (width and height)."
+msgstr "窗口大小(宽度和高度)。"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:7
 msgid "Window position"
@@ -60,12 +67,35 @@ msgid "Window position (x and y)."
 msgstr "窗口位置(水平和竖直)。"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:9
-msgid "Window size"
-msgstr "窗口大小"
+msgid "Window maximized"
+msgstr "窗口已最大化"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:10
-msgid "Window size (width and height)."
-msgstr "窗口大小(宽度和高度)。"
+msgid "Window maximized state"
+msgstr "窗口最大化状态"
+
+#: ../src/application.js:126
+#, fuzzy
+msgid "Grid"
+msgstr "网格"
+
+#: ../src/application.js:127
+#, fuzzy
+#| msgid "List view"
+msgid "List"
+msgstr "列表"
+
+#: ../src/application.js:131
+msgid "Fullscreen"
+msgstr "全屏"
+
+#: ../src/application.js:134
+msgid "About Documents"
+msgstr "关于文档"
+
+#: ../src/application.js:135
+msgid "Quit"
+msgstr "退出"
 
 #: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
@@ -107,9 +137,18 @@ msgstr "无法加载“%s”进行预览"
 msgid "Unable to fetch the list of documents"
 msgstr "无法获取文档清单"
 
-#: ../src/lib/gd-pdf-loader.c:207
+#. right section
+#: ../src/lib/gd-main-toolbar.c:269
+msgid "Done"
+msgstr "完成"
+
+#: ../src/lib/gd-pdf-loader.c:208
 msgid "Unable to load the document"
 msgstr "无法加载文档"
+
+#: ../src/lib/gd-pdf-loader.c:489
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr "无法找到“unoconv”，请检查你的 LibreOffice 安装"
 
 #: ../src/loadMore.js:70
 #, c-format
@@ -117,29 +156,65 @@ msgid "Load %d more document"
 msgid_plural "Load %d more documents"
 msgstr[0] "再加载 %d 份文档"
 
-#: ../src/mainToolbar.js:179
+#: ../src/mainToolbar.js:194
+msgid "New and Recent"
+msgstr "新建及最近文档"
+
+#: ../src/mainToolbar.js:201
+#, c-format
+msgid "Results for \"%s\""
+msgstr ""
+
+#: ../src/mainToolbar.js:203
+msgid "filtered by title"
+msgstr ""
+
+#: ../src/mainToolbar.js:205
+msgid "filtered by author"
+msgstr ""
+
+#: ../src/mainToolbar.js:218
+#, fuzzy, c-format
+#| msgid "(%d of %d)"
+msgid "%d of %d"
+msgstr "(%d / %d)"
+
+#: ../src/mainToolbar.js:224
 msgid "Click on items to select them"
 msgstr "点击项目来选择它们"
 
-#: ../src/mainToolbar.js:181
+#: ../src/mainToolbar.js:226
 #, c-format
 msgid "%d selected"
-msgstr "已选 %d 项"
+msgid_plural "%d selected"
+msgstr[0] "已选 %d 项"
 
-#: ../src/mainToolbar.js:208
-msgid "Done"
-msgstr "完成"
+#: ../src/mainWindow.js:254
+msgid "translator-credits"
+msgstr ""
+"甘 露 <rhythm.gan@gmail.com>, 2011\n"
+"YunQiang Su <wzssyqa@gmail.com>, 2011\n"
+"Wylmer Wang <wantinghard@gmail.com>, 2011\n"
+"EL8LatSPQ <el8latspq@hotmail.com>, 2012"
 
-#: ../src/mainToolbar.js:334
+#: ../src/mainWindow.js:255
+msgid "GNOME Documents"
+msgstr "GNOME 文档"
+
+#: ../src/mainWindow.js:256
+msgid "A document manager application"
+msgstr "一个文档管理程序"
+
+#: ../src/notifications.js:85
 #, c-format
-msgid "(%d of %d)"
-msgstr "(%d / %d)"
+msgid "Printing \"%s\": %s"
+msgstr ""
 
 #: ../src/searchbar.js:86
 msgid "Category"
 msgstr "类别"
 
-#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:204
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:210
 #: ../src/sources.js:94
 msgid "All"
 msgstr "全部"
@@ -177,44 +252,50 @@ msgstr "电子表格"
 msgid "Text Documents"
 msgstr "文本文档"
 
-#: ../src/searchbar.js:201
+#. Translators: this is a verb that refers to "All", "Title" and "Author",
+#. as in "Match All", "Match Title" and "Match Author"
+#: ../src/searchbar.js:207
 msgid "Match"
 msgstr "匹配"
 
-#: ../src/searchbar.js:206
+#: ../src/searchbar.js:212
 msgid "Title"
 msgstr "标题"
 
-#: ../src/searchbar.js:208
+#: ../src/searchbar.js:214
 msgid "Author"
 msgstr "作者"
 
-#: ../src/selections.js:658
+#: ../src/selections.js:698
 msgid "Organize"
 msgstr "组织"
 
-#: ../src/selections.js:665
+#: ../src/selections.js:705
 msgid "Delete"
 msgstr "删除"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:756 ../src/view.js:66
+#: ../src/selections.js:808 ../src/view.js:69
 #, c-format
 msgid "Open with %s"
 msgstr "使用 %s 打开"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:759 ../src/view.js:69
+#: ../src/selections.js:811 ../src/view.js:72
 msgid "Open"
 msgstr "打开"
 
-#: ../src/selections.js:772 ../src/view.js:79
+#: ../src/selections.js:824 ../src/view.js:82
 msgid "Remove from favorites"
 msgstr "从收藏中移除"
 
-#: ../src/selections.js:776 ../src/view.js:79
+#: ../src/selections.js:828 ../src/view.js:82
 msgid "Add to favorites"
 msgstr "添加到收藏"
+
+#: ../src/shellSearchProvider.js:332
+msgid "Untitled Document"
+msgstr "无标题文档"
 
 #: ../src/sources.js:90
 msgid "Sources"
@@ -224,8 +305,48 @@ msgstr "源"
 msgid "Loading..."
 msgstr "正在加载..."
 
-#~ msgid "New and Recent"
-#~ msgstr "新建及最近文档"
+#: ../src/view.js:196
+msgid "Yesterday"
+msgstr ""
+
+#: ../src/view.js:198
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] ""
+
+#: ../src/view.js:202
+msgid "Last week"
+msgstr ""
+
+#: ../src/view.js:204
+#, c-format
+msgid "%d week ago"
+msgid_plural "%d weeks ago"
+msgstr[0] ""
+
+#: ../src/view.js:208
+msgid "Last month"
+msgstr ""
+
+#: ../src/view.js:210
+#, c-format
+msgid "%d month ago"
+msgid_plural "%d months ago"
+msgstr[0] ""
+
+#: ../src/view.js:214
+msgid "Last year"
+msgstr ""
+
+#: ../src/view.js:216
+#, c-format
+msgid "%d year ago"
+msgid_plural "%d years ago"
+msgstr[0] ""
+
+#~ msgid "Enable list view"
+#~ msgstr "启用列表视图"
 
 #~ msgid "Private"
 #~ msgstr "私人"
