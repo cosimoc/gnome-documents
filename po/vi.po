@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: gnome-documents gnome-3-2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-02-29 22:24+0000\n"
-"PO-Revision-Date: 2012-03-03 23:11+0700\n"
+"POT-Creation-Date: 2012-03-05 22:21+0000\n"
+"PO-Revision-Date: 2012-03-08 19:27+0700\n"
 "Last-Translator: Nguyễn Thái Ngọc Duy <pclouds@gmail.com>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -26,11 +26,10 @@ msgid "Access, manage and share documents"
 msgstr "Truy cập, quản lý và chia sẻ tài liệu"
 
 #: ../data/gnome-documents.desktop.in.in.h:3
-#| msgid "Document"
 msgid "Docs;PDF;Document;"
 msgstr "Docs;Tài;liệu;PDF;Document;"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:127
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:128
 msgid "View as"
 msgstr "Xem kiểu"
 
@@ -70,25 +69,23 @@ msgstr "Cửa sổ đã phóng to"
 msgid "Window maximized state"
 msgstr "Trạng thái phóng to cửa sổ"
 
-#: ../src/application.js:125
+#: ../src/application.js:126
 msgid "Grid"
 msgstr "Lưới"
 
-#: ../src/application.js:126
-#| msgid "List view"
+#: ../src/application.js:127
 msgid "List"
 msgstr "Danh sách"
 
-#: ../src/application.js:130
+#: ../src/application.js:131
 msgid "Fullscreen"
 msgstr "Toàn màn hình"
 
-#: ../src/application.js:133
-#| msgid "Documents"
+#: ../src/application.js:134
 msgid "About Documents"
 msgstr "Giới thiệu Tài liệu"
 
-#: ../src/application.js:134
+#: ../src/application.js:135
 msgid "Quit"
 msgstr "Thoát"
 
@@ -137,7 +134,6 @@ msgid "Done"
 msgstr "Hoàn tất"
 
 #: ../src/lib/gd-pdf-loader.c:208
-#| msgid "Unable to fetch the list of documents"
 msgid "Unable to load the document"
 msgstr "Không thể tải tài liệu"
 
@@ -149,43 +145,59 @@ msgstr ""
 
 #: ../src/loadMore.js:70
 #, c-format
-#| msgid "Load %d more documents"
-#| msgid_plural "Load %d more documents"
 msgid "Load %d more document"
 msgid_plural "Load %d more documents"
 msgstr[0] "Nạp %d tài liệu nữa"
 
-#: ../src/mainToolbar.js:119
+#: ../src/mainToolbar.js:194
+msgid "New and Recent"
+msgstr "Mới và gần đây"
+
+#: ../src/mainToolbar.js:201
+#, c-format
+msgid "Results for \"%s\""
+msgstr "Kết quả của \"%s\""
+
+#: ../src/mainToolbar.js:203
+msgid "filtered by title"
+msgstr "lọc theo tựa"
+
+#: ../src/mainToolbar.js:205
+msgid "filtered by author"
+msgstr "lọc theo tác giả"
+
+#: ../src/mainToolbar.js:218
+#, c-format
+#| msgid "(%d of %d)"
+msgid "%d of %d"
+msgstr "%d trên %d"
+
+#: ../src/mainToolbar.js:224
 msgid "Click on items to select them"
 msgstr "Nhấn để chọn"
 
-#: ../src/mainToolbar.js:121
+#: ../src/mainToolbar.js:226
 #, c-format
 msgid "%d selected"
 msgid_plural "%d selected"
 msgstr[0] "chọn %d"
 
-#: ../src/mainToolbar.js:168
-msgid "New and Recent"
-msgstr "Mới và gần đây"
-
-#: ../src/mainToolbar.js:190
-#, c-format
-msgid "(%d of %d)"
-msgstr "(%d trên %d)"
-
-#: ../src/mainWindow.js:296
+#: ../src/mainWindow.js:254
 msgid "translator-credits"
 msgstr "Nhóm Việt hoá GNOME"
 
-#: ../src/mainWindow.js:297
-#| msgid "Documents"
+#: ../src/mainWindow.js:255
 msgid "GNOME Documents"
 msgstr "Tài liệu GNOME"
 
-#: ../src/mainWindow.js:298
+#: ../src/mainWindow.js:256
 msgid "A document manager application"
 msgstr "Ứng dụng quản lý tài liệu"
+
+#: ../src/notifications.js:85
+#, c-format
+msgid "Printing \"%s\": %s"
+msgstr "In \"%s\": %s"
 
 #: ../src/searchbar.js:86
 msgid "Category"
@@ -213,22 +225,18 @@ msgid "Collections"
 msgstr "Bộ sưu tập"
 
 #: ../src/searchbar.js:147
-#| msgid "Documents"
 msgid "PDF Documents"
 msgstr "Tài liệu PDF"
 
 #: ../src/searchbar.js:150
-#| msgid "Presentation"
 msgid "Presentations"
 msgstr "Trình diễn"
 
 #: ../src/searchbar.js:153
-#| msgid "Spreadsheet"
 msgid "Spreadsheets"
 msgstr "Bảng tính"
 
 #: ../src/searchbar.js:156
-#| msgid "Documents"
 msgid "Text Documents"
 msgstr "Văn bản"
 
@@ -246,35 +254,34 @@ msgstr "Tựa đề"
 msgid "Author"
 msgstr "Tác giả"
 
-#: ../src/selections.js:663
+#: ../src/selections.js:698
 msgid "Organize"
 msgstr "Tổ chức"
 
-#: ../src/selections.js:670
+#: ../src/selections.js:705
 msgid "Delete"
 msgstr "Xoá"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:761 ../src/view.js:67
+#: ../src/selections.js:808 ../src/view.js:69
 #, c-format
 msgid "Open with %s"
 msgstr "Mở với %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:764 ../src/view.js:70
+#: ../src/selections.js:811 ../src/view.js:72
 msgid "Open"
 msgstr "Mở"
 
-#: ../src/selections.js:777 ../src/view.js:80
+#: ../src/selections.js:824 ../src/view.js:82
 msgid "Remove from favorites"
 msgstr "Bỏ đánh dấu yêu thích"
 
-#: ../src/selections.js:781 ../src/view.js:80
+#: ../src/selections.js:828 ../src/view.js:82
 msgid "Add to favorites"
 msgstr "Đánh dấu yêu thích"
 
 #: ../src/shellSearchProvider.js:332
-#| msgid "Document"
 msgid "Untitled Document"
 msgstr "Tài liệu không tên"
 
@@ -285,6 +292,46 @@ msgstr "Nguồn"
 #: ../src/spinnerBox.js:58
 msgid "Loading..."
 msgstr "Đang nạp..."
+
+#: ../src/view.js:196
+msgid "Yesterday"
+msgstr "Hôm qua"
+
+#: ../src/view.js:198
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%d ngày trước"
+
+#: ../src/view.js:202
+msgid "Last week"
+msgstr "Tuần trước"
+
+#: ../src/view.js:204
+#, c-format
+msgid "%d week ago"
+msgid_plural "%d weeks ago"
+msgstr[0] "%d tuần trước"
+
+#: ../src/view.js:208
+msgid "Last month"
+msgstr "Tháng trước"
+
+#: ../src/view.js:210
+#, c-format
+msgid "%d month ago"
+msgid_plural "%d months ago"
+msgstr[0] "%d tháng trước"
+
+#: ../src/view.js:214
+msgid "Last year"
+msgstr "Năm trước"
+
+#: ../src/view.js:216
+#, c-format
+msgid "%d year ago"
+msgid_plural "%d years ago"
+msgstr[0] "%d năm trước"
 
 #~ msgid "Enable list view"
 #~ msgstr "Bật trình bày dạng danh sách"
