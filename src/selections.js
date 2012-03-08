@@ -594,15 +594,21 @@ OrganizeCollectionDialog.prototype = {
                                        modal: true,
                                        destroy_with_parent: true,
                                        default_width: 400,
-                                       default_height: 200 });
-        this.widget.add_button('gtk-add', OrganizeCollectionDialogResponse.ADD);
+                                       default_height: 250 });
 
+        this.widget.add_button('gtk-add', OrganizeCollectionDialogResponse.ADD);
         this.widget.add_button('gtk-ok', Gtk.ResponseType.OK);
         this.widget.set_default_response(Gtk.ResponseType.OK);
 
         let contentArea = this.widget.get_content_area();
+        let sw = new Gtk.ScrolledWindow({ shadow_type: Gtk.ShadowType.IN,
+                                          margin_left: 5,
+                                          margin_right: 5,
+                                          margin_bottom: 3 });
         let collView = new OrganizeCollectionView();
-        contentArea.add(collView.widget);
+
+        sw.add(collView.widget);
+        contentArea.add(sw);
 
         this.widget.connect('response', Lang.bind(this,
             function(widget, response) {
@@ -610,7 +616,7 @@ OrganizeCollectionDialog.prototype = {
                     collView.addCollection();
             }));
 
-        this.widget.show();
+        this.widget.show_all();
     }
 };
 
