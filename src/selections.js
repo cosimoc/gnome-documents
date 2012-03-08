@@ -38,6 +38,8 @@ const Utils = imports.utils;
 const Lang = imports.lang;
 const Signals = imports.signals;
 
+const _COLLECTION_PLACEHOLDER_ID = 'collection-placeholder';
+
 // fetch all the collections a given item is part of
 function FetchCollectionsJob(urn) {
     this._init(urn);
@@ -404,7 +406,7 @@ OrganizeCollectionModel.prototype = {
 
         let iter = this.model.append();
         Gd.organize_store_set(this.model, iter,
-                              'collection-placeholder', '', OrganizeCollectionState.ACTIVE);
+                              _COLLECTION_PLACEHOLDER_ID, '', OrganizeCollectionState.ACTIVE);
 
         let placeholderPath = this.model.get_path(iter);
         if (placeholderPath != null)
@@ -547,9 +549,11 @@ OrganizeCollectionView.prototype = {
 
     _checkCellFunc: function(col, cell, model, iter) {
         let state = model.get_value(iter, OrganizeModelColumns.STATE);
+        let id = model.get_value(iter, OrganizeModelColumns.ID);
 
         cell.active = (state & OrganizeCollectionState.ACTIVE);
         cell.inconsistent = (state & OrganizeCollectionState.INCONSISTENT);
+        cell.visible = (id != _COLLECTION_PLACEHOLDER_ID);
     },
 
     _detailCellFunc: function(col, cell, model, iter) {
