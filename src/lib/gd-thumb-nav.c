@@ -71,6 +71,7 @@ gd_thumb_nav_scroll_event (GtkWidget *widget, GdkEventScroll *event, gpointer us
 	GdThumbNav *nav = GD_THUMB_NAV (user_data);
 	gint inc = GD_THUMB_NAV_SCROLL_INC * 3;
 	gdouble upper, page_size, value;
+	gdouble delta_x, delta_y;
 
 	switch (event->direction) {
 	case GDK_SCROLL_UP:
@@ -82,6 +83,20 @@ gd_thumb_nav_scroll_event (GtkWidget *widget, GdkEventScroll *event, gpointer us
 	case GDK_SCROLL_RIGHT:
 		break;
 
+        case GDK_SCROLL_SMOOTH:
+		gdk_event_get_scroll_deltas ((const GdkEvent *) event,
+					     &delta_x, &delta_y);
+
+		if (delta_x == 0) {
+			/* we only moved in the y direction, look at which direction */
+			if (delta_y < 0)
+				inc *= -1;
+		} else if (delta_x < 0) {
+			/* if we moved in the x direction too, ignore the y */
+			inc *= -1;
+		}
+
+		break;
 	default:
 		g_assert_not_reached ();
 		return FALSE;
