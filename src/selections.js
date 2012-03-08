@@ -595,6 +595,25 @@ SelectionController.prototype = {
     _init: function() {
         this._selection = [];
         this._selectionMode = false;
+
+        Global.documentManager.connect('item-removed',
+                                       Lang.bind(this, this._onDocumentRemoved));
+    },
+
+    _onDocumentRemoved: function(manager, item) {
+        let changed = false;
+        let filtered = this._selection.filter(Lang.bind(this,
+            function(value, index) {
+                if (item.id == value)
+                    changed = true;
+
+                return (item.id != value);
+            }));
+
+        if (changed) {
+            this._selection = filtered;
+            this.emit('selection-changed', this._selection);
+        }
     },
 
     setSelection: function(selection) {
