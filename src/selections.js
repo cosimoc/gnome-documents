@@ -327,7 +327,7 @@ function OrganizeCollectionModel() {
 OrganizeCollectionModel.prototype = {
     _init: function() {
         this.model = Gd.create_organize_store();
-        this._placeholderPath = null;
+        this._placeholderRef = null;
 
         this._collAddedId =
             Global.collectionManager.connect('item-added',
@@ -339,18 +339,6 @@ OrganizeCollectionModel.prototype = {
         // populate the model
         let job = new FetchCollectionStateForSelectionJob();
         job.run(Lang.bind(this, this._onFetchCollectionStateForSelection));
-    },
-
-    _clearPlaceholder: function() {
-        // remove the placeholder if it's here
-        if (this._placeholderPath) {
-            let placeholderIter = this.model.get_iter(this._placeholderPath)[1];
-
-            if (placeholderIter) {
-                this.model.remove(placeholderIter);
-                this._placeholderPath = null;
-            }
-        }
     },
 
     _findCollectionIter: function(item) {
@@ -372,7 +360,7 @@ OrganizeCollectionModel.prototype = {
     },
 
     _onFetchCollectionStateForSelection: function(collectionState) {
-        this._clearPlaceholder();
+        this.removePlaceholder();
 
         for (idx in collectionState) {
             let item = Global.collectionManager.getItemById(idx);
@@ -411,9 +399,38 @@ OrganizeCollectionModel.prototype = {
         this._refreshState();
     },
 
-    setPlaceholder: function(path) {
-        this._clearPlaceholder();
-        this._placeholderPath = path;
+    addPlaceholder: function() {
+        this.removePlaceholder();
+
+        let iter = this.model.append();
+        Gd.organize_store_set(this.model, iter,
+                              'collection-placeholder', '', OrganizeCollectionState.ACTIVE);
+
+        let placeholderPath = this.model.get_path(iter);
+        if (placeholderPath != null)
+            this._placeholderRef = Gtk.TreeRowReference.new(this.model, placeholderPath);
+
+        return placeholderPath;
+    },
+
+    removePlaceholder: function() {
+        // remove the placeholder if it's here
+        if (this._placeholderRef) {
+            let placeholderPath = this._placeholderRef.get_path();
+            let placeholderIter = this.model.get_iter(placeholderPath)[1];
+
+            if (placeholderIter)
+                this.model.remove(placeholderIter);
+
+            this._placeholderRef = null;
+        }
+    },
+
+    forgetPlaceholder: function() {
+        let path = this._placeholderRef.get_path();
+        this._placeholderRef = null;
+
+        return path;
     },
 
     destroy: function() {
@@ -435,8 +452,6 @@ function OrganizeCollectionView() {
 
 OrganizeCollectionView.prototype = {
     _init: function() {
-        this._addCollectionPath = null;
-
         this._model = new OrganizeCollectionModel();
         this.widget = new Gtk.TreeView({ headers_visible: false,
                                          vexpand: true,
@@ -472,7 +487,6 @@ OrganizeCollectionView.prototype = {
 
         this._rendererText.connect('edited', Lang.bind(this, this._onTextEdited));
         this._rendererText.connect('editing-canceled', Lang.bind(this, this._onTextEditCanceled));
-        this._rendererText.connect('editing-started', Lang.bind(this, this._onTextEditStarted));
 
         this.widget.show();
     },
@@ -491,38 +505,44 @@ OrganizeCollectionView.prototype = {
             }));
     },
 
-    _onTextEdited: function(cell, pathStr, newText) {
-        let path = Gtk.TreePath.new_from_string(pathStr);
-        let iter = this._model.model.get_iter(path)[1];
+    _onNewCollectionCreated: function(createdUrn) {
+        if (!createdUrn) {
+            this._model.removePlaceholder();
+            return;
+        }
 
+        let path = this._model.forgetPlaceholder();
+        if (!path)
+            return;
+
+        let iter = this._model.model.get_iter(path)[1];
+        this._model.model.set_value(iter, OrganizeModelColumns.ID, createdUrn);
+
+        let job = new SetCollectionForSelectionJob(createdUrn, true);
+        job.run(null);
+    },
+
+    _onTextEdited: function(cell, pathStr, newText) {
         cell.editable = false;
 
         if (!newText || newText == '') {
             // don't insert collections with empty names
-            this._model.model.remove(iter);
+            this._model.removePlaceholder();
             return;
-        } else {
-            // update the new name immediately
-            this._model.model.set_value(iter, OrganizeModelColumns.NAME, newText);
         }
+
+        // update the new name immediately
+        let path = Gtk.TreePath.new_from_string(pathStr);
+        let iter = this._model.model.get_iter(path)[1];
+        this._model.model.set_value(iter, OrganizeModelColumns.NAME, newText);
 
         // actually create the new collection
         let job = new CreateCollectionJob(newText);
-        job.run(null);
+        job.run(Lang.bind(this, this._onNewCollectionCreated, path));
     },
 
     _onTextEditCanceled: function() {
-        if (this._addCollectionPath) {
-            let path = Gtk.TreePath.new_from_string(this._addCollectionPath);
-            let iter = this._model.model.get_iter(path)[1];
-
-            this._model.model.remove(iter);
-            this._addCollectionPath = null;
-        }
-    },
-
-    _onTextEditStarted: function(cell, editable, pathStr) {
-        this._addCollectionPath = pathStr;
+        this._model.removePlaceholder();
     },
 
     _checkCellFunc: function(col, cell, model, iter) {
@@ -546,12 +566,10 @@ OrganizeCollectionView.prototype = {
     },
 
     addCollection: function() {
-        let iter = this._model.model.append();
-        let path = this._model.model.get_path(iter);
+        let path = this._model.addPlaceholder();
 
-        Gd.organize_store_set(this._model.model, iter,
-                              'collection-placeholder', '', OrganizeCollectionState.NORMAL);
-        this._model.setPlaceholder(path);
+        if (!path)
+            return;
 
         this._rendererText.editable = true;
         this.widget.set_cursor_on_cell(path, this._viewCol, this._rendererText, true);
