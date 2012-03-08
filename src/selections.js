@@ -90,7 +90,8 @@ FetchCollectionsJob.prototype = {
     },
 
     _emitCallback: function() {
-        this._callback(this._collections);
+        if (this._callback)
+            this._callback(this._collections);
     }
 };
 
@@ -186,7 +187,8 @@ FetchCollectionStateForSelectionJob.prototype = {
             collectionState[collIdx] = state;
         }
 
-        this._callback(collectionState);
+        if (this._callback)
+            this._callback(collectionState);
     }
 };
 
@@ -212,7 +214,8 @@ UpdateMtimeJob.prototype = {
                     log(e);
                 }
 
-                this._callback();
+                if (this._callback)
+                    this._callback();
             }));
     }
 };
@@ -263,7 +266,9 @@ SetCollectionForSelectionJob.prototype = {
             let job = new UpdateMtimeJob(this._collectionUrn);
             job.run(Lang.bind(this,
                 function() {
-                    this._callback();
+
+                    if (this._callback)
+                        this._callback();
                 }));
         }
     }
