@@ -684,7 +684,8 @@ SelectionToolbar.prototype = {
         this._leftBox.add(this._toolbarPrint);
         this._toolbarPrint.connect('clicked', Lang.bind(this, this._onToolbarPrint));
 
-        this._separator = new Gtk.SeparatorToolItem({ draw: false });
+        this._separator = new Gtk.SeparatorToolItem({ draw: false,
+                                                      visible: true });
         this._separator.set_expand(true);
         this.widget.insert(this._separator, -1);
 
@@ -793,9 +794,6 @@ SelectionToolbar.prototype = {
             this._toolbarPrint.show_all();
         else
             this._toolbarPrint.hide();
-
-        // if we're showing the favorite icon, also show the separator
-        this._separator.set_visible(showFavorite);
 
         if (canTrash)
             this._toolbarTrash.show_all();
