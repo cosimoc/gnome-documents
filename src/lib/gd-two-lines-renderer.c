@@ -117,7 +117,8 @@ gd_two_lines_renderer_get_size (GtkCellRenderer *cell,
                                 gint *width,
                                 gint *height,
                                 const GdkRectangle *cell_area,
-                                gint *x_offset,
+                                gint *x_offset_1,
+                                gint *x_offset_2,
                                 gint *y_offset)
 {
   GdTwoLinesRenderer *self = GD_TWO_LINES_RENDERER (cell);
@@ -154,26 +155,43 @@ gd_two_lines_renderer_get_size (GtkCellRenderer *cell,
       layout_union = layout_one_rect;
     }
 
-  g_clear_object (&layout_one);
-  g_clear_object (&layout_two);
-
   if (cell_area)
     {
       gfloat xalign, yalign;
 
       gtk_cell_renderer_get_alignment (cell, &xalign, &yalign);
 
-      layout_union.height = MIN (layout_union.height, cell_area->height - 2 * ypad);
       layout_union.width  = MIN (layout_union.width, cell_area->width - 2 * xpad);
+      layout_union.height = MIN (layout_union.height, cell_area->height - 2 * ypad);
 
-      if (x_offset)
+      if (x_offset_1)
 	{
-	  if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL)
-	    *x_offset = (1.0 - xalign) * (cell_area->width - (layout_union.width + (2 * xpad)));
+	  if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL &&
+              pango_layout_get_alignment (layout_one) != PANGO_ALIGN_CENTER)
+	    *x_offset_1 = (1.0 - xalign) * (cell_area->width - (layout_one_rect.width + (2 * xpad)));
 	  else 
-	    *x_offset = xalign * (cell_area->width - (layout_union.width + (2 * xpad)));
-	    *x_offset = MAX (*x_offset, 0);
+	    *x_offset_1 = xalign * (cell_area->width - (layout_one_rect.width + (2 * xpad)));
+
+          *x_offset_1 = MAX (*x_offset_1, 0);
 	}
+      if (x_offset_2)
+        {
+          if (layout_two != NULL)
+            {
+              if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL &&
+                  pango_layout_get_alignment (layout_two) != PANGO_ALIGN_CENTER)
+                *x_offset_2 = (1.0 - xalign) * (cell_area->width - (layout_two_rect.width + (2 * xpad)));
+              else 
+                *x_offset_2 = xalign * (cell_area->width - (layout_two_rect.width + (2 * xpad)));
+
+              *x_offset_2 = MAX (*x_offset_2, 0);
+            }
+          else
+            {
+              *x_offset_2 = 0;
+            }
+        }
+
       if (y_offset)
 	{
 	  *y_offset = yalign * (cell_area->height - (layout_union.height + (2 * ypad)));
@@ -182,9 +200,13 @@ gd_two_lines_renderer_get_size (GtkCellRenderer *cell,
     }
   else
     {
-      if (x_offset) *x_offset = 0;
+      if (x_offset_1) *x_offset_1 = 0;
+      if (x_offset_2) *x_offset_2 = 0;
       if (y_offset) *y_offset = 0;
     }
+
+  g_clear_object (&layout_one);
+  g_clear_object (&layout_two);
 
   if (height)
     *height = ypad * 2 + layout_union.height;
@@ -206,7 +228,7 @@ gd_two_lines_renderer_render (GtkCellRenderer      *cell,
   gint line_one_height;
   GtkStateFlags state;
   GdkRectangle render_area = *cell_area;
-  gint xpad, ypad, x_offset, y_offset;
+  gint xpad, ypad, x_offset_1, x_offset_2, y_offset;
   PangoLayout *layout_one, *layout_two;
 
   context = gtk_widget_get_style_context (widget);
@@ -214,14 +236,16 @@ gd_two_lines_renderer_render (GtkCellRenderer      *cell,
   gd_two_lines_renderer_get_size (cell, widget,
                                   layout_one, layout_two,
                                   NULL, NULL,
-                                  cell_area, &x_offset, &y_offset);
+                                  cell_area,
+                                  &x_offset_1, &x_offset_2, &y_offset);
 
   gtk_cell_renderer_get_padding (cell, &xpad, &ypad);
-  render_area.x += xpad + x_offset;
+
+  render_area.x += xpad + x_offset_1;
   render_area.y += ypad;
 
   pango_layout_set_width (layout_one,
-                          (cell_area->width - x_offset - 2 * xpad) * PANGO_SCALE);
+                          (cell_area->width - x_offset_1 - 2 * xpad) * PANGO_SCALE);
 
   gtk_render_layout (context, cr,
                      render_area.x,
@@ -239,12 +263,14 @@ gd_two_lines_renderer_render (GtkCellRenderer      *cell,
       state = gtk_cell_renderer_get_state (cell, widget, flags);
       gtk_style_context_set_state (context, state);
 
+      render_area.x += - x_offset_1 + x_offset_2;
+      render_area.y += line_one_height;
       pango_layout_set_width (layout_two,
-                              (cell_area->width - x_offset - 2 * xpad) * PANGO_SCALE);
+                              (cell_area->width - x_offset_2 - 2 * xpad) * PANGO_SCALE);
 
       gtk_render_layout (context, cr,
                          render_area.x,
-                         render_area.y + line_one_height,
+                         render_area.y,
                          layout_two);
 
       gtk_style_context_restore (context);
@@ -279,6 +305,7 @@ gd_two_lines_renderer_get_preferred_width (GtkCellRenderer *cell,
   gd_two_lines_renderer_get_size (cell, widget,
                                   NULL, NULL,
                                   &text_width, NULL,
+                                  NULL, 
                                   NULL, NULL, NULL);
 
   /* Fetch the average size of a charachter */
@@ -330,6 +357,7 @@ gd_two_lines_renderer_get_preferred_height_for_width (GtkCellRenderer *cell,
   gd_two_lines_renderer_get_size (cell, widget,
                                   NULL, NULL,
                                   NULL, &text_height,
+                                  NULL, 
                                   NULL, NULL, NULL);
 
   gtk_cell_renderer_get_padding (cell, NULL, &ypad);
@@ -362,14 +390,15 @@ gd_two_lines_renderer_get_aligned_area (GtkCellRenderer      *cell,
                                         const GdkRectangle   *cell_area,
                                         GdkRectangle         *aligned_area)
 {
-  gint x_offset, y_offset;
+  gint x_offset_1, x_offset_2, y_offset;
 
   gd_two_lines_renderer_get_size (cell, widget,
                                   NULL, NULL,
                                   &aligned_area->width, &aligned_area->height,
-                                  cell_area, &x_offset, &y_offset);
+                                  cell_area, 
+                                  &x_offset_1, &x_offset_2, &y_offset);
 
-  aligned_area->x = cell_area->x + x_offset;
+  aligned_area->x = cell_area->x + MAX (x_offset_1, x_offset_2);
   aligned_area->y = cell_area->y;
 }
 
