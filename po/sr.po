@@ -7,16 +7,16 @@ msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-02-29 22:24+0000\n"
-"PO-Revision-Date: 2012-02-23 21:19+0200\n"
+"POT-Creation-Date: 2012-03-10 10:26+0000\n"
+"PO-Revision-Date: 2012-03-10 22:26+0200\n"
 "Last-Translator: Мирослав Николић <miroslavnikolic@rocketmail.com>\n"
 "Language-Team: Serbian <gnom@prevod.org>\n"
+"Language: sr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: sr\n"
-"Plural-Forms: nplurals=4; plural=n==1? 3 : n%10==1 && n%100!=11 ? 0 : n%"
-"10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=n==1? 3 : n%10==1 && n%100!=11 ? 0 : "
+"n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Project-Style: gnome\n"
 
 #: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:54
@@ -28,11 +28,10 @@ msgid "Access, manage and share documents"
 msgstr "Приступите, управљајте и делите документе"
 
 #: ../data/gnome-documents.desktop.in.in.h:3
-#| msgid "PDF Documents"
 msgid "Docs;PDF;Document;"
 msgstr "Документација;ПДФ;Документи;"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:127
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:128
 msgid "View as"
 msgstr "Прикажи као"
 
@@ -72,53 +71,52 @@ msgstr "Увећан прозор"
 msgid "Window maximized state"
 msgstr "Стање увећања прозора"
 
-#: ../src/application.js:125
+#: ../src/application.js:126
 msgid "Grid"
 msgstr "Мрежа"
 
-#: ../src/application.js:126
+#: ../src/application.js:127
 msgid "List"
 msgstr "Списак"
 
-#: ../src/application.js:130
+#: ../src/application.js:131
 msgid "Fullscreen"
 msgstr "Преко целог екрана"
 
-#: ../src/application.js:133
-#| msgid "Text Documents"
+#: ../src/application.js:134
 msgid "About Documents"
 msgstr "О документима"
 
-#: ../src/application.js:134
+#: ../src/application.js:135
 msgid "Quit"
 msgstr "Излаз"
 
-#: ../src/documents.js:618 ../src/sources.js:100
+#: ../src/documents.js:619 ../src/sources.js:100
 msgid "Local"
 msgstr "Локални"
 
 #. overridden
-#: ../src/documents.js:681
+#: ../src/documents.js:675
 msgid "Google Docs"
 msgstr "Документи Гугла"
 
-#: ../src/documents.js:682
+#: ../src/documents.js:676
 msgid "Google"
 msgstr "Гугл"
 
-#: ../src/documents.js:751
+#: ../src/documents.js:745
 msgid "Spreadsheet"
 msgstr "Таблица"
 
-#: ../src/documents.js:753
+#: ../src/documents.js:747
 msgid "Presentation"
 msgstr "Презентација"
 
-#: ../src/documents.js:755
+#: ../src/documents.js:749
 msgid "Collection"
 msgstr "Збирка"
 
-#: ../src/documents.js:757
+#: ../src/documents.js:751
 msgid "Document"
 msgstr "Документ"
 
@@ -154,13 +152,35 @@ msgstr[1] "Учитај још %d документа"
 msgstr[2] "Учитај још %d докумената"
 msgstr[3] "Учитај још један документ"
 
-#: ../src/mainToolbar.js:119
+#: ../src/mainToolbar.js:194
+msgid "New and Recent"
+msgstr "Нови и скоро коришћени"
+
+#: ../src/mainToolbar.js:201
+#, c-format
+msgid "Results for \"%s\""
+msgstr "Резултати за „%s“"
+
+#: ../src/mainToolbar.js:203
+msgid "filtered by title"
+msgstr "филтрирани према наслову"
+
+#: ../src/mainToolbar.js:205
+msgid "filtered by author"
+msgstr "филтрирани према аутору"
+
+#: ../src/mainToolbar.js:218
+#, c-format
+#| msgid "(%d of %d)"
+msgid "%d of %d"
+msgstr "%d од %d"
+
+#: ../src/mainToolbar.js:224
 msgid "Click on items to select them"
 msgstr "Кликните на ставке да их изаберете"
 
-#: ../src/mainToolbar.js:121
+#: ../src/mainToolbar.js:226
 #, c-format
-#| msgid "%d selected"
 msgid "%d selected"
 msgid_plural "%d selected"
 msgstr[0] "%d изабран"
@@ -168,27 +188,22 @@ msgstr[1] "%d изабрана"
 msgstr[2] "%d изабраних"
 msgstr[3] "Један изабран"
 
-#: ../src/mainToolbar.js:168
-msgid "New and Recent"
-msgstr "Нови и скоро коришћени"
-
-#: ../src/mainToolbar.js:190
-#, c-format
-msgid "(%d of %d)"
-msgstr "(%d од %d)"
-
-#: ../src/mainWindow.js:296
+#: ../src/mainWindow.js:254
 msgid "translator-credits"
 msgstr "Мирослав Николић"
 
-#: ../src/mainWindow.js:297
-#| msgid "Documents"
+#: ../src/mainWindow.js:255
 msgid "GNOME Documents"
 msgstr "Гномови документи"
 
-#: ../src/mainWindow.js:298
+#: ../src/mainWindow.js:256
 msgid "A document manager application"
 msgstr "Програм за управљање документима"
+
+#: ../src/notifications.js:85
+#, c-format
+msgid "Printing \"%s\": %s"
+msgstr "Штампам „%s“: %s"
 
 #: ../src/searchbar.js:86
 msgid "Category"
@@ -245,30 +260,30 @@ msgstr "Наслов"
 msgid "Author"
 msgstr "Аутор"
 
-#: ../src/selections.js:663
+#: ../src/selections.js:735
 msgid "Organize"
 msgstr "Организуј"
 
-#: ../src/selections.js:670
+#: ../src/selections.js:742
 msgid "Delete"
 msgstr "Обриши"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:761 ../src/view.js:67
+#: ../src/selections.js:842 ../src/view.js:69
 #, c-format
 msgid "Open with %s"
 msgstr "Отвори програмом %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:764 ../src/view.js:70
+#: ../src/selections.js:845 ../src/view.js:72
 msgid "Open"
 msgstr "Отвори"
 
-#: ../src/selections.js:777 ../src/view.js:80
+#: ../src/selections.js:858 ../src/view.js:82
 msgid "Remove from favorites"
 msgstr "Уклоните из омиљених"
 
-#: ../src/selections.js:781 ../src/view.js:80
+#: ../src/selections.js:862 ../src/view.js:82
 msgid "Add to favorites"
 msgstr "Додајте у омиљене"
 
@@ -283,6 +298,58 @@ msgstr "Извори"
 #: ../src/spinnerBox.js:58
 msgid "Loading..."
 msgstr "Учитавам..."
+
+#: ../src/view.js:196
+msgid "Yesterday"
+msgstr "Јуче"
+
+#: ../src/view.js:198
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "Пре %d дан"
+msgstr[1] "Пре %d дана"
+msgstr[2] "Пре %d дана"
+msgstr[3] "Пре једног дана"
+
+#: ../src/view.js:202
+msgid "Last week"
+msgstr "Прошле седмице"
+
+#: ../src/view.js:204
+#, c-format
+msgid "%d week ago"
+msgid_plural "%d weeks ago"
+msgstr[0] "Пре %d недељу"
+msgstr[1] "Пре %d недеље"
+msgstr[2] "Пре %d недељаа"
+msgstr[3] "Пре једне недеље"
+
+#: ../src/view.js:208
+msgid "Last month"
+msgstr "Прошлог месеца"
+
+#: ../src/view.js:210
+#, c-format
+msgid "%d month ago"
+msgid_plural "%d months ago"
+msgstr[0] "Пре %d месец"
+msgstr[1] "Пре %d месеца"
+msgstr[2] "Пре %d месеци"
+msgstr[3] "Пре једног месеца"
+
+#: ../src/view.js:214
+msgid "Last year"
+msgstr "Прошле године"
+
+#: ../src/view.js:216
+#, c-format
+msgid "%d year ago"
+msgid_plural "%d years ago"
+msgstr[0] "Пре %d годину"
+msgstr[1] "Пре %d године"
+msgstr[2] "Пре %d година"
+msgstr[3] "Пре једне године"
 
 #~ msgid "Enable list view"
 #~ msgstr "Укључује преглед списком"
