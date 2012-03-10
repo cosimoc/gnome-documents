@@ -1,14 +1,14 @@
 # Persian translation for gnome-documents.
 # Copyright (C) 2011 gnome-documents's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-documents package.
-# Arash Mousavi <mousavi.arash@gmail.com>, 2011.
+# Arash Mousavi <mousavi.arash@gmail.com>, 2011, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-09-26 16:31+0000\n"
-"PO-Revision-Date: 2011-10-24 20:57+0330\n"
+"POT-Creation-Date: 2012-03-05 22:21+0000\n"
+"PO-Revision-Date: 2012-03-10 13:45+0330\n"
 "Last-Translator: Arash Mousavi <mousavi.arash@gmail.com>\n"
 "Language-Team: Persian\n"
 "MIME-Version: 1.0\n"
@@ -20,21 +20,27 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../data/gnome-documents.desktop.in.in.h:1
-msgid "Access, manage and share documents"
-msgstr "دسترسی، مدیریت و اشتراک‌گذاری سندها"
-
-#: ../data/gnome-documents.desktop.in.in.h:2
-#: ../src/mainWindow.js:47
+#: ../src/mainWindow.js:54
 msgid "Documents"
 msgstr "سندها"
 
+#: ../data/gnome-documents.desktop.in.in.h:2
+msgid "Access, manage and share documents"
+msgstr "دسترسی، مدیریت و اشتراک‌گذاری سندها"
+
+#: ../data/gnome-documents.desktop.in.in.h:3
+#| msgid "Document"
+msgid "Docs;PDF;Document;"
+msgstr "Docs;PDF;سند;"
+
 #: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "Enable list view"
-msgstr "فعال‌سازی نمای فهرستی"
+#: ../src/application.js:128
+msgid "View as"
+msgstr "نمایش به عنوان"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:2
-msgid "List view"
-msgstr "نما فهرستی"
+msgid "View as type"
+msgstr "نمایش همزمان با تایپ"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:3
 msgid "The active source filter"
@@ -44,43 +50,79 @@ msgstr "فیلتر فعال منبع"
 msgid "The last active source filter"
 msgstr "آخرین فیلتر فعال منبع"
 
-#. Translators: this refers to new and recent documents
-#: ../src/categories.js:77
-msgid "New and Recent"
-msgstr "جدید و اخیر"
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
+msgid "Window size"
+msgstr "اندازه پنجره"
 
-#. Translators: this refers to favorite documents
-#: ../src/categories.js:80
-msgid "Favorites"
-msgstr "علاقه‌مندی‌ها"
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
+msgid "Window size (width and height)."
+msgstr "اندازه پنجره (عرض و ارتفاع)"
 
-#. Translators: this refers to shared documents
-#: ../src/categories.js:83
-msgid "Shared with you"
-msgstr "اشتراک‌شده با شما"
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
+msgid "Window position"
+msgstr "مکان پنجره"
 
-#: ../src/documents.js:253
-#: ../src/sources.js:101
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
+msgid "Window position (x and y)."
+msgstr "مکان پنجره (x و y)"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:9
+msgid "Window maximized"
+msgstr "پنجره بیشینه شد"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:10
+msgid "Window maximized state"
+msgstr "وضعیت بیشینه شده‌ی پنجره"
+
+#: ../src/application.js:126
+msgid "Grid"
+msgstr "شبکه‌ای"
+
+#: ../src/application.js:127
+#| msgid "List view"
+msgid "List"
+msgstr "فهرست"
+
+#: ../src/application.js:131
+msgid "Fullscreen"
+msgstr "تمام‌صفحه"
+
+#: ../src/application.js:134
+#| msgid "Documents"
+msgid "About Documents"
+msgstr "درباره‌ی سندها"
+
+#: ../src/application.js:135
+msgid "Quit"
+msgstr "خروج"
+
+#: ../src/documents.js:618
+#: ../src/sources.js:100
 msgid "Local"
 msgstr "محلی"
 
-#: ../src/documents.js:372
+#. overridden
+#: ../src/documents.js:681
 msgid "Google Docs"
 msgstr "اسناد گوگل"
 
-#: ../src/documents.js:373
+#: ../src/documents.js:682
 msgid "Google"
 msgstr "گوگل"
 
-#: ../src/documents.js:442
+#: ../src/documents.js:751
 msgid "Spreadsheet"
 msgstr "صفحه‌گسترده"
 
-#: ../src/documents.js:444
+#: ../src/documents.js:753
 msgid "Presentation"
 msgstr "ارائه"
 
-#: ../src/documents.js:446
+#: ../src/documents.js:755
+msgid "Collection"
+msgstr "مجموعه"
+
+#: ../src/documents.js:757
 msgid "Document"
 msgstr "سند"
 
@@ -90,53 +132,236 @@ msgstr "سند"
 msgid "Unable to load \"%s\" for preview"
 msgstr "نمی‌توان «%s» را برای پیش‌نمایش بارگیری کرد"
 
-#: ../src/error.js:44
+#: ../src/error.js:49
 msgid "Unable to fetch the list of documents"
 msgstr "نمی‌توان فهرست اسناد را دریافت کرد"
+
+#. right section
+#: ../src/lib/gd-main-toolbar.c:269
+msgid "Done"
+msgstr "انجام شد"
+
+#: ../src/lib/gd-pdf-loader.c:208
+#| msgid "Unable to fetch the list of documents"
+msgid "Unable to load the document"
+msgstr "نمی‌توان سند را بارگیری کرد"
+
+#: ../src/lib/gd-pdf-loader.c:489
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr "نمی‌توان «unoconv» را پیدا کرد، لطفا صحت نصب لیبره‌آفیس را بررسی کنید"
 
 #: ../src/loadMore.js:70
 #, c-format
 #| msgid "Load %d more documents"
-msgid "Load %d more documents"
+#| msgid_plural "Load %d more documents"
+msgid "Load %d more document"
 msgid_plural "Load %d more documents"
 msgstr[0] "بارگیری %Id سند دیگر"
 msgstr[1] "بارگیری %Id سند دیگر"
 
+#: ../src/mainToolbar.js:194
+msgid "New and Recent"
+msgstr "جدید و اخیر"
+
 #: ../src/mainToolbar.js:201
 #, c-format
-msgid "(%d of %d)"
-msgstr "(%Id از %Id)"
+msgid "Results for \"%s\""
+msgstr "نتایج برای «%s»"
 
-#: ../src/sidebar.js:131
-#: ../src/sources.js:218
-msgid "Sources"
-msgstr "منابع"
+#: ../src/mainToolbar.js:203
+msgid "filtered by title"
+msgstr "براساس عنوان فیلتر شد"
 
-#: ../src/sources.js:96
+#: ../src/mainToolbar.js:205
+msgid "filtered by author"
+msgstr "براساس نویسنده فیلتر شد"
+
+#: ../src/mainToolbar.js:218
+#, c-format
+#| msgid "(%d of %d)"
+msgid "%d of %d"
+msgstr "%Id از %Id"
+
+#: ../src/mainToolbar.js:224
+msgid "Click on items to select them"
+msgstr "برای انتخاب موارد روی آنها کلیک کنید"
+
+#: ../src/mainToolbar.js:226
+#, c-format
+msgid "%d selected"
+msgid_plural "%d selected"
+msgstr[0] "%Id انتخاب شد"
+msgstr[1] "%Id انتخاب شد"
+
+#: ../src/mainWindow.js:254
+msgid "translator-credits"
+msgstr "آرش موسوی <mousavi.arash@gmail.com>"
+
+#: ../src/mainWindow.js:255
+#| msgid "Documents"
+msgid "GNOME Documents"
+msgstr "سندهای گنوم"
+
+#: ../src/mainWindow.js:256
+msgid "A document manager application"
+msgstr "یک برنامه مدیریت سندها"
+
+#: ../src/notifications.js:85
+#, c-format
+msgid "Printing \"%s\": %s"
+msgstr "درحال چاپ «%s»: %s"
+
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "دسته"
+
+#: ../src/searchbar.js:91
+#: ../src/searchbar.js:141
+#: ../src/searchbar.js:210
+#: ../src/sources.js:94
 msgid "All"
 msgstr "همه"
 
-#: ../src/spinnerBox.js:47
-msgid "Loading..."
-msgstr "در حال بارگیری..."
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "علاقه‌مندی‌ها"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "اشتراک‌شده با شما"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "نوع"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr "مجموعه"
+
+#: ../src/searchbar.js:147
+#| msgid "Documents"
+msgid "PDF Documents"
+msgstr "سندهای PDF"
+
+#: ../src/searchbar.js:150
+#| msgid "Presentation"
+msgid "Presentations"
+msgstr "ارائه‌ها"
+
+#: ../src/searchbar.js:153
+#| msgid "Spreadsheet"
+msgid "Spreadsheets"
+msgstr "صفحه‌گسترده‌ها"
+
+#: ../src/searchbar.js:156
+#| msgid "Documents"
+msgid "Text Documents"
+msgstr "سندهای متنی"
+
+#. Translators: this is a verb that refers to "All", "Title" and "Author",
+#. as in "Match All", "Match Title" and "Match Author"
+#: ../src/searchbar.js:207
+msgid "Match"
+msgstr "تطابق"
+
+#: ../src/searchbar.js:212
+msgid "Title"
+msgstr "عنوان"
+
+#: ../src/searchbar.js:214
+msgid "Author"
+msgstr "نویسنده"
+
+#: ../src/selections.js:698
+msgid "Organize"
+msgstr "سازماندهی"
+
+#: ../src/selections.js:705
+msgid "Delete"
+msgstr "حذف"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:67
+#: ../src/selections.js:808
+#: ../src/view.js:69
 #, c-format
 msgid "Open with %s"
 msgstr "باز کردن با %s"
 
-#: ../src/view.js:69
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:811
+#: ../src/view.js:72
 msgid "Open"
 msgstr "باز کردن"
 
-#: ../src/view.js:79
+#: ../src/selections.js:824
+#: ../src/view.js:82
 msgid "Remove from favorites"
 msgstr "حذف از علاقه‌مندی‌ها"
 
-#: ../src/view.js:79
+#: ../src/selections.js:828
+#: ../src/view.js:82
 msgid "Add to favorites"
 msgstr "اضافه‌کردن به علاقه‌مندی‌ها"
+
+#: ../src/shellSearchProvider.js:332
+#| msgid "Document"
+msgid "Untitled Document"
+msgstr "سند بی‌عنوان"
+
+#: ../src/sources.js:90
+msgid "Sources"
+msgstr "منابع"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "در حال بارگیری..."
+
+#: ../src/view.js:196
+msgid "Yesterday"
+msgstr "دیروز"
+
+#: ../src/view.js:198
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%Id روز گذشته"
+msgstr[1] "%Id روز گذشته"
+
+#: ../src/view.js:202
+msgid "Last week"
+msgstr "هفته گذشته"
+
+#: ../src/view.js:204
+#, c-format
+msgid "%d week ago"
+msgid_plural "%d weeks ago"
+msgstr[0] "%Id هفته گذشته"
+msgstr[1] "%Id هفته گذشته"
+
+#: ../src/view.js:208
+msgid "Last month"
+msgstr "ماه گذشته"
+
+#: ../src/view.js:210
+#, c-format
+msgid "%d month ago"
+msgid_plural "%d months ago"
+msgstr[0] "%Id ماه گذشته"
+msgstr[1] "%Id ماه گذشته"
+
+#: ../src/view.js:214
+msgid "Last year"
+msgstr "سال گذشته"
+
+#: ../src/view.js:216
+#, c-format
+msgid "%d year ago"
+msgid_plural "%d years ago"
+msgstr[0] "%Id سال گذشته"
+msgstr[1] "%Id سال گذشته"
+
+#~ msgid "Enable list view"
+#~ msgstr "فعال‌سازی نمای فهرستی"
 
 #~ msgid "Private"
 #~ msgstr "خصوصی"
