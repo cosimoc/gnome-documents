@@ -3,35 +3,44 @@
 # This file is distributed under the same license as the gnome-documents package.
 #
 # artnay <jiri.gronroos@iki.fi>, 2012.
+# Gnome 2012-03 Finnish translation sprint participants:
+# Jiri Grönroos
+# Niklas Laxström
 msgid ""
 msgstr ""
+""
 "Project-Id-Version: gnome-documents master\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-07 12:43+0200\n"
-"PO-Revision-Date: 2012-01-05 20:26+0200\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-documents&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-02-29 22:24+0000\n"
+"PO-Revision-Date: 2012-03-12 08:37:01+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish <>\n"
-"Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: fi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 1.4\n"
+"X-Generator: MediaWiki 1.20alpha (r113129); Translate 2012-03-02\n"
+"X-POT-Import-Date: 2012-03-05 14:46:33+0000\n"
 
-#: ../data/gnome-documents.desktop.in.in.h:1
-msgid "Access, manage and share documents"
-msgstr "Käytä, hallitse ja jaa asiakirjoja"
-
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:53
+#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:54
 msgid "Documents"
 msgstr "Asiakirjat"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "Enable list view"
-msgstr ""
+#: ../data/gnome-documents.desktop.in.in.h:2
+msgid "Access, manage and share documents"
+msgstr "Käytä, hallitse ja jaa asiakirjoja"
+
+#: ../data/gnome-documents.desktop.in.in.h:3
+msgid "Docs;PDF;Document;"
+msgstr "Asiakirjat;PDF;asiakirja;dokumentti;dokumentit"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:127
+msgid "View as"
+msgstr "Näkymä"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:2
-msgid "List view"
+msgid "View as type"
 msgstr ""
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:3
@@ -43,12 +52,12 @@ msgid "The last active source filter"
 msgstr "Viimeisin aktiivinen lähdesuodatin"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:5
-msgid "Window maximized"
-msgstr "Ikkuna suurennettu"
+msgid "Window size"
+msgstr "Ikkunan koko"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:6
-msgid "Window maximized state"
-msgstr ""
+msgid "Window size (width and height)."
+msgstr "Ikkunan koko (leveys ja korkeus)."
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:7
 msgid "Window position"
@@ -59,12 +68,32 @@ msgid "Window position (x and y)."
 msgstr "Ikkunan sijainti (x ja y)."
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:9
-msgid "Window size"
-msgstr "Ikkunan koko"
+msgid "Window maximized"
+msgstr "Ikkuna suurennettu"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:10
-msgid "Window size (width and height)."
-msgstr "Ikkunan koko (leveys ja korkeus)."
+msgid "Window maximized state"
+msgstr ""
+
+#: ../src/application.js:125
+msgid "Grid"
+msgstr "Ruudukko"
+
+#: ../src/application.js:126
+msgid "List"
+msgstr "Luettelo"
+
+#: ../src/application.js:130
+msgid "Fullscreen"
+msgstr "Koko näyttö"
+
+#: ../src/application.js:133
+msgid "About Documents"
+msgstr "Tietoja ohjelmasta Asiakirjat"
+
+#: ../src/application.js:134
+msgid "Quit"
+msgstr "Lopeta"
 
 #: ../src/documents.js:618 ../src/sources.js:100
 msgid "Local"
@@ -106,13 +135,17 @@ msgid "Unable to fetch the list of documents"
 msgstr "Asiakirjalistauksen nouto epäonnistui"
 
 #. right section
-#: ../src/lib/gd-main-toolbar.c:210
+#: ../src/lib/gd-main-toolbar.c:269
 msgid "Done"
 msgstr "Valmis"
 
-#: ../src/lib/gd-pdf-loader.c:207
+#: ../src/lib/gd-pdf-loader.c:208
 msgid "Unable to load the document"
 msgstr "Asiakirjan lataus epäonnistui"
+
+#: ../src/lib/gd-pdf-loader.c:489
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr ""
 
 #: ../src/loadMore.js:70
 #, c-format
@@ -121,29 +154,43 @@ msgid_plural "Load %d more documents"
 msgstr[0] "Lataa %d asiakirja enemmän"
 msgstr[1] "Lataa %d asiakirjaa enemmän"
 
-#: ../src/mainToolbar.js:150
+#: ../src/mainToolbar.js:119
 msgid "Click on items to select them"
 msgstr "Napsauta kohteita valitaksesi ne"
 
-#: ../src/mainToolbar.js:152
+#: ../src/mainToolbar.js:121
 #, c-format
 msgid "%d selected"
-msgstr "%d valittu"
+msgid_plural "%d selected"
+msgstr[0] "%d valittu"
+msgstr[1] "%d valittu"
 
-#: ../src/mainToolbar.js:197
+#: ../src/mainToolbar.js:168
 msgid "New and Recent"
 msgstr "Uudet ja viimeaikaiset"
 
-#: ../src/mainToolbar.js:219
+#: ../src/mainToolbar.js:190
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d/%d)"
+
+#: ../src/mainWindow.js:296
+msgid "translator-credits"
+msgstr ""
+
+#: ../src/mainWindow.js:297
+msgid "GNOME Documents"
+msgstr "Gnome-asiakirjat"
+
+#: ../src/mainWindow.js:298
+msgid "A document manager application"
+msgstr "Asiakirjojen hallintasovellus"
 
 #: ../src/searchbar.js:86
 msgid "Category"
 msgstr "Luokka"
 
-#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:208
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:210
 #: ../src/sources.js:94
 msgid "All"
 msgstr "Kaikki"
@@ -180,44 +227,50 @@ msgstr "Taulukot"
 msgid "Text Documents"
 msgstr "Tekstiasiakirjat"
 
-#: ../src/searchbar.js:205
+#. Translators: this is a verb that refers to "All", "Title" and "Author",
+#. as in "Match All", "Match Title" and "Match Author"
+#: ../src/searchbar.js:207
 msgid "Match"
 msgstr ""
 
-#: ../src/searchbar.js:210
+#: ../src/searchbar.js:212
 msgid "Title"
 msgstr "Otsikko"
 
-#: ../src/searchbar.js:212
+#: ../src/searchbar.js:214
 msgid "Author"
 msgstr "Tekijä"
 
-#: ../src/selections.js:663
+#: ../src/selections.js:658
 msgid "Organize"
 msgstr "Järjestä"
 
-#: ../src/selections.js:670
+#: ../src/selections.js:665
 msgid "Delete"
 msgstr "Poista"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:761 ../src/view.js:67
+#: ../src/selections.js:756 ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "Avaa sovelluksella %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:764 ../src/view.js:70
+#: ../src/selections.js:759 ../src/view.js:70
 msgid "Open"
 msgstr "Avaa"
 
-#: ../src/selections.js:777 ../src/view.js:80
+#: ../src/selections.js:772 ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "Poista suosikeista"
 
-#: ../src/selections.js:781 ../src/view.js:80
+#: ../src/selections.js:776 ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Lisää suosikkeihin"
+
+#: ../src/shellSearchProvider.js:332
+msgid "Untitled Document"
+msgstr "Nimetön asiakirja"
 
 #: ../src/sources.js:90
 msgid "Sources"
@@ -226,3 +279,4 @@ msgstr "Lähteet"
 #: ../src/spinnerBox.js:58
 msgid "Loading..."
 msgstr "Ladataan..."
+
