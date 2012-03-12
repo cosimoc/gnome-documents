@@ -52,6 +52,8 @@ const SEARCH_PROVIDER_IFACE = 'org.gnome.Shell.SearchProvider';
 const SEARCH_PROVIDER_NAME  = 'org.gnome.Documents.SearchProvider';
 const SEARCH_PROVIDER_PATH  = '/org/gnome/Documents/SearchProvider';
 
+const _SHELL_SEARCH_ICON_SIZE = 128;
+
 const SearchProviderIface = <interface name={SEARCH_PROVIDER_IFACE}>
 <method name="GetInitialResultSet">
   <arg type="as" direction="in" />
@@ -248,7 +250,7 @@ ShellSearchProvider.prototype = {
                     let theme = Gtk.IconTheme.get_default();
                     let flags = Gtk.IconLookupFlags.FORCE_SIZE |
                                 Gtk.IconLookupFlags.GENERIC_FALLBACK;
-                    let info = theme.lookup_by_gicon(icon, Utils.getIconSize(),
+                    let info = theme.lookup_by_gicon(icon, _SHELL_SEARCH_ICON_SIZE,
                                                      flags);
 
                     try {
@@ -259,7 +261,7 @@ ShellSearchProvider.prototype = {
                     }
                 } else if (icon instanceof Gio.FileIcon) {
                     try {
-                        let stream = icon.load(Utils.getIconSize(), null)[0];
+                        let stream = icon.load(_SHELL_SEARCH_ICON_SIZE, null)[0];
                         let pixbuf = GdkPixbuf.Pixbuf.new_from_stream(stream,
                                                                       null);
                         pixbufs.push(pixbuf);
@@ -268,7 +270,7 @@ ShellSearchProvider.prototype = {
                     }
                 }
             }));
-        return Gd.create_collection_icon(Utils.getIconSize(), pixbufs);
+        return Gd.create_collection_icon(_SHELL_SEARCH_ICON_SIZE, pixbufs);
     },
 
     _doSearch: function(terms) {
