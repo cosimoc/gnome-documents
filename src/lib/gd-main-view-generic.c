@@ -22,26 +22,13 @@
 #include "gd-main-view.h"
 #include "gd-main-view-generic.h"
 
-enum {
-  VIEW_SELECTION_CHANGED = 1,
-  NUM_SIGNALS
-};
-
-static guint signals[NUM_SIGNALS] = { 0, };
-
 typedef GdMainViewGenericIface GdMainViewGenericInterface;
 G_DEFINE_INTERFACE (GdMainViewGeneric, gd_main_view_generic, GTK_TYPE_WIDGET)
 
 static void
 gd_main_view_generic_default_init (GdMainViewGenericInterface *iface)
 {
-  signals[VIEW_SELECTION_CHANGED] = 
-    g_signal_new ("view-selection-changed",
-                  GD_TYPE_MAIN_VIEW_GENERIC,
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (GdMainViewGenericIface, selection_changed),
-                  NULL, NULL, NULL,
-                  G_TYPE_NONE, 0);
+  /* nothing */
 }
 
 /**

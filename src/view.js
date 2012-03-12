@@ -120,6 +120,8 @@ View.prototype = {
                             Lang.bind(this, this._onItemActivated));
         this.widget.connect('selection-mode-request',
                             Lang.bind(this, this._onSelectionModeRequest));
+        this.widget.connect('view-selection-changed',
+                            Lang.bind(this, this._onViewSelectionChanged));
         this.widget.connect('notify::view-type',
                             Lang.bind(this, this._onViewTypeChanged));
 
@@ -223,18 +225,6 @@ View.prototype = {
     _onViewTypeChanged: function() {
         if (this.widget.get_view_type() == Gd.MainViewType.LIST)
             this._addListRenderers();
-
-        // setup selections view => controller
-        let generic = this.widget.get_generic_view();
-        generic.connect('view-selection-changed', Lang.bind(this, this._onSelectionChanged));
-
-        Global.selectionController.freezeSelection(false);
-
-        generic.connect('destroy', Lang.bind(this,
-            function() {
-                // save selection when the view is destroyed
-                Global.selectionController.freezeSelection(true);
-            }));
     },
 
     _onSelectionModeRequest: function() {
@@ -305,7 +295,7 @@ View.prototype = {
         this.widget.set_selection_mode(selectionMode);
     },
 
-    _onSelectionChanged: function() {
+    _onViewSelectionChanged: function() {
         // update the selection on the controller when the view signals a change
         let selectedURNs = Utils.getURNsFromPaths(this.widget.get_selection(),
                                                   this._treeModel);

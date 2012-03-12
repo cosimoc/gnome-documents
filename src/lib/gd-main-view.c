@@ -49,6 +49,7 @@ enum {
 enum {
   ITEM_ACTIVATED = 1,
   SELECTION_MODE_REQUEST,
+  VIEW_SELECTION_CHANGED,
   NUM_SIGNALS
 };
 
@@ -191,6 +192,13 @@ gd_main_view_class_init (GdMainViewClass *klass)
                   0, NULL, NULL, NULL,
                   G_TYPE_NONE, 0);
 
+  signals[VIEW_SELECTION_CHANGED] = 
+    g_signal_new ("view-selection-changed",
+                  GD_TYPE_MAIN_VIEW,
+                  G_SIGNAL_RUN_LAST,
+                  0, NULL, NULL, NULL,
+                  G_TYPE_NONE, 0);
+
   g_type_class_add_private (klass, sizeof (GdMainViewPrivate));
   g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 }
@@ -304,7 +312,6 @@ on_button_release_selection_mode (GdMainView *self,
                                   gboolean entered_mode,
                                   GtkTreePath *path)
 {
-  GdMainViewGeneric *generic = get_generic (self);
   gboolean selected;
   GtkTreeIter iter;
 
@@ -324,7 +331,7 @@ on_button_release_selection_mode (GdMainView *self,
                         GD_MAIN_COLUMN_SELECTED, TRUE,
                         -1);
 
-  g_signal_emit_by_name (generic, "view-selection-changed");
+  g_signal_emit (self, signals[VIEW_SELECTION_CHANGED], 0);
 
   return FALSE;
 }
