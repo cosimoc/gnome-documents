@@ -268,7 +268,8 @@ View.prototype = {
     },
 
     _updateSelection: function() {
-        let selected = Global.selectionController.getSelection().slice(0);
+        let selected = Global.selectionController.getSelection();
+        let newSelection = [];
 
         if (!selected.length)
             return;
@@ -282,7 +283,7 @@ View.prototype = {
 
                 if (idIndex != -1) {
                     this._treeModel.set_value(iter, Gd.MainColumns.SELECTED, true);
-                    selected.splice(idIndex, 1);
+                    newSelection.push(id);
 
                     if (first) {
                         generic.scroll_to_path(path);
@@ -290,11 +291,13 @@ View.prototype = {
                     }
                 }
 
-                if (selected.length == 0)
+                if (newSelection.length == selected.length)
                     return true;
 
                 return false;
             }));
+
+        Global.selectionController.setSelection(newSelection);
     },
 
     _onSelectionModeChanged: function() {
