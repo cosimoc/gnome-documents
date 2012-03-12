@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-01 13:13+0100\n"
-"PO-Revision-Date: 2012-03-01 13:28+0100\n"
+"POT-Creation-Date: 2012-03-12 18:19+0100\n"
+"PO-Revision-Date: 2012-03-12 18:20+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: \n"
@@ -31,7 +31,7 @@ msgid "Docs;PDF;Document;"
 msgstr "Dok;PDF;Dokument;"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:1
-#: ../src/application.js:127
+#: ../src/application.js:128
 msgid "View as"
 msgstr "Visa som"
 
@@ -71,53 +71,53 @@ msgstr "Fönster maximerat"
 msgid "Window maximized state"
 msgstr "Maximeringstillstånd för fönster"
 
-#: ../src/application.js:125
+#: ../src/application.js:126
 msgid "Grid"
 msgstr "Rutnät"
 
-#: ../src/application.js:126
+#: ../src/application.js:127
 msgid "List"
 msgstr "Lista"
 
-#: ../src/application.js:130
+#: ../src/application.js:131
 msgid "Fullscreen"
 msgstr "Helskärm"
 
-#: ../src/application.js:133
+#: ../src/application.js:134
 msgid "About Documents"
 msgstr "Om Dokument"
 
-#: ../src/application.js:134
+#: ../src/application.js:135
 msgid "Quit"
 msgstr "Avsluta"
 
-#: ../src/documents.js:618
+#: ../src/documents.js:619
 #: ../src/sources.js:100
 msgid "Local"
 msgstr "Lokal"
 
 #. overridden
-#: ../src/documents.js:681
+#: ../src/documents.js:675
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:682
+#: ../src/documents.js:676
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:751
+#: ../src/documents.js:745
 msgid "Spreadsheet"
 msgstr "Kalkylark"
 
-#: ../src/documents.js:753
+#: ../src/documents.js:747
 msgid "Presentation"
 msgstr "Presentation"
 
-#: ../src/documents.js:755
+#: ../src/documents.js:749
 msgid "Collection"
 msgstr "Samling"
 
-#: ../src/documents.js:757
+#: ../src/documents.js:751
 msgid "Document"
 msgstr "Dokument"
 
@@ -151,27 +151,40 @@ msgid_plural "Load %d more documents"
 msgstr[0] "Läs in ytterligare %d dokument"
 msgstr[1] "Läs in ytterligare %d dokument"
 
-#: ../src/mainToolbar.js:119
+#: ../src/mainToolbar.js:194
+msgid "New and Recent"
+msgstr "Nya och senaste"
+
+#: ../src/mainToolbar.js:201
+#, c-format
+msgid "Results for \"%s\""
+msgstr "Resultat för \"%s\""
+
+#: ../src/mainToolbar.js:203
+msgid "filtered by title"
+msgstr "filtrerad efter titel"
+
+#: ../src/mainToolbar.js:205
+msgid "filtered by author"
+msgstr "filtrerad efter upphovsman"
+
+#: ../src/mainToolbar.js:218
+#, c-format
+msgid "%d of %d"
+msgstr "%d av %d"
+
+#: ../src/mainToolbar.js:224
 msgid "Click on items to select them"
 msgstr "Klicka på objekten för att markera dem"
 
-#: ../src/mainToolbar.js:121
+#: ../src/mainToolbar.js:226
 #, c-format
 msgid "%d selected"
 msgid_plural "%d selected"
 msgstr[0] "%d markerat"
 msgstr[1] "%d markerade"
 
-#: ../src/mainToolbar.js:168
-msgid "New and Recent"
-msgstr "Nya och senaste"
-
-#: ../src/mainToolbar.js:190
-#, c-format
-msgid "(%d of %d)"
-msgstr "(%d av %d)"
-
-#: ../src/mainWindow.js:296
+#: ../src/mainWindow.js:254
 msgid "translator-credits"
 msgstr ""
 "Daniel Nylander <po@danielnylander.se>\n"
@@ -179,13 +192,18 @@ msgstr ""
 "Skicka synpunkter på översättningen till\n"
 "<tp-sv@listor.tp-sv.se>."
 
-#: ../src/mainWindow.js:297
+#: ../src/mainWindow.js:255
 msgid "GNOME Documents"
 msgstr "GNOME-dokument"
 
-#: ../src/mainWindow.js:298
+#: ../src/mainWindow.js:256
 msgid "A document manager application"
 msgstr "Ett program för dokumenthantering"
+
+#: ../src/notifications.js:85
+#, c-format
+msgid "Printing \"%s\": %s"
+msgstr "Skriver ut \"%s\": %s"
 
 #: ../src/searchbar.js:86
 msgid "Category"
@@ -244,34 +262,34 @@ msgstr "Titel"
 msgid "Author"
 msgstr "Författare"
 
-#: ../src/selections.js:663
+#: ../src/selections.js:735
 msgid "Organize"
 msgstr "Organisera"
 
-#: ../src/selections.js:670
+#: ../src/selections.js:742
 msgid "Delete"
 msgstr "Ta bort"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:761
-#: ../src/view.js:67
+#: ../src/selections.js:842
+#: ../src/view.js:69
 #, c-format
 msgid "Open with %s"
 msgstr "Öppna med %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:764
-#: ../src/view.js:70
+#: ../src/selections.js:845
+#: ../src/view.js:72
 msgid "Open"
 msgstr "Öppna"
 
-#: ../src/selections.js:777
-#: ../src/view.js:80
+#: ../src/selections.js:858
+#: ../src/view.js:82
 msgid "Remove from favorites"
 msgstr "Ta bort från favoriter"
 
-#: ../src/selections.js:781
-#: ../src/view.js:80
+#: ../src/selections.js:862
+#: ../src/view.js:82
 msgid "Add to favorites"
 msgstr "Lägg till i favoriter"
 
@@ -286,6 +304,50 @@ msgstr "Källor"
 #: ../src/spinnerBox.js:58
 msgid "Loading..."
 msgstr "Läser in..."
+
+#: ../src/view.js:196
+msgid "Yesterday"
+msgstr "Igår"
+
+#: ../src/view.js:198
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%d dag sedan"
+msgstr[1] "%d dagar sedan"
+
+#: ../src/view.js:202
+msgid "Last week"
+msgstr "Förra veckan"
+
+#: ../src/view.js:204
+#, c-format
+msgid "%d week ago"
+msgid_plural "%d weeks ago"
+msgstr[0] "%d vecka sedan"
+msgstr[1] "%d veckor sedan"
+
+#: ../src/view.js:208
+msgid "Last month"
+msgstr "Förra månaden"
+
+#: ../src/view.js:210
+#, c-format
+msgid "%d month ago"
+msgid_plural "%d months ago"
+msgstr[0] "%d månad sedan"
+msgstr[1] "%d månader sedan"
+
+#: ../src/view.js:214
+msgid "Last year"
+msgstr "Förra året"
+
+#: ../src/view.js:216
+#, c-format
+msgid "%d year ago"
+msgid_plural "%d years ago"
+msgstr[0] "%d år sedan"
+msgstr[1] "%d år sedan"
 
 #~ msgid "Enable list view"
 #~ msgstr "Aktivera listvy"
