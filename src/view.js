@@ -122,8 +122,6 @@ View.prototype = {
                             Lang.bind(this, this._onSelectionModeRequest));
         this.widget.connect('view-selection-changed',
                             Lang.bind(this, this._onViewSelectionChanged));
-        this.widget.connect('notify::view-type',
-                            Lang.bind(this, this._onViewTypeChanged));
 
         // connect to settings change for list/grid view
         this._viewSettingsId =
@@ -149,6 +147,9 @@ View.prototype = {
     _updateTypeForSettings: function() {
         let viewType = Global.settings.get_enum('view-as');
         this.widget.set_view_type(viewType);
+
+        if (viewType == Gd.MainViewType.LIST)
+            this._addListRenderers();
     },
 
     _addListRenderers: function() {
@@ -220,11 +221,6 @@ View.prototype = {
                                                          years).format(years);
                 }
             }));
-    },
-
-    _onViewTypeChanged: function() {
-        if (this.widget.get_view_type() == Gd.MainViewType.LIST)
-            this._addListRenderers();
     },
 
     _onSelectionModeRequest: function() {
