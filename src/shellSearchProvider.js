@@ -396,7 +396,6 @@ ShellSearchProvider.prototype = {
         Global.settings = new Gio.Settings({ schema: 'org.gnome.documents' });
         Global.offsetController = new OffsetController.OffsetController();
         Global.searchController = new Searchbar.SearchController();
-        Global.errorHandler = new Error.ErrorHandler();
 
         // connect to tracker
         try {
@@ -419,10 +418,7 @@ ShellSearchProvider.prototype = {
         Global.searchMatchManager = new Searchbar.SearchMatchManager();
         Global.searchTypeManager = new Searchbar.SearchTypeManager();
         Global.queryBuilder = new Query.QueryBuilder();
-        Global.changeMonitor = new ChangeMonitor.TrackerChangeMonitor();
         Global.collectionManager = new Manager.BaseManager();
-        Global.documentManager = new Documents.DocumentManager();
-        Global.trackerController = new TrackerController.TrackerController();
     },
 
     _resetTimeout: function() {
