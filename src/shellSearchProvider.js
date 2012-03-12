@@ -31,18 +31,11 @@ const Gtk = imports.gi.Gtk;
 const GLib = imports.gi.GLib;
 const Tracker = imports.gi.Tracker;
 
-const ChangeMonitor = imports.changeMonitor;
 const Documents = imports.documents;
-const Error = imports.error;
 const Format = imports.format;
 const Global = imports.global;
-const Manager = imports.manager;
 const Path = imports.path;
-const OffsetController = imports.offsetController;
 const Query = imports.query;
-const Searchbar = imports.searchbar;
-const Sources = imports.sources;
-const TrackerController = imports.trackerController;
 const Utils = imports.utils;
 
 const MAINLOOP_ID = "documents-search-provider";
@@ -394,8 +387,6 @@ ShellSearchProvider.prototype = {
 
         Global.application = this;
         Global.settings = new Gio.Settings({ schema: 'org.gnome.documents' });
-        Global.offsetController = new OffsetController.OffsetController();
-        Global.searchController = new Searchbar.SearchController();
 
         // connect to tracker
         try {
@@ -412,13 +403,7 @@ ShellSearchProvider.prototype = {
             this.quit();
         }
 
-        Global.connectionQueue = new TrackerController.TrackerConnectionQueue();
-        Global.sourceManager = new Sources.SourceManager();
-        Global.searchCategoryManager = new Searchbar.SearchCategoryManager();
-        Global.searchMatchManager = new Searchbar.SearchMatchManager();
-        Global.searchTypeManager = new Searchbar.SearchTypeManager();
-        Global.queryBuilder = new Query.QueryBuilder();
-        Global.collectionManager = new Manager.BaseManager();
+        Global.initSearch();
     },
 
     _resetTimeout: function() {

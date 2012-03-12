@@ -44,10 +44,8 @@ const Main = imports.main;
 const MainWindow = imports.mainWindow;
 const Manager = imports.manager;
 const Notifications = imports.notifications;
-const OffsetController = imports.offsetController;
 const Path = imports.path;
 const Query = imports.query;
-const Searchbar = imports.searchbar;
 const Selections = imports.selections;
 const Sources = imports.sources;
 const TrackerController = imports.trackerController;
@@ -165,9 +163,6 @@ Application.prototype = {
         Tweener.init();
 
         Global.application = this;
-        Global.offsetController = new OffsetController.OffsetController();
-        Global.searchController = new Searchbar.SearchController();
-        Global.errorHandler = new Error.ErrorHandler();
 
         // connect to tracker
         try {
@@ -184,15 +179,11 @@ Application.prototype = {
             return;
         }
 
-        Global.connectionQueue = new TrackerController.TrackerConnectionQueue();
-        Global.sourceManager = new Sources.SourceManager();
-        Global.searchCategoryManager = new Searchbar.SearchCategoryManager();
-        Global.searchMatchManager = new Searchbar.SearchMatchManager();
-        Global.searchTypeManager = new Searchbar.SearchTypeManager();
-        Global.queryBuilder = new Query.QueryBuilder();
+        Global.initSearch();
+
         Global.changeMonitor = new ChangeMonitor.TrackerChangeMonitor();
-        Global.collectionManager = new Manager.BaseManager();
         Global.documentManager = new Documents.DocumentManager();
+        Global.errorHandler = new Error.ErrorHandler();
         Global.trackerController = new TrackerController.TrackerController();
         Global.selectionController = new Selections.SelectionController();
         Global.modeController = new WindowMode.ModeController();

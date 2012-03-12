@@ -19,6 +19,13 @@
  *
  */
 
+const Manager = imports.manager;
+const OffsetController = imports.offsetController;
+const Query = imports.query;
+const Searchbar = imports.searchbar;
+const Sources = imports.sources;
+const TrackerController = imports.trackerController;
+
 let application = null;
 let collectionManager = null;
 let connection = null;
@@ -38,3 +45,17 @@ let selectionController = null;
 let settings = null;
 let sourceManager = null;
 let trackerController = null;
+
+function initSearch() {
+    sourceManager = new Sources.SourceManager();
+    collectionManager = new Manager.BaseManager();
+
+    searchCategoryManager = new Searchbar.SearchCategoryManager();
+    searchMatchManager = new Searchbar.SearchMatchManager();
+    searchTypeManager = new Searchbar.SearchTypeManager();
+    searchController = new Searchbar.SearchController();
+
+    offsetController = new OffsetController.OffsetController();
+    queryBuilder = new Query.QueryBuilder();
+    connectionQueue = new TrackerController.TrackerConnectionQueue();
+}
