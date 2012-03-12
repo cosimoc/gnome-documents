@@ -19,20 +19,15 @@
  *
  */
 
-const DBus = imports.dbus;
 const Lang = imports.lang;
-const Mainloop = imports.mainloop;
 const Signals = imports.signals;
 
-const GDataMiner = imports.gDataMiner;
 const Global = imports.global;
 const Query = imports.query;
 const Utils = imports.utils;
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
-
-const MINER_REFRESH_TIMEOUT = 60; /* seconds */
 
 const QueryType = {
     SELECT: 0,
@@ -124,9 +119,6 @@ TrackerController.prototype = {
         this._queryQueued = false;
         this._queryQueuedFlags = RefreshFlags.NONE;
         this._querying = false;
-        // startup a refresh of the gdocs cache
-        this._miner = new GDataMiner.GDataMiner();
-        this._refreshMinerNow();
 
         // useful for debugging
         this._lastQueryTime = 0;
@@ -155,21 +147,6 @@ TrackerController.prototype = {
 
         // perform initial query
         this._refreshInternal(RefreshFlags.NONE);
-    },
-
-    _refreshMinerNow: function() {
-        this._miner.RefreshDBRemote(DBus.CALL_FLAG_START, Lang.bind(this,
-            function(res, error) {
-                if (error) {
-                    log('Error updating the GData cache: ' + error.toString());
-                    return;
-                }
-
-                Mainloop.timeout_add_seconds(MINER_REFRESH_TIMEOUT,
-                                             Lang.bind(this, this._refreshMinerNow));
-            }));
-
-        return false;
     },
 
     _setQueryStatus: function(status) {

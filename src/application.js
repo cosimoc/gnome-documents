@@ -19,7 +19,9 @@
  *
  */
 
+const DBus = imports.dbus;
 const Lang = imports.lang;
+const Mainloop = imports.mainloop;
 const Gettext = imports.gettext;
 const _ = imports.gettext.gettext;
 
@@ -36,6 +38,7 @@ const ChangeMonitor = imports.changeMonitor;
 const Documents = imports.documents;
 const Error = imports.error;
 const Format = imports.format;
+const GDataMiner = imports.gDataMiner;
 const Global = imports.global;
 const Main = imports.main;
 const MainWindow = imports.mainWindow;
@@ -51,6 +54,8 @@ const TrackerController = imports.trackerController;
 const Tweener = imports.util.tweener;
 const Utils = imports.utils;
 const WindowMode = imports.windowMode;
+
+const MINER_REFRESH_TIMEOUT = 60; /* seconds */
 
 function Application() {
     this._init();
@@ -137,6 +142,21 @@ Application.prototype = {
 	this.application.set_app_menu(menu);
     },
 
+    _refreshMinerNow: function() {
+        this._miner.RefreshDBRemote(DBus.CALL_FLAG_START, Lang.bind(this,
+            function(res, error) {
+                if (error) {
+                    log('Error updating the GData cache: ' + error.toString());
+                    return;
+                }
+
+                Mainloop.timeout_add_seconds(MINER_REFRESH_TIMEOUT,
+                                             Lang.bind(this, this._refreshMinerNow));
+            }));
+
+        return false;
+    },
+
     _onStartup: function() {
         String.prototype.format = Format.format;
 
@@ -177,6 +197,10 @@ Application.prototype = {
         Global.selectionController = new Selections.SelectionController();
         Global.modeController = new WindowMode.ModeController();
         Global.notificationManager = new Notifications.NotificationManager();
+
+        // startup a refresh of the gdocs cache
+        this._miner = new GDataMiner.GDataMiner();
+        this._refreshMinerNow();
 
         this._initMenus();
         this._mainWindow = new MainWindow.MainWindow(this.application);
