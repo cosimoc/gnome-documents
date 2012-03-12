@@ -73,6 +73,288 @@ const SearchProviderIface = <interface name={SEARCH_PROVIDER_IFACE}>
 </method>
 </interface>;
 
+function _createThumbnailIcon(uri) {
+    let file = Gio.file_new_for_uri(uri);
+
+    try {
+        let info = file.query_info(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH,
+                                   0, null);
+        let path = info.get_attribute_byte_string(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH);
+        if (path)
+            return new Gio.FileIcon({ file: Gio.file_new_for_path(path) });
+    } catch(e) {
+        log(e);
+    }
+    return null;
+}
+
+function _createGIcon(cursor) {
+    let gicon = null;
+
+    let ident = cursor.get_string(Query.QueryColumns.IDENTIFIER)[0];
+    let isRemote = ident && (ident.indexOf('https://docs.google.com') != -1);
+
+    if (!isRemote) {
+        let uri = cursor.get_string(Query.QueryColumns.URI)[0];
+        if (uri)
+            gicon = _createThumbnailIcon(uri);
+    }
+
+    if (gicon)
+        return gicon;
+
+    let mimetype = cursor.get_string(Query.QueryColumns.MIMETYPE)[0];
+    if (mimetype)
+        gicon = Gio.content_type_get_icon(mimetype);
+
+    if (gicon)
+        return gicon;
+
+    let rdftype = cursor.get_string(Query.QueryColumns.RDFTYPE)[0];
+    if (rdftype)
+        gicon = Utils.iconFromRdfType(rdftype);
+
+    if (!gicon)
+        gicon = new Gio.ThemedIcon({ name: 'text-x-generic' });
+
+    return gicon;
+}
+
+function CreateCollectionIconJob(id) {
+    this._init(id);
+}
+
+CreateCollectionIconJob.prototype = {
+    _init: function(id) {
+        this._id = id;
+        this._itemIcons = [];
+        this._itemIds = [];
+        this._itemJobs = 0;
+    },
+
+    run: function(callback) {
+        this._callback = callback;
+
+        let query = Global.queryBuilder.buildCollectionIconQuery(this._id);
+        Global.connectionQueue.add(query.sparql, null, Lang.bind(this,
+            function(object, res) {
+                let cursor = null;
+
+                try {
+                    cursor = object.query_finish(res);
+                    cursor.next_async(null, Lang.bind(this, this._onCursorNext));
+                } catch (e) {
+                    log('Error querying tracker: ' + e);
+                    this._hasItemIds();
+                }
+            }));
+    },
+
+    _createItemIcon: function(cursor) {
+        let pixbuf = null;
+        let icon = _createGIcon(cursor);
+
+        if (icon instanceof Gio.ThemedIcon) {
+            let theme = Gtk.IconTheme.get_default();
+            let flags =
+                Gtk.IconLookupFlags.FORCE_SIZE |
+                Gtk.IconLookupFlags.GENERIC_FALLBACK;
+            let info =
+                theme.lookup_by_gicon(icon, _SHELL_SEARCH_ICON_SIZE,
+                                      flags);
+
+            try {
+                pixbuf = info.load_icon();
+            } catch(e) {
+                log("Unable to load pixbuf: " + e);
+            }
+        } else if (icon instanceof Gio.FileIcon) {
+            try {
+                let stream = icon.load(_SHELL_SEARCH_ICON_SIZE, null)[0];
+                pixbuf = GdkPixbuf.Pixbuf.new_from_stream(stream,
+                                                          null);
+            } catch(e) {
+                log("Unable to load pixbuf: " + e);
+            }
+        }
+
+        return pixbuf;
+    },
+
+    _onCursorNext: function(cursor, res) {
+        let valid = false;
+
+        try {
+            valid = cursor.next_finish(res);
+        } catch (e) {
+            cursor.close();
+            log('Error querying tracker: ' + e);
+
+            this._hasItemIds();
+        }
+
+        if (valid) {
+            this._itemIds.push(cursor.get_string(0)[0]);
+            cursor.next_async(null, Lang.bind(this, this._onCursorNext));
+        } else {
+            cursor.close();
+            this._hasItemIds();
+        }
+    },
+
+    _hasItemIds: function() {
+        if (this._itemIds.length == 0) {
+            this._returnPixbuf();
+            return;
+        }
+
+        this._itemIds.forEach(Lang.bind(this,
+            function(itemId) {
+                let job = new Documents.SingleItemJob(itemId);
+                this._itemJobs++;
+                job.run(Query.QueryFlags.UNFILTERED, Lang.bind(this,
+                    function(cursor) {
+                        let icon = this._createItemIcon(cursor);
+                        if (icon)
+                            this._itemIcons.push(icon);
+                        this._itemJobCollector();
+                    }));
+            }));
+    },
+
+    _itemJobCollector: function() {
+        this._itemJobs--;
+
+        if (this._itemJobs == 0)
+            this._returnPixbuf();
+    },
+
+    _returnPixbuf: function() {
+        this._callback(Gd.create_collection_icon(_SHELL_SEARCH_ICON_SIZE, this._itemIcons));
+    }
+};
+
+function FetchMetasJob(ids) {
+    this._init(ids);
+}
+
+FetchMetasJob.prototype = {
+    _init: function(ids) {
+        this._ids = ids;
+        this._metas = [];
+    },
+
+    _jobCollector: function() {
+        this._activeJobs--;
+
+        if (this._activeJobs == 0)
+            this._callback(this._metas);
+    },
+
+    _createCollectionPixbuf: function(meta) {
+        let job = new CreateCollectionIconJob(meta.id);
+        job.run(Lang.bind(this,
+            function(icon) {
+                if (icon)
+                    meta.pixbuf = icon;
+
+                this._metas.push(meta);
+                this._jobCollector();
+            }));
+    },
+
+    run: function(callback) {
+        this._callback = callback;
+        this._activeJobs = this._ids.length;
+
+        this._ids.forEach(Lang.bind(this,
+            function(id) {
+                let single = new Documents.SingleItemJob(id);
+                single.run(Query.QueryFlags.UNFILTERED, Lang.bind(this,
+                    function(cursor) {
+                        let title =    cursor.get_string(Query.QueryColumns.TITLE)[0];
+                        let filename = cursor.get_string(Query.QueryColumns.FILENAME)[0];
+                        let rdftype =  cursor.get_string(Query.QueryColumns.RDFTYPE)[0];
+
+                        let gicon = null;
+                        let pixbuf = null;
+
+                        // Collection
+                        let isCollection = (rdftype.indexOf('nfo#DataContainer') != -1);
+
+                        if (!isCollection)
+                            gicon = _createGIcon(cursor);
+
+                        if (!title || title == '')
+                            title = Gd.filename_strip_extension(filename);
+
+                        if (!title || title == '')
+                            title = _("Untitled Document");
+
+                        let meta = { id: id, title: title, icon: gicon };
+
+                        if (isCollection) {
+                            this._createCollectionPixbuf(meta);
+                        } else {
+                            this._metas.push(meta);
+                            this._jobCollector();
+                        }
+                    }));
+            }));
+    }
+};
+
+function FetchIdsJob(terms) {
+    this._init(terms);
+}
+
+FetchIdsJob.prototype = {
+    _init: function(terms) {
+        this._terms = terms;
+        this._ids = [];
+    },
+
+    run: function(callback) {
+        this._callback = callback;
+        Global.searchController.setString(this._terms.join(' ').toLowerCase());
+
+        let query = Global.queryBuilder.buildGlobalQuery();
+        Global.connectionQueue.add(query.sparql, null, Lang.bind(this,
+            function(object, res) {
+                let cursor = null;
+
+                try {
+                    cursor = object.query_finish(res);
+                    cursor.next_async(null, Lang.bind(this, this._onCursorNext));
+                } catch (e) {
+                    log('Error querying tracker: ' + e);
+                    callback(this._ids);
+                }
+            }));
+    },
+
+    _onCursorNext: function(cursor, res) {
+        let valid = false;
+
+        try {
+            valid = cursor.next_finish(res);
+        } catch (e) {
+            cursor.close();
+            log('Error querying tracker: ' + e);
+
+            this._callback(this._ids);
+        }
+
+        if (valid) {
+            this._ids.push(cursor.get_string(Query.QueryColumns.URN)[0]);
+            cursor.next_async(null, Lang.bind(this, this._onCursorNext));
+        } else {
+            cursor.close();
+            this._callback(this._ids);
+        }
+    }
+};
+
 function ShellSearchProvider() {
     this._init();
 }
@@ -157,203 +439,14 @@ ShellSearchProvider.prototype = {
                                                                  this.quit));
     },
 
-    _createThumbnailIcon: function(uri) {
-        let file = Gio.file_new_for_uri(uri);
-
-        try {
-            let info = file.query_info(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH,
-                                       0, null);
-            let path = info.get_attribute_byte_string(Gio.FILE_ATTRIBUTE_THUMBNAIL_PATH);
-            if (path)
-                return new Gio.FileIcon({ file: Gio.file_new_for_path(path) });
-        } catch(e) {
-            log(e);
-        }
-        return null;
-    },
-
-    _createGIcon: function(cursor) {
-        let gicon = null;
-
-        let ident = cursor.get_string(Query.QueryColumns.IDENTIFIER)[0];
-        let isRemote = ident && (ident.indexOf('https://docs.google.com') != -1);
-
-        if (!isRemote) {
-            let uri = cursor.get_string(Query.QueryColumns.URI)[0];
-            if (uri)
-                gicon = this._createThumbnailIcon(uri);
-        }
-
-        if (gicon)
-            return gicon;
-
-        let mimetype = cursor.get_string(Query.QueryColumns.MIMETYPE)[0];
-        if (mimetype)
-            gicon = Gio.content_type_get_icon(mimetype);
-
-        if (gicon)
-            return gicon;
-
-        let rdftype = cursor.get_string(Query.QueryColumns.RDFTYPE)[0];
-        if (rdftype)
-            gicon = Utils.iconFromRdfType(rdftype);
-
-        if (!gicon)
-            gicon = new Gio.ThemedIcon({ name: 'text-x-generic' });
-
-        return gicon;
-    },
-
-    _createCollectionPixbuf: function(urn) {
-        let query = Global.queryBuilder.buildCollectionIconQuery(urn);
-        let cursor = Global.connection.query(query.sparql, null);
-
-        let collectionUrns = [];
-        while (true) {
-            try {
-                if (!cursor.next(null)) {
-                    cursor.close();
-                    break;
-                }
-            } catch(e) {
-                cursor.close();
-                break;
-            }
-
-            let urn = cursor.get_string(0)[0];
-            collectionUrns.push(urn);
-        }
-
-        let pixbufs = [];
-        collectionUrns.forEach(Lang.bind(this,
-            function(urn) {
-                let query = Global.queryBuilder.buildSingleQuery(urn);
-                let cursor = Global.connection.query(query.sparql, null);
-
-                let valid;
-                try {
-                    valid = cursor.next(null);
-                } catch(e) {
-                    log("Failed to query tracker: " + e);
-                    valid = false;
-                }
-
-                if (!valid) {
-                    cursor.close();
-                    return;
-                }
-
-                let icon = this._createGIcon(cursor);
-                cursor.close();
-
-                if (icon instanceof Gio.ThemedIcon) {
-                    let theme = Gtk.IconTheme.get_default();
-                    let flags = Gtk.IconLookupFlags.FORCE_SIZE |
-                                Gtk.IconLookupFlags.GENERIC_FALLBACK;
-                    let info = theme.lookup_by_gicon(icon, _SHELL_SEARCH_ICON_SIZE,
-                                                     flags);
-
-                    try {
-                        let pixbuf = info.load_icon();
-                        pixbufs.push(pixbuf);
-                    } catch(e) {
-                        log("Unable to load pixbuf: " + e);
-                    }
-                } else if (icon instanceof Gio.FileIcon) {
-                    try {
-                        let stream = icon.load(_SHELL_SEARCH_ICON_SIZE, null)[0];
-                        let pixbuf = GdkPixbuf.Pixbuf.new_from_stream(stream,
-                                                                      null);
-                        pixbufs.push(pixbuf);
-                    } catch(e) {
-                        log("Unable to load pixbuf: " + e);
-                    }
-                }
-            }));
-        return Gd.create_collection_icon(_SHELL_SEARCH_ICON_SIZE, pixbufs);
-    },
-
-    _doSearch: function(terms) {
-        Global.searchController.setString(terms.join(' ').toLowerCase());
-        let query = Global.queryBuilder.buildGlobalQuery();
-        let cursor = Global.connection.query(query.sparql, null);
-        let ids = [];
-        while(true) {
-            try {
-                let valid = cursor.next(null);
-
-                if (!valid) {
-                    cursor.close();
-                    break;
-                }
-            } catch(e) {
-                cursor.close();
-                log('Error querying tracker: ' + e);
-                break;
-            }
-
-            ids.push(cursor.get_string(Query.QueryColumns.URN)[0]);
-        }
-        return ids;
-    },
-
-    _ensureResultMeta: function(id) {
-        if (this._cache[id])
-            return;
-
-        let query = Global.queryBuilder.buildSingleQuery(id);
-        let cursor = Global.connection.query(query.sparql, null);
-
-        try {
-            let valid = cursor.next(null);
-
-            if (!valid)
-                cursor.close();
-        } catch(e) {
-            log("Failed to query tracker: " + e);
-            cursor.close();
-        }
-
-        let title =    cursor.get_string(Query.QueryColumns.TITLE)[0];
-        let filename = cursor.get_string(Query.QueryColumns.FILENAME)[0];
-        let rdftype =  cursor.get_string(Query.QueryColumns.RDFTYPE)[0];
-
-        let gicon = null;
-        let pixbuf = null;
-
-        // Collection
-        if (rdftype.indexOf('nfo#DataContainer') != -1)
-            pixbuf = this._createCollectionPixbuf(id);
-        else
-            gicon = this._createGIcon(cursor);
-
-        if (!title || title == '')
-            title = Gd.filename_strip_extension(filename);
-
-        if (!title || title == '')
-            title = _("Untitled Document");
-
-        this._cache[id] = { id: id, title: title, icon: gicon, pixbuf: pixbuf };
-    },
-
-    GetInitialResultSet: function(terms) {
-        this._resetTimeout();
-        return this._doSearch(terms);
-    },
-
-    GetSubsearchResultSet: function(previousResults, terms) {
-        this._resetTimeout();
-        return this._doSearch(terms);
-    },
-
-    GetResultMetas: function(ids) {
-        this._resetTimeout();
-
+    _returnMetasFromCache: function(ids, invocation) {
         let metas = [];
         for (let i = 0; i < ids.length; i++) {
             let id = ids[i];
 
-            this._ensureResultMeta(id);
+            if (!this._cache[id])
+                continue;
+
             let meta = { id: GLib.Variant.new('s', this._cache[id].id),
                          name: GLib.Variant.new('s', this._cache[id].title) };
 
@@ -366,7 +459,55 @@ ShellSearchProvider.prototype = {
 
             metas.push(meta);
         }
-        return metas;
+        invocation.return_value(GLib.Variant.new('(aa{sv})', [ metas ]));
+    },
+
+    GetInitialResultSetAsync: function(params, invocation) {
+        let terms = params[0];
+        this._resetTimeout();
+
+        let job = new FetchIdsJob(terms);
+        job.run(Lang.bind(this,
+            function(ids) {
+                invocation.return_value(GLib.Variant.new('(as)', [ ids ]));
+            }));
+    },
+
+    GetSubsearchResultSetAsync: function(params, invocation) {
+        let [previousResults, terms] = params;
+        this._resetTimeout();
+
+        let job = new FetchIdsJob(terms);
+        job.run(Lang.bind(this,
+            function(ids) {
+                invocation.return_value(GLib.Variant.new('(as)', [ ids ]));
+            }));
+    },
+
+    GetResultMetasAsync: function(params, invocation) {
+        let ids = params[0];
+        this._resetTimeout();
+
+        let toFetch = ids.filter(Lang.bind(this,
+            function(id) {
+                return !(this._cache[id]);
+            }));
+
+        if (toFetch.length > 0) {
+            let job = new FetchMetasJob(toFetch);
+            job.run(Lang.bind(this,
+                function(metas) {
+                    // cache the newly fetched results
+                    metas.forEach(Lang.bind(this,
+                        function(meta) {
+                            this._cache[meta.id] = meta;
+                        }));
+
+                    this._returnMetasFromCache(ids, invocation);
+                }));
+        } else {
+            this._returnMetasFromCache(ids, invocation);
+        }
     },
 
     ActivateResult: function(id) {
@@ -388,7 +529,7 @@ ShellSearchProvider.prototype = {
 
     run: function() {
         Mainloop.run(MAINLOOP_ID);
-    },
+    }
 };
 
 function start() {
