@@ -532,12 +532,36 @@ gd_main_view_apply_model (GdMainView *self)
   gd_main_view_generic_set_model (generic, self->priv->model);
 }
 
+static gboolean
+clear_selection_list_foreach (GtkTreeModel *model,
+                              GtkTreePath *path,
+                              GtkTreeIter *iter,
+                              gpointer user_data)
+{
+  gboolean is_selected;
+
+  gtk_list_store_set (GTK_LIST_STORE (model), iter,
+                      GD_MAIN_COLUMN_SELECTED, FALSE,
+                      -1);
+
+  return FALSE;
+}
+
 static void
 gd_main_view_apply_selection_mode (GdMainView *self)
 {
   GdMainViewGeneric *generic = get_generic (self);
 
   gd_main_view_generic_set_selection_mode (generic, self->priv->selection_mode);
+
+  if (!self->priv->selection_mode &&
+      self->priv->model != NULL)
+    {
+      gtk_tree_model_foreach (self->priv->model,
+                              clear_selection_list_foreach,
+                              self);
+      g_signal_emit (self, signals[VIEW_SELECTION_CHANGED], 0);
+    }
 }
 
 static void
