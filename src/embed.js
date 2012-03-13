@@ -157,7 +157,6 @@ ViewEmbed.prototype  = {
         Global.documentManager.connect('active-changed',
                                        Lang.bind(this, this._onActiveItemChanged));
 
-        this._onWindowModeChanged();
         this._onQueryStatusChanged();
     },
 
@@ -244,15 +243,14 @@ ViewEmbed.prototype  = {
         this._moveOutBackground();
     },
 
-    _onWindowModeChanged: function() {
-        let mode = Global.modeController.getWindowMode();
-
-        if (mode == WindowMode.WindowMode.OVERVIEW)
+    _onWindowModeChanged: function(object, newMode, oldMode) {
+        if (newMode == WindowMode.WindowMode.OVERVIEW)
             this._prepareForOverview();
         else
             this._prepareForPreview();
 
-        this._windowModeChangeFlash();
+        if (oldMode != WindowMode.WindowMode.NONE)
+            this._windowModeChangeFlash();
     },
 
     _destroyScrollPreviewChild: function() {

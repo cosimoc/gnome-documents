@@ -39,14 +39,16 @@ ModeController.prototype = {
     },
 
     setWindowMode: function(mode) {
-        if (this._mode == mode)
+        let oldMode = this._mode;
+
+        if (oldMode == mode)
             return;
 
         if (mode == WindowMode.OVERVIEW)
             this.setCanFullscreen(false);
 
         this._mode = mode;
-        this.emit('window-mode-changed', this._mode);
+        this.emit('window-mode-changed', this._mode, oldMode);
     },
 
     getWindowMode: function() {
