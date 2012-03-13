@@ -172,6 +172,8 @@ TrackerController.prototype = {
 
         if (exception)
             Global.errorHandler.addQueryError(exception);
+        else
+            this._offsetController.resetItemCount();
 
         if (this._queryQueued) {
             this._queryQueued = false;
@@ -237,7 +239,6 @@ TrackerController.prototype = {
 
         this._setQueryStatus(true);
         Global.documentManager.clear();
-        this._offsetController.resetItemCount();
 
         this._performCurrentQuery();
     },
