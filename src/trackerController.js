@@ -119,6 +119,7 @@ TrackerController.prototype = {
         this._queryQueued = false;
         this._queryQueuedFlags = RefreshFlags.NONE;
         this._querying = false;
+        this._isStarted = false;
 
         // useful for debugging
         this._lastQueryTime = 0;
@@ -144,9 +145,6 @@ TrackerController.prototype = {
 
         Global.searchMatchManager.connect('active-changed',
                                           Lang.bind(this, this._onSearchMatchChanged));
-
-        // perform initial query
-        this._refreshInternal(RefreshFlags.NONE);
     },
 
     _setQueryStatus: function(status) {
@@ -224,6 +222,8 @@ TrackerController.prototype = {
     },
 
     _refreshInternal: function(flags) {
+        this._isStarted = true;
+
         if (flags & RefreshFlags.RESET_OFFSET)
             Global.offsetController.resetOffset();
 
@@ -261,6 +261,13 @@ TrackerController.prototype = {
         if (this._currentQuery.activeSource &&
             this._currentQuery.activeSource.id == 'all')
             this._refreshInternal(RefreshFlags.NONE);
+    },
+
+    start: function() {
+        if (this._isStarted)
+            return;
+
+        this._refreshInternal(RefreshFlags.NONE);
     }
 };
 Signals.addSignalMethods(TrackerController.prototype);

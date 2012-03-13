@@ -138,6 +138,8 @@ View.prototype = {
         this._queryId =
             Global.trackerController.connect('query-status-changed',
                                              Lang.bind(this, this._onQueryStatusChanged));
+        // ensure the tracker controller is started
+        Global.trackerController.start();
 
         // this will create the model if we're done querying
         this._onQueryStatusChanged();
