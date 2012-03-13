@@ -111,9 +111,6 @@ function View() {
 
 View.prototype = {
     _init: function() {
-        this._selectedURNs = null;
-        this._updateSelectionId = 0;
-
         this.widget = new Gd.MainView();
 
         this.widget.connect('item-activated',
