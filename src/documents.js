@@ -882,6 +882,8 @@ DocumentManager.prototype = {
 
         if (doc.collection)
             Global.collectionManager.addItem(doc);
+
+        return doc;
     },
 
     clear: function() {

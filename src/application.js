@@ -210,8 +210,8 @@ Application.prototype = {
                     function(cursor) {
                         if (!cursor)
                             return;
-                        let doc = Global.documentManager.createDocumentFromCursor(cursor);
-                        Global.documentManager.addItem(doc);
+
+                        let doc = Global.documentManager.addDocumentFromCursor(cursor);
                         Global.documentManager.setActiveItem(doc);
                     }));
             }
