@@ -58,8 +58,6 @@ MainWindow.prototype = {
 
         let stage = this._clutterEmbed.get_stage();
 
-        Global.modeController.setWindowMode(WindowMode.WindowMode.OVERVIEW);
-
         // apply the last saved window size and position
         let size = Global.settings.get_value('window-size');
         if (size.n_children() == 2) {

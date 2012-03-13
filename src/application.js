@@ -198,8 +198,6 @@ Application.prototype = {
     },
 
     _commandLine: function(app, commandLine) {
-        app.activate();
-
         let args = commandLine.get_arguments();
         if (args.length) {
             let urn = args[0]; // gjs eats argv[0]
@@ -217,7 +215,12 @@ Application.prototype = {
                         Global.documentManager.setActiveItem(doc);
                     }));
             }
+        } else {
+            Global.modeController.setWindowMode(WindowMode.WindowMode.OVERVIEW);
         }
+
+        app.activate();
+
         return 0;
     }
 };
