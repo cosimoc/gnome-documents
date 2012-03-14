@@ -1,16 +1,17 @@
 # Danish translation for gnome-documents.
 # Copyright (C) 2011 gnome-documents's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-documents package.
-# Kris Thomsen <lakristho@gmail.com>, 2011.
+#
+# Kris Thomsen <lakristho@gmail.com>, 2011-2012.
 # Kenneth Nielsen <k.nielsen81@gmail.com>, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-20 23:10+0100\n"
-"PO-Revision-Date: 2012-02-19 20:14+0100\n"
-"Last-Translator: Kenneth Nielsen <k.nielsen81@gmail.com>\n"
+"POT-Creation-Date: 2012-03-14 10:34+0100\n"
+"PO-Revision-Date: 2012-03-13 09:36+0100\n"
+"Last-Translator: Kris Thomsen <lakristho@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
 "MIME-Version: 1.0\n"
@@ -18,37 +19,41 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../data/gnome-documents.desktop.in.in.h:1
-msgid "Access, manage and share documents"
-msgstr "Tilgå, håndtér og del dokumenter"
-
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:53
+#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:54
 msgid "Documents"
 msgstr "Dokumenter"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "The active source filter"
-msgstr "Det aktive kildefilter"
+#: ../data/gnome-documents.desktop.in.in.h:2
+msgid "Access, manage and share documents"
+msgstr "Tilgå, håndtér og del dokumenter"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:2
-msgid "The last active source filter"
-msgstr "Det senest aktive kildefilter"
+#: ../data/gnome-documents.desktop.in.in.h:3
+msgid "Docs;PDF;Document;"
+msgstr "Docs;PDF;Dokument;"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:3 ../src/application.js:122
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:131
 msgid "View as"
 msgstr "Vis som"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:4
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
 msgid "View as type"
 msgstr "Vis som type"
 
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
+msgid "The active source filter"
+msgstr "Det aktive kildefilter"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "The last active source filter"
+msgstr "Det senest aktive kildefilter"
+
 #: ../data/org.gnome.documents.gschema.xml.in.h:5
-msgid "Window maximized"
-msgstr "Vindue maksimeret"
+msgid "Window size"
+msgstr "Vinduesstørrelse"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:6
-msgid "Window maximized state"
-msgstr "Maksimeringstilstand for vindue"
+msgid "Window size (width and height)."
+msgstr "Vinduesstørrelse (bredde og højde)."
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:7
 msgid "Window position"
@@ -59,55 +64,59 @@ msgid "Window position (x and y)."
 msgstr "Vinduesposition (x og y)."
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:9
-msgid "Window size"
-msgstr "Vinduesstørrelse"
+msgid "Window maximized"
+msgstr "Vindue maksimeret"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:10
-msgid "Window size (width and height)."
-msgstr "Vinduesstørrelse (bredde og højde)."
+msgid "Window maximized state"
+msgstr "Maksimeringstilstand for vindue"
 
-#: ../src/application.js:116
-msgid "Fullscreen"
-msgstr "Fuldskærm"
-
-#: ../src/application.js:117
-msgid "Quit"
-msgstr "Afslut"
-
-#: ../src/application.js:120
+#: ../src/application.js:129
 msgid "Grid"
 msgstr "Gitter"
 
-#: ../src/application.js:121
+#: ../src/application.js:130
 msgid "List"
 msgstr "Liste"
 
-#: ../src/documents.js:618 ../src/sources.js:100
+#: ../src/application.js:134
+msgid "Fullscreen"
+msgstr "Fuldskærm"
+
+#: ../src/application.js:137
+msgid "About Documents"
+msgstr "Om Dokumenter"
+
+#: ../src/application.js:138
+msgid "Quit"
+msgstr "Afslut"
+
+#: ../src/documents.js:619 ../src/sources.js:100
 msgid "Local"
 msgstr "Lokal"
 
 #. overridden
-#: ../src/documents.js:681
+#: ../src/documents.js:675
 msgid "Google Docs"
 msgstr "Google Dokumenter"
 
-#: ../src/documents.js:682
+#: ../src/documents.js:676
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:751
+#: ../src/documents.js:745
 msgid "Spreadsheet"
 msgstr "Regneark"
 
-#: ../src/documents.js:753
+#: ../src/documents.js:747
 msgid "Presentation"
 msgstr "Præsentation"
 
-#: ../src/documents.js:755
+#: ../src/documents.js:749
 msgid "Collection"
 msgstr "Samling"
 
-#: ../src/documents.js:757
+#: ../src/documents.js:751
 msgid "Document"
 msgstr "Dokument"
 
@@ -122,15 +131,15 @@ msgid "Unable to fetch the list of documents"
 msgstr "Kunne ikke hente listen over dokumenter"
 
 #. right section
-#: ../src/lib/gd-main-toolbar.c:210
+#: ../src/lib/gd-main-toolbar.c:269
 msgid "Done"
 msgstr "Færdig"
 
-#: ../src/lib/gd-pdf-loader.c:207
+#: ../src/lib/gd-pdf-loader.c:208
 msgid "Unable to load the document"
 msgstr "Kunne ikke indlæse dokumentet"
 
-#: ../src/lib/gd-pdf-loader.c:488
+#: ../src/lib/gd-pdf-loader.c:489
 msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
 msgstr ""
 "Kan ikke finde \"unoconv\". Kontroller venligst din LibreOffice-installation"
@@ -142,29 +151,65 @@ msgid_plural "Load %d more documents"
 msgstr[0] "Indlæs %d dokument mere"
 msgstr[1] "Indlæs %d dokumenter mere"
 
-#: ../src/mainToolbar.js:118
-msgid "Click on items to select them"
-msgstr "Klik på elementer for at vælge dem"
-
-#: ../src/mainToolbar.js:120
-#, c-format
-msgid "%d selected"
-msgstr "%d valgte"
-
-#: ../src/mainToolbar.js:165
+#: ../src/mainToolbar.js:194
 msgid "New and Recent"
 msgstr "Nye og nylige"
 
-#: ../src/mainToolbar.js:187
+#: ../src/mainToolbar.js:201
 #, c-format
-msgid "(%d of %d)"
-msgstr "(%d af %d)"
+msgid "Results for \"%s\""
+msgstr "Resultater for \"%s\""
+
+#: ../src/mainToolbar.js:203
+msgid "filtered by title"
+msgstr "sorteret efter titel"
+
+#: ../src/mainToolbar.js:205
+msgid "filtered by author"
+msgstr "sorteret efter forfatter"
+
+#: ../src/mainToolbar.js:218
+#, c-format
+msgid "%d of %d"
+msgstr "%d af %d"
+
+#: ../src/mainToolbar.js:224
+msgid "Click on items to select them"
+msgstr "Klik på elementer for at vælge dem"
+
+#: ../src/mainToolbar.js:226
+#, c-format
+msgid "%d selected"
+msgid_plural "%d selected"
+msgstr[0] "%d valgt"
+msgstr[1] "%d valgte"
+
+#: ../src/mainWindow.js:252
+msgid "translator-credits"
+msgstr ""
+"Kris Thomsen\n"
+"\n"
+"Dansk-gruppen <dansk@dansk-gruppen.dk>\n"
+"Mere info: http://www.dansk-gruppen.dk"
+
+#: ../src/mainWindow.js:253
+msgid "GNOME Documents"
+msgstr "GNOME Dokumenter"
+
+#: ../src/mainWindow.js:254
+msgid "A document manager application"
+msgstr "Et program til dokumenthåndtering"
+
+#: ../src/notifications.js:85
+#, c-format
+msgid "Printing \"%s\": %s"
+msgstr "Udskriver \"%s\": %s"
 
 #: ../src/searchbar.js:86
 msgid "Category"
 msgstr "Kategori"
 
-#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:208
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:210
 #: ../src/sources.js:94
 msgid "All"
 msgstr "Alle"
@@ -201,44 +246,50 @@ msgstr "Regneark"
 msgid "Text Documents"
 msgstr "Tekstdokumenter"
 
-#: ../src/searchbar.js:205
+#. Translators: this is a verb that refers to "All", "Title" and "Author",
+#. as in "Match All", "Match Title" and "Match Author"
+#: ../src/searchbar.js:207
 msgid "Match"
 msgstr "Match"
 
-#: ../src/searchbar.js:210
+#: ../src/searchbar.js:212
 msgid "Title"
 msgstr "Titel"
 
-#: ../src/searchbar.js:212
+#: ../src/searchbar.js:214
 msgid "Author"
 msgstr "Forfatter"
 
-#: ../src/selections.js:663
+#: ../src/selections.js:735
 msgid "Organize"
 msgstr "Organisér"
 
-#: ../src/selections.js:670
+#: ../src/selections.js:742
 msgid "Delete"
 msgstr "Slet"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:761 ../src/view.js:67
+#: ../src/selections.js:842 ../src/view.js:69
 #, c-format
 msgid "Open with %s"
 msgstr "Åbn med %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:764 ../src/view.js:70
+#: ../src/selections.js:845 ../src/view.js:72
 msgid "Open"
 msgstr "Åbn"
 
-#: ../src/selections.js:777 ../src/view.js:80
+#: ../src/selections.js:858 ../src/view.js:82
 msgid "Remove from favorites"
 msgstr "Fjern fra favoritter"
 
-#: ../src/selections.js:781 ../src/view.js:80
+#: ../src/selections.js:862 ../src/view.js:82
 msgid "Add to favorites"
 msgstr "Føj til favoritter"
+
+#: ../src/shellSearchProvider.js:285
+msgid "Untitled Document"
+msgstr "Unavngivet dokument"
 
 #: ../src/sources.js:90
 msgid "Sources"
@@ -247,6 +298,50 @@ msgstr "Kilder"
 #: ../src/spinnerBox.js:58
 msgid "Loading..."
 msgstr "Indlæser..."
+
+#: ../src/view.js:198
+msgid "Yesterday"
+msgstr "I går"
+
+#: ../src/view.js:200
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%d dag siden"
+msgstr[1] "%d dage siden"
+
+#: ../src/view.js:204
+msgid "Last week"
+msgstr "Sidste uge"
+
+#: ../src/view.js:206
+#, c-format
+msgid "%d week ago"
+msgid_plural "%d weeks ago"
+msgstr[0] "%d uge siden"
+msgstr[1] "%d uger siden"
+
+#: ../src/view.js:210
+msgid "Last month"
+msgstr "Sidste måned"
+
+#: ../src/view.js:212
+#, c-format
+msgid "%d month ago"
+msgid_plural "%d months ago"
+msgstr[0] "%d måned siden"
+msgstr[1] "%d måneder siden"
+
+#: ../src/view.js:216
+msgid "Last year"
+msgstr "Sidste år"
+
+#: ../src/view.js:218
+#, c-format
+msgid "%d year ago"
+msgid_plural "%d years ago"
+msgstr[0] "%d år siden"
+msgstr[1] "%d år siden"
 
 #~ msgid "Enable list view"
 #~ msgstr "Aktivér listevisning"
