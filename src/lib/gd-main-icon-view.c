@@ -43,14 +43,6 @@ G_DEFINE_TYPE_WITH_CODE (GdMainIconView, gd_main_icon_view, GTK_TYPE_ICON_VIEW,
                          G_IMPLEMENT_INTERFACE (GD_TYPE_MAIN_VIEW_GENERIC,
                                                 gd_main_view_generic_iface_init))
 
-static void
-on_icon_selection_changed (GtkIconView *iv,
-                           gpointer user_data)
-{
-  GdMainIconView *self = user_data;
-  g_signal_emit_by_name (self, "view-selection-changed");
-}
-
 static GtkTreePath*
 get_source_row (GdkDragContext *context)
 {
@@ -103,9 +95,6 @@ gd_main_icon_view_constructed (GObject *obj)
                 "column-spacing", VIEW_COLUMN_SPACING,
                 "margin", VIEW_MARGIN,
                 NULL);
-
-  g_signal_connect (self, "selection-changed",
-                    G_CALLBACK (on_icon_selection_changed), self);
 
   self->priv->pixbuf_cell = cell = gd_toggle_pixbuf_renderer_new ();
   g_object_set (cell,
