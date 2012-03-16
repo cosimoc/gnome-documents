@@ -3,37 +3,43 @@
 # This file is distributed under the same license as the gnome-documents package.
 #
 # Marek Černocký <marek@manet.cz>, 2011, 2012.
+# Adam Matoušek <adydas95@gmail.com>, 2012
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
-"documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-01-18 20:00+0000\n"
-"PO-Revision-Date: 2012-01-19 16:51+0100\n"
-"Last-Translator: Marek Černocký <marek@manet.cz>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-documents&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-03-02 12:58+0000\n"
+"PO-Revision-Date: 2012-03-02 18:28+0100\n"
+"Last-Translator: Adam Matoušek <adydas95@gmail.com>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
+"Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../data/gnome-documents.desktop.in.in.h:1
-msgid "Access, manage and share documents"
-msgstr "Přístup k dokumentům, jejich správa a sdílení"
-
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:53
+#: ../src/mainWindow.js:54
 msgid "Documents"
 msgstr "Dokumenty"
 
+#: ../data/gnome-documents.desktop.in.in.h:2
+msgid "Access, manage and share documents"
+msgstr "Přístup k dokumentům, jejich správa a sdílení"
+
+#: ../data/gnome-documents.desktop.in.in.h:3
+msgid "Docs;PDF;Document;"
+msgstr "PDF;Dokument;"
+
 #: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "Enable list view"
-msgstr "Zapnout zobrazení v podobě seznamu"
+#: ../src/application.js:127
+msgid "View as"
+msgstr "Zobrazit jako"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:2
-msgid "List view"
-msgstr "Seznamové zobrazení"
+msgid "View as type"
+msgstr "Zobrazit jako typ"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:3
 msgid "The active source filter"
@@ -44,12 +50,12 @@ msgid "The last active source filter"
 msgstr "Poslední aktivní filtr zdrojů"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:5
-msgid "Window maximized"
-msgstr "Maximalizace okna"
+msgid "Window size"
+msgstr "Velikost okna"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:6
-msgid "Window maximized state"
-msgstr "Stav maximalizace okna."
+msgid "Window size (width and height)."
+msgstr "Velikost okna (šířka a výška)."
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:7
 msgid "Window position"
@@ -60,35 +66,35 @@ msgid "Window position (x and y)."
 msgstr "Poloha okna (x a y)."
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:9
-msgid "Window size"
-msgstr "Velikost okna"
+msgid "Window maximized"
+msgstr "Maximalizace okna"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:10
-msgid "Window size (width and height)."
-msgstr "Velikost okna (šířka a výška)."
+msgid "Window maximized state"
+msgstr "Stav maximalizace okna."
 
-#: ../src/application.js:118
-msgid "Fullscreen"
-msgstr "Celá obrazovka"
-
-#: ../src/application.js:119
-msgid "Quit"
-msgstr "Ukončit"
-
-#: ../src/application.js:122
+#: ../src/application.js:125
 msgid "Grid"
 msgstr "Mřížku"
 
-#: ../src/application.js:123
-#| msgid "List view"
+#: ../src/application.js:126
 msgid "List"
 msgstr "Seznam"
 
-#: ../src/application.js:124
-msgid "View as"
-msgstr "Zobrazit jako"
+#: ../src/application.js:130
+msgid "Fullscreen"
+msgstr "Celá obrazovka"
 
-#: ../src/documents.js:618 ../src/sources.js:100
+#: ../src/application.js:133
+msgid "About Documents"
+msgstr "O Dokumentech"
+
+#: ../src/application.js:134
+msgid "Quit"
+msgstr "Ukončit"
+
+#: ../src/documents.js:618
+#: ../src/sources.js:100
 msgid "Local"
 msgstr "Místní"
 
@@ -111,7 +117,7 @@ msgstr "Prezentace"
 
 #: ../src/documents.js:755
 msgid "Collection"
-msgstr ""
+msgstr "Sbírka"
 
 #: ../src/documents.js:757
 msgid "Document"
@@ -128,52 +134,68 @@ msgid "Unable to fetch the list of documents"
 msgstr "Nelze získat seznam dokumentů"
 
 #. right section
-#: ../src/lib/gd-main-toolbar.c:210
+#: ../src/lib/gd-main-toolbar.c:269
 msgid "Done"
-msgstr ""
+msgstr "Hotovo"
 
-#: ../src/lib/gd-pdf-loader.c:207
-#| msgid "Unable to fetch the list of documents"
+#: ../src/lib/gd-pdf-loader.c:208
 msgid "Unable to load the document"
 msgstr "Nelze načíst dokument"
 
-#: ../src/lib/gd-pdf-loader.c:488
+#: ../src/lib/gd-pdf-loader.c:489
 msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
 msgstr "Nelze najít „unoconv“, zkontrolujte prosím svoji instalaci LibreOffice"
 
 #: ../src/loadMore.js:70
 #, c-format
-#| msgid "Load %d more documents"
-#| msgid_plural "Load %d more documents"
 msgid "Load %d more document"
 msgid_plural "Load %d more documents"
 msgstr[0] "Načíst %d další dokument"
 msgstr[1] "Načíst další %d dokumenty"
 msgstr[2] "Načíst dalších %d dokumentů"
 
-#: ../src/mainToolbar.js:150
+#: ../src/mainToolbar.js:119
 msgid "Click on items to select them"
 msgstr "Klikáním na položky je vyberete"
 
-#: ../src/mainToolbar.js:152
+#: ../src/mainToolbar.js:121
 #, c-format
 msgid "%d selected"
-msgstr ""
+msgid_plural "%d selected"
+msgstr[0] "%d vybrán"
+msgstr[1] "%d vybrány"
+msgstr[2] "%d vybráno"
 
-#: ../src/mainToolbar.js:197
+#: ../src/mainToolbar.js:168
 msgid "New and Recent"
 msgstr "Nové a nedávné"
 
-#: ../src/mainToolbar.js:219
+#: ../src/mainToolbar.js:190
 #, c-format
 msgid "(%d of %d)"
 msgstr "(%d z %d)"
+
+#: ../src/mainWindow.js:296
+msgid "translator-credits"
+msgstr ""
+"Marek Černocký <marek@manet.cz>\n"
+"Adam Matoušek <adydas95@gmail.com>"
+
+#: ../src/mainWindow.js:297
+msgid "GNOME Documents"
+msgstr "Dokumenty GNOME"
+
+#: ../src/mainWindow.js:298
+msgid "A document manager application"
+msgstr "Aplikace pro správu dokumentů"
 
 #: ../src/searchbar.js:86
 msgid "Category"
 msgstr "Kategorie"
 
-#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:208
+#: ../src/searchbar.js:91
+#: ../src/searchbar.js:141
+#: ../src/searchbar.js:210
 #: ../src/sources.js:94
 msgid "All"
 msgstr "Vše"
@@ -192,66 +214,72 @@ msgstr "Typ"
 
 #: ../src/searchbar.js:143
 msgid "Collections"
-msgstr ""
+msgstr "Sbírky"
 
 #: ../src/searchbar.js:147
-#| msgid "Documents"
 msgid "PDF Documents"
 msgstr "Dokumenty PDF"
 
 #: ../src/searchbar.js:150
-#| msgid "Presentation"
 msgid "Presentations"
 msgstr "Prezentace"
 
 #: ../src/searchbar.js:153
-#| msgid "Spreadsheet"
 msgid "Spreadsheets"
 msgstr "Sešit s tabulkami"
 
 #: ../src/searchbar.js:156
-#| msgid "Documents"
 msgid "Text Documents"
 msgstr "Textové dokumenty"
 
-#: ../src/searchbar.js:205
+#. Translators: this is a verb that refers to "All", "Title" and "Author",
+#. as in "Match All", "Match Title" and "Match Author"
+#: ../src/searchbar.js:207
 msgid "Match"
-msgstr ""
+msgstr "Shoda"
 
-#: ../src/searchbar.js:210
+#: ../src/searchbar.js:212
 msgid "Title"
 msgstr "Název"
 
-#: ../src/searchbar.js:212
+#: ../src/searchbar.js:214
 msgid "Author"
 msgstr "Autor"
 
-#: ../src/selections.js:663
+#: ../src/selections.js:658
 msgid "Organize"
-msgstr ""
+msgstr "Organizovat"
 
-#: ../src/selections.js:670
+#: ../src/selections.js:665
 msgid "Delete"
-msgstr ""
+msgstr "Smazat"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:761 ../src/view.js:67
+#: ../src/selections.js:756
+#: ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "Otevřít pomocí %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:764 ../src/view.js:70
+#: ../src/selections.js:759
+#: ../src/view.js:70
 msgid "Open"
 msgstr "Otevřít"
 
-#: ../src/selections.js:777 ../src/view.js:80
+#: ../src/selections.js:772
+#: ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "Odebrat z oblíbených"
 
-#: ../src/selections.js:781 ../src/view.js:80
+#: ../src/selections.js:776
+#: ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Přidat do oblíbených"
+
+#: ../src/shellSearchProvider.js:332
+msgid "Untitled Document"
+msgstr "Nepojmenovaný dokument"
 
 #: ../src/sources.js:90
 msgid "Sources"
