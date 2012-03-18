@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-04 19:33+0200\n"
-"PO-Revision-Date: 2012-03-04 19:51+0300\n"
+"POT-Creation-Date: 2012-03-18 17:27+0200\n"
+"PO-Revision-Date: 2012-03-18 17:34+0300\n"
 "Last-Translator: Korostil Daniel <ted.korostiled@gmail.com>\n"
 "Language-Team: translation@linux.org.ua\n"
 "Language: uk\n"
@@ -32,7 +32,7 @@ msgstr "Доступ, впорядкування і оприлюднення д�
 msgid "Docs;PDF;Document;"
 msgstr "Доки;PDF;Документ;"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:127
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:131
 msgid "View as"
 msgstr "Переглянути як"
 
@@ -72,52 +72,52 @@ msgstr "Вікно розгорнуто"
 msgid "Window maximized state"
 msgstr "Стан розгорнутого вікна"
 
-#: ../src/application.js:125
+#: ../src/application.js:129
 msgid "Grid"
 msgstr "Сітка"
 
-#: ../src/application.js:126
+#: ../src/application.js:130
 msgid "List"
 msgstr "Список"
 
-#: ../src/application.js:130
+#: ../src/application.js:134
 msgid "Fullscreen"
 msgstr "На весь екран"
 
-#: ../src/application.js:133
+#: ../src/application.js:137
 msgid "About Documents"
 msgstr "Про програму"
 
-#: ../src/application.js:134
+#: ../src/application.js:138
 msgid "Quit"
 msgstr "Вийти"
 
-#: ../src/documents.js:618 ../src/sources.js:100
+#: ../src/documents.js:619 ../src/sources.js:100
 msgid "Local"
 msgstr "Локальне"
 
 #. overridden
-#: ../src/documents.js:681
+#: ../src/documents.js:675
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:682
+#: ../src/documents.js:676
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:751
+#: ../src/documents.js:745
 msgid "Spreadsheet"
 msgstr "Електронна таблиця"
 
-#: ../src/documents.js:753
+#: ../src/documents.js:747
 msgid "Presentation"
 msgstr "Презентація"
 
-#: ../src/documents.js:755
+#: ../src/documents.js:749
 msgid "Collection"
 msgstr "Колекція"
 
-#: ../src/documents.js:757
+#: ../src/documents.js:751
 msgid "Document"
 msgstr "Документ"
 
@@ -152,11 +152,33 @@ msgstr[0] "Завантажити ще %d документ"
 msgstr[1] "Завантажити ще %d документа"
 msgstr[2] "Завантажити ще %d документів"
 
-#: ../src/mainToolbar.js:119
+#: ../src/mainToolbar.js:194
+msgid "New and Recent"
+msgstr "Нове і нещодавнє"
+
+#: ../src/mainToolbar.js:201
+#, c-format
+msgid "Results for \"%s\""
+msgstr "Результати на «%s»"
+
+#: ../src/mainToolbar.js:203
+msgid "filtered by title"
+msgstr "відсіяно за назвою"
+
+#: ../src/mainToolbar.js:205
+msgid "filtered by author"
+msgstr "відсіяно за автором"
+
+#: ../src/mainToolbar.js:218
+#, c-format
+msgid "%d of %d"
+msgstr "%d з %d"
+
+#: ../src/mainToolbar.js:224
 msgid "Click on items to select them"
 msgstr "Натисніть на об'єкти, щоб вибрати їх"
 
-#: ../src/mainToolbar.js:121
+#: ../src/mainToolbar.js:226
 #, c-format
 msgid "%d selected"
 msgid_plural "%d selected"
@@ -164,26 +186,22 @@ msgstr[0] "%d вибрано"
 msgstr[1] "%d вибрано"
 msgstr[2] "%d вибрано"
 
-#: ../src/mainToolbar.js:168
-msgid "New and Recent"
-msgstr "Нове і нещодавнє"
-
-#: ../src/mainToolbar.js:190
-#, c-format
-msgid "(%d of %d)"
-msgstr "(%d з %d)"
-
-#: ../src/mainWindow.js:296
+#: ../src/mainWindow.js:252
 msgid "translator-credits"
 msgstr "Daniel Korostil <ted.korostiled@gmail.com>"
 
-#: ../src/mainWindow.js:297
+#: ../src/mainWindow.js:253
 msgid "GNOME Documents"
 msgstr "Документи GNOME"
 
-#: ../src/mainWindow.js:298
+#: ../src/mainWindow.js:254
 msgid "A document manager application"
 msgstr "Організатор документів "
+
+#: ../src/notifications.js:85
+#, c-format
+msgid "Printing \"%s\": %s"
+msgstr "Друкування «%s»: %s"
 
 #: ../src/searchbar.js:86
 msgid "Category"
@@ -240,34 +258,34 @@ msgstr "Заголовок"
 msgid "Author"
 msgstr "Автор"
 
-#: ../src/selections.js:658
+#: ../src/selections.js:735
 msgid "Organize"
 msgstr "Організація"
 
-#: ../src/selections.js:665
+#: ../src/selections.js:742
 msgid "Delete"
 msgstr "Вилучити"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:756 ../src/view.js:67
+#: ../src/selections.js:842 ../src/view.js:69
 #, c-format
 msgid "Open with %s"
 msgstr "Відкрити через %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:759 ../src/view.js:70
+#: ../src/selections.js:845 ../src/view.js:72
 msgid "Open"
 msgstr "Відкрити"
 
-#: ../src/selections.js:772 ../src/view.js:80
+#: ../src/selections.js:858 ../src/view.js:82
 msgid "Remove from favorites"
 msgstr "Вилучити з улюбленого"
 
-#: ../src/selections.js:776 ../src/view.js:80
+#: ../src/selections.js:862 ../src/view.js:82
 msgid "Add to favorites"
 msgstr "Додати до улюбленого"
 
-#: ../src/shellSearchProvider.js:332
+#: ../src/shellSearchProvider.js:285
 msgid "Untitled Document"
 msgstr "Неназваний документ"
 
@@ -278,6 +296,54 @@ msgstr "Джерела"
 #: ../src/spinnerBox.js:58
 msgid "Loading..."
 msgstr "Завантаження…"
+
+#: ../src/view.js:198
+msgid "Yesterday"
+msgstr "Учора"
+
+#: ../src/view.js:200
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%d день тому"
+msgstr[1] "%d дні тому"
+msgstr[2] "%d днів тому"
+
+#: ../src/view.js:204
+msgid "Last week"
+msgstr "Минулого тижня"
+
+#: ../src/view.js:206
+#, c-format
+msgid "%d week ago"
+msgid_plural "%d weeks ago"
+msgstr[0] "%d тиждень тому"
+msgstr[1] "%d тижні тому"
+msgstr[2] "%d тижнів тому"
+
+#: ../src/view.js:210
+msgid "Last month"
+msgstr "Минулого місяця"
+
+#: ../src/view.js:212
+#, c-format
+msgid "%d month ago"
+msgid_plural "%d months ago"
+msgstr[0] "%d місяць тому"
+msgstr[1] "%d місяці тому"
+msgstr[2] "%d місяців тому"
+
+#: ../src/view.js:216
+msgid "Last year"
+msgstr "Минулого року"
+
+#: ../src/view.js:218
+#, c-format
+msgid "%d year ago"
+msgid_plural "%d years ago"
+msgstr[0] "%d рік тому"
+msgstr[1] "%d роки тому"
+msgstr[2] "%d років тому"
 
 #~ msgid "Enable list view"
 #~ msgstr "Увімкнути список"
