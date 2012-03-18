@@ -1,37 +1,41 @@
 # Catalan translation for gnome-documents.
 # Copyright (C) 2011 gnome-documents's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-documents package.
-# Pau Iranzo <paugnu@gmail.com>, 2011.
+# Pau Iranzo <paugnu@gmail.com>, 2011, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-19 15:09+0200\n"
-"PO-Revision-Date: 2011-09-15 21:59+0200\n"
-"Last-Translator: Pau Iranzo <pau.iranzo@softcatala.org>\n"
-"Language-Team: Catalan <gnome-dl@llistes.softcatala.org>\n"
+"POT-Creation-Date: 2012-03-17 23:28+0100\n"
+"PO-Revision-Date: 2012-03-17 23:29+0100\n"
+"Last-Translator: Pau Iranzo <paugnu@gmail.com>\n"
+"Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Transfer-Encoding: 8bits\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
-#: ../data/gnome-documents.desktop.in.in.h:1
-msgid "Access, manage and share documents"
-msgstr "Accediu, gestioneu i compartiu documents"
-
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:47
+#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:54
 msgid "Documents"
 msgstr "Documents"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "Enable list view"
-msgstr "Habilita la vista de llista"
+#: ../data/gnome-documents.desktop.in.in.h:2
+msgid "Access, manage and share documents"
+msgstr "Accediu, gestioneu i compartiu documents"
+
+#: ../data/gnome-documents.desktop.in.in.h:3
+msgid "Docs;PDF;Document;"
+msgstr "Documents;PDF;Document;"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:131
+msgid "View as"
+msgstr "Visualitza com a"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:2
-msgid "List view"
-msgstr "Vista de llista"
+msgid "View as type"
+msgstr "Visualitza com a tipus"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:3
 msgid "The active source filter"
@@ -41,42 +45,76 @@ msgstr "El filtre origen actiu"
 msgid "The last active source filter"
 msgstr "El darrer filtre origen actiu"
 
-#. Translators: this refers to new and recent documents
-#: ../src/categories.js:77
-msgid "New and Recent"
-msgstr "Nous i recents"
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
+msgid "Window size"
+msgstr "Mida de la finestra"
 
-#. Translators: this refers to favorite documents
-#: ../src/categories.js:80
-msgid "Favorites"
-msgstr "Preferits"
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
+msgid "Window size (width and height)."
+msgstr "Mida de la finestra (amplada i alçada)"
 
-#. Translators: this refers to shared documents
-#: ../src/categories.js:83
-msgid "Shared with you"
-msgstr "Compartits"
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
+msgid "Window position"
+msgstr "Posició de la finestra"
 
-#: ../src/documents.js:253 ../src/sources.js:101
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
+msgid "Window position (x and y)."
+msgstr "Posició de la finestra (x i y)"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:9
+msgid "Window maximized"
+msgstr "Finestra maximitzada"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:10
+msgid "Window maximized state"
+msgstr "Estat maximitzat de la finestra"
+
+#: ../src/application.js:129
+msgid "Grid"
+msgstr "Graella"
+
+#: ../src/application.js:130
+msgid "List"
+msgstr "Llista"
+
+#: ../src/application.js:134
+msgid "Fullscreen"
+msgstr "Pantalla completa"
+
+#: ../src/application.js:137
+msgid "About Documents"
+msgstr "Quant al Documents"
+
+#: ../src/application.js:138
+msgid "Quit"
+msgstr "Surt"
+
+#: ../src/documents.js:619 ../src/sources.js:100
 msgid "Local"
 msgstr "Local"
 
-#: ../src/documents.js:372
+#. overridden
+#: ../src/documents.js:675
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:373
+#: ../src/documents.js:676
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:442
+#: ../src/documents.js:745
 msgid "Spreadsheet"
 msgstr "Full de càlcul"
 
-#: ../src/documents.js:444
+#: ../src/documents.js:747
 msgid "Presentation"
 msgstr "Presentació"
 
-#: ../src/documents.js:446
+#: ../src/documents.js:749
+msgid "Collection"
+msgstr "Col·lecció"
+
+#: ../src/documents.js:751
 msgid "Document"
 msgstr "Document"
 
@@ -86,48 +124,218 @@ msgstr "Document"
 msgid "Unable to load \"%s\" for preview"
 msgstr "No es pot carregar «%s» per previsualitzar-lo"
 
-#: ../src/error.js:44
+#: ../src/error.js:49
 msgid "Unable to fetch the list of documents"
 msgstr "No es pot obtenir el llistat de documents"
 
+#. right section
+#: ../src/lib/gd-main-toolbar.c:269
+msgid "Done"
+msgstr "Fet"
+
+#: ../src/lib/gd-pdf-loader.c:208
+msgid "Unable to load the document"
+msgstr "No es pot carregar el document"
+
+#: ../src/lib/gd-pdf-loader.c:489
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr ""
+"No es pot trobar l'«unoconv», comproveu la vostra instal·ació del LibreOffice"
+
 #: ../src/loadMore.js:70
 #, c-format
-msgid "Load %d more documents"
+msgid "Load %d more document"
 msgid_plural "Load %d more documents"
 msgstr[0] "Carrega %d document més"
 msgstr[1] "Carrega %d documents més"
 
+#: ../src/mainToolbar.js:194
+msgid "New and Recent"
+msgstr "Nous i recents"
+
 #: ../src/mainToolbar.js:201
 #, c-format
-msgid "(%d of %d)"
-msgstr "(%d de %d)"
+msgid "Results for \"%s\""
+msgstr "Resultats per «%s»"
 
-#: ../src/sidebar.js:131 ../src/sources.js:218
-msgid "Sources"
-msgstr "Orígens"
+#: ../src/mainToolbar.js:203
+msgid "filtered by title"
+msgstr "filtrat per títol"
 
-#: ../src/sources.js:96
+#: ../src/mainToolbar.js:205
+msgid "filtered by author"
+msgstr "filtrat per autor"
+
+#: ../src/mainToolbar.js:218
+#, c-format
+msgid "%d of %d"
+msgstr "%d de %d"
+
+#: ../src/mainToolbar.js:224
+msgid "Click on items to select them"
+msgstr "Feu clic als elements per seleccionar-los"
+
+#: ../src/mainToolbar.js:226
+#, c-format
+msgid "%d selected"
+msgid_plural "%d selected"
+msgstr[0] "%d seleccionat"
+msgstr[1] "%d seleccionats"
+
+#: ../src/mainWindow.js:252
+msgid "translator-credits"
+msgstr "Pau Iranzo <paugnu@gmail.com>"
+
+#: ../src/mainWindow.js:253
+msgid "GNOME Documents"
+msgstr "GNOME Documents"
+
+#: ../src/mainWindow.js:254
+msgid "A document manager application"
+msgstr "Una aplicació per gestionar documents"
+
+#: ../src/notifications.js:85
+#, c-format
+msgid "Printing \"%s\": %s"
+msgstr "S'està imprimint «%s»: %s"
+
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "Categoria"
+
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:210
+#: ../src/sources.js:94
 msgid "All"
 msgstr "Tot"
 
-#: ../src/spinnerBox.js:47
-msgid "Loading..."
-msgstr "S'està carregant..."
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "Preferits"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "Compartits"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "Tipus"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr "Col·leccions"
+
+#: ../src/searchbar.js:147
+msgid "PDF Documents"
+msgstr "Documents PDF"
+
+#: ../src/searchbar.js:150
+msgid "Presentations"
+msgstr "Presentacions"
+
+#: ../src/searchbar.js:153
+msgid "Spreadsheets"
+msgstr "Fulls de càlcul"
+
+#: ../src/searchbar.js:156
+msgid "Text Documents"
+msgstr "Documents de text"
+
+#. Translators: this is a verb that refers to "All", "Title" and "Author",
+#. as in "Match All", "Match Title" and "Match Author"
+#: ../src/searchbar.js:207
+msgid "Match"
+msgstr "Coincidència"
+
+#: ../src/searchbar.js:212
+msgid "Title"
+msgstr "Títol"
+
+#: ../src/searchbar.js:214
+msgid "Author"
+msgstr "Autor"
+
+#: ../src/selections.js:735
+msgid "Organize"
+msgstr "Organitza"
+
+#: ../src/selections.js:742
+msgid "Delete"
+msgstr "Suprimeix"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/view.js:67
+#: ../src/selections.js:842 ../src/view.js:69
 #, c-format
 msgid "Open with %s"
 msgstr "Obre amb %s"
 
-#: ../src/view.js:69
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:845 ../src/view.js:72
 msgid "Open"
 msgstr "Obre"
 
-#: ../src/view.js:79
+#: ../src/selections.js:858 ../src/view.js:82
 msgid "Remove from favorites"
 msgstr "Suprimeix dels preferits"
 
-#: ../src/view.js:79
+#: ../src/selections.js:862 ../src/view.js:82
 msgid "Add to favorites"
 msgstr "Afegeix als preferits"
+
+#: ../src/shellSearchProvider.js:285
+msgid "Untitled Document"
+msgstr "Document sense títol"
+
+#: ../src/sources.js:90
+msgid "Sources"
+msgstr "Origens"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "S'està carregant..."
+
+#: ../src/view.js:198
+msgid "Yesterday"
+msgstr "Ahir"
+
+#: ../src/view.js:200
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "fa %d dia"
+msgstr[1] "fa %d dies"
+
+#: ../src/view.js:204
+msgid "Last week"
+msgstr "Darrera setmana"
+
+#: ../src/view.js:206
+#, c-format
+msgid "%d week ago"
+msgid_plural "%d weeks ago"
+msgstr[0] "Fa %d setmana"
+msgstr[1] "Fa %d setmanes"
+
+#: ../src/view.js:210
+msgid "Last month"
+msgstr "Darrer mes"
+
+#: ../src/view.js:212
+#, c-format
+msgid "%d month ago"
+msgid_plural "%d months ago"
+msgstr[0] "Fa %d mes"
+msgstr[1] "Fa %d mesos"
+
+#: ../src/view.js:216
+msgid "Last year"
+msgstr "Darrer any"
+
+#: ../src/view.js:218
+#, c-format
+msgid "%d year ago"
+msgid_plural "%d years ago"
+msgstr[0] "Fa %d any"
+msgstr[1] "Fa %d anys"
+
+#~ msgid "Enable list view"
+#~ msgstr "Habilita la vista de llista"
