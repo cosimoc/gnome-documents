@@ -1,3 +1,21 @@
+0.3.92 - "Shiny Little Things"
+==============================
+
+- Improve startup query performance
+- Don't perform initial query when activated to preview a search result
+- Remove items from selection when we get a delete event
+- Fix collections not showing up properly in Shell search results
+- Don't refresh the Google cache when spawned as a Shell search provider
+- Use a fixed icon size when spawned as a Shell search provider
+- Clear selection when exiting selection mode
+- Fix crasher in Shell search provider mode
+- Fix selection toolbar when changing selection
+- Fix text layout in grid view for RTL languages
+- Fix scrolling in preview page chooser to work with latest GTK
+- Fix crash and inconsistencies when trying to add a new collection
+- Rely on Tracker 0.14's notification for DataContainer to track collection
+  changes/addition/deletions
+
 0.3.91 - "Cheesy Ghost"
 =======================
 
