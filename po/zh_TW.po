@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents 0.3.91\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-08 16:04+0800\n"
-"PO-Revision-Date: 2012-03-06 01:48+0800\n"
-"Last-Translator: Cheng-Chia Tseng <pswo10680@gmail.com>\n"
+"POT-Creation-Date: 2012-03-19 23:46+0800\n"
+"PO-Revision-Date: 2012-03-19 11:50+0800\n"
+"Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
 "Language-Team: Chinese (Taiwan) <chinese-l10n@googlegroups.com>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -37,7 +37,7 @@ msgstr "使用中來源過濾器"
 msgid "The last active source filter"
 msgstr "上個使用中來源過濾器"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:3 ../src/application.js:128
+#: ../data/org.gnome.documents.gschema.xml.in.h:3 ../src/application.js:131
 msgid "View as"
 msgstr "檢視"
 
@@ -69,52 +69,52 @@ msgstr "視窗大小"
 msgid "Window size (width and height)."
 msgstr "視窗大小 (寬度與高度)。"
 
-#: ../src/application.js:126
+#: ../src/application.js:129
 msgid "Grid"
 msgstr "格線"
 
-#: ../src/application.js:127
+#: ../src/application.js:130
 msgid "List"
 msgstr "清單"
 
-#: ../src/application.js:131
+#: ../src/application.js:134
 msgid "Fullscreen"
 msgstr "全螢幕"
 
-#: ../src/application.js:134
+#: ../src/application.js:137
 msgid "About Documents"
 msgstr "關於文件"
 
-#: ../src/application.js:135
+#: ../src/application.js:138
 msgid "Quit"
 msgstr "結束"
 
-#: ../src/documents.js:618 ../src/sources.js:100
+#: ../src/documents.js:619 ../src/sources.js:100
 msgid "Local"
 msgstr "本地端"
 
 #. overridden
-#: ../src/documents.js:681
+#: ../src/documents.js:675
 msgid "Google Docs"
 msgstr "Google 文件"
 
-#: ../src/documents.js:682
+#: ../src/documents.js:676
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:751
+#: ../src/documents.js:745
 msgid "Spreadsheet"
 msgstr "試算表"
 
-#: ../src/documents.js:753
+#: ../src/documents.js:747
 msgid "Presentation"
 msgstr "簡報"
 
-#: ../src/documents.js:755
+#: ../src/documents.js:749
 msgid "Collection"
 msgstr "收藏"
 
-#: ../src/documents.js:757
+#: ../src/documents.js:751
 msgid "Document"
 msgstr "文件"
 
@@ -154,21 +154,20 @@ msgstr "新增與最近使用"
 #: ../src/mainToolbar.js:201
 #, c-format
 msgid "Results for \"%s\""
-msgstr ""
+msgstr "「%s」的結果"
 
 #: ../src/mainToolbar.js:203
 msgid "filtered by title"
-msgstr ""
+msgstr "依標題過濾"
 
 #: ../src/mainToolbar.js:205
 msgid "filtered by author"
-msgstr ""
+msgstr "依作者過濾"
 
 #: ../src/mainToolbar.js:218
-#, fuzzy, c-format
-#| msgid "(%d of %d)"
+#, c-format
 msgid "%d of %d"
-msgstr "(%d / %d)"
+msgstr "%d / %d"
 
 #: ../src/mainToolbar.js:224
 msgid "Click on items to select them"
@@ -180,24 +179,24 @@ msgid "%d selected"
 msgid_plural "%d selected"
 msgstr[0] "已選取 %d 個"
 
-#: ../src/mainWindow.js:254
+#: ../src/mainWindow.js:252
 msgid "translator-credits"
 msgstr ""
 "Cheng-Chia Tseng <pswo10680@gmail.com>, 2011. \n"
 "Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>, 2011"
 
-#: ../src/mainWindow.js:255
+#: ../src/mainWindow.js:253
 msgid "GNOME Documents"
 msgstr "GNOME 文件"
 
-#: ../src/mainWindow.js:256
+#: ../src/mainWindow.js:254
 msgid "A document manager application"
 msgstr "文件管理員應用程式"
 
 #: ../src/notifications.js:85
 #, c-format
 msgid "Printing \"%s\": %s"
-msgstr ""
+msgstr "正在列印「%s」：%s"
 
 #: ../src/searchbar.js:86
 msgid "Category"
@@ -254,34 +253,34 @@ msgstr "標題"
 msgid "Author"
 msgstr "作者"
 
-#: ../src/selections.js:698
+#: ../src/selections.js:735
 msgid "Organize"
 msgstr "整理"
 
-#: ../src/selections.js:705
+#: ../src/selections.js:742
 msgid "Delete"
 msgstr "刪除"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:808 ../src/view.js:69
+#: ../src/selections.js:842 ../src/view.js:69
 #, c-format
 msgid "Open with %s"
 msgstr "以 %s 開啟"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:811 ../src/view.js:72
+#: ../src/selections.js:845 ../src/view.js:72
 msgid "Open"
 msgstr "開啟"
 
-#: ../src/selections.js:824 ../src/view.js:82
+#: ../src/selections.js:858 ../src/view.js:82
 msgid "Remove from favorites"
 msgstr "自喜好移除"
 
-#: ../src/selections.js:828 ../src/view.js:82
+#: ../src/selections.js:862 ../src/view.js:82
 msgid "Add to favorites"
 msgstr "加入喜好"
 
-#: ../src/shellSearchProvider.js:332
+#: ../src/shellSearchProvider.js:285
 msgid "Untitled Document"
 msgstr "無標題文件"
 
@@ -293,42 +292,42 @@ msgstr "來源"
 msgid "Loading..."
 msgstr "正在載入..."
 
-#: ../src/view.js:196
-msgid "Yesterday"
-msgstr ""
-
 #: ../src/view.js:198
+msgid "Yesterday"
+msgstr "昨天"
+
+#: ../src/view.js:200
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
-msgstr[0] ""
-
-#: ../src/view.js:202
-msgid "Last week"
-msgstr ""
+msgstr[0] "%d 天以前"
 
 #: ../src/view.js:204
+msgid "Last week"
+msgstr "上週"
+
+#: ../src/view.js:206
 #, c-format
 msgid "%d week ago"
 msgid_plural "%d weeks ago"
-msgstr[0] ""
-
-#: ../src/view.js:208
-msgid "Last month"
-msgstr ""
+msgstr[0] "%d 週前"
 
 #: ../src/view.js:210
+msgid "Last month"
+msgstr "上個月"
+
+#: ../src/view.js:212
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
-msgstr[0] ""
-
-#: ../src/view.js:214
-msgid "Last year"
-msgstr ""
+msgstr[0] "%d 個月以前"
 
 #: ../src/view.js:216
+msgid "Last year"
+msgstr "去年"
+
+#: ../src/view.js:218
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
-msgstr[0] ""
+msgstr[0] "%d 年以前"
