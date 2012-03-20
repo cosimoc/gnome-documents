@@ -28,7 +28,7 @@ msgstr "Преглед, управление и споделяне на доку
 
 #: ../data/gnome-documents.desktop.in.in.h:3
 msgid "Docs;PDF;Document;"
-msgstr "Документи;PDF"
+msgstr "Документи;PDF;"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:128
 msgid "View as"

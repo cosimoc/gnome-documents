@@ -33,7 +33,7 @@ msgstr "Käytä, hallitse ja jaa asiakirjoja"
 
 #: ../data/gnome-documents.desktop.in.in.h:3
 msgid "Docs;PDF;Document;"
-msgstr "Asiakirjat;PDF;asiakirja;dokumentti;dokumentit"
+msgstr "Asiakirjat;PDF;asiakirja;dokumentti;dokumentit;"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:127
 msgid "View as"

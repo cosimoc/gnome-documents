@@ -23,7 +23,7 @@ msgstr "存取、管理、分享文件"
 
 #: ../data/gnome-documents.desktop.in.in.h:2
 msgid "Docs;PDF;Document;"
-msgstr "文件;PDF;Docs;Document"
+msgstr "文件;PDF;Docs;Document;"
 
 #: ../data/gnome-documents.desktop.in.in.h:3 ../src/mainWindow.js:54
 msgid "Documents"
