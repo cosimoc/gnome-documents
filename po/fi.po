@@ -2,25 +2,24 @@
 # Copyright (C) 2012 gnome-documents's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-documents package.
 #
-# artnay <jiri.gronroos@iki.fi>, 2012.
 # Gnome 2012-03 Finnish translation sprint participants:
 # Jiri Grönroos
 # Niklas Laxström
+# artnay <jiri.gronroos@iki.fi>, 2012.
 msgid ""
 msgstr ""
-""
 "Project-Id-Version: gnome-documents master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-02-29 22:24+0000\n"
-"PO-Revision-Date: 2012-03-12 08:37:01+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-03-21 18:12+0200\n"
+"PO-Revision-Date: 2012-03-21 13:27+0200\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish <>\n"
+"Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: MediaWiki 1.20alpha (r113129); Translate 2012-03-02\n"
+"X-Generator: Lokalize 1.4\n"
 "X-POT-Import-Date: 2012-03-05 14:46:33+0000\n"
 
 #: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:54
@@ -35,7 +34,7 @@ msgstr "Käytä, hallitse ja jaa asiakirjoja"
 msgid "Docs;PDF;Document;"
 msgstr "Asiakirjat;PDF;asiakirja;dokumentti;dokumentit;"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:127
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:131
 msgid "View as"
 msgstr "Näkymä"
 
@@ -75,52 +74,52 @@ msgstr "Ikkuna suurennettu"
 msgid "Window maximized state"
 msgstr ""
 
-#: ../src/application.js:125
+#: ../src/application.js:129
 msgid "Grid"
 msgstr "Ruudukko"
 
-#: ../src/application.js:126
+#: ../src/application.js:130
 msgid "List"
 msgstr "Luettelo"
 
-#: ../src/application.js:130
+#: ../src/application.js:134
 msgid "Fullscreen"
 msgstr "Koko näyttö"
 
-#: ../src/application.js:133
+#: ../src/application.js:137
 msgid "About Documents"
 msgstr "Tietoja ohjelmasta Asiakirjat"
 
-#: ../src/application.js:134
+#: ../src/application.js:138
 msgid "Quit"
 msgstr "Lopeta"
 
-#: ../src/documents.js:618 ../src/sources.js:100
+#: ../src/documents.js:619 ../src/sources.js:100
 msgid "Local"
 msgstr "Paikallinen"
 
 #. overridden
-#: ../src/documents.js:681
+#: ../src/documents.js:675
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:682
+#: ../src/documents.js:676
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:751
+#: ../src/documents.js:745
 msgid "Spreadsheet"
 msgstr "Taulukko"
 
-#: ../src/documents.js:753
+#: ../src/documents.js:747
 msgid "Presentation"
 msgstr "Esitys"
 
-#: ../src/documents.js:755
+#: ../src/documents.js:749
 msgid "Collection"
 msgstr "Kokoelma"
 
-#: ../src/documents.js:757
+#: ../src/documents.js:751
 msgid "Document"
 msgstr "Asiakirja"
 
@@ -145,7 +144,7 @@ msgstr "Asiakirjan lataus epäonnistui"
 
 #: ../src/lib/gd-pdf-loader.c:489
 msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
-msgstr ""
+msgstr "Ohjelmaa \"unoconv\" ei löytynyt, tarkista LibreOffice-asennuksesi"
 
 #: ../src/loadMore.js:70
 #, c-format
@@ -154,37 +153,55 @@ msgid_plural "Load %d more documents"
 msgstr[0] "Lataa %d asiakirja enemmän"
 msgstr[1] "Lataa %d asiakirjaa enemmän"
 
-#: ../src/mainToolbar.js:119
+#: ../src/mainToolbar.js:194
+msgid "New and Recent"
+msgstr "Uudet ja viimeaikaiset"
+
+#: ../src/mainToolbar.js:201
+#, c-format
+msgid "Results for \"%s\""
+msgstr "Tulokset haulle \"%s\""
+
+#: ../src/mainToolbar.js:203
+msgid "filtered by title"
+msgstr ""
+
+#: ../src/mainToolbar.js:205
+msgid "filtered by author"
+msgstr ""
+
+#: ../src/mainToolbar.js:218
+#, c-format
+msgid "%d of %d"
+msgstr "%d/%d"
+
+#: ../src/mainToolbar.js:224
 msgid "Click on items to select them"
 msgstr "Napsauta kohteita valitaksesi ne"
 
-#: ../src/mainToolbar.js:121
+#: ../src/mainToolbar.js:226
 #, c-format
 msgid "%d selected"
 msgid_plural "%d selected"
 msgstr[0] "%d valittu"
 msgstr[1] "%d valittu"
 
-#: ../src/mainToolbar.js:168
-msgid "New and Recent"
-msgstr "Uudet ja viimeaikaiset"
-
-#: ../src/mainToolbar.js:190
-#, c-format
-msgid "(%d of %d)"
-msgstr "(%d/%d)"
-
-#: ../src/mainWindow.js:296
+#: ../src/mainWindow.js:252
 msgid "translator-credits"
 msgstr ""
 
-#: ../src/mainWindow.js:297
+#: ../src/mainWindow.js:253
 msgid "GNOME Documents"
 msgstr "Gnome-asiakirjat"
 
-#: ../src/mainWindow.js:298
+#: ../src/mainWindow.js:254
 msgid "A document manager application"
 msgstr "Asiakirjojen hallintasovellus"
+
+#: ../src/notifications.js:85
+#, c-format
+msgid "Printing \"%s\": %s"
+msgstr "Tulostetaan \"%s\": %s"
 
 #: ../src/searchbar.js:86
 msgid "Category"
@@ -241,34 +258,34 @@ msgstr "Otsikko"
 msgid "Author"
 msgstr "Tekijä"
 
-#: ../src/selections.js:658
+#: ../src/selections.js:735
 msgid "Organize"
 msgstr "Järjestä"
 
-#: ../src/selections.js:665
+#: ../src/selections.js:742
 msgid "Delete"
 msgstr "Poista"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:756 ../src/view.js:67
+#: ../src/selections.js:842 ../src/view.js:69
 #, c-format
 msgid "Open with %s"
 msgstr "Avaa sovelluksella %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:759 ../src/view.js:70
+#: ../src/selections.js:845 ../src/view.js:72
 msgid "Open"
 msgstr "Avaa"
 
-#: ../src/selections.js:772 ../src/view.js:80
+#: ../src/selections.js:858 ../src/view.js:82
 msgid "Remove from favorites"
 msgstr "Poista suosikeista"
 
-#: ../src/selections.js:776 ../src/view.js:80
+#: ../src/selections.js:862 ../src/view.js:82
 msgid "Add to favorites"
 msgstr "Lisää suosikkeihin"
 
-#: ../src/shellSearchProvider.js:332
+#: ../src/shellSearchProvider.js:285
 msgid "Untitled Document"
 msgstr "Nimetön asiakirja"
 
@@ -280,3 +297,46 @@ msgstr "Lähteet"
 msgid "Loading..."
 msgstr "Ladataan..."
 
+#: ../src/view.js:198
+msgid "Yesterday"
+msgstr "Eilen"
+
+#: ../src/view.js:200
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%d päivä sitten"
+msgstr[1] "%d päivää sitten"
+
+#: ../src/view.js:204
+msgid "Last week"
+msgstr "Viime viikolla"
+
+#: ../src/view.js:206
+#, c-format
+msgid "%d week ago"
+msgid_plural "%d weeks ago"
+msgstr[0] "%d viikko sitten"
+msgstr[1] "%d viikkoa sitten"
+
+#: ../src/view.js:210
+msgid "Last month"
+msgstr "Viime kuussa"
+
+#: ../src/view.js:212
+#, c-format
+msgid "%d month ago"
+msgid_plural "%d months ago"
+msgstr[0] "%d kuukausi sitten"
+msgstr[1] "%d kuukautta sitten"
+
+#: ../src/view.js:216
+msgid "Last year"
+msgstr "Viime vuonna"
+
+#: ../src/view.js:218
+#, c-format
+msgid "%d year ago"
+msgid_plural "%d years ago"
+msgstr[0] "%d vuosi sitten"
+msgstr[1] "%d vuotta sitten"
