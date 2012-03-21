@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-03-05 22:21+0000\n"
-"PO-Revision-Date: 2012-03-05 19:37+0800\n"
+"POT-Creation-Date: 2012-03-10 10:26+0000\n"
+"PO-Revision-Date: 2012-03-21 14:03+0800\n"
 "Last-Translator: EL8LatSPQ <el8latspq@hotmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -33,12 +33,10 @@ msgid "Docs;PDF;Document;"
 msgstr "Docs;PDF;Document;文件;文档;"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:128
-#, fuzzy
 msgid "View as"
 msgstr "查看为"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:2
-#, fuzzy
 msgid "View as type"
 msgstr "查看为类型"
 
@@ -75,13 +73,10 @@ msgid "Window maximized state"
 msgstr "窗口最大化状态"
 
 #: ../src/application.js:126
-#, fuzzy
 msgid "Grid"
 msgstr "网格"
 
 #: ../src/application.js:127
-#, fuzzy
-#| msgid "List view"
 msgid "List"
 msgstr "列表"
 
@@ -97,33 +92,32 @@ msgstr "关于文档"
 msgid "Quit"
 msgstr "退出"
 
-#: ../src/documents.js:618 ../src/sources.js:100
+#: ../src/documents.js:619 ../src/sources.js:100
 msgid "Local"
 msgstr "本地"
 
 #. overridden
-#: ../src/documents.js:681
+#: ../src/documents.js:675
 msgid "Google Docs"
 msgstr "谷歌文档"
 
-#: ../src/documents.js:682
+#: ../src/documents.js:676
 msgid "Google"
 msgstr "谷歌"
 
-#: ../src/documents.js:751
+#: ../src/documents.js:745
 msgid "Spreadsheet"
 msgstr "电子表格"
 
-#: ../src/documents.js:753
+#: ../src/documents.js:747
 msgid "Presentation"
 msgstr "演示文档"
 
-#: ../src/documents.js:755
-#, fuzzy
+#: ../src/documents.js:749
 msgid "Collection"
 msgstr "合集"
 
-#: ../src/documents.js:757
+#: ../src/documents.js:751
 msgid "Document"
 msgstr "文档"
 
@@ -163,21 +157,20 @@ msgstr "新建及最近文档"
 #: ../src/mainToolbar.js:201
 #, c-format
 msgid "Results for \"%s\""
-msgstr ""
+msgstr "“%s”的结果"
 
 #: ../src/mainToolbar.js:203
 msgid "filtered by title"
-msgstr ""
+msgstr "按标题过滤"
 
 #: ../src/mainToolbar.js:205
 msgid "filtered by author"
-msgstr ""
+msgstr "按作者过滤"
 
 #: ../src/mainToolbar.js:218
-#, fuzzy, c-format
-#| msgid "(%d of %d)"
+#,  c-format
 msgid "%d of %d"
-msgstr "(%d / %d)"
+msgstr "第 %d 个，共 %d 个"
 
 #: ../src/mainToolbar.js:224
 msgid "Click on items to select them"
@@ -208,7 +201,7 @@ msgstr "一个文档管理程序"
 #: ../src/notifications.js:85
 #, c-format
 msgid "Printing \"%s\": %s"
-msgstr ""
+msgstr "正在打印“%s”：%s"
 
 #: ../src/searchbar.js:86
 msgid "Category"
@@ -232,7 +225,6 @@ msgid "Type"
 msgstr "类型"
 
 #: ../src/searchbar.js:143
-#, fuzzy
 msgid "Collections"
 msgstr "合集"
 
@@ -266,30 +258,30 @@ msgstr "标题"
 msgid "Author"
 msgstr "作者"
 
-#: ../src/selections.js:698
+#: ../src/selections.js:735
 msgid "Organize"
 msgstr "组织"
 
-#: ../src/selections.js:705
+#: ../src/selections.js:742
 msgid "Delete"
 msgstr "删除"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:808 ../src/view.js:69
+#: ../src/selections.js:842 ../src/view.js:69
 #, c-format
 msgid "Open with %s"
 msgstr "使用 %s 打开"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:811 ../src/view.js:72
+#: ../src/selections.js:845 ../src/view.js:72
 msgid "Open"
 msgstr "打开"
 
-#: ../src/selections.js:824 ../src/view.js:82
+#: ../src/selections.js:858 ../src/view.js:82
 msgid "Remove from favorites"
 msgstr "从收藏中移除"
 
-#: ../src/selections.js:828 ../src/view.js:82
+#: ../src/selections.js:862 ../src/view.js:82
 msgid "Add to favorites"
 msgstr "添加到收藏"
 
@@ -307,46 +299,40 @@ msgstr "正在加载..."
 
 #: ../src/view.js:196
 msgid "Yesterday"
-msgstr ""
+msgstr "昨天"
 
 #: ../src/view.js:198
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
-msgstr[0] ""
+msgstr[0] "%d 天前"
 
 #: ../src/view.js:202
 msgid "Last week"
-msgstr ""
+msgstr "上周"
 
 #: ../src/view.js:204
 #, c-format
 msgid "%d week ago"
 msgid_plural "%d weeks ago"
-msgstr[0] ""
+msgstr[0] "%d 周前"
 
 #: ../src/view.js:208
 msgid "Last month"
-msgstr ""
+msgstr "上个月"
 
 #: ../src/view.js:210
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
-msgstr[0] ""
+msgstr[0] "%d 个月前"
 
 #: ../src/view.js:214
 msgid "Last year"
-msgstr ""
+msgstr "去年"
 
 #: ../src/view.js:216
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
-msgstr[0] ""
-
-#~ msgid "Enable list view"
-#~ msgstr "启用列表视图"
-
-#~ msgid "Private"
-#~ msgstr "私人"
+msgstr[0] "%d 年前"
