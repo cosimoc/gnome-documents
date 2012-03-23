@@ -1,0 +1,301 @@
+# Hindi translation for gnome-documents.
+# Copyright (C) 2012 gnome-documents's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-documents package.
+#
+# chandan kumar <chandankumar.093047@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-documents master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"documents&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-03-21 06:03+0000\n"
+"PO-Revision-Date: 2012-03-21 20:23+0530\n"
+"Last-Translator: chandankumar(ciypro) <chandankumar.093047@gmail.com>\n"
+"Language-Team: Hindi <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-DamnedLies-Scope: partial\n"
+"Language: hi\n"
+"X-Generator: Lokalize 1.2\n"
+
+#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:54
+msgid "Documents"
+msgstr "दस्तावेज़"
+
+#: ../data/gnome-documents.desktop.in.in.h:2
+msgid "Access, manage and share documents"
+msgstr "दस्तावेज का अभिगम, प्रबंधन और साझा करता है"
+
+#: ../data/gnome-documents.desktop.in.in.h:3
+msgid "Docs;PDF;Document;"
+msgstr "डॉक्स;पीडीएफ;दस्तावेज़;"
+
+#: ../src/application.js:129
+msgid "Grid"
+msgstr "जाली"
+
+#: ../src/application.js:130
+msgid "List"
+msgstr "सूची"
+
+#: ../src/application.js:134
+msgid "Fullscreen"
+msgstr "पूर्णस्क्रीन"
+
+#: ../src/application.js:137
+msgid "About Documents"
+msgstr "दस्तावेज़ के बारें में "
+
+#: ../src/application.js:138
+msgid "Quit"
+msgstr "बाहर जाएँ"
+
+#: ../src/documents.js:619 ../src/sources.js:100
+msgid "Local"
+msgstr "स्थानीय"
+
+#. overridden
+#: ../src/documents.js:675
+msgid "Google Docs"
+msgstr "गूगल डॉक्स"
+
+#: ../src/documents.js:676
+msgid "Google"
+msgstr "गूगल"
+
+#: ../src/documents.js:745
+msgid "Spreadsheet"
+msgstr "स्प्रेडशीट"
+
+#: ../src/documents.js:747
+msgid "Presentation"
+msgstr "प्रस्तुतीकरण"
+
+#: ../src/documents.js:749
+msgid "Collection"
+msgstr "संग्रह"
+
+#: ../src/documents.js:751
+msgid "Document"
+msgstr "दस्तावेज़"
+
+#. Translators: %s is the title of a document
+#: ../src/error.js:37
+#, c-format
+msgid "Unable to load \"%s\" for preview"
+msgstr "पूर्वावलोकन के लिए \"%s\" लोड करने में असमर्थ"
+
+#: ../src/error.js:49
+msgid "Unable to fetch the list of documents"
+msgstr "दस्तावेजों की सूची लाने में असमर्थ"
+
+#. right section
+#: ../src/lib/gd-main-toolbar.c:269
+msgid "Done"
+msgstr "सम्पन्न"
+
+#: ../src/lib/gd-pdf-loader.c:208
+msgid "Unable to load the document"
+msgstr "दस्तावेज लोड करने में अक्षम"
+
+#: ../src/lib/gd-pdf-loader.c:489
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr "\"unoconv\" नहीं मिला, कृपया अपने LibreOffice अधिष्ठापन को जांचें"
+
+#: ../src/loadMore.js:70
+#, c-format
+msgid "Load %d more document"
+msgid_plural "Load %d more documents"
+msgstr[0] "%d से अधिक दस्तावेज़ लोड करें"
+msgstr[1] "%d से अधिक दस्तावेजों लोड करें"
+
+#: ../src/mainToolbar.js:194
+msgid "New and Recent"
+msgstr "नया और हालिया"
+
+#: ../src/mainToolbar.js:201
+#, c-format
+msgid "Results for \"%s\""
+msgstr "परिणाम \"%s\" के लिये"
+
+#: ../src/mainToolbar.js:203
+msgid "filtered by title"
+msgstr "शीर्षक के आधार पर फ़िल्टर करें"
+
+#: ../src/mainToolbar.js:205
+msgid "filtered by author"
+msgstr "लेखक के आधार पर फ़िल्टर करें"
+
+#: ../src/mainToolbar.js:218
+#, c-format
+msgid "%d of %d"
+msgstr "%d का %d"
+
+#: ../src/mainToolbar.js:224
+msgid "Click on items to select them"
+msgstr "मदों पर क्लिक कर उन्हें चुनें"
+
+#: ../src/mainToolbar.js:226
+#, c-format
+msgid "%d selected"
+msgid_plural "%d selected"
+msgstr[0] "/%d चयनित"
+msgstr[1] "/%d चयनित"
+
+#: ../src/mainWindow.js:252
+msgid "translator-credits"
+msgstr "चंदन कुमार (chandankumar.093047@gmail.com) "
+
+#: ../src/mainWindow.js:253
+msgid "GNOME Documents"
+msgstr "GNOME दस्तावेज़"
+
+#: ../src/mainWindow.js:254
+msgid "A document manager application"
+msgstr "दस्तावेज़ प्रबंधक अनुप्रयोग"
+
+#: ../src/notifications.js:85
+#, c-format
+msgid "Printing \"%s\": %s"
+msgstr "मुद्रण \"%s\": %s"
+
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "श्रेणी"
+
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:210
+#: ../src/sources.js:94
+msgid "All"
+msgstr "सभी"
+
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "पसंदीदा"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "आप के साथ साझा"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "प्रकार"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr "संग्रह"
+
+#: ../src/searchbar.js:147
+msgid "PDF Documents"
+msgstr "पीडीएफ़ दस्तावेज़"
+
+#: ../src/searchbar.js:150
+msgid "Presentations"
+msgstr "प्रस्तुतिकरण"
+
+#: ../src/searchbar.js:153
+msgid "Spreadsheets"
+msgstr "स्प्रेडशीट्स"
+
+#: ../src/searchbar.js:156
+msgid "Text Documents"
+msgstr "पाठ दस्तावेज़"
+
+#. Translators: this is a verb that refers to "All", "Title" and "Author",
+#. as in "Match All", "Match Title" and "Match Author"
+#: ../src/searchbar.js:207
+msgid "Match"
+msgstr "मेल"
+
+#: ../src/searchbar.js:212
+msgid "Title"
+msgstr "शीर्षक"
+
+#: ../src/searchbar.js:214
+msgid "Author"
+msgstr "लेखक"
+
+#: ../src/selections.js:735
+msgid "Organize"
+msgstr "संगठित करें"
+
+#: ../src/selections.js:742
+msgid "Delete"
+msgstr "मिटाएँ"
+
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:842 ../src/view.js:69
+#, c-format
+msgid "Open with %s"
+msgstr "%s के साथ खोलें"
+
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:845 ../src/view.js:72
+msgid "Open"
+msgstr "खोलें"
+
+#: ../src/selections.js:858 ../src/view.js:82
+msgid "Remove from favorites"
+msgstr "मनपसंद से हटाएं"
+
+#: ../src/selections.js:862 ../src/view.js:82
+msgid "Add to favorites"
+msgstr "पसंदीदा में जोड़ें"
+
+#: ../src/shellSearchProvider.js:285
+msgid "Untitled Document"
+msgstr "अनाम दस्तावेज़"
+
+#: ../src/sources.js:90
+msgid "Sources"
+msgstr "स्रोत"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "लोड किया जा रहा है..."
+
+#: ../src/view.js:198
+msgid "Yesterday"
+msgstr "कल (बीता)"
+
+#: ../src/view.js:200
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%d दिन पहले"
+msgstr[1] "%d दिनों पहले"
+
+#: ../src/view.js:204
+msgid "Last week"
+msgstr "पिछले सप्ताह"
+
+#: ../src/view.js:206
+#, c-format
+msgid "%d week ago"
+msgid_plural "%d weeks ago"
+msgstr[0] "%d सप्ताह पहले"
+msgstr[1] "%d सप्ताह पहले"
+
+#: ../src/view.js:210
+msgid "Last month"
+msgstr "पिछले माह"
+
+#: ../src/view.js:212
+#, c-format
+msgid "%d month ago"
+msgid_plural "%d months ago"
+msgstr[0] "%d महीना पहले"
+msgstr[1] "%d महीने पहले"
+
+#: ../src/view.js:216
+msgid "Last year"
+msgstr "पिछले साल"
+
+#: ../src/view.js:218
+#, c-format
+msgid "%d year ago"
+msgid_plural "%d years ago"
+msgstr[0] "%d साल पहले"
+msgstr[1] "%d साल पहले"
+
