@@ -270,6 +270,7 @@ ViewEmbed.prototype  = {
             this._preview = null;
         }
 
+        this._spinnerBox.moveOut();
         this._docModel = null;
     },
 
