@@ -299,6 +299,8 @@ ViewEmbed.prototype  = {
     },
 
     _onDocumentLoaded: function(doc, evDoc, error) {
+        this._loaderCancellable = null;
+
         if (!evDoc) {
             Global.errorHandler.addLoadError(doc, error);
             return;
