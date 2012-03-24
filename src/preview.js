@@ -110,10 +110,6 @@ PreviewThumbnails.prototype = {
     },
 
     show: function() {
-        if (this.actor.opacity != 0)
-            return;
-
-        this.actor.opacity = 0;
         this.actor.show();
 
         Tweener.addTween(this.actor,
