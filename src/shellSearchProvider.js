@@ -307,18 +307,19 @@ FetchIdsJob.prototype = {
         this._ids = [];
     },
 
-    run: function(callback) {
+    run: function(callback, cancellable) {
         this._callback = callback;
+        this._cancellable = cancellable;
         Global.searchController.setString(this._terms.join(' ').toLowerCase());
 
         let query = Global.queryBuilder.buildGlobalQuery();
-        Global.connectionQueue.add(query.sparql, null, Lang.bind(this,
+        Global.connectionQueue.add(query.sparql, this._cancellable, Lang.bind(this,
             function(object, res) {
                 let cursor = null;
 
                 try {
                     cursor = object.query_finish(res);
-                    cursor.next_async(null, Lang.bind(this, this._onCursorNext));
+                    cursor.next_async(this._cancellable, Lang.bind(this, this._onCursorNext));
                 } catch (e) {
                     log('Error querying tracker: ' + e);
                     callback(this._ids);
@@ -340,7 +341,7 @@ FetchIdsJob.prototype = {
 
         if (valid) {
             this._ids.push(cursor.get_string(Query.QueryColumns.URN)[0]);
-            cursor.next_async(null, Lang.bind(this, this._onCursorNext));
+            cursor.next_async(this._cancellable, Lang.bind(this, this._onCursorNext));
         } else {
             cursor.close();
             this._callback(this._ids);
@@ -365,6 +366,7 @@ ShellSearchProvider.prototype = {
         this._initReal();
 
         this._timeoutId = 0;
+        this._cancellable = new Gio.Cancellable();
     },
 
     _onBusAcquired: function() {
@@ -447,22 +449,28 @@ ShellSearchProvider.prototype = {
         let terms = params[0];
         this._resetTimeout();
 
+        this._cancellable.cancel();
+        this._cancellable.reset();
+
         let job = new FetchIdsJob(terms);
         job.run(Lang.bind(this,
             function(ids) {
                 invocation.return_value(GLib.Variant.new('(as)', [ ids ]));
-            }));
+            }), this._cancellable);
     },
 
     GetSubsearchResultSetAsync: function(params, invocation) {
         let [previousResults, terms] = params;
         this._resetTimeout();
 
+        this._cancellable.cancel();
+        this._cancellable.reset();
+
         let job = new FetchIdsJob(terms);
         job.run(Lang.bind(this,
             function(ids) {
                 invocation.return_value(GLib.Variant.new('(as)', [ ids ]));
-            }));
+            }), this._cancellable);
     },
 
     GetResultMetasAsync: function(params, invocation) {
