@@ -27,10 +27,14 @@ const Gtk = imports.gi.Gtk;
 const GtkClutter = imports.gi.GtkClutter;
 
 const Lang = imports.lang;
+const Mainloop = imports.mainloop;
 
 const Global = imports.global;
 const Tweener = imports.util.tweener;
+const MainToolbar = imports.mainToolbar;
 const View = imports.view;
+
+const _FULLSCREEN_TOOLBAR_TIMEOUT = 2; // seconds
 
 function PreviewView(model) {
     this._init(model);
@@ -149,27 +153,33 @@ PreviewThumbnails.prototype = {
     }
 };
 
-function PreviewEmbed(model, layout, parentActor) {
-    this._init(model, layout, parentActor);
+function PreviewEmbed(model, layout, parentActor, scrolledWindow) {
+    this._init(model, layout, parentActor, scrolledWindow);
 }
 
 PreviewEmbed.prototype = {
-    _init: function(model, layout, parentActor) {
+    _init: function(model, layout, parentActor, scrolledWindow) {
         this._layout = layout;
         this._parentActor = parentActor;
+        this._previewScrolledWindow = scrolledWindow;
+        this._motionTimeoutId = 0;
 
-        this.thumbBar = new PreviewThumbnails(model);
-        this.actor = this.thumbBar.actor;
+        this._filter = new Gd.FullscreenFilter();
+        this._filter.connect('motion-event', Lang.bind(this, this._fullscreenMotionHandler));
+        this._filter.start();
 
-        this._layout.add(this.actor,
+        // create thumb bar
+        this._thumbBar = new PreviewThumbnails(model);
+
+        this._layout.add(this._thumbBar.actor,
             Clutter.BinAlignment.FIXED, Clutter.BinAlignment.FIXED);
 
         let widthConstraint =
             new Clutter.BindConstraint({ source: this._parentActor,
                                          coordinate: Clutter.BindCoordinate.WIDTH,
                                          offset: - 300 });
-        this.actor.add_constraint(widthConstraint);
-        this.actor.connect('notify::width', Lang.bind(this,
+        this._thumbBar.actor.add_constraint(widthConstraint);
+        this._thumbBar.actor.connect('notify::width', Lang.bind(this,
             function() {
                 let width = this._parentActor.width;
                 let offset = 300;
@@ -182,13 +192,81 @@ PreviewEmbed.prototype = {
                 widthConstraint.offset = - offset;
             }));
 
-        this.actor.add_constraint(
+        this._thumbBar.actor.add_constraint(
             new Clutter.AlignConstraint({ align_axis: Clutter.AlignAxis.X_AXIS,
                                           source: this._parentActor,
                                           factor: 0.50 }));
-        this.actor.add_constraint(
+        this._thumbBar.actor.add_constraint(
             new Clutter.AlignConstraint({ align_axis: Clutter.AlignAxis.Y_AXIS,
                                           source: this._parentActor,
                                           factor: 0.95 }));
+
+        // create toolbar
+        this._fsToolbar = new MainToolbar.FullscreenToolbar();
+        this._fsToolbar.setModel(model);
+
+        this._layout.add(this._fsToolbar.actor,
+            Clutter.BinAlignment.FIXED, Clutter.BinAlignment.FIXED);
+
+        let vScrollbar = this._previewScrolledWindow.get_vscrollbar();
+
+        let sizeConstraint = new Clutter.BindConstraint
+            ({ coordinate: Clutter.BindCoordinate.WIDTH,
+               source: this._parentActor,
+               offset: (vScrollbar.get_visible() ?
+                        (- (vScrollbar.get_preferred_width()[1])) : 0 ) });
+
+        // update the constraint size when the scrollbar changes visibility
+        vScrollbar.connect('notify::visible',
+            function() {
+                sizeConstraint.offset = (vScrollbar.get_visible() ?
+                                         (- (vScrollbar.get_preferred_width()[1])) : 0 );
+            });
+
+        this._fsToolbar.actor.add_constraint(sizeConstraint);
+    },
+
+    destroy: function() {
+        if (this._motionTimeoutId != 0) {
+            Mainloop.source_remove(this._motionTimeoutId);
+            this._motionTimeoutId = 0;
+        }
+
+        this._filter.stop();
+
+        this._thumbBar.actor.destroy();
+        this._fsToolbar.widget.destroy();
+    },
+
+    _show: function() {
+        this._fsToolbar.show();
+        this._thumbBar.show();
+    },
+
+    _hide: function() {
+        this._fsToolbar.hide();
+        this._thumbBar.hide();
+    },
+
+    _fullscreenMotionHandler: function() {
+        if (!Global.modeController.getFullscreen())
+            return;
+
+        // if we were idle fade in the toolbar, otherwise reset
+        // the timeout
+        if (this._motionTimeoutId == 0) {
+            this._show();
+        } else {
+            Mainloop.source_remove(this._motionTimeoutId);
+        }
+
+        this._motionTimeoutId = Mainloop.timeout_add_seconds
+            (_FULLSCREEN_TOOLBAR_TIMEOUT, Lang.bind(this,
+                function() {
+                    this._motionTimeoutId = 0;
+                    this._hide();
+
+                    return false;
+            }));
     }
 };

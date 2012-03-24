@@ -42,7 +42,6 @@ const Gtk = imports.gi.Gtk;
 const GtkClutter = imports.gi.GtkClutter;
 
 const _PDF_LOADER_TIMEOUT = 400;
-const _FULLSCREEN_TOOLBAR_TIMEOUT = 2;
 
 function ViewEmbed() {
     this._init();
@@ -53,15 +52,11 @@ ViewEmbed.prototype  = {
         this._adjustmentValueId = 0;
         this._adjustmentChangedId = 0;
         this._loaderCancellable = null;
-        this._motionTimeoutId = 0;
         this._queryErrorId = 0;
         this._scrollbarVisibleId = 0;
 
         this._scrolledWinView = null;
         this._scrolledWinPreview = null;
-
-        this._filter = new Gd.FullscreenFilter();
-        this._filter.connect('motion-event', Lang.bind(this, this._fullscreenMotionHandler));
 
         // the embed is a vertical ClutterBox
         this._overlayLayout = new Clutter.BinLayout();
@@ -170,59 +165,16 @@ ViewEmbed.prototype  = {
     },
 
     _onFullscreenChanged: function(controller, fullscreen) {
-        if (this._motionTimeoutId != 0) {
-            Mainloop.source_remove(this._motionTimeoutId);
-            this._motionTimeoutId = 0;
-        }
-
         if (fullscreen) {
-            this._filter.start();
+            this._previewEmbed = new Preview.PreviewEmbed(this._docModel,
+                this._overlayLayout, this._contentsActor, this._scrolledWinPreview);
         } else {
-            this._filter.stop();
-
-            this._destroyFullscreenToolbar();
-            this._destroyPreviewEmbed();
+            this._previewEmbed.destroy();
+            this._previewEmbed = null;
         }
 
         Gtk.Settings.get_default().gtk_application_prefer_dark_theme = fullscreen;
         this._toolbar.widget.visible = !fullscreen;
-    },
-
-    _createFullscreenToolbar: function() {
-        this._fsToolbar = new MainToolbar.FullscreenToolbar();
-        this._fsToolbar.setModel(this._docModel);
-
-        this._overlayLayout.add(this._fsToolbar.actor,
-            Clutter.BinAlignment.FIXED, Clutter.BinAlignment.FIXED);
-
-        let vScrollbar = this._scrolledWinPreview.get_vscrollbar();
-
-        let sizeConstraint = new Clutter.BindConstraint
-            ({ coordinate: Clutter.BindCoordinate.WIDTH,
-               source: this.actor,
-               offset: (vScrollbar.get_visible() ?
-                        (- (vScrollbar.get_preferred_width()[1])) : 0 ) });
-
-        // update the constraint size when the scrollbar changes visibility
-        vScrollbar.connect('notify::visible',
-            function() {
-                sizeConstraint.offset = (vScrollbar.get_visible() ?
-                                         (- (vScrollbar.get_preferred_width()[1])) : 0 );
-            });
-
-        this._fsToolbar.actor.add_constraint(sizeConstraint);
-    },
-
-    _destroyFullscreenToolbar: function() {
-        this._fsToolbar.widget.destroy();
-        this._fsToolbar = null;
-    },
-
-    _destroyPreviewEmbed: function() {
-        if (this._previewEmbed) {
-            this._previewEmbed.actor.destroy();
-            this._previewEmbed = null;
-        }
     },
 
     _moveOutBackground: function() {
@@ -312,39 +264,9 @@ ViewEmbed.prototype  = {
         this._spinnerBox.moveOut();
         Global.modeController.setCanFullscreen(true);
         this._preview = new Preview.PreviewView(this._docModel);
-        this._previewEmbed = new Preview.PreviewEmbed(this._docModel,
-            this._overlayLayout, this._contentsActor);
-        this._createFullscreenToolbar();
 
         this._scrolledWinPreview.add(this._preview.widget);
         this._preview.widget.grab_focus();
-    },
-
-    _fullscreenMotionHandler: function() {
-        if (!Global.modeController.getFullscreen())
-            return;
-
-        // if we were idle fade in the toolbar, otherwise reset
-        // the timeout
-        if (this._motionTimeoutId == 0) {
-            this._fsToolbar.show();
-            this._previewEmbed.thumbBar.show();
-        } else {
-            Mainloop.source_remove(this._motionTimeoutId);
-        }
-
-        this._motionTimeoutId = Mainloop.timeout_add_seconds
-            (_FULLSCREEN_TOOLBAR_TIMEOUT, Lang.bind(this,
-                function() {
-                    this._motionTimeoutId = 0;
-
-                    if (this._fsToolbar)
-                        this._fsToolbar.hide();
-
-                    this._previewEmbed.thumbBar.hide();
-
-                    return false;
-            }));
     },
 
     _prepareForOverview: function() {
