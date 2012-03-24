@@ -54,8 +54,27 @@ PreviewView.prototype = {
 
     _onKeyPressEvent: function(widget, event) {
         let keyval = event.get_keyval()[1];
+        let state = event.get_state()[1];
 
-        if (keyval == Gdk.KEY_space) {
+        if ((keyval == Gdk.KEY_Page_Up) &&
+            ((state & Gdk.ModifierType.CONTROL_MASK) != 0)) {
+            this.widget.previous_page();
+            return true;
+        }
+
+        if ((keyval == Gdk.KEY_Page_Down) &&
+            ((state & Gdk.ModifierType.CONTROL_MASK) != 0)) {
+            this.widget.next_page();
+            return true;
+        }
+
+        if (keyval == Gdk.KEY_Page_Up) {
+            this.widget.scroll(Gtk.ScrollType.PAGE_BACKWARD, false);
+            return true;
+        }
+
+        if (keyval == Gdk.KEY_space ||
+            keyval == Gdk.KEY_Page_Down) {
             this.widget.scroll(Gtk.ScrollType.PAGE_FORWARD, false);
             return true;
         }
