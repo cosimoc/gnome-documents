@@ -1,0 +1,310 @@
+# Xhosa translation for gnome-documents.
+# Copyright (C) 2012 gnome-documents's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-documents package.
+# Andiswa Mvanyashe <andiswamva@webmail.co.za>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-documents master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"documents&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-03-13 01:45+0000\n"
+"PO-Revision-Date: 2012-01-09 13:08+0200\n"
+"Last-Translator: Andiswa Mvanyashe <andiswamva@webmail.co.za>\n"
+"Language-Team: translate-discuss-xh@lists.sourceforge.net\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: xh\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Generator: Virtaal 0.7.0\n"
+"X-DamnedLies-Scope: partial\n"
+"X-Project-Style: gnome\n"
+
+#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:54
+msgid "Documents"
+msgstr "Amaxwebhu"
+
+#: ../data/gnome-documents.desktop.in.in.h:2
+msgid "Access, manage and share documents"
+msgstr "Ngena, lawula kwaye wabelane ngamaxwebhu"
+
+#: ../data/gnome-documents.desktop.in.in.h:3
+#, fuzzy
+#| msgid "PDF Documents"
+msgid "Docs;PDF;Document;"
+msgstr "Uxwebhu luka-PDF"
+
+#: ../src/application.js:129
+msgid "Grid"
+msgstr ""
+
+#: ../src/application.js:130
+msgid "List"
+msgstr ""
+
+#: ../src/application.js:134
+msgid "Fullscreen"
+msgstr ""
+
+#: ../src/application.js:137
+#, fuzzy
+#| msgid "Text Documents"
+msgid "About Documents"
+msgstr "Uxwebhu amagama"
+
+#: ../src/application.js:138
+msgid "Quit"
+msgstr ""
+
+#: ../src/documents.js:619 ../src/sources.js:100
+msgid "Local"
+msgstr "Ngaphakathi"
+
+#. overridden
+#: ../src/documents.js:675
+msgid "Google Docs"
+msgstr "Amaxwebhu akwa-Google"
+
+#: ../src/documents.js:676
+msgid "Google"
+msgstr "Google"
+
+#: ../src/documents.js:745
+msgid "Spreadsheet"
+msgstr "Ispreadsheet"
+
+#: ../src/documents.js:747
+msgid "Presentation"
+msgstr "Umboniso"
+
+#: ../src/documents.js:749
+msgid "Collection"
+msgstr "Uqokelelo"
+
+#: ../src/documents.js:751
+msgid "Document"
+msgstr "Amaxwebhu"
+
+#. Translators: %s is the title of a document
+#: ../src/error.js:37
+#, c-format
+msgid "Unable to load \"%s\" for preview"
+msgstr "Ayikwazi ukungenisa i\"%s\" ukujongwa"
+
+#: ../src/error.js:49
+msgid "Unable to fetch the list of documents"
+msgstr "Ayikwazi ukulanda uluhlu lwamaxwebhu"
+
+#. right section
+#: ../src/lib/gd-main-toolbar.c:269
+msgid "Done"
+msgstr "Kugqityiwe"
+
+#: ../src/lib/gd-pdf-loader.c:208
+msgid "Unable to load the document"
+msgstr "Ayikwazi ukufaka uxwebhu"
+
+#: ../src/lib/gd-pdf-loader.c:489
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr ""
+
+#: ../src/loadMore.js:70
+#, fuzzy, c-format
+msgid "Load %d more document"
+msgid_plural "Load %d more documents"
+msgstr[0] "Faka %d uxwebhu amaninzi"
+msgstr[1] "Faka %d amaxwebhu amaninzi"
+
+#: ../src/mainToolbar.js:194
+msgid "New and Recent"
+msgstr "Intsha kwaye yeyangoku"
+
+#: ../src/mainToolbar.js:201
+#, c-format
+msgid "Results for \"%s\""
+msgstr ""
+
+#: ../src/mainToolbar.js:203
+msgid "filtered by title"
+msgstr ""
+
+#: ../src/mainToolbar.js:205
+msgid "filtered by author"
+msgstr ""
+
+#: ../src/mainToolbar.js:218
+#, fuzzy, c-format
+#| msgid "(%d of %d)"
+msgid "%d of %d"
+msgstr "(%d ye %d)"
+
+#: ../src/mainToolbar.js:224
+msgid "Click on items to select them"
+msgstr "Cofa kwizinto ukuzikhetha"
+
+#: ../src/mainToolbar.js:226
+#, fuzzy, c-format
+#| msgid "%d selected"
+msgid "%d selected"
+msgid_plural "%d selected"
+msgstr[0] "%d ikhethiwe"
+msgstr[1] "%d ikhethiwe"
+
+#: ../src/mainWindow.js:252
+msgid "translator-credits"
+msgstr "Andiswa Mvanyashe"
+
+#: ../src/mainWindow.js:253
+#, fuzzy
+#| msgid "Documents"
+msgid "GNOME Documents"
+msgstr "Amaxwebhu"
+
+#: ../src/mainWindow.js:254
+msgid "A document manager application"
+msgstr ""
+
+#: ../src/notifications.js:85
+#, c-format
+msgid "Printing \"%s\": %s"
+msgstr ""
+
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "Uluhlu"
+
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:210
+#: ../src/sources.js:94
+msgid "All"
+msgstr "Konke"
+
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "Ezithandwa kakhulu"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "Zabelana nawe"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "Chwetheza"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr "Qokelela"
+
+#: ../src/searchbar.js:147
+msgid "PDF Documents"
+msgstr "Uxwebhu luka-PDF"
+
+#: ../src/searchbar.js:150
+msgid "Presentations"
+msgstr "Imiboniso"
+
+#: ../src/searchbar.js:153
+msgid "Spreadsheets"
+msgstr "Iispreadsheet"
+
+#: ../src/searchbar.js:156
+msgid "Text Documents"
+msgstr "Uxwebhu amagama"
+
+#. Translators: this is a verb that refers to "All", "Title" and "Author",
+#. as in "Match All", "Match Title" and "Match Author"
+#: ../src/searchbar.js:207
+msgid "Match"
+msgstr "Dibanisa"
+
+#: ../src/searchbar.js:212
+msgid "Title"
+msgstr "Isihloko"
+
+#: ../src/searchbar.js:214
+msgid "Author"
+msgstr "Umqulunqi"
+
+#: ../src/selections.js:735
+msgid "Organize"
+msgstr "Qulunqa"
+
+#: ../src/selections.js:742
+msgid "Delete"
+msgstr "Cima"
+
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:842 ../src/view.js:69
+#, c-format
+msgid "Open with %s"
+msgstr "Vula nge %s"
+
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:845 ../src/view.js:72
+msgid "Open"
+msgstr "Vula"
+
+#: ../src/selections.js:858 ../src/view.js:82
+msgid "Remove from favorites"
+msgstr "Susa kozithandayo"
+
+#: ../src/selections.js:862 ../src/view.js:82
+msgid "Add to favorites"
+msgstr "Yongeza kozithandayo"
+
+#: ../src/shellSearchProvider.js:285
+#, fuzzy
+#| msgid "Text Documents"
+msgid "Untitled Document"
+msgstr "Uxwebhu amagama"
+
+#: ../src/sources.js:90
+msgid "Sources"
+msgstr "Iimvelaphi"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "Iyagcwalisa..."
+
+#: ../src/view.js:198
+msgid "Yesterday"
+msgstr ""
+
+#: ../src/view.js:200
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../src/view.js:204
+msgid "Last week"
+msgstr ""
+
+#: ../src/view.js:206
+#, c-format
+msgid "%d week ago"
+msgid_plural "%d weeks ago"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../src/view.js:210
+msgid "Last month"
+msgstr ""
+
+#: ../src/view.js:212
+#, c-format
+msgid "%d month ago"
+msgid_plural "%d months ago"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../src/view.js:216
+msgid "Last year"
+msgstr ""
+
+#: ../src/view.js:218
+#, c-format
+msgid "%d year ago"
+msgid_plural "%d years ago"
+msgstr[0] ""
+msgstr[1] ""
