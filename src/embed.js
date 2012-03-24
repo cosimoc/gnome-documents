@@ -175,12 +175,11 @@ ViewEmbed.prototype  = {
             this._motionTimeoutId = 0;
         }
 
-        if (fullscreen)
+        if (fullscreen) {
             this._filter.start();
-        else
+        } else {
             this._filter.stop();
 
-        if (!fullscreen) {
             this._destroyFullscreenToolbar();
             this._destroyPreviewEmbed();
         }
