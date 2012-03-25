@@ -74,8 +74,11 @@ SpinnerBox.prototype = {
 
     moveIn: function() {
         this._clearDelayId();
-        this.actor.opacity = 255;
         this.actor.raise_top();
+
+        Tweener.addTween(this.actor, { opacity: 255,
+                                       time: 0.30,
+                                       transition: 'easeOutQuad' });
     },
 
     moveOut: function() {
