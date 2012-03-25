@@ -345,8 +345,6 @@ ViewEmbed.prototype  = {
             this._queryErrorId = 0;
         }
 
-        Global.searchController.setSearchVisible(false);
-
         if (this._adjustmentValueId != 0) {
             this._scrolledWinView.vadjustment.disconnect(this._adjustmentValueId);
             this._adjustmentValueId = 0;

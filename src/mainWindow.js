@@ -91,6 +91,8 @@ MainWindow.prototype = {
 
         Global.modeController.connect('fullscreen-changed',
                                       Lang.bind(this, this._onFullscreenChanged));
+        Global.modeController.connect('window-mode-changed',
+                                      Lang.bind(this, this._onWindowModeChanged));
 
         // the base layout is a vertical ClutterBox
         this._clutterBoxLayout = new Clutter.BoxLayout({ vertical: true });
@@ -156,6 +158,11 @@ MainWindow.prototype = {
         Global.settings.set_boolean('window-maximized', maximized);
     },
 
+    _onWindowModeChanged: function() {
+        if (Global.modeController.getWindowMode() == WindowMode.WindowMode.PREVIEW)
+            this._searchbar.hide();
+    },
+
     _onFullscreenChanged: function(controller, fullscreen) {
         if (fullscreen)
             this.window.fullscreen();
@@ -202,18 +209,12 @@ MainWindow.prototype = {
         let keyval = event.get_keyval()[1];
 
         if (Utils.isSearchEvent(event)) {
-            let visible = Global.searchController.getSearchVisible();
-            Global.searchController.setSearchVisible(!visible);
+            this._searchbar.toggle();
             return true;
         }
 
-        if (!Global.searchController.getSearchIn()) {
-            Global.searchController.deliverEvent(event);
-            let handled = Global.searchController.getEventHandled();
-
-            if (handled)
-                return true;
-        }
+        if (this._searchbar.deliverEvent(event))
+            return true;
 
         if (Global.selectionController.getSelectionMode() &&
             keyval == Gdk.KEY_Escape) {

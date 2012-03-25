@@ -237,10 +237,7 @@ function SearchController() {
 
 SearchController.prototype = {
     _init: function() {
-        this._searchVisible = false;
-        this._searchIn = false;
         this._dropdownState = false;
-        this._eventHandled = false;
         this._string = '';
     },
 
@@ -271,45 +268,6 @@ SearchController.prototype = {
 
     getDropdownState: function() {
         return this._dropdownState;
-    },
-
-    setSearchVisible: function(visible) {
-        if (this._searchVisible == visible)
-            return;
-
-        this._searchVisible = visible;
-        this.emit('search-visible-changed', this._searchVisible);
-
-        if (!this._searchVisible)
-            this.setDropownState(false);
-    },
-
-    getSearchVisible: function() {
-        return this._searchVisible;
-    },
-
-    setSearchIn: function(setting) {
-        if (this._searchIn == setting)
-            return;
-
-        this._searchIn = setting;
-        this.emit('search-in-changed', this._searchIn);
-    },
-
-    getSearchIn: function() {
-        return this._searchIn;
-    },
-
-    deliverEvent: function(event) {
-        this.emit('deliver-event', event);
-    },
-
-    setEventHandled: function(handled) {
-        this._eventHandled = handled;
-    },
-
-    getEventHandled: function() {
-        return this._eventHandled;
     }
 };
 Signals.addSignalMethods(SearchController.prototype);
@@ -398,6 +356,9 @@ Searchbar.prototype = {
         this._searchTypeId = 0;
         this._searchMatchId = 0;
 
+        this._in = false;
+        this._visible = false;
+
         this.widget = new Gtk.Toolbar();
         this.widget.get_style_context().add_class(Gtk.STYLE_CLASS_PRIMARY_TOOLBAR);
 
@@ -455,7 +416,7 @@ Searchbar.prototype = {
                 let keyval = event.get_keyval()[1];
 
                 if (keyval == Gdk.KEY_Escape) {
-                    Global.searchController.setSearchVisible(false);
+                    this.hide();
                     return true;
                 }
 
@@ -491,11 +452,6 @@ Searchbar.prototype = {
         this._searchEntry.connect('icon-release', Lang.bind(this, function() {
             this._searchEntry.set_text('');
         }));
-
-        this._searchFocusId =
-            Global.searchController.connect('search-visible-changed', Lang.bind(this, this._onSearchVisible));
-        this._searchEventId =
-            Global.searchController.connect('deliver-event', Lang.bind(this, this._onDeliverEvent));
 
         this.widget.insert(item, 0);
         this._searchEntry.set_text(Global.searchController.getString());
@@ -592,14 +548,10 @@ Searchbar.prototype = {
         this._dropdownButton.set_active(state);
     },
 
-    _onSearchVisible: function() {
-        if (Global.searchController.getSearchVisible())
-            this._moveIn(Gtk.get_current_event_device());
-        else
-            this._moveOut();
-    },
+    deliverEvent: function(event) {
+        if (this._in)
+            return false;
 
-    _onDeliverEvent: function(controller, event) {
         if (!this._searchEntry.get_realized())
             this._searchEntry.realize();
 
@@ -621,35 +573,46 @@ Searchbar.prototype = {
         if (((res && (newText != oldText)) || preeditChanged)) {
             handled = true;
 
-            if (!Global.searchController.getSearchIn())
-                Global.searchController.setSearchVisible(true);
+            if (!this._in)
+                this.show();
         }
 
-        Global.searchController.setEventHandled(handled);
+        return handled;
     },
 
-    _moveIn: function(eventDevice) {
+    toggle: function() {
+        if (this._visible)
+            this.hide();
+        else
+            this.show();
+    },
+
+    show: function() {
+        let eventDevice = Gtk.get_current_event_device();
+
+        this._visible = true;
         this._searchEntry.show();
 
         Tweener.addTween(this.actor, { height: this.widget.get_preferred_height()[1],
                                        time: 0.20,
                                        transition: 'easeOutQuad',
                                        onComplete: function() {
-                                           Global.searchController.setSearchIn(true);
-
+                                           this._in = true;
                                            Gd.entry_focus_hack(this._searchEntry, eventDevice);
                                        },
                                        onCompleteScope: this });
     },
 
-    _moveOut: function() {
+    hide: function() {
+        this._dropdownButton.set_active(false);
+        this._visible = false;
+
         Tweener.addTween(this.actor, { height: 0,
                                        time: 0.20,
                                        transition: 'easeOutQuad',
                                        onComplete: function() {
                                            this._searchEntry.hide();
-                                           this._dropdownButton.set_active(false);
-                                           Global.searchController.setSearchIn(false);
+                                           this._in = false;
                                        },
                                        onCompleteScope: this });
     }
