@@ -1,3 +1,11 @@
+0.4.0 - "M Train"
+=================
+
+- Fix crashes when clicking Back from preview under some circumstances
+- Fix spinner not moving out when going back to overview while a document
+  is still loading
+- Translation updates
+
 0.3.92 - "Shiny Little Things"
 ==============================
 
