@@ -261,7 +261,7 @@ SearchController.prototype = {
         return str.replace(/ +/g, ' ').split(' ');
     },
 
-    setDropownState: function(state) {
+    setDropdownState: function(state) {
         if (this._dropdownState == state)
             return;
 
@@ -356,7 +356,7 @@ Dropdown.prototype = {
     },
 
     _onItemActivated: function() {
-        Global.searchController.setDropownState(false);
+        Global.searchController.setDropdownState(false);
     },
 
     _onSearchDropdown: function() {
@@ -434,7 +434,7 @@ Searchbar.prototype = {
         this._dropdownButton.connect('toggled', Lang.bind(this,
             function() {
                 let active = this._dropdownButton.get_active();
-                Global.searchController.setDropownState(active);
+                Global.searchController.setDropdownState(active);
             }));
 
         box.add(this._dropdownButton);
