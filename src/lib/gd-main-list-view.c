@@ -120,7 +120,7 @@ gd_main_list_view_constructed (GObject *obj)
 
   cell = gd_two_lines_renderer_new ();
   g_object_set (cell,
-                "xalign", 0,
+                "xalign", 0.0,
                 "wrap-mode", PANGO_WRAP_WORD_CHAR,
                 "xpad", 12,
                 "text-lines", 2,
