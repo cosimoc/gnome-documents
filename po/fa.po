@@ -156,8 +156,8 @@ msgstr "نمی‌توان «unoconv» را پیدا کرد، لطفا صحت ن�
 #| msgid_plural "Load %d more documents"
 msgid "Load %d more document"
 msgid_plural "Load %d more documents"
-msgstr[0] "بارگیری %Id سند دیگر"
-msgstr[1] "بارگیری %Id سند دیگر"
+msgstr[0] "بارگیری %d سند دیگر"
+msgstr[1] "بارگیری %d سند دیگر"
 
 #: ../src/mainToolbar.js:194
 msgid "New and Recent"
@@ -180,7 +180,7 @@ msgstr "براساس نویسنده فیلتر شد"
 #, c-format
 #| msgid "(%d of %d)"
 msgid "%d of %d"
-msgstr "%Id از %Id"
+msgstr "%d از %d"
 
 #: ../src/mainToolbar.js:224
 msgid "Click on items to select them"
@@ -190,8 +190,8 @@ msgstr "برای انتخاب موارد روی آنها کلیک کنید"
 #, c-format
 msgid "%d selected"
 msgid_plural "%d selected"
-msgstr[0] "%Id انتخاب شد"
-msgstr[1] "%Id انتخاب شد"
+msgstr[0] "%d انتخاب شد"
+msgstr[1] "%d انتخاب شد"
 
 #: ../src/mainWindow.js:254
 msgid "translator-credits"
@@ -324,8 +324,8 @@ msgstr "دیروز"
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
-msgstr[0] "%Id روز گذشته"
-msgstr[1] "%Id روز گذشته"
+msgstr[0] "%d روز گذشته"
+msgstr[1] "%d روز گذشته"
 
 #: ../src/view.js:202
 msgid "Last week"
@@ -335,8 +335,8 @@ msgstr "هفته گذشته"
 #, c-format
 msgid "%d week ago"
 msgid_plural "%d weeks ago"
-msgstr[0] "%Id هفته گذشته"
-msgstr[1] "%Id هفته گذشته"
+msgstr[0] "%d هفته گذشته"
+msgstr[1] "%d هفته گذشته"
 
 #: ../src/view.js:208
 msgid "Last month"
@@ -346,8 +346,8 @@ msgstr "ماه گذشته"
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
-msgstr[0] "%Id ماه گذشته"
-msgstr[1] "%Id ماه گذشته"
+msgstr[0] "%d ماه گذشته"
+msgstr[1] "%d ماه گذشته"
 
 #: ../src/view.js:214
 msgid "Last year"
@@ -357,8 +357,8 @@ msgstr "سال گذشته"
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
-msgstr[0] "%Id سال گذشته"
-msgstr[1] "%Id سال گذشته"
+msgstr[0] "%d سال گذشته"
+msgstr[1] "%d سال گذشته"
 
 #~ msgid "Enable list view"
 #~ msgstr "فعال‌سازی نمای فهرستی"
