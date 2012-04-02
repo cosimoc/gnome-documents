@@ -568,16 +568,19 @@ gd_create_symbolic_icon (const gchar *name,
   gtk_render_background (style, cr, (total_size - bg_size) / 2, (total_size - bg_size) / 2, bg_size, bg_size);
 
   symbolic_name = g_strconcat (name, "-symbolic", NULL);
-  icon = g_themed_icon_new (symbolic_name);
+  icon = g_themed_icon_new_with_default_fallbacks (symbolic_name);
+  g_free (symbolic_name);
 
   theme = gtk_icon_theme_get_default();
   info = gtk_icon_theme_lookup_by_gicon (theme, icon, emblem_size,
                                          GTK_ICON_LOOKUP_FORCE_SIZE);
-  pixbuf = gtk_icon_info_load_symbolic_for_context (info, style, NULL, NULL);
-
-  gtk_icon_info_free (info);
   g_object_unref (icon);
-  g_free (symbolic_name);
+
+  if (info == NULL)
+    goto out;
+
+  pixbuf = gtk_icon_info_load_symbolic_for_context (info, style, NULL, NULL);
+  gtk_icon_info_free (info);
 
   if (pixbuf == NULL)
     goto out;
