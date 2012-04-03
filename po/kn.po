@@ -336,6 +336,6 @@ msgstr "ಹಿಂದಿನ ವರ್ಷ"
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
-msgstr[0] "%s ವರ್ಷದ ಹಿಂದೆ"
-msgstr[1] "%s ವರ್ಷಗಳ ಹಿಂದೆ"
+msgstr[0] "%d ವರ್ಷದ ಹಿಂದೆ"
+msgstr[1] "%d ವರ್ಷಗಳ ಹಿಂದೆ"
 
