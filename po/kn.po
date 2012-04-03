@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2012-04-02 15:04+0000\n"
-"PO-Revision-Date: 2012-04-03 17:48+0530\n"
+"PO-Revision-Date: 2012-04-03 17:59+0530\n"
 "Last-Translator: s\n"
 "Language-Team: Kannada <kn@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -25,11 +25,11 @@ msgstr "ದಸ್ತಾವೇಜುಗಳು"
 
 #: ../data/gnome-documents.desktop.in.in.h:2
 msgid "Access, manage and share documents"
-msgstr ""
+msgstr "ದಸ್ತಾವೇಜುಗಳನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಿ, ವ್ಯವಸ್ಥಾಪಿಸಿ ಮತ್ತು ಹಂಚಿಕೊಳ್ಳಿ"
 
 #: ../data/gnome-documents.desktop.in.in.h:3
 msgid "Docs;PDF;Document;"
-msgstr ""
+msgstr "Docs;PDF;ದಸ್ತಾವೇಜು;"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:131
 msgid "View as"
@@ -41,11 +41,11 @@ msgstr "ಈ ಪ್ರಕಾರವಾಗಿ ನೋಡು"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:3
 msgid "The active source filter"
-msgstr ""
+msgstr "ಸಕ್ರಿಯ ಮೂಲ ಶೋಧಕ"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:4
 msgid "The last active source filter"
-msgstr ""
+msgstr "ಕೊನೆ ಸಕ್ರಿಯ ಮೂಲ ಶೋಧಕ"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:5
 msgid "Window size"
@@ -124,217 +124,218 @@ msgstr "ದಸ್ತಾವೇಜು"
 #: ../src/error.js:37
 #, c-format
 msgid "Unable to load \"%s\" for preview"
-msgstr ""
+msgstr "\"%s\" ಅನ್ನು ಅವಲೋಕಿಸಲು ತೆರೆಯಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
 #: ../src/error.js:49
 msgid "Unable to fetch the list of documents"
-msgstr ""
+msgstr "ದಸ್ತಾವೇಜುಗಳ ಪಟ್ಟಿಯನ್ನು ಪಡೆಯಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
 #. right section
 #: ../src/lib/gd-main-toolbar.c:269
 msgid "Done"
-msgstr ""
+msgstr "ಆಯಿತು"
 
 #: ../src/lib/gd-pdf-loader.c:208
 msgid "Unable to load the document"
-msgstr ""
+msgstr "ದಸ್ತಾವೇಜನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
 #: ../src/lib/gd-pdf-loader.c:489
 msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
 msgstr ""
+"\"unoconv\" ಕಂಡುಬಂದಿಲ್ಲ, ದಯವಿಟ್ಟು ನಿಮ್ಮ LibreOffice ಅನುಸ್ಥಾಪನೆಯನ್ನು ಪರಿಶೀಲಿಸಿ"
 
 #: ../src/loadMore.js:70
 #, c-format
 msgid "Load %d more document"
 msgid_plural "Load %d more documents"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "ಇನ್ನೂ %d ದಸ್ತಾವೇಜನ್ನು ಲೋಡ್‌ಮಾಡು"
+msgstr[1] "ಇನ್ನೂ %d ದಸ್ತಾವೇಜುಗಳನ್ನು ಲೋಡ್‌ಮಾಡು"
 
 #: ../src/mainToolbar.js:194
 msgid "New and Recent"
-msgstr ""
+msgstr "ಹೊಸ ಮತ್ತು ಇತ್ತೀಚಿನ"
 
 #: ../src/mainToolbar.js:201
 #, c-format
 msgid "Results for \"%s\""
-msgstr ""
+msgstr "\"%s\" ಗಾಗಿನ ಫಲಿತಾಂಶಗಳು"
 
 #: ../src/mainToolbar.js:203
 msgid "filtered by title"
-msgstr ""
+msgstr "ಶೀರ್ಷಿಕೆಯ ಆಧಾರದಲ್ಲಿ ಶೋಧಿಸು"
 
 #: ../src/mainToolbar.js:205
 msgid "filtered by author"
-msgstr ""
+msgstr "ಕತೃವಿನ ಆಧಾರದಲ್ಲಿ ಶೋಧಿಸು"
 
 #: ../src/mainToolbar.js:218
 #, c-format
 msgid "%d of %d"
-msgstr ""
+msgstr "%d, %d ರಲ್ಲಿ"
 
 #: ../src/mainToolbar.js:224
 msgid "Click on items to select them"
-msgstr ""
+msgstr "ಅಂಶಗಳನ್ನು ಆರಿಸಲು ಅವುಗಳ ಮೇಲೆ ಕ್ಲಿಕ್ ಮಾಡಿ"
 
 #: ../src/mainToolbar.js:226
 #, c-format
 msgid "%d selected"
 msgid_plural "%d selected"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d ಅನ್ನು ಆರಿಸಲಾಗಿದೆ"
+msgstr[1] "%d ಅನ್ನು ಆರಿಸಲಾಗಿದೆ"
 
 #: ../src/mainWindow.js:252
 msgid "translator-credits"
-msgstr ""
+msgstr "ಶಂಕರ್ ಪ್ರಸಾದ್ <svenkate@redhat.com>"
 
 #: ../src/mainWindow.js:253
 msgid "GNOME Documents"
-msgstr ""
+msgstr "GNOME ಡಾಕ್ಯುಮೆಂಟ್ಸ್‍"
 
 #: ../src/mainWindow.js:254
 msgid "A document manager application"
-msgstr ""
+msgstr "ಒಂದು ದಸ್ತಾವೇಜು ವ್ಯವಸ್ಥಾಪಕ ಅನ್ವಯ"
 
 #: ../src/notifications.js:85
 #, c-format
 msgid "Printing \"%s\": %s"
-msgstr ""
+msgstr "\"%s\" ಅನ್ನು ಮುದ್ರಿಸಲಾಗುತ್ತಿದೆ: %s"
 
 #: ../src/searchbar.js:86
 msgid "Category"
-msgstr ""
+msgstr "ವರ್ಗ"
 
 #: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:210
 #: ../src/sources.js:94
 msgid "All"
-msgstr ""
+msgstr "ಎಲ್ಲಾ"
 
 #: ../src/searchbar.js:97
 msgid "Favorites"
-msgstr ""
+msgstr "ಅಚ್ಚುಮೆಚ್ಚಿನವುಗಳು"
 
 #: ../src/searchbar.js:102
 msgid "Shared with you"
-msgstr ""
+msgstr "ನಿಮ್ಮೊಂದಿಗೆ ಹಂಚಲಾಗಿದೆ"
 
 #: ../src/searchbar.js:138
 msgid "Type"
-msgstr ""
+msgstr "ಬಗೆ"
 
 #: ../src/searchbar.js:143
 msgid "Collections"
-msgstr ""
+msgstr "ಸಂಗ್ರಹಗಳು"
 
 #: ../src/searchbar.js:147
 msgid "PDF Documents"
-msgstr ""
+msgstr "PDF ದಸ್ತಾವೇಜುಗಳು"
 
 #: ../src/searchbar.js:150
 msgid "Presentations"
-msgstr ""
+msgstr "ಪ್ರಸ್ತುತಿಗಳು"
 
 #: ../src/searchbar.js:153
 msgid "Spreadsheets"
-msgstr ""
+msgstr "ಸ್ಪ್ರೆಡ್‌ಶೀಟ್‌ಗಳು"
 
 #: ../src/searchbar.js:156
 msgid "Text Documents"
-msgstr ""
+msgstr "ಪಠ್ಯ ದಸ್ತಾವೇಜುಗಳು"
 
 #. Translators: this is a verb that refers to "All", "Title" and "Author",
 #. as in "Match All", "Match Title" and "Match Author"
 #: ../src/searchbar.js:207
 msgid "Match"
-msgstr ""
+msgstr "ಹೊಂದಿಸು"
 
 #: ../src/searchbar.js:212
 msgid "Title"
-msgstr ""
+msgstr "ಶೀರ್ಷಿಕೆ"
 
 #: ../src/searchbar.js:214
 msgid "Author"
-msgstr ""
+msgstr "ಕತೃ"
 
 #: ../src/selections.js:735
 msgid "Organize"
-msgstr ""
+msgstr "ವ್ಯವಸ್ಥಿತವಾಗಿ ಜೋಡಿಸು"
 
 #: ../src/selections.js:742
 msgid "Delete"
-msgstr ""
+msgstr "ಅಳಿಸು"
 
 #. Translators: this is the Open action in a context menu
 #: ../src/selections.js:842 ../src/view.js:69
 #, c-format
 msgid "Open with %s"
-msgstr ""
+msgstr "%s ನೊಂದಿಗೆ ತೆರೆ"
 
 #. Translators: this is the Open action in a context menu
 #: ../src/selections.js:845 ../src/view.js:72
 msgid "Open"
-msgstr ""
+msgstr "ತೆರೆ"
 
 #: ../src/selections.js:858 ../src/view.js:82
 msgid "Remove from favorites"
-msgstr ""
+msgstr "ಅಚ್ಚುಮೆಚ್ಚಿನವುಗಳಿಂದ ತೆಗೆದುಹಾಕು"
 
 #: ../src/selections.js:862 ../src/view.js:82
 msgid "Add to favorites"
-msgstr ""
+msgstr "ಅಚ್ಚುಮೆಚ್ಚಿನವುಗಳಿಗೆ ಸೇರಿಸು"
 
 #: ../src/shellSearchProvider.js:285
 msgid "Untitled Document"
-msgstr ""
+msgstr "ಶೀರ್ಷಿಕೆ ಇರದ ದಸ್ತಾವೇಜು"
 
 #: ../src/sources.js:90
 msgid "Sources"
-msgstr ""
+msgstr "ಮೂಲಗಳು"
 
 #: ../src/spinnerBox.js:58
 msgid "Loading..."
-msgstr ""
+msgstr "ಲೋಡ್ ಆಗುತ್ತಿದೆ..."
 
 #: ../src/view.js:198
 msgid "Yesterday"
-msgstr ""
+msgstr "ನಿನ್ನೆ"
 
 #: ../src/view.js:200
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d ದಿನದ ಹಿಂದೆ"
+msgstr[1] "%d ದಿನದ ಹಿಂದೆ"
 
 #: ../src/view.js:204
 msgid "Last week"
-msgstr ""
+msgstr "ಹಿಂದಿನ ವಾರ"
 
 #: ../src/view.js:206
 #, c-format
 msgid "%d week ago"
 msgid_plural "%d weeks ago"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d ವಾರದ ಹಿಂದೆ"
+msgstr[1] "%d ವಾರಗಳ ಹಿಂದೆ"
 
 #: ../src/view.js:210
 msgid "Last month"
-msgstr ""
+msgstr "ಹಿಂದಿನ ತಿಂಗಳು"
 
 #: ../src/view.js:212
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d ತಿಂಗಳ ಹಿಂದೆ"
+msgstr[1] "%d ತಿಂಗಳ ಹಿಂದೆ"
 
 #: ../src/view.js:216
 msgid "Last year"
-msgstr ""
+msgstr "ಹಿಂದಿನ ವರ್ಷ"
 
 #: ../src/view.js:218
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s ವರ್ಷದ ಹಿಂದೆ"
+msgstr[1] "%s ವರ್ಷಗಳ ಹಿಂದೆ"
 
