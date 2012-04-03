@@ -538,8 +538,6 @@ clear_selection_list_foreach (GtkTreeModel *model,
                               GtkTreeIter *iter,
                               gpointer user_data)
 {
-  gboolean is_selected;
-
   gtk_list_store_set (GTK_LIST_STORE (model), iter,
                       GD_MAIN_COLUMN_SELECTED, FALSE,
                       -1);
