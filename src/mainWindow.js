@@ -250,7 +250,7 @@ MainWindow.prototype = {
                                 'Florian M' + String.fromCharCode(0x00FC) + 'llner <fmuellner@gnome.org>',
                                 'William Jon McCann <william.jon.mccann@gmail.com>' ];
         aboutDialog.translator_credits = _("translator-credits");
-        aboutDialog.program_name = _("GNOME Documents");
+        aboutDialog.program_name = _("Documents");
         aboutDialog.comments = _("A document manager application");
         aboutDialog.copyright = 'Copyright ' + String.fromCharCode(0x00A9) + ' 2011' + String.fromCharCode(0x2013) + '2012 Red Hat, Inc.';
         aboutDialog.license_type = Gtk.License.GPL_2_0;
