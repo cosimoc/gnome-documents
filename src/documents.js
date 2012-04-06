@@ -585,7 +585,11 @@ DocCommon.prototype = {
     },
 
     open: function(screen, timestamp) {
-        Gtk.show_uri(screen, this.uri, timestamp);
+        try {
+            Gtk.show_uri(screen, this.uri, timestamp);
+        } catch (e) {
+            log('Unable to show URI ' + this.uri + ': ' + e.toString());
+        }
     },
 
     setFavorite: function(favorite) {
