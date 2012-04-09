@@ -1,0 +1,340 @@
+# Marathi translation for gnome-documents.
+# Copyright (C) 2012 gnome-documents's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gnome-documents package.
+#
+# Sandeep Shedmake <sshedmak@redhat.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-documents master\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"documents&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-04-05 14:59+0000\n"
+"PO-Revision-Date: 2012-04-09 12:17+0530\n"
+"Last-Translator: Sandeep Shedmake <sshedmak@redhat.com>\n"
+"Language-Team: Marathi <mr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: mr\n"
+"X-Generator: Lokalize 1.2\n"
+
+#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:54
+msgid "Documents"
+msgstr "दस्तऐवज"
+
+#: ../data/gnome-documents.desktop.in.in.h:2
+msgid "Access, manage and share documents"
+msgstr "दस्तऐवजकरीता प्रवेश, व्यवस्थापन व एकत्र वापर"
+
+#: ../data/gnome-documents.desktop.in.in.h:3
+msgid "Docs;PDF;Document;"
+msgstr "डॉक्स;PDF;दस्तऐवज;"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:131
+msgid "View as"
+msgstr "असे अवलोकन"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
+msgid "View as type"
+msgstr "प्रकार अवलोकन"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
+msgid "The active source filter"
+msgstr "सक्रीय सोअर्स फिल्टर"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
+msgid "The last active source filter"
+msgstr "शेटवचे सक्रिय सोअर्स फिल्टर"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
+msgid "Window size"
+msgstr "पटल आकार"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
+msgid "Window size (width and height)."
+msgstr "पटल आकार (रूंदी व ऊंची)."
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
+msgid "Window position"
+msgstr "पटलाचे ठिकाण"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
+msgid "Window position (x and y)."
+msgstr "पटलाचे ठिकाण (x व y)."
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:9
+msgid "Window maximized"
+msgstr "पटल मोठे करा"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:10
+msgid "Window maximized state"
+msgstr "पटल मोठे केल्याचे स्तर"
+
+#: ../src/application.js:129
+msgid "Grid"
+msgstr "ग्रिड"
+
+#: ../src/application.js:130
+msgid "List"
+msgstr "सूची"
+
+#: ../src/application.js:134
+msgid "Fullscreen"
+msgstr "पडदाभर"
+
+#: ../src/application.js:137
+msgid "About Documents"
+msgstr "दस्तऐवज विषयी"
+
+#: ../src/application.js:138
+msgid "Quit"
+msgstr "बाहेर पडा"
+
+#: ../src/documents.js:619 ../src/sources.js:100
+msgid "Local"
+msgstr "स्थानीय"
+
+#. overridden
+#: ../src/documents.js:675
+msgid "Google Docs"
+msgstr "गूगल डॉक्स"
+
+#: ../src/documents.js:676
+msgid "Google"
+msgstr "गूगल"
+
+#: ../src/documents.js:745
+msgid "Spreadsheet"
+msgstr "स्प्रेडशीट"
+
+#: ../src/documents.js:747
+msgid "Presentation"
+msgstr "प्रस्तुतीकरण"
+
+#: ../src/documents.js:749
+msgid "Collection"
+msgstr "गोलाकार"
+
+#: ../src/documents.js:751
+msgid "Document"
+msgstr "दस्तऐवज"
+
+#. Translators: %s is the title of a document
+#: ../src/error.js:37
+#, c-format
+msgid "Unable to load \"%s\" for preview"
+msgstr "पूर्वावलोकनकरीता \"%s\" लोड करणे अशक्य"
+
+#: ../src/error.js:49
+msgid "Unable to fetch the list of documents"
+msgstr "दस्तऐवजांची सूची प्राप्त करणे अशक्य"
+
+#. right section
+#: ../src/lib/gd-main-toolbar.c:269
+msgid "Done"
+msgstr "पूर्ण झाले"
+
+#: ../src/lib/gd-pdf-loader.c:208
+msgid "Unable to load the document"
+msgstr "दस्तऐज लोड करणे अशक्य"
+
+#: ../src/lib/gd-pdf-loader.c:489
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr "\"unoconv\" शोधणे अशक्य, कृपया LibreOffice प्रतिष्ठापनची तपासणी करा"
+
+#: ../src/loadMore.js:70
+#, c-format
+msgid "Load %d more document"
+msgid_plural "Load %d more documents"
+msgstr[0] "%d दस्तऐवज लोड करा"
+msgstr[1] "%d दस्तऐवज लोड करा"
+
+#: ../src/mainToolbar.js:194
+msgid "New and Recent"
+msgstr "नविन व नुकतेच"
+
+#: ../src/mainToolbar.js:201
+#, c-format
+msgid "Results for \"%s\""
+msgstr "\"%s\" करीता परिणाम"
+
+#: ../src/mainToolbar.js:203
+msgid "filtered by title"
+msgstr "शीर्षकतर्फे फिल्टर केले"
+
+#: ../src/mainToolbar.js:205
+msgid "filtered by author"
+msgstr "ऑथरतर्फे फिल्टर केले"
+
+#: ../src/mainToolbar.js:218
+#, c-format
+msgid "%d of %d"
+msgstr "%d, %d पैकी"
+
+#: ../src/mainToolbar.js:224
+msgid "Click on items to select them"
+msgstr "निवडण्याकरीता घटकांवर क्लिक करा"
+
+#: ../src/mainToolbar.js:226
+#, c-format
+msgid "%d selected"
+msgid_plural "%d selected"
+msgstr[0] "%d निवडले"
+msgstr[1] "%d निवडले"
+
+#: ../src/mainWindow.js:252
+msgid "translator-credits"
+msgstr "संदिप शेडमाके <sshedmak@redhat.com>, 2012"
+
+#: ../src/mainWindow.js:253
+msgid "GNOME Documents"
+msgstr "GNOME दस्तऐवज"
+
+#: ../src/mainWindow.js:254
+msgid "A document manager application"
+msgstr "दस्तऐवज व्यवस्थापक ॲप्लिकेशन"
+
+#: ../src/notifications.js:85
+#, c-format
+msgid "Printing \"%s\": %s"
+msgstr "\"%s\": %s ची छपाई करत आहे"
+
+#: ../src/searchbar.js:86
+msgid "Category"
+msgstr "विभाग"
+
+#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:210
+#: ../src/sources.js:94
+msgid "All"
+msgstr "सर्व"
+
+#: ../src/searchbar.js:97
+msgid "Favorites"
+msgstr "पसंतीचे"
+
+#: ../src/searchbar.js:102
+msgid "Shared with you"
+msgstr "तुमच्यासह शेअर केले"
+
+#: ../src/searchbar.js:138
+msgid "Type"
+msgstr "प्रकार"
+
+#: ../src/searchbar.js:143
+msgid "Collections"
+msgstr "कलेक्शन्स्"
+
+#: ../src/searchbar.js:147
+msgid "PDF Documents"
+msgstr "PDF दस्तऐवज"
+
+#: ../src/searchbar.js:150
+msgid "Presentations"
+msgstr "प्रस्तुतिकरण"
+
+#: ../src/searchbar.js:153
+msgid "Spreadsheets"
+msgstr "स्प्रेडशीटस्"
+
+#: ../src/searchbar.js:156
+msgid "Text Documents"
+msgstr "मजकूर दस्तऐवज"
+
+#. Translators: this is a verb that refers to "All", "Title" and "Author",
+#. as in "Match All", "Match Title" and "Match Author"
+#: ../src/searchbar.js:207
+msgid "Match"
+msgstr "मॅच"
+
+#: ../src/searchbar.js:212
+msgid "Title"
+msgstr "शीर्षक"
+
+#: ../src/searchbar.js:214
+msgid "Author"
+msgstr "लेखक"
+
+#: ../src/selections.js:735
+msgid "Organize"
+msgstr "व्यवस्थापित करा"
+
+#: ../src/selections.js:742
+msgid "Delete"
+msgstr "नष्ट करा"
+
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:842 ../src/view.js:69
+#, c-format
+msgid "Open with %s"
+msgstr "%s सह उघडा"
+
+#. Translators: this is the Open action in a context menu
+#: ../src/selections.js:845 ../src/view.js:72
+msgid "Open"
+msgstr "उघडा"
+
+#: ../src/selections.js:858 ../src/view.js:82
+msgid "Remove from favorites"
+msgstr "पसंतीतून काढून टाकतो"
+
+#: ../src/selections.js:862 ../src/view.js:82
+msgid "Add to favorites"
+msgstr "पंसतीमध्ये समाविष्ट करा"
+
+#: ../src/shellSearchProvider.js:285
+msgid "Untitled Document"
+msgstr "विनाशीर्षक दस्तऐवज"
+
+#: ../src/sources.js:90
+msgid "Sources"
+msgstr "सोअर्सेस्"
+
+#: ../src/spinnerBox.js:58
+msgid "Loading..."
+msgstr "लोड करत आहे..."
+
+#: ../src/view.js:198
+msgid "Yesterday"
+msgstr "काल"
+
+#: ../src/view.js:200
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%d दिवस अगोदर"
+msgstr[1] "%d दिवस अगोदर"
+
+#: ../src/view.js:204
+msgid "Last week"
+msgstr "शेवटचा सप्ताह"
+
+#: ../src/view.js:206
+#, c-format
+msgid "%d week ago"
+msgid_plural "%d weeks ago"
+msgstr[0] "%d सप्ताह अगोदर"
+msgstr[1] "%d सप्ताह अगोदर"
+
+#: ../src/view.js:210
+msgid "Last month"
+msgstr "शेटवचा महिना"
+
+#: ../src/view.js:212
+#, c-format
+msgid "%d month ago"
+msgid_plural "%d months ago"
+msgstr[0] "%d महिना अगोदर"
+msgstr[1] "%d महिना अगोदर"
+
+#: ../src/view.js:216
+msgid "Last year"
+msgstr "शेवटचा वर्ष"
+
+#: ../src/view.js:218
+#, c-format
+msgid "%d year ago"
+msgid_plural "%d years ago"
+msgstr[0] "%d वर्ष अगोदर"
+msgstr[1] "%d वर्ष अगोदर"
+
