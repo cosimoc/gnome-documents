@@ -476,7 +476,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
   gchar *date, *resource_url, *datasource_urn, *identifier;
   const gchar *class = NULL;
 
-  GList *authors, *l, *parents;
+  GList *authors, *l, *parents = NULL;
   GDataAuthor *author;
   GDataLink *parent;
 
@@ -713,8 +713,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
   g_free (resource);
   g_free (identifier);
 
-  if (parents != NULL)
-    g_list_free (parents);
+  g_list_free (parents);
 
   if (*error != NULL)
     return FALSE;
