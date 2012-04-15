@@ -23,6 +23,7 @@ const Gd = imports.gi.Gd;
 const Gdk = imports.gi.Gdk;
 const Gtk = imports.gi.Gtk;
 const GtkClutter = imports.gi.GtkClutter;
+const Tracker = imports.gi.Tracker;
 const _ = imports.gettext.gettext;
 
 const Lang = imports.lang;
@@ -256,7 +257,8 @@ SearchController.prototype = {
     },
 
     getTerms: function() {
-        return this._string.replace(/ +/g, ' ').split(' ');
+	let str = Tracker.sparql_escape_string(this._string);
+        return str.replace(/ +/g, ' ').split(' ');
     },
 
     setDropownState: function(state) {
