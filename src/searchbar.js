@@ -257,7 +257,7 @@ SearchController.prototype = {
     },
 
     getTerms: function() {
-	let str = Tracker.sparql_escape_string(this._string);
+        let str = Tracker.sparql_escape_string(this._string);
         return str.replace(/ +/g, ' ').split(' ');
     },
 
