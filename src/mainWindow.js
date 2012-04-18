@@ -189,11 +189,6 @@ MainWindow.prototype = {
             return true;
         }
 
-        if (keyval == Gdk.KEY_Escape && fullscreen) {
-            Global.modeController.setFullscreen(false);
-            return true;
-        }
-
         if (keyval == Gdk.KEY_Escape ||
             keyval == Gdk.KEY_Back) {
             Global.modeController.setWindowMode(WindowMode.WindowMode.OVERVIEW);
