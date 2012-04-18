@@ -344,21 +344,24 @@ OrganizeCollectionModel.prototype = {
     },
 
     _findCollectionIter: function(item) {
-        let retval = null;
+        let collPath = null;
 
         this.model.foreach(Lang.bind(this,
             function(model, path, iter) {
                 let id = model.get_value(iter, OrganizeModelColumns.ID);
 
                 if (item.id == id) {
-                    retval = iter;
+                    collPath = path.copy();
                     return true;
                 }
 
                 return false;
             }));
 
-        return retval;
+        if (collPath)
+            return this.model.get_iter(collPath)[1];
+
+        return null;
     },
 
     _onFetchCollectionStateForSelection: function(collectionState) {
@@ -366,18 +369,17 @@ OrganizeCollectionModel.prototype = {
 
         for (idx in collectionState) {
             let item = Global.collectionManager.getItemById(idx);
-            let iter = null;
 
             if ((collectionState[item.id] & OrganizeCollectionState.HIDDEN) != 0)
                 continue;
 
-            iter = this._findCollectionIter(item);
+            let iter = this._findCollectionIter(item);
+
             if (!iter)
                 iter = this.model.append();
 
-            if (iter)
-                Gd.organize_store_set(this.model, iter,
-                                      item.id, item.name, collectionState[item.id]);
+            Gd.organize_store_set(this.model, iter,
+                                  item.id, item.name, collectionState[item.id]);
         }
     },
 
