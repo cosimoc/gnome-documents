@@ -110,6 +110,13 @@ function isSearchEvent(event) {
     return retval;
 }
 
+function alphaGtkWidget(widget) {
+    widget.override_background_color(0, new Gdk.RGBA({ red: 0,
+                                                       green: 0,
+                                                       blue: 0,
+                                                       alpha: 0 }));
+}
+
 function debug(str) {
     if (!debugInit) {
         let env = GLib.getenv('DOCUMENTS_DEBUG');

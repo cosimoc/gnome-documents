@@ -26,6 +26,7 @@ const GtkClutter = imports.gi.GtkClutter;
 const _ = imports.gettext.gettext;
 
 const Global = imports.global;
+const Utils = imports.utils;
 
 const Lang = imports.lang;
 const Signals = imports.signals;
@@ -105,8 +106,7 @@ NotificationManager.prototype = {
 
         this.actor = new GtkClutter.Actor({ contents: this.widget,
                                             opacity: 0 });
-        this.actor.get_widget().get_style_context().add_class('documents-osd');
-        this.actor.get_widget().reset_style();
+        Utils.alphaGtkWidget(this.actor.get_widget());
 
         this.widget.add(this._grid);
         this._grid.show();

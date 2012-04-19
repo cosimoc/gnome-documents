@@ -21,6 +21,7 @@
 
 const EvView = imports.gi.EvinceView;
 const Gd = imports.gi.Gd;
+const Gdk = imports.gi.Gdk;
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 const GtkClutter = imports.gi.GtkClutter;
@@ -699,13 +700,12 @@ SelectionToolbar.prototype = {
 
         this.widget = new Gtk.Toolbar({ show_arrow: false,
                                         icon_size: Gtk.IconSize.LARGE_TOOLBAR });
+        this.widget.get_style_context().add_class('osd');
 
         this.actor = new GtkClutter.Actor({ contents: this.widget,
                                             show_on_set_parent: false,
                                             opacity: 0 });
-        let actorWidget = this.actor.get_widget();
-        actorWidget.get_style_context().add_class('documents-osd');
-        actorWidget.reset_style();
+        Utils.alphaGtkWidget(this.actor.get_widget());
 
         this._leftBox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL });
         this._leftGroup = new Gtk.ToolItem({ child: this._leftBox });
@@ -859,11 +859,11 @@ SelectionToolbar.prototype = {
             if (isFavorite) {
                 favoriteLabel = _("Remove from favorites");
                 this._toolbarFavorite.set_active(true);
-                this._toolbarFavorite.get_style_context().add_class('favorite');
+                this._toolbarFavorite.get_style_context().add_class('documents-favorite');
             } else {
                 favoriteLabel = _("Add to favorites");
                 this._toolbarFavorite.set_active(false);
-                this._toolbarFavorite.get_style_context().remove_class('favorite');
+                this._toolbarFavorite.get_style_context().remove_class('documents-favorite');
             }
 
             this._toolbarFavorite.reset_style();
