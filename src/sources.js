@@ -106,6 +106,7 @@ SourceManager.prototype = {
         Global.goaClient.connect('account-removed', Lang.bind(this, this._refreshGoaAccounts));
 
         this._refreshGoaAccounts();
+        this.setActiveItemById(SourceStock.ALL);
     },
 
     _refreshGoaAccounts: function() {
@@ -125,17 +126,5 @@ SourceManager.prototype = {
             }));
 
         this.processNewItems(newItems);
-
-        let activeItemId = Global.settings.get_string('active-source');
-
-        // fallback to 'all' if we never saved any source, or if the saved
-        // source disappeared in the meantime
-        if (!this.setActiveItemById(activeItemId))
-            this.setActiveItemById(SourceStock.ALL);
-    },
-
-    setActiveItem: function(item) {
-        if (Manager.BaseManager.prototype.setActiveItem.call(this, item))
-            Global.settings.set_string('active-source', item.id);
     }
 };

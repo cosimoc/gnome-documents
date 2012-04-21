@@ -5,11 +5,6 @@
       <_summary>View as</_summary>
       <_description>View as type</_description>
     </key>
-    <key name="active-source" type="s">
-      <default>'all'</default>
-      <_summary>The active source filter</_summary>
-      <_description>The last active source filter</_description>
-    </key>
     <key name="window-size" type="ai">
       <default>[768, 600]</default>
       <_summary>Window size</_summary>
