@@ -293,7 +293,7 @@ gd_embed_image_in_frame (GdkPixbuf *source_image,
   dest_width = source_width +  border_width->left + border_width->right;
   dest_height = source_height + border_width->top + border_width->bottom;
 
-  css_str = g_strdup_printf (".embedded-image { border-image: url(\"%s\") %d %d %d %d / %d %d %d %d }",
+  css_str = g_strdup_printf (".embedded-image { border-image: url(\"%s\") %d %d %d %d / %dpx %dpx %dpx %dpx }",
                              frame_image_path, 
                              slice_width->top, slice_width->right, slice_width->bottom, slice_width->left,
                              border_width->top, border_width->right, border_width->bottom, border_width->left);
