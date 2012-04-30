@@ -1,3 +1,24 @@
+0.5.1 - "Mr. Turtle"
+====================
+
+- Change about dialog string to Documents (Anna Zacchi)
+- Use GTK OSD style class for selection toolbar
+- Update CSS syntax for GTK master
+- Fix thumbbar failing fade in in fullscreen under some circumstances
+- Add more keybindings in preview mode
+- Don't store the active source in GSettings
+
+0.4.1 - "I Mean It"
+===================
+
+- Support %Id conversion characters for formatted strings
+- Cancel old queries from the Shell search provider (Florian Müllner)
+- Escape user input before pushing it down to Tracker (Meg Ford)
+- Handle exceptions when calling Gtk.show_uri() (Feroze Naina)
+- Avoid segfaults in the miner when an error happens (Alban Browaeys)
+- Don't crash for missing symbolic icons in the theme
+- Update the license of some library components to LGPL v2+
+
 0.4.0.1 - "Fixer"
 =================
 
