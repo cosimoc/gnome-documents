@@ -2,35 +2,36 @@
 # Copyright (C) 2012 gnome-documents's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-documents package.
 # Tom Tryfonidis <tomtryf@gmail.com>, 2012.
-#
+# Kostas Papadimas <pkst@gnome.org>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-03-10 18:45+0000\n"
-"PO-Revision-Date: 2012-03-11 00:02+0200\n"
-"Last-Translator: Tom Tryfonidis <tomtryf@gmail.com>\n"
-"Language-Team: Greek <team@lists.gnome.gr>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-05-02 13:27+0300\n"
+"PO-Revision-Date: 2012-05-02 13:27+0300\n"
+"Last-Translator: Kostas Papadimas <pkst@gnome.org>\n"
+"Language-Team: team@gnome.gr\n"
+"Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.6.1\n"
 
 #: ../data/gnome-documents.desktop.in.in.h:1
-#: ../src/mainWindow.js:54
-msgid "Documents"
-msgstr "Έγγραφα"
-
-#: ../data/gnome-documents.desktop.in.in.h:2
 msgid "Access, manage and share documents"
 msgstr "Προσεγγίστε,διαχειριστείτε και μοιραστείτε έγγραφα"
 
-#: ../data/gnome-documents.desktop.in.in.h:3
+#: ../data/gnome-documents.desktop.in.in.h:2
 msgid "Docs;PDF;Document;"
 msgstr "Έγγραφα;PDF;Έγγραφο"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1
-#: ../src/application.js:128
+#: ../data/gnome-documents.desktop.in.in.h:3 ../src/mainWindow.js:54
+#: ../src/mainWindow.js:249
+msgid "Documents"
+msgstr "Έγγραφα"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:131
 msgid "View as"
 msgstr "Προβολή ως"
 
@@ -39,84 +40,75 @@ msgid "View as type"
 msgstr "Προβολή ως τύπος"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:3
-msgid "The active source filter"
-msgstr ""
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:4
-msgid "The last active source filter"
-msgstr ""
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:5
-msgid "Window size"
-msgstr "Μεγέθος παραθύρου"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:6
-msgid "Window size (width and height)."
-msgstr "Μέγεθος παραθύρου (πλάτος και ύψος)"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:7
-msgid "Window position"
-msgstr "Θέση Παραθύρου"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:8
-msgid "Window position (x and y)."
-msgstr "Θέση παραθύρου (x και y)."
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:9
 msgid "Window maximized"
 msgstr "Μεγιστοποιημένο παράθυρο"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:10
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
 msgid "Window maximized state"
 msgstr "Κατάσταση μεγιστοποίησης παραθύρου"
 
-#: ../src/application.js:126
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
+msgid "Window position"
+msgstr "Θέση παραθύρου"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
+msgid "Window position (x and y)."
+msgstr "Θέση παραθύρου (x και y)."
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
+msgid "Window size"
+msgstr "Μεγέθος παραθύρου"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
+msgid "Window size (width and height)."
+msgstr "Μέγεθος παραθύρου (πλάτος και ύψος)"
+
+#: ../src/application.js:129
 msgid "Grid"
 msgstr "Πλέγμα"
 
-#: ../src/application.js:127
+#: ../src/application.js:130
 msgid "List"
 msgstr "Λίστα"
 
-#: ../src/application.js:131
+#: ../src/application.js:134
 msgid "Fullscreen"
 msgstr "Πλήρης οθόνη"
 
-#: ../src/application.js:134
+#: ../src/application.js:137
 msgid "About Documents"
-msgstr "Περί Έγγραφα"
+msgstr "Περί"
 
-#: ../src/application.js:135
+#: ../src/application.js:138
 msgid "Quit"
 msgstr "Έξοδος"
 
-#: ../src/documents.js:619
-#: ../src/sources.js:100
+#: ../src/documents.js:623 ../src/sources.js:100
 msgid "Local"
 msgstr "Τοπικά"
 
 #. overridden
-#: ../src/documents.js:675
+#: ../src/documents.js:679
 msgid "Google Docs"
 msgstr "Έγγραφα Google"
 
-#: ../src/documents.js:676
+#: ../src/documents.js:680
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:745
+#: ../src/documents.js:749
 msgid "Spreadsheet"
 msgstr "Λογιστικό φύλλο"
 
-#: ../src/documents.js:747
+#: ../src/documents.js:751
 msgid "Presentation"
 msgstr "Παρουσίαση"
 
-#: ../src/documents.js:749
+#: ../src/documents.js:753
 msgid "Collection"
 msgstr "Συλλογή"
 
-#: ../src/documents.js:751
+#: ../src/documents.js:755
 msgid "Document"
 msgstr "Έγγραφo"
 
@@ -124,11 +116,11 @@ msgstr "Έγγραφo"
 #: ../src/error.js:37
 #, c-format
 msgid "Unable to load \"%s\" for preview"
-msgstr "Αδυναμία φόρτωσης \"%s\" για προεπισκόπιση"
+msgstr "Αδυναμία φόρτωσης \"%s\" για προεπισκόπηση"
 
 #: ../src/error.js:49
 msgid "Unable to fetch the list of documents"
-msgstr ""
+msgstr "Αδυναμία λήψης λίστας εγγράφων"
 
 #. right section
 #: ../src/lib/gd-main-toolbar.c:269
@@ -141,14 +133,16 @@ msgstr "Αδυναμία ανοίγματος του εγγράφου"
 
 #: ../src/lib/gd-pdf-loader.c:489
 msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
-msgstr "Δε βρέθηκε το \"unoconv\", παρακαλούμε κοιτάξτε την εγκατάσταση του LibreOffice"
+msgstr ""
+"Δε βρέθηκε το \"unoconv\", παρακαλούμε κοιτάξτε την εγκατάσταση του "
+"LibreOffice"
 
 #: ../src/loadMore.js:70
 #, c-format
 msgid "Load %d more document"
 msgid_plural "Load %d more documents"
-msgstr[0] "Φόρτωσε %d περισσότερο έγγραφο"
-msgstr[1] "Φόρτωσε %d περισσότερα έγγραφα"
+msgstr[0] "Φόρτωση %d ακόμα εγγράφου"
+msgstr[1] "Φόρτωση %d ακόμα εγγράφων"
 
 #: ../src/mainToolbar.js:194
 msgid "New and Recent"
@@ -183,114 +177,104 @@ msgid_plural "%d selected"
 msgstr[0] "%d επιλέχθηκε"
 msgstr[1] "%d επιλέχθηκαν"
 
-#: ../src/mainWindow.js:254
+#: ../src/mainWindow.js:248
 msgid "translator-credits"
 msgstr ""
 "Ελληνική μεταφραστική ομάδα Gnome\n"
 "Θάνος Τρυφωνίδης <tomtryf@gmail.com>"
 
-#: ../src/mainWindow.js:255
-msgid "GNOME Documents"
-msgstr "Έγγραφα GNOME"
-
-#: ../src/mainWindow.js:256
+#: ../src/mainWindow.js:250
 msgid "A document manager application"
 msgstr "Εφαρμογή διαχείρισης εγγράφων"
 
-#: ../src/notifications.js:85
+#: ../src/notifications.js:86
 #, c-format
 msgid "Printing \"%s\": %s"
 msgstr "Εκτύπωση \"%s\": %s"
 
-#: ../src/searchbar.js:86
+#: ../src/searchbar.js:87
 msgid "Category"
 msgstr "Κατηγορία"
 
-#: ../src/searchbar.js:91
-#: ../src/searchbar.js:141
-#: ../src/searchbar.js:210
+#: ../src/searchbar.js:92 ../src/searchbar.js:142 ../src/searchbar.js:211
 #: ../src/sources.js:94
 msgid "All"
 msgstr "Όλα"
 
-#: ../src/searchbar.js:97
+#: ../src/searchbar.js:98
 msgid "Favorites"
 msgstr "Αγαπημένα"
 
-#: ../src/searchbar.js:102
+#: ../src/searchbar.js:103
 msgid "Shared with you"
 msgstr ""
 
-#: ../src/searchbar.js:138
+#: ../src/searchbar.js:139
 msgid "Type"
 msgstr "Τύπος"
 
-#: ../src/searchbar.js:143
+#: ../src/searchbar.js:144
 msgid "Collections"
 msgstr "Συλλογές"
 
-#: ../src/searchbar.js:147
+#: ../src/searchbar.js:148
 msgid "PDF Documents"
 msgstr "Έγγραφα PDF"
 
-#: ../src/searchbar.js:150
+#: ../src/searchbar.js:151
 msgid "Presentations"
 msgstr "Παρασουσιάσεις"
 
-#: ../src/searchbar.js:153
+#: ../src/searchbar.js:154
 msgid "Spreadsheets"
 msgstr "Λογιστικά φύλλα"
 
-#: ../src/searchbar.js:156
+#: ../src/searchbar.js:157
 msgid "Text Documents"
 msgstr "Έγγραφα κειμένου"
 
 #. Translators: this is a verb that refers to "All", "Title" and "Author",
 #. as in "Match All", "Match Title" and "Match Author"
-#: ../src/searchbar.js:207
+#: ../src/searchbar.js:208
 msgid "Match"
 msgstr "Ταίριασμα"
 
-#: ../src/searchbar.js:212
+#: ../src/searchbar.js:213
 msgid "Title"
 msgstr "Τίτλος"
 
-#: ../src/searchbar.js:214
+#: ../src/searchbar.js:215
 msgid "Author"
 msgstr "Συγγραφέας"
 
-#: ../src/selections.js:735
+#: ../src/selections.js:737
 msgid "Organize"
 msgstr "Οργάνωση"
 
-#: ../src/selections.js:742
+#: ../src/selections.js:744
 msgid "Delete"
 msgstr "Διαγραφή"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:842
-#: ../src/view.js:69
+#: ../src/selections.js:844 ../src/view.js:69
 #, c-format
 msgid "Open with %s"
 msgstr "Άνοιγμα με %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:845
-#: ../src/view.js:72
+#: ../src/selections.js:847 ../src/view.js:72
 msgid "Open"
 msgstr "Άνοιγμα"
 
-#: ../src/selections.js:858
-#: ../src/view.js:82
+#: ../src/selections.js:860 ../src/view.js:82
 msgid "Remove from favorites"
 msgstr "Αφαίρεση από τα αγαπημένα"
 
-#: ../src/selections.js:862
-#: ../src/view.js:82
+#: ../src/selections.js:864 ../src/view.js:82
 msgid "Add to favorites"
 msgstr "Προσθήκη στα αγαπημένα"
 
-#: ../src/shellSearchProvider.js:332
+#: ../src/shellSearchProvider.js:285
 msgid "Untitled Document"
 msgstr "Ανώνυμο έγγραφο"
 
@@ -302,47 +286,55 @@ msgstr "Πηγές"
 msgid "Loading..."
 msgstr "Φόρτωση..."
 
-#: ../src/view.js:196
+#: ../src/view.js:198
 msgid "Yesterday"
 msgstr "Χθες"
 
-#: ../src/view.js:198
+#: ../src/view.js:200
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "%d ημέρα πριν"
 msgstr[1] "%d ημέρες πριν"
 
-#: ../src/view.js:202
+#: ../src/view.js:204
 msgid "Last week"
 msgstr "Προηγούμενη εβδομάδα"
 
-#: ../src/view.js:204
+#: ../src/view.js:206
 #, c-format
 msgid "%d week ago"
 msgid_plural "%d weeks ago"
 msgstr[0] "%d εβδομάδα πριν"
 msgstr[1] "%d εβδομάδες πριν"
 
-#: ../src/view.js:208
+#: ../src/view.js:210
 msgid "Last month"
 msgstr "Προηγούμενος μήνας"
 
-#: ../src/view.js:210
+#: ../src/view.js:212
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
 msgstr[0] "%d μήνα πριν"
 msgstr[1] "%d μήνες πριν"
 
-#: ../src/view.js:214
+#: ../src/view.js:216
 msgid "Last year"
 msgstr "Προηγούμενο έτος"
 
-#: ../src/view.js:216
+#: ../src/view.js:218
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
 msgstr[0] "%d έτος πριν"
 msgstr[1] "%d έτη πριν"
 
+#~ msgid "The active source filter"
+#~ msgstr "Το ενεργό φίλτρο πηγής"
+
+#~ msgid "The last active source filter"
+#~ msgstr "Το τελευταίο ενεργό φίλτρο πηγής"
+
+#~ msgid "GNOME Documents"
+#~ msgstr "Έγγραφα GNOME"
