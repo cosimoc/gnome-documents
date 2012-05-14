@@ -409,7 +409,10 @@ gd_time_val_from_iso8601 (const gchar *string,
                           GTimeVal *timeval)
 {
   if (string == NULL)
-    g_get_current_time (timeval);
+    {
+      g_get_current_time (timeval);
+      return TRUE;
+    }
 
   return g_time_val_from_iso8601 (string, timeval);
 }
