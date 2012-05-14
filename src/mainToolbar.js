@@ -19,6 +19,7 @@
  *
  */
 
+const Clutter = imports.gi.Clutter;
 const Gd = imports.gi.Gd;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
@@ -51,7 +52,12 @@ MainToolbar.prototype = {
         this.widget.get_style_context().add_class(Gtk.STYLE_CLASS_MENUBAR);
         this.widget.show();
 
-        this.actor = new GtkClutter.Actor({ contents: this.widget });
+        this.layout = new Clutter.BoxLayout({ vertical: true });
+        this.actor = new Clutter.Actor({ layout_manager: this.layout });
+
+        this.layout.pack(new GtkClutter.Actor({ contents: this.widget }),
+                         false, true, false,
+                         Clutter.BoxAlignment.CENTER, Clutter.BoxAlignment.START);
 
         // setup listeners to mode changes that affect the toolbar layout
         this._searchStringId =
