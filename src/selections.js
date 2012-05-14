@@ -747,7 +747,6 @@ SelectionToolbar.prototype = {
         this._leftBox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL });
         this._leftGroup = new Gtk.ToolItem({ child: this._leftBox });
         this.widget.insert(this._leftGroup, -1);
-        this._leftGroup.show_all();
 
         this._toolbarFavorite = new Gtk.ToggleButton({ child: new Gtk.Image ({ icon_name: 'emblem-favorite-symbolic',
                                                                                pixel_size: 32 })});
@@ -767,7 +766,6 @@ SelectionToolbar.prototype = {
         this._rightBox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL });
         this._rightGroup = new Gtk.ToolItem({ child: this._rightBox });
         this.widget.insert(this._rightGroup, -1);
-        this._rightGroup.show_all();
 
         this._toolbarCollection = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'list-add-symbolic',
                                                                            pixel_size: 32 })});
@@ -787,7 +785,7 @@ SelectionToolbar.prototype = {
         this._rightBox.add(this._toolbarOpen);
         this._toolbarOpen.connect('clicked', Lang.bind(this, this._onToolbarOpen));
 
-        this.widget.show();
+        this.widget.show_all();
 
         Global.selectionController.connect('selection-mode-changed',
                                            Lang.bind(this, this._onSelectionModeChanged));
@@ -836,8 +834,9 @@ SelectionToolbar.prototype = {
         let apps = [];
         let favCount = 0;
         let showFavorite = true;
-        let canTrash = true;
-        let showPrint = false;
+        let showTrash = true;
+        let showPrint = true;
+        let showOpen = true;
 
         this._insideRefresh = true;
 
@@ -853,27 +852,15 @@ SelectionToolbar.prototype = {
                     (apps.indexOf(doc.defaultAppName) == -1))
                     apps.push(doc.defaultAppName);
 
-                if (!doc.canTrash())
-                    canTrash = false;
+                showTrash &= doc.canTrash();
+                showPrint &= !doc.collection;
             }));
 
         showFavorite &= ((favCount == 0) || (favCount == selection.length));
+        showOpen = (apps.length > 0);
 
-        if (selection.length == 1) {
-            let urn = selection[0];
-            if (!Global.collectionManager.getItemById(urn))
-                showPrint = true;
-        }
-
-        if (showPrint)
-            this._toolbarPrint.show_all();
-        else
-            this._toolbarPrint.hide();
-
-        if (canTrash)
-            this._toolbarTrash.show_all();
-        else
-            this._toolbarTrash.hide();
+        if (selection.length > 1)
+            showPrint = false;
 
         let openLabel = null;
         if (apps.length == 1) {
@@ -883,11 +870,7 @@ SelectionToolbar.prototype = {
             // Translators: this is the Open action in a context menu
             openLabel = _("Open");
         }
-
-        if (apps.length > 0) {
-            this._toolbarOpen.set_tooltip_text(openLabel);
-            this._toolbarOpen.show_all();
-        }
+        this._toolbarOpen.set_tooltip_text(openLabel);
 
         if (showFavorite) {
             let isFavorite = (favCount == selection.length);
@@ -905,10 +888,12 @@ SelectionToolbar.prototype = {
 
             this._toolbarFavorite.reset_style();
             this._toolbarFavorite.set_tooltip_text(favoriteLabel);
-            this._toolbarFavorite.show_all();
-        } else {
-            this._toolbarFavorite.hide();
         }
+
+        this._toolbarPrint.set_visible(showPrint);
+        this._toolbarTrash.set_visible(showTrash);
+        this._toolbarOpen.set_visible(showOpen);
+        this._toolbarFavorite.set_visible(showFavorite);
 
         this._insideRefresh = false;
     },
