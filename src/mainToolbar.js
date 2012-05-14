@@ -179,6 +179,7 @@ MainToolbar.prototype = {
         this.widget.set_back_visible(item != null);
 
         this._setToolbarTitle();
+        this.searchbar.hide();
     },
 
     _setToolbarTitle: function() {
