@@ -90,22 +90,12 @@ MainWindow.prototype = {
 
         Global.modeController.connect('fullscreen-changed',
                                       Lang.bind(this, this._onFullscreenChanged));
-        Global.modeController.connect('window-mode-changed',
-                                      Lang.bind(this, this._onWindowModeChanged));
-
-        // the base layout is a vertical ClutterBox
-        this._clutterBoxLayout = new Clutter.BoxLayout({ vertical: true });
-        this._clutterBox = new Clutter.Box({ layout_manager: this._clutterBoxLayout });
-        this._clutterBox.add_constraint(
-            new Clutter.BindConstraint({ coordinate: Clutter.BindCoordinate.SIZE,
-                                         source: stage }));
-
-        stage.add_actor(this._clutterBox);
 
         this._embed = new Embed.ViewEmbed();
-        this._clutterBox.add_actor(this._embed.actor);
-        this._clutterBoxLayout.set_expand(this._embed.actor, true);
-        this._clutterBoxLayout.set_fill(this._embed.actor, true, true);
+        this._embed.actor.add_constraint(
+            new Clutter.BindConstraint({ coordinate: Clutter.BindCoordinate.SIZE,
+                                         source: stage }));
+        stage.add_actor(this._embed.actor);
     },
 
     _saveWindowGeometry: function() {
@@ -150,11 +140,6 @@ MainWindow.prototype = {
 
         let maximized = (state & Gdk.WindowState.MAXIMIZED);
         Global.settings.set_boolean('window-maximized', maximized);
-    },
-
-    _onWindowModeChanged: function() {
-        if (Global.modeController.getWindowMode() == WindowMode.WindowMode.PREVIEW)
-            this._embed._toolbar.searchbar.hide();
     },
 
     _onFullscreenChanged: function(controller, fullscreen) {

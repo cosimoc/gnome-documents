@@ -103,7 +103,9 @@ ViewEmbed.prototype  = {
         // create the dropdown for the search bar, it's hidden by default
         this._dropdownBox = new Searchbar.Dropdown();
         this._overlayLayout.add(this._dropdownBox.actor,
-            Clutter.BinAlignment.CENTER, Clutter.BinAlignment.START);
+            Clutter.BinAlignment.CENTER, Clutter.BinAlignment.FIXED);
+        this._dropdownBox.actor.add_constraint(new Clutter.BindConstraint({ source: this._toolbar.toolbarActor,
+                                                                            coordinate: Clutter.BindCoordinate.Y }));
 
         // create the OSD toolbar for selected items, it's hidden by default
         this._selectionToolbar = new Selections.SelectionToolbar();

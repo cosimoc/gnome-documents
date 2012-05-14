@@ -334,5 +334,17 @@ OverviewToolbar.prototype = {
         this.layout.pack_start = true;
         this.layout.pack(this.searchbar.actor, false, true, false,
                          Clutter.BoxAlignment.CENTER, Clutter.BoxAlignment.START);
+    },
+
+    _onWindowModeChanged: function() {
+        MainToolbar.prototype._onWindowModeChanged.call(this);
+
+        let mode = Global.modeController.getWindowMode();
+
+        if (mode == WindowMode.WindowMode.PREVIEW)
+            this.searchbar.hide();
+        else if (mode == WindowMode.WindowMode.OVERVIEW &&
+                   Global.searchController.getString() != '')
+            this.searchbar.show();
     }
 };
