@@ -34,6 +34,7 @@ const Lang = imports.lang;
 const Mainloop = imports.mainloop;
 
 const Global = imports.global;
+const Searchbar = imports.searchbar;
 const Tweener = imports.util.tweener;
 const WindowMode = imports.windowMode;
 
@@ -55,7 +56,9 @@ MainToolbar.prototype = {
         this.layout = new Clutter.BoxLayout({ vertical: true });
         this.actor = new Clutter.Actor({ layout_manager: this.layout });
 
-        this.layout.pack(new GtkClutter.Actor({ contents: this.widget }),
+        this.toolbarActor = new GtkClutter.Actor({ contents: this.widget });
+
+        this.layout.pack(this.toolbarActor,
                          false, true, false,
                          Clutter.BoxAlignment.CENTER, Clutter.BoxAlignment.START);
 
@@ -289,11 +292,11 @@ MainToolbar.prototype = {
     }
 };
 
-function FullscreenToolbar() {
+function PreviewToolbar() {
     this._init();
 };
 
-FullscreenToolbar.prototype = {
+PreviewToolbar.prototype = {
     __proto__: MainToolbar.prototype,
 
     _init: function() {
@@ -314,5 +317,22 @@ FullscreenToolbar.prototype = {
                          { y: -(this.widget.get_preferred_height()[1]),
                            time: 0.20,
                            transition: 'easeOutQuad' });
+    }
+};
+
+function OverviewToolbar() {
+    this._init();
+};
+
+OverviewToolbar.prototype = {
+    __proto__: MainToolbar.prototype,
+
+    _init: function() {
+        MainToolbar.prototype._init.call(this);
+
+        this.searchbar = new Searchbar.Searchbar();
+        this.layout.pack_start = true;
+        this.layout.pack(this.searchbar.actor, false, true, false,
+                         Clutter.BoxAlignment.CENTER, Clutter.BoxAlignment.START);
     }
 };

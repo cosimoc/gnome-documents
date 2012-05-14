@@ -31,7 +31,6 @@ const Mainloop = imports.mainloop;
 const Config = imports.config;
 const Embed = imports.embed;
 const Global = imports.global;
-const Searchbar = imports.searchbar;
 const Selections = imports.selections;
 const Utils = imports.utils;
 const WindowMode = imports.windowMode;
@@ -103,11 +102,6 @@ MainWindow.prototype = {
 
         stage.add_actor(this._clutterBox);
 
-        // first child: searchbar filling the X axis
-        this._searchbar = new Searchbar.Searchbar();
-        this._clutterBox.add_actor(this._searchbar.actor);
-        this._clutterBoxLayout.set_fill(this._searchbar.actor, true, false);
-
         this._embed = new Embed.ViewEmbed();
         this._clutterBox.add_actor(this._embed.actor);
         this._clutterBoxLayout.set_expand(this._embed.actor, true);
@@ -160,7 +154,7 @@ MainWindow.prototype = {
 
     _onWindowModeChanged: function() {
         if (Global.modeController.getWindowMode() == WindowMode.WindowMode.PREVIEW)
-            this._searchbar.hide();
+            this._embed._toolbar.searchbar.hide();
     },
 
     _onFullscreenChanged: function(controller, fullscreen) {
@@ -209,11 +203,11 @@ MainWindow.prototype = {
         let keyval = event.get_keyval()[1];
 
         if (Utils.isSearchEvent(event)) {
-            this._searchbar.toggle();
+            this._embed._toolbar.searchbar.toggle();
             return true;
         }
 
-        if (this._searchbar.deliverEvent(event))
+        if (this._embed._toolbar.searchbar.deliverEvent(event))
             return true;
 
         if (Global.selectionController.getSelectionMode() &&

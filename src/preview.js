@@ -202,7 +202,7 @@ PreviewEmbed.prototype = {
                                           factor: 0.95 }));
 
         // create toolbar
-        this._fsToolbar = new MainToolbar.FullscreenToolbar();
+        this._fsToolbar = new MainToolbar.PreviewToolbar();
         this._fsToolbar.setModel(model);
 
         this._layout.add(this._fsToolbar.actor,

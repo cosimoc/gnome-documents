@@ -68,7 +68,7 @@ ViewEmbed.prototype  = {
             Clutter.BinAlignment.FILL, Clutter.BinAlignment.FILL);
 
         // pack the toolbar
-        this._toolbar = new MainToolbar.MainToolbar();
+        this._toolbar = new MainToolbar.OverviewToolbar();
         this._contentsActor.add_actor(this._toolbar.actor);
         this._contentsLayout.set_fill(this._toolbar.actor, true, false);
 
