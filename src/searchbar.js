@@ -460,7 +460,7 @@ Searchbar.prototype = {
     },
 
     _onActiveCollectionChanged: function() {
-        let searchType = Global.sourceManager.getActiveItem();
+        let searchType = Global.searchTypeManager.getActiveItem();
 
         if (Global.searchController.getString() != '' ||
             searchType.id != 'all') {
