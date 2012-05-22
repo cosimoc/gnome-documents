@@ -19,3 +19,25 @@ gd_tracker_gdata_miner_LDADD = \
     $(MINER_LIBS) \
     $(DOCUMENTS_LIBS) \
     $(NULL)
+
+libexec_PROGRAMS += gd-tracker-zpj-miner
+
+gd_tracker_zpj_miner_SOURCES = \
+    miner/zpj-miner-main.c \
+    miner/gd-zpj-miner.c \
+    miner/gd-zpj-miner.h \
+    $(NULL)
+
+gd_tracker_zpj_miner_CFLAGS = \
+    -DG_DISABLE_DEPRECATED \
+    -DGOA_API_IS_SUBJECT_TO_CHANGE \
+    -I$(top_srcdir)/src/lib \
+    $(MINER_CFLAGS) \
+    $(DOCUMENTS_CFLAGS) \
+    $(NULL)
+
+gd_tracker_zpj_miner_LDADD = \
+    libgdprivate-1.0.la  \
+    $(MINER_LIBS) \
+    $(DOCUMENTS_LIBS) \
+    $(NULL)
