@@ -153,10 +153,62 @@ account_miner_job_cleanup_previous (AccountMinerJob *job,
   g_string_free (delete, TRUE);
 }
 
+static gboolean
+account_miner_job_process_entry (AccountMinerJob *job,
+                                 ZpjSkydriveEntry *entry,
+                                 GError **error)
+{
+}
+
+static void
+account_miner_job_traverse_folder (AccountMinerJob *job,
+                                   const gchar *folder_id,
+                                   GError **error)
+{
+  GList *entries, *l;
+
+  entries = zpj_skydrive_list_folder_id (job->service,
+                                         folder_id,
+                                         job->cancellable,
+                                         error);
+  if (*error != NULL)
+    goto out;
+
+  for (l = entries; l != NULL; l = l->next)
+    {
+      ZpjSkydriveEntry *entry = (ZpjSkydriveEntry *) l->data;
+      const gchar *id;
+
+      id = zpj_skydrive_entry_get_id (entry);
+
+      if (ZPJ_IS_SKYDRIVE_FOLDER (entry))
+        {
+          account_miner_job_traverse_folder (job, id, error);
+          if (*error != NULL)
+            goto out;
+        }
+      else if (ZPJ_IS_SKYDRIVE_PHOTO (entry))
+        continue;
+
+      account_miner_job_process_entry (job, entry, error);
+
+      if (*error != NULL)
+        {
+          g_warning ("Unable to process entry %p: %s", l->data, (*error)->message);
+          g_clear_error (error);
+        }
+    }
+
+ out:
+  if (entries != NULL)
+    g_list_free_full (entries, g_object_unref);
+}
+
 static void
 account_miner_job_query_zpj (AccountMinerJob *job,
                              GError **error)
 {
+  account_miner_job_traverse_folder (job, ZPJ_SKYDRIVE_FOLDER_SKYDRIVE, error);
 }
 
 
