@@ -130,3 +130,79 @@ gd_miner_tracker_sparql_connection_ensure_resource (TrackerSparqlConnection *con
   g_clear_object (&cursor);
   return retval;
 }
+
+gboolean
+gd_miner_tracker_sparql_connection_insert_or_replace_triple (TrackerSparqlConnection *connection,
+                                                             GCancellable *cancellable,
+                                                             GError **error,
+                                                             const gchar *graph,
+                                                             const gchar *resource,
+                                                             const gchar *property_name,
+                                                             const gchar *property_value)
+{
+  GString *insert;
+  gchar *graph_str;
+  gboolean retval = TRUE;
+
+  graph_str = _tracker_utils_format_into_graph (graph);
+
+  insert = g_string_new (NULL);
+  g_string_append_printf
+    (insert,
+     "INSERT OR REPLACE %s { <%s> a nie:InformationElement ; %s \"%s\" }",
+     graph_str, resource, property_name, property_value);
+
+  g_debug ("Insert or replace triple: query %s", insert->str);
+
+  tracker_sparql_connection_update (connection, insert->str,
+                                    G_PRIORITY_DEFAULT, cancellable,
+                                    error);
+
+  g_string_free (insert, TRUE);
+
+  if (*error != NULL)
+    retval = FALSE;
+
+  g_free (graph_str);
+
+  return retval;
+}
+
+gboolean
+gd_miner_tracker_sparql_connection_set_triple (TrackerSparqlConnection *connection,
+                                               GCancellable *cancellable,
+                                               GError **error,
+                                               const gchar *graph,
+                                               const gchar *resource,
+                                               const gchar *property_name,
+                                               const gchar *property_value)
+{
+  GString *delete;
+  gboolean retval = TRUE;
+
+  delete = g_string_new (NULL);
+  g_string_append_printf
+    (delete,
+     "DELETE { <%s> %s ?val } WHERE { <%s> %s ?val }", resource,
+     property_name, resource, property_name);
+
+  tracker_sparql_connection_update (connection, delete->str,
+                                    G_PRIORITY_DEFAULT, cancellable,
+                                    error);
+
+  g_string_free (delete, TRUE);
+  if (*error != NULL)
+    {
+      retval = FALSE;
+      goto out;
+    }
+
+  retval =
+    gd_miner_tracker_sparql_connection_insert_or_replace_triple (connection,
+                                                                 cancellable, error,
+                                                                 graph, resource,
+                                                                 property_name, property_value);
+
+ out:
+  return retval;
+}

@@ -35,6 +35,22 @@ gchar *gd_miner_tracker_sparql_connection_ensure_resource (TrackerSparqlConnecti
                                                            const gchar *class,
                                                            ...);
 
+gboolean gd_miner_tracker_sparql_connection_insert_or_replace_triple (TrackerSparqlConnection *connection,
+                                                                      GCancellable *cancellable,
+                                                                      GError **error,
+                                                                      const gchar *graph,
+                                                                      const gchar *resource,
+                                                                      const gchar *property_name,
+                                                                      const gchar *property_value);
+
+gboolean gd_miner_tracker_sparql_connection_set_triple (TrackerSparqlConnection *connection,
+                                                        GCancellable *cancellable,
+                                                        GError **error,
+                                                        const gchar *graph,
+                                                        const gchar *resource,
+                                                        const gchar *property_name,
+                                                        const gchar *property_value);
+
 G_END_DECLS
 
 #endif /* __GD_MINER_TRACKER_H__ */

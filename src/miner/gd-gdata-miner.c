@@ -86,82 +86,6 @@ _tracker_sparql_connection_toggle_favorite (TrackerSparqlConnection *connection,
   return retval;
 }
 
-static gboolean
-_tracker_sparql_connection_insert_or_replace_triple (TrackerSparqlConnection *connection,
-                                                     GCancellable *cancellable,
-                                                     GError **error,
-                                                     const gchar *graph,
-                                                     const gchar *resource,
-                                                     const gchar *property_name,
-                                                     const gchar *property_value)
-{
-  GString *insert;
-  gchar *graph_str;
-  gboolean retval = TRUE;
-
-  graph_str = _tracker_utils_format_into_graph (graph);
-
-  insert = g_string_new (NULL);
-  g_string_append_printf 
-    (insert,
-     "INSERT OR REPLACE %s { <%s> a nie:InformationElement ; %s \"%s\" }",
-     graph_str, resource, property_name, property_value);
-
-  g_debug ("Insert or replace triple: query %s", insert->str);
-
-  tracker_sparql_connection_update (connection, insert->str, 
-                                    G_PRIORITY_DEFAULT, cancellable,
-                                    error);
-
-  g_string_free (insert, TRUE);
-
-  if (*error != NULL)
-    retval = FALSE;
-
-  g_free (graph_str);
-
-  return retval;
-}
-
-static gboolean
-_tracker_sparql_connection_set_triple (TrackerSparqlConnection *connection,
-                                       GCancellable *cancellable,
-                                       GError **error,
-                                       const gchar *graph,
-                                       const gchar *resource,
-                                       const gchar *property_name,
-                                       const gchar *property_value)
-{
-  GString *delete;
-  gboolean retval = TRUE;
-
-  delete = g_string_new (NULL);
-  g_string_append_printf 
-    (delete,
-     "DELETE { <%s> %s ?val } WHERE { <%s> %s ?val }", resource,
-     property_name, resource, property_name);
-
-  tracker_sparql_connection_update (connection, delete->str, 
-                                    G_PRIORITY_DEFAULT, cancellable,
-                                    error);
-
-  g_string_free (delete, TRUE);
-  if (*error != NULL)
-    {
-      retval = FALSE;
-      goto out;
-    }
-
-  retval = 
-    _tracker_sparql_connection_insert_or_replace_triple (connection, 
-                                                         cancellable, error,
-                                                         graph, resource,
-                                                         property_name, property_value);
-
- out:
-  return retval;
-}
-
 static gchar*
 _tracker_utils_ensure_contact_resource (TrackerSparqlConnection *connection,
                                         GCancellable *cancellable,
@@ -428,7 +352,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
 
   datasource_urn = g_strdup_printf ("gd:goa-account:%s", 
                                     goa_account_get_id (job->account));
-  _tracker_sparql_connection_set_triple 
+  gd_miner_tracker_sparql_connection_set_triple
     (job->connection, job->cancellable, error,
      identifier, resource,
      "nie:dataSource", datasource_urn);
@@ -441,7 +365,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
   alternate = gdata_entry_look_up_link (entry, GDATA_LINK_ALTERNATE);
   alternate_uri = gdata_link_get_uri (alternate);
 
-  _tracker_sparql_connection_insert_or_replace_triple
+  gd_miner_tracker_sparql_connection_insert_or_replace_triple
     (job->connection, 
      job->cancellable, error,
      identifier, resource,
@@ -468,7 +392,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
       if (*error != NULL)
         goto out;
 
-      _tracker_sparql_connection_insert_or_replace_triple
+      gd_miner_tracker_sparql_connection_insert_or_replace_triple
         (job->connection,
          job->cancellable, error,
          identifier, resource,
@@ -498,7 +422,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
   if (*error != NULL)
     goto out;
 
-  _tracker_sparql_connection_insert_or_replace_triple
+  gd_miner_tracker_sparql_connection_insert_or_replace_triple
     (job->connection, 
      job->cancellable, error,
      identifier, resource,
@@ -507,7 +431,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
   if (*error != NULL)
     goto out;
 
-  _tracker_sparql_connection_insert_or_replace_triple
+  gd_miner_tracker_sparql_connection_insert_or_replace_triple
     (job->connection, 
      job->cancellable, error,
      identifier, resource,
@@ -531,7 +455,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
       if (*error != NULL)
         goto out;
 
-      _tracker_sparql_connection_insert_or_replace_triple
+      gd_miner_tracker_sparql_connection_insert_or_replace_triple
         (job->connection, 
          job->cancellable, error,
          identifier, resource,
@@ -573,7 +497,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
                                                                  scope_value,
                                                                  "");
 
-      _tracker_sparql_connection_insert_or_replace_triple
+      gd_miner_tracker_sparql_connection_insert_or_replace_triple
         (job->connection,
          job->cancellable, error,
          identifier, resource,
@@ -586,7 +510,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
     }
 
   date = gd_iso8601_from_timestamp (gdata_entry_get_published (entry));
-  _tracker_sparql_connection_insert_or_replace_triple
+  gd_miner_tracker_sparql_connection_insert_or_replace_triple
     (job->connection, 
      job->cancellable, error,
      identifier, resource,
@@ -597,7 +521,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
     goto out;
 
   date = gd_iso8601_from_timestamp (gdata_entry_get_updated (entry));
-  _tracker_sparql_connection_insert_or_replace_triple
+  gd_miner_tracker_sparql_connection_insert_or_replace_triple
     (job->connection, 
      job->cancellable, error,
      identifier, resource,
