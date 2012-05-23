@@ -1,3 +1,33 @@
+pkglib_LTLIBRARIES += libgdminer-1.0.la
+
+gdminer_source_h = \
+    miner/gd-miner-tracker.h \
+    $(NULL)
+
+gdminer_source_c = \
+    miner/gd-miner-tracker.c \
+    $(NULL)
+
+libgdminer_1_0_la_CPPFLAGS = \
+    -DG_LOG_DOMAIN=\"Gdminer\" \
+    -DG_DISABLE_DEPRECATED \
+    -DGOA_API_IS_SUBJECT_TO_CHANGE \
+    $(DOCUMENTS_CFLAGS) \
+    $(NULL)
+
+libgdminer_1_0_la_LIBADD = \
+    $(DOCUMENTS_LIBS) \
+    $(NULL)
+
+libgdminer_1_0_la_LDFLAGS = \
+    -avoid-version \
+    $(NULL)
+
+libgdminer_1_0_la_SOURCES = \
+    $(gdminer_source_h) \
+    $(gdminer_source_c) \
+    $(NULL)
+
 libexec_PROGRAMS += gd-tracker-gdata-miner
 
 gd_tracker_gdata_miner_SOURCES = \
@@ -15,6 +45,7 @@ gd_tracker_gdata_miner_CFLAGS = \
     $(NULL)
 
 gd_tracker_gdata_miner_LDADD = \
+    libgdminer-1.0.la  \
     libgdprivate-1.0.la  \
     $(MINER_LIBS) \
     $(DOCUMENTS_LIBS) \
@@ -37,6 +68,7 @@ gd_tracker_zpj_miner_CFLAGS = \
     $(NULL)
 
 gd_tracker_zpj_miner_LDADD = \
+    libgdminer-1.0.la  \
     libgdprivate-1.0.la  \
     $(MINER_LIBS) \
     $(DOCUMENTS_LIBS) \

@@ -1,0 +1,132 @@
+/*
+ * Copyright (c) 2011, 2012 Red Hat, Inc.
+ *
+ * Gnome Documents is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * Gnome Documents is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with Gnome Documents; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Author: Cosimo Cecchi <cosimoc@redhat.com>
+ *
+ */
+
+#include <glib.h>
+
+#include "gd-miner-tracker.h"
+
+static gchar *
+_tracker_utils_format_into_graph (const gchar *graph)
+{
+  return (graph != NULL) ? g_strdup_printf ("INTO <%s> ", graph) : g_strdup ("");
+}
+
+gchar *
+gd_miner_tracker_sparql_connection_ensure_resource (TrackerSparqlConnection *connection,
+                                                    GCancellable *cancellable,
+                                                    GError **error,
+                                                    const gchar *graph,
+                                                    const gchar *identifier,
+                                                    const gchar *class,
+                                                    ...)
+{
+  GString *select, *insert, *inner;
+  va_list args;
+  const gchar *arg;
+  TrackerSparqlCursor *cursor;
+  gboolean res;
+  gchar *retval = NULL;
+  gchar *graph_str;
+  GVariant *insert_res;
+  GVariantIter *iter;
+  gchar *key = NULL, *val = NULL;
+
+  /* build the inner query with all the classes */
+  va_start (args, class);
+  inner = g_string_new (NULL);
+
+  for (arg = class; arg != NULL; arg = va_arg (args, const gchar *))
+    g_string_append_printf (inner, " a %s; ", arg);
+
+  g_string_append_printf (inner, "nao:identifier \"%s\"", identifier);
+
+  va_end (args);
+
+  /* query if such a resource is already in the DB */
+  select = g_string_new (NULL);
+  g_string_append_printf (select,
+                          "SELECT ?urn WHERE { ?urn %s }", inner->str);
+
+  cursor = tracker_sparql_connection_query (connection,
+                                            select->str,
+                                            cancellable, error);
+
+  g_string_free (select, TRUE);
+
+  if (*error != NULL)
+    goto out;
+
+  res = tracker_sparql_cursor_next (cursor, cancellable, error);
+
+  if (*error != NULL)
+    goto out;
+
+  if (res)
+    {
+      /* return the found resource */
+      retval = g_strdup (tracker_sparql_cursor_get_string (cursor, 0, NULL));
+      g_debug ("Found resource in the store: %s", retval);
+      goto out;
+    }
+
+  /* not found, create the resource */
+  insert = g_string_new (NULL);
+  graph_str = _tracker_utils_format_into_graph (graph);
+
+  g_string_append_printf (insert, "INSERT %s { _:res %s }",
+                          graph_str, inner->str);
+  g_free (graph_str);
+  g_string_free (inner, TRUE);
+
+  insert_res =
+    tracker_sparql_connection_update_blank (connection, insert->str,
+                                            G_PRIORITY_DEFAULT, NULL, error);
+
+  g_string_free (insert, TRUE);
+
+  if (*error != NULL)
+    goto out;
+
+  /* the result is an "aaa{ss}" variant */
+  g_variant_get (insert_res, "aaa{ss}", &iter);
+  g_variant_iter_next (iter, "aa{ss}", &iter);
+  g_variant_iter_next (iter, "a{ss}", &iter);
+  g_variant_iter_next (iter, "{ss}", &key, &val);
+
+  g_variant_iter_free (iter);
+  g_variant_unref (insert_res);
+
+  if (g_strcmp0 (key, "res") == 0)
+    {
+      retval = val;
+    }
+  else
+    {
+      g_free (val);
+      goto out;
+    }
+
+  g_debug ("Created a new resource: %s", retval);
+
+ out:
+  g_clear_object (&cursor);
+  return retval;
+}

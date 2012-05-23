@@ -25,6 +25,7 @@
 
 #include "gd-gdata-goa-authorizer.h"
 #include "gd-gdata-miner.h"
+#include "gd-miner-tracker.h"
 #include "gd-utils.h"
 
 #define MINER_IDENTIFIER "gd:gdata:miner:86ec9bc9-c242-427f-aa19-77b5a2c9b6f0"
@@ -251,107 +252,6 @@ _tracker_utils_ensure_contact_resource (TrackerSparqlConnection *connection,
   return retval;
 }
 
-static gchar*
-_tracker_sparql_connection_ensure_resource (TrackerSparqlConnection *connection,
-                                            GCancellable *cancellable,
-                                            GError **error,
-                                            const gchar *graph,
-                                            const gchar *identifier,
-                                            const gchar *class,
-                                            ...)
-{
-  GString *select, *insert, *inner;
-  va_list args;
-  const gchar *arg;
-  TrackerSparqlCursor *cursor;
-  gboolean res;
-  gchar *retval = NULL;
-  gchar *graph_str;
-  GVariant *insert_res;
-  GVariantIter *iter;
-  gchar *key = NULL, *val = NULL;
-
-  /* build the inner query with all the classes */
-  va_start (args, class);
-  inner = g_string_new (NULL);
-
-  for (arg = class; arg != NULL; arg = va_arg (args, const gchar *))
-    g_string_append_printf (inner, " a %s; ", arg);
-
-  g_string_append_printf (inner, "nao:identifier \"%s\"", identifier);
-
-  va_end (args);
-
-  /* query if such a resource is already in the DB */
-  select = g_string_new (NULL);
-  g_string_append_printf (select, 
-                          "SELECT ?urn WHERE { ?urn %s }", inner->str);
-
-  cursor = tracker_sparql_connection_query (connection,
-                                            select->str,
-                                            cancellable, error);
-
-  g_string_free (select, TRUE);
-
-  if (*error != NULL)
-    goto out;
-
-  res = tracker_sparql_cursor_next (cursor, cancellable, error);
-
-  if (*error != NULL)
-    goto out;
-
-  if (res)
-    {
-      /* return the found resource */
-      retval = g_strdup (tracker_sparql_cursor_get_string (cursor, 0, NULL));
-      g_debug ("Found resource in the store: %s", retval);
-      goto out;
-    }
-
-  /* not found, create the resource */
-  insert = g_string_new (NULL);
-  graph_str = _tracker_utils_format_into_graph (graph);
-
-  g_string_append_printf (insert, "INSERT %s { _:res %s }", 
-                          graph_str, inner->str);
-  g_free (graph_str);
-  g_string_free (inner, TRUE);
-
-  insert_res = 
-    tracker_sparql_connection_update_blank (connection, insert->str,
-                                            G_PRIORITY_DEFAULT, NULL, error);
-
-  g_string_free (insert, TRUE);
-
-  if (*error != NULL)
-    goto out;
-
-  /* the result is an "aaa{ss}" variant */
-  g_variant_get (insert_res, "aaa{ss}", &iter);
-  g_variant_iter_next (iter, "aa{ss}", &iter);
-  g_variant_iter_next (iter, "a{ss}", &iter);
-  g_variant_iter_next (iter, "{ss}", &key, &val);
-
-  g_variant_iter_free (iter);
-  g_variant_unref (insert_res);
-
-  if (g_strcmp0 (key, "res") == 0)
-    {
-      retval = val;
-    }
-  else
-    {
-      g_free (val);
-      goto out;
-    }
-
-  g_debug ("Created a new resource: %s", retval);
-
- out:
-  g_clear_object (&cursor);
-  return retval;
-}
 
 typedef struct {
   GdGDataMiner *self;
@@ -517,7 +417,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
   else if (GDATA_IS_DOCUMENTS_FOLDER (doc_entry))
     class = "nfo:DataContainer";
  
-  resource = _tracker_sparql_connection_ensure_resource
+  resource = gd_miner_tracker_sparql_connection_ensure_resource
     (job->connection, 
      job->cancellable, error,
      resource_url, identifier,
@@ -559,7 +459,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
       parent_resource_id = 
         g_strdup_printf ("gd:collection:%s", gdata_link_get_uri (parent));
 
-      parent_resource_urn = _tracker_sparql_connection_ensure_resource
+      parent_resource_urn = gd_miner_tracker_sparql_connection_ensure_resource
         (job->connection, job->cancellable, error,
          NULL, parent_resource_id,
          "nfo:RemoteDataObject", "nfo:DataContainer", NULL);
