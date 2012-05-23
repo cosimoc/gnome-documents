@@ -24,6 +24,7 @@
 #include <unistd.h>
 
 #include "gd-zpj-miner.h"
+#include "gd-miner-tracker.h"
 #include "gd-utils.h"
 
 #define MINER_IDENTIFIER "gd:zpj:miner:30058620-777c-47a3-a19c-a6cdf4a315c4"
@@ -158,6 +159,74 @@ account_miner_job_process_entry (AccountMinerJob *job,
                                  ZpjSkydriveEntry *entry,
                                  GError **error)
 {
+  GDateTime *updated_time;
+  gchar *resource = NULL;
+  gchar *date, *datasource_urn, *identifier;
+  const gchar *class = NULL, *id;
+
+  id = zpj_skydrive_entry_get_id (entry);
+
+  identifier = g_strdup_printf ("%swindows-live:skydrive:%s",
+                                ZPJ_IS_SKYDRIVE_FOLDER (entry) ? "gd:collection:" : "",
+                                id);
+
+  /* remove from the list of the previous resources */
+  g_hash_table_remove (job->previous_resources, identifier);
+
+  if (ZPJ_IS_SKYDRIVE_FILE (entry))
+    class = "nfo:Document";
+  else if (ZPJ_IS_SKYDRIVE_FOLDER (entry))
+    class = "nfo:DataContainer";
+
+  resource = gd_miner_tracker_sparql_connection_ensure_resource
+    (job->connection,
+     job->cancellable, error,
+     identifier, identifier,
+     "nfo:RemoteDataObject", class, NULL);
+
+  if (*error != NULL)
+    goto out;
+
+  datasource_urn = g_strdup_printf ("gd:goa-account:%s",
+                                    goa_account_get_id (job->account));
+  gd_miner_tracker_sparql_connection_set_triple
+     (job->connection, job->cancellable, error,
+      identifier, resource,
+      "nie:dataSource", datasource_urn);
+  g_free (datasource_urn);
+
+  if (*error != NULL)
+    goto out;
+
+  gd_miner_tracker_sparql_connection_insert_or_replace_triple
+    (job->connection,
+     job->cancellable, error,
+     identifier, resource,
+     "nie:description", zpj_skydrive_entry_get_description (entry));
+
+  if (*error != NULL)
+    goto out;
+
+  updated_time = zpj_skydrive_entry_get_updated_time (entry);
+  date = gd_iso8601_from_timestamp (g_date_time_to_unix (updated_time));
+  gd_miner_tracker_sparql_connection_insert_or_replace_triple
+    (job->connection,
+     job->cancellable, error,
+     identifier, resource,
+     "nie:contentLastModified", date);
+  g_free (date);
+
+  if (*error != NULL)
+    goto out;
+
+ out:
+  g_free (resource);
+  g_free (identifier);
+
+  if (*error != NULL)
+    return FALSE;
+
+  return TRUE;
 }
 
 static void
