@@ -198,6 +198,33 @@ account_miner_job_process_entry (AccountMinerJob *job,
   if (*error != NULL)
     goto out;
 
+  if (ZPJ_IS_SKYDRIVE_FILE (entry))
+    {
+      gchar *parent_resource_urn, *parent_identifier;
+      const gchar *parent_id;
+
+      parent_id = zpj_skydrive_entry_get_parent_id (entry);
+      parent_identifier = g_strconcat ("gd:collection:windows-live:skydrive:", parent_id, NULL);
+      parent_resource_urn = gd_miner_tracker_sparql_connection_ensure_resource
+        (job->connection, job->cancellable, error,
+         NULL, parent_identifier,
+         "nfo:RemoteDataObject", "nfo:DataContainer", NULL);
+      g_free (parent_identifier);
+
+      if (*error != NULL)
+        goto out;
+
+      gd_miner_tracker_sparql_connection_insert_or_replace_triple
+        (job->connection,
+         job->cancellable, error,
+         identifier, resource,
+         "nie:isPartOf", parent_resource_urn);
+      g_free (parent_resource_urn);
+
+      if (*error != NULL)
+        goto out;
+    }
+
   gd_miner_tracker_sparql_connection_insert_or_replace_triple
     (job->connection,
      job->cancellable, error,
