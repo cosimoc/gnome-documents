@@ -159,7 +159,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
                                  ZpjSkydriveEntry *entry,
                                  GError **error)
 {
-  GDateTime *updated_time;
+  GDateTime *created_time, *updated_time;
   gchar *resource = NULL;
   gchar *date, *datasource_urn, *identifier;
   const gchar *class = NULL, *id;
@@ -203,6 +203,18 @@ account_miner_job_process_entry (AccountMinerJob *job,
      job->cancellable, error,
      identifier, resource,
      "nie:description", zpj_skydrive_entry_get_description (entry));
+
+  if (*error != NULL)
+    goto out;
+
+  created_time = zpj_skydrive_entry_get_created_time (entry);
+  date = gd_iso8601_from_timestamp (g_date_time_to_unix (created_time));
+  gd_miner_tracker_sparql_connection_insert_or_replace_triple
+    (job->connection,
+     job->cancellable, error,
+     identifier, resource,
+     "nie:contentCreated", date);
+  g_free (date);
 
   if (*error != NULL)
     goto out;
