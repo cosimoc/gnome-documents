@@ -52,6 +52,7 @@ typedef struct {
   GCancellable *cancellable;
 
   GHashTable *previous_resources;
+  gchar *datasource_urn;
 } AccountMinerJob;
 
 static void
@@ -77,6 +78,7 @@ account_miner_job_free (AccountMinerJob *job)
   g_clear_object (&job->async_result);
 
   g_hash_table_unref (job->previous_resources);
+  g_free (job->datasource_urn);
 
   g_slice_free (AccountMinerJob, job);
 }
@@ -113,6 +115,9 @@ account_miner_job_new (GdZpjMiner *self,
   /* the service takes ownership of the authorizer */
   g_object_unref (authorizer);
 
+  retval->datasource_urn = g_strconcat ("gd:goa-account:",
+                                        goa_account_get_id (retval->account),
+                                        NULL);
   return retval;
 }
 
@@ -161,7 +166,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
 {
   GDateTime *created_time, *updated_time;
   gchar *resource = NULL;
-  gchar *date, *datasource_urn, *identifier;
+  gchar *date, *identifier;
   const gchar *class = NULL, *id;
 
   id = zpj_skydrive_entry_get_id (entry);
@@ -181,19 +186,16 @@ account_miner_job_process_entry (AccountMinerJob *job,
   resource = gd_miner_tracker_sparql_connection_ensure_resource
     (job->connection,
      job->cancellable, error,
-     identifier, identifier,
+     job->datasource_urn, identifier,
      "nfo:RemoteDataObject", class, NULL);
 
   if (*error != NULL)
     goto out;
 
-  datasource_urn = g_strdup_printf ("gd:goa-account:%s",
-                                    goa_account_get_id (job->account));
   gd_miner_tracker_sparql_connection_set_triple
      (job->connection, job->cancellable, error,
-      identifier, resource,
-      "nie:dataSource", datasource_urn);
-  g_free (datasource_urn);
+      job->datasource_urn, resource,
+      "nie:dataSource", job->datasource_urn);
 
   if (*error != NULL)
     goto out;
@@ -207,7 +209,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
       parent_identifier = g_strconcat ("gd:collection:windows-live:skydrive:", parent_id, NULL);
       parent_resource_urn = gd_miner_tracker_sparql_connection_ensure_resource
         (job->connection, job->cancellable, error,
-         NULL, parent_identifier,
+         job->datasource_urn, parent_identifier,
          "nfo:RemoteDataObject", "nfo:DataContainer", NULL);
       g_free (parent_identifier);
 
@@ -217,7 +219,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
       gd_miner_tracker_sparql_connection_insert_or_replace_triple
         (job->connection,
          job->cancellable, error,
-         identifier, resource,
+         job->datasource_urn, resource,
          "nie:isPartOf", parent_resource_urn);
       g_free (parent_resource_urn);
 
@@ -228,7 +230,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
   gd_miner_tracker_sparql_connection_insert_or_replace_triple
     (job->connection,
      job->cancellable, error,
-     identifier, resource,
+     job->datasource_urn, resource,
      "nie:description", zpj_skydrive_entry_get_description (entry));
 
   if (*error != NULL)
@@ -239,7 +241,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
   gd_miner_tracker_sparql_connection_insert_or_replace_triple
     (job->connection,
      job->cancellable, error,
-     identifier, resource,
+     job->datasource_urn, resource,
      "nie:contentCreated", date);
   g_free (date);
 
@@ -251,7 +253,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
   gd_miner_tracker_sparql_connection_insert_or_replace_triple
     (job->connection,
      job->cancellable, error,
-     identifier, resource,
+     job->datasource_urn, resource,
      "nie:contentLastModified", date);
   g_free (date);
 
@@ -316,7 +318,9 @@ static void
 account_miner_job_query_zpj (AccountMinerJob *job,
                              GError **error)
 {
-  account_miner_job_traverse_folder (job, ZPJ_SKYDRIVE_FOLDER_SKYDRIVE, error);
+  account_miner_job_traverse_folder (job,
+                                     ZPJ_SKYDRIVE_FOLDER_SKYDRIVE,
+                                     error);
 }
 
 
@@ -359,8 +363,12 @@ account_miner_job_ensure_datasource (AccountMinerJob *job,
 
   datasource_insert = g_string_new (NULL);
   g_string_append_printf (datasource_insert,
-                          "INSERT OR REPLACE { <gd:goa-account:%s> a nie:DataSource ; nao:identifier \"%s\" }",
-                          goa_account_get_id (job->account), MINER_IDENTIFIER);
+                          "INSERT OR REPLACE INTO <%s> {"
+                          "  <%s> a nie:DataSource ; nao:identifier \"%s\""
+                          "}",
+                          job->datasource_urn,
+                          job->datasource_urn,
+                          MINER_IDENTIFIER);
 
   tracker_sparql_connection_update (job->connection,
                                     datasource_insert->str,
