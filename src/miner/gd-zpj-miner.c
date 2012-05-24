@@ -556,80 +556,44 @@ static void
 cleanup_job_do_cleanup (CleanupJob *job)
 {
   GdZpjMiner *self = job->self;
-  GString *select, *update;
-  gboolean append_union = FALSE;
   GList *l;
-  TrackerSparqlCursor *cursor;
+  GString *update;
   GError *error = NULL;
-  const gchar *resource;
 
   if (job->old_datasources == NULL)
     return;
 
   update = g_string_new (NULL);
-  g_string_append (update, "DELETE { ");
-
-  /* select all documents from the datasources we want to remove */
-  select = g_string_new (NULL);
-  g_string_append (select, "SELECT ?urn WHERE { ");
 
   for (l = job->old_datasources; l != NULL; l = l->next)
     {
+      const gchar *resource;
+
       resource = l->data;
       g_debug ("Cleaning up old datasource %s", resource);
 
-      if (append_union)
-        g_string_append (select, " UNION ");
-      else
-        append_union = TRUE;
-
-      g_string_append_printf (select, "{ ?urn nie:dataSource \"%s\" }", resource);
-
-      /* also append the datasource itself to the list of resources to delete */
-      g_string_append_printf (update, "<%s> a rdfs:Resource . ", resource);
+      g_string_append_printf (update,
+                              "DELETE {"
+                              "  ?u a rdfs:Resource"
+                              "} WHERE {"
+                              "  GRAPH <%s> {"
+                              "    ?u a rdfs:Resource"
+                              "  }"
+                              "}",
+                              resource);
     }
 
-  g_string_append (select, " }");
-
-  cursor = tracker_sparql_connection_query (self->priv->connection,
-                                            select->str,
-                                            self->priv->cancellable,
-                                            &error);
-
-  g_string_free (select, TRUE);
-
-  if (error != NULL)
-    {
-      g_printerr ("Error while cleaning up old accounts: %s\n", error->message);
-      return;
-    }
-
-  /* gather all the documents we want to remove */
-  while (tracker_sparql_cursor_next (cursor, self->priv->cancellable, NULL))
-    {
-      resource = tracker_sparql_cursor_get_string (cursor, 0, NULL);
-      g_debug ("Cleaning up resource %s belonging to an old datasource", resource);
-
-      if (resource != NULL)
-        g_string_append_printf (update, "<%s> a rdfs:Resource . ", resource);
-    }
-
-  g_string_append (update, " }");
-  g_object_unref (cursor);
-
-  /* actually remove everything we have to remove */
   tracker_sparql_connection_update (self->priv->connection,
                                     update->str,
                                     G_PRIORITY_DEFAULT,
                                     self->priv->cancellable,
                                     &error);
-
   g_string_free (update, TRUE);
 
   if (error != NULL)
     {
       g_printerr ("Error while cleaning up old accounts: %s\n", error->message);
-      return;
+      g_error_free (error);
     }
 }
 
