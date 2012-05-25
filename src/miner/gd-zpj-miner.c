@@ -41,6 +41,103 @@ struct _GdZpjMinerPrivate {
   GList *pending_jobs;
 };
 
+static gchar*
+_tracker_utils_ensure_contact_resource (TrackerSparqlConnection *connection,
+                                        GCancellable *cancellable,
+                                        GError **error,
+                                        const gchar *graph,
+                                        const gchar *fullname)
+{
+  GString *select, *insert;
+  TrackerSparqlCursor *cursor = NULL;
+  gchar *retval = NULL;
+  gboolean res;
+  GVariant *insert_res;
+  GVariantIter *iter;
+  gchar *key = NULL, *val = NULL;
+
+  select = g_string_new (NULL);
+  g_string_append_printf (select,
+                          "SELECT ?urn WHERE {"
+                          "  GRAPH <%s> {"
+                          "    ?urn a nco:Contact ;"
+                          "         nco:fullname \"%s\" ."
+                          "  }"
+                          "}",
+                          graph,
+                          fullname);
+
+  cursor = tracker_sparql_connection_query (connection,
+                                            select->str,
+                                            cancellable, error);
+
+  g_string_free (select, TRUE);
+
+  if (*error != NULL)
+    goto out;
+
+  res = tracker_sparql_cursor_next (cursor, cancellable, error);
+
+  if (*error != NULL)
+    goto out;
+
+  if (res)
+    {
+      /* return the found resource */
+      retval = g_strdup (tracker_sparql_cursor_get_string (cursor, 0, NULL));
+      g_debug ("Found resource in the store: %s", retval);
+      goto out;
+    }
+
+  /* not found, create the resource */
+  insert = g_string_new (NULL);
+
+  g_string_append_printf (insert,
+                          "INSERT {"
+                          "  GRAPH <%s> {"
+                          "    _:res a nco:Contact ;"
+                          "          nco:fullname \"%s\" ."
+                          "  }"
+                          "}",
+                          graph,
+                          fullname);
+
+  insert_res =
+    tracker_sparql_connection_update_blank (connection, insert->str,
+                                            G_PRIORITY_DEFAULT, cancellable, error);
+
+  g_string_free (insert, TRUE);
+
+  if (*error != NULL)
+    goto out;
+
+  /* the result is an "aaa{ss}" variant */
+  g_variant_get (insert_res, "aaa{ss}", &iter);
+  g_variant_iter_next (iter, "aa{ss}", &iter);
+  g_variant_iter_next (iter, "a{ss}", &iter);
+  g_variant_iter_next (iter, "{ss}", &key, &val);
+
+  g_variant_iter_free (iter);
+  g_variant_unref (insert_res);
+
+  if (g_strcmp0 (key, "res") == 0)
+    {
+      retval = val;
+    }
+  else
+    {
+      g_free (val);
+      goto out;
+    }
+
+  g_debug ("Created a new contact resource: %s", retval);
+
+ out:
+  g_clear_object (&cursor);
+
+  return retval;
+}
+
 typedef struct {
   GdZpjMiner *self;
   TrackerSparqlConnection *connection; /* borrowed from GdZpjMiner */
@@ -165,6 +262,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
                                  GError **error)
 {
   GDateTime *created_time, *updated_time;
+  gchar *contact_resource;
   gchar *resource = NULL;
   gchar *date, *identifier;
   const gchar *class = NULL, *id;
@@ -232,6 +330,24 @@ account_miner_job_process_entry (AccountMinerJob *job,
      job->cancellable, error,
      job->datasource_urn, resource,
      "nie:description", zpj_skydrive_entry_get_description (entry));
+
+  if (*error != NULL)
+    goto out;
+
+  contact_resource = _tracker_utils_ensure_contact_resource
+    (job->connection,
+     job->cancellable, error,
+     job->datasource_urn, zpj_skydrive_entry_get_from_name (entry));
+
+  if (*error != NULL)
+    goto out;
+
+  gd_miner_tracker_sparql_connection_insert_or_replace_triple
+    (job->connection,
+     job->cancellable, error,
+     job->datasource_urn, resource,
+     "nco:creator", contact_resource);
+  g_free (contact_resource);
 
   if (*error != NULL)
     goto out;
