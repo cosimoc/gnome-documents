@@ -193,9 +193,9 @@ account_miner_job_process_entry (AccountMinerJob *job,
     goto out;
 
   gd_miner_tracker_sparql_connection_set_triple
-     (job->connection, job->cancellable, error,
-      job->datasource_urn, resource,
-      "nie:dataSource", job->datasource_urn);
+    (job->connection, job->cancellable, error,
+     job->datasource_urn, resource,
+     "nie:dataSource", job->datasource_urn);
 
   if (*error != NULL)
     goto out;
