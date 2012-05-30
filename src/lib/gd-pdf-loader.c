@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Red Hat, Inc.
+ * Copyright (c) 2011, 2012 Red Hat, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by 
@@ -39,10 +39,14 @@ typedef struct {
   gchar *pdf_path;
   GPid unoconv_pid;
 
-  GDataDownloadStream *stream;
+  GInputStream *stream;
+
   GDataEntry *gdata_entry;
   GDataService *gdata_service;
   gchar *document_id;
+
+  ZpjSkydriveEntry *zpj_entry;
+  ZpjSkydrive *zpj_service;
 
   guint64 pdf_cache_mtime;
   guint64 original_file_mtime;
@@ -53,6 +57,7 @@ typedef struct {
 
 static void pdf_load_job_gdata_refresh_cache (PdfLoadJob *job);
 static void pdf_load_job_openoffice_refresh_cache (PdfLoadJob *job);
+static void pdf_load_job_zpj_refresh_cache (PdfLoadJob *job);
 
 /* --------------------------- utils -------------------------------- */
 
@@ -116,6 +121,8 @@ pdf_load_job_free (PdfLoadJob *job)
   g_clear_object (&job->stream);
   g_clear_object (&job->gdata_service);
   g_clear_object (&job->gdata_entry);
+  g_clear_object (&job->zpj_service);
+  g_clear_object (&job->zpj_entry);
 
   g_free (job->uri);
   g_free (job->document_id);
@@ -138,7 +145,8 @@ pdf_load_job_free (PdfLoadJob *job)
 static PdfLoadJob *
 pdf_load_job_new (GSimpleAsyncResult *result,
                   const gchar *uri,
-                  GDataEntry *entry,
+                  GDataEntry *gdata_entry,
+                  ZpjSkydriveEntry *zpj_entry,
                   GCancellable *cancellable)
 {
   PdfLoadJob *retval;
@@ -151,8 +159,10 @@ pdf_load_job_new (GSimpleAsyncResult *result,
 
   if (uri != NULL)
     retval->uri = g_strdup (uri);
-  if (entry != NULL)
-    retval->gdata_entry = g_object_ref (entry);
+  if (gdata_entry != NULL)
+    retval->gdata_entry = g_object_ref (gdata_entry);
+  if (zpj_entry != NULL)
+    retval->zpj_entry = g_object_ref (zpj_entry);
   if (cancellable != NULL)
     retval->cancellable = g_object_ref (cancellable);
 
@@ -187,6 +197,8 @@ pdf_load_job_force_refresh_cache (PdfLoadJob *job)
 
   if (job->gdata_entry != NULL)
     pdf_load_job_gdata_refresh_cache (job);
+  if (job->zpj_entry != NULL)
+    pdf_load_job_zpj_refresh_cache (job);
   else
     pdf_load_job_openoffice_refresh_cache (job);
 }
@@ -355,7 +367,34 @@ pdf_load_job_gdata_refresh_cache (PdfLoadJob *job)
     return;
   }
 
-  job->stream = stream;
+  job->stream = G_INPUT_STREAM (stream);
+  pdf_file = g_file_new_for_path (job->pdf_path);
+
+  g_file_replace_async (pdf_file, NULL, FALSE,
+                        G_FILE_CREATE_PRIVATE,
+                        G_PRIORITY_DEFAULT,
+                        job->cancellable, file_replace_ready_cb,
+                        job);
+
+  g_object_unref (pdf_file);
+}
+
+static void
+pdf_load_job_zpj_refresh_cache (PdfLoadJob *job)
+{
+  GInputStream *stream;
+  GError *error = NULL;
+  GFile *pdf_file;
+
+  job->stream = zpj_skydrive_download_file_to_stream (job->zpj_service,
+                                                      ZPJ_SKYDRIVE_FILE (job->zpj_entry),
+                                                      job->cancellable, &error);
+
+  if (error != NULL) {
+    pdf_load_job_complete_error (job, error);
+    return;
+  }
+
   pdf_file = g_file_new_for_path (job->pdf_path);
 
   g_file_replace_async (pdf_file, NULL, FALSE,
@@ -402,6 +441,40 @@ gdata_cache_query_info_ready_cb (GObject *source,
 }
 
 static void
+zpj_cache_query_info_ready_cb (GObject *source,
+                               GAsyncResult *res,
+                               gpointer user_data)
+{
+  PdfLoadJob *job = user_data;
+  GError *error = NULL;
+  GFileInfo *info;
+  guint64 cache_mtime;
+
+  info = g_file_query_info_finish (G_FILE (source), res, &error);
+
+  if (error != NULL) {
+    /* create/invalidate cache */
+    pdf_load_job_zpj_refresh_cache (job);
+    g_error_free (error);
+
+    return;
+  }
+
+  job->pdf_cache_mtime = cache_mtime =
+    g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
+  g_object_unref (info);
+
+  if (job->original_file_mtime != cache_mtime) {
+    pdf_load_job_zpj_refresh_cache (job);
+  } else {
+    job->from_old_cache = TRUE;
+
+    /* load the cached file */
+    pdf_load_job_from_pdf (job);
+  }
+}
+
+static void
 pdf_load_job_from_google_documents (PdfLoadJob *job)
 {
   gchar *tmp_name;
@@ -433,12 +506,62 @@ pdf_load_job_from_google_documents (PdfLoadJob *job)
 }
 
 static void
+pdf_load_job_from_skydrive (PdfLoadJob *job)
+{
+  gchar *tmp_name;
+  gchar *tmp_path, *pdf_path;
+  GDateTime *updated_time;
+  GFile *pdf_file;
+
+  updated_time = zpj_skydrive_entry_get_updated_time (job->zpj_entry);
+  job->original_file_mtime = (guint64) g_date_time_to_unix (updated_time);
+
+  tmp_name = g_strdup_printf ("gnome-documents-%u.pdf",
+                              g_str_hash (zpj_skydrive_entry_get_id (job->zpj_entry)));
+  tmp_path = g_build_filename (g_get_user_cache_dir (), "gnome-documents", NULL);
+  job->pdf_path = pdf_path =
+    g_build_filename (tmp_path, tmp_name, NULL);
+  g_mkdir_with_parents (tmp_path, 0700);
+
+  pdf_file = g_file_new_for_path (pdf_path);
+
+  g_file_query_info_async (pdf_file,
+                           G_FILE_ATTRIBUTE_TIME_MODIFIED,
+                           G_FILE_QUERY_INFO_NONE,
+                           G_PRIORITY_DEFAULT,
+                           job->cancellable,
+                           zpj_cache_query_info_ready_cb,
+                           job);
+
+  g_free (tmp_name);
+  g_free (tmp_path);
+  g_object_unref (pdf_file);
+}
+
+static void
 pdf_load_job_from_gdata_cache (PdfLoadJob *job)
 {
   gchar *tmp_name;
   gchar *tmp_path;
 
   tmp_name = g_strdup_printf ("gnome-documents-%u.pdf", 
+                              g_str_hash (job->document_id));
+  tmp_path = g_build_filename (g_get_user_cache_dir (), "gnome-documents", NULL);
+  job->pdf_path = g_build_filename (tmp_path, tmp_name, NULL);
+
+  pdf_load_job_from_pdf (job);
+
+  g_free (tmp_path);
+  g_free (tmp_name);
+}
+
+static void
+pdf_load_job_from_zpj_cache (PdfLoadJob *job)
+{
+  gchar *tmp_name;
+  gchar *tmp_path;
+
+  tmp_name = g_strdup_printf ("gnome-documents-%u.pdf",
                               g_str_hash (job->document_id));
   tmp_path = g_build_filename (g_get_user_cache_dir (), "gnome-documents", NULL);
   job->pdf_path = g_build_filename (tmp_path, tmp_name, NULL);
@@ -679,10 +802,17 @@ static void
 pdf_load_job_from_regular_file (PdfLoadJob *job)
 {
   GFile *file;
+  const gchar *zpj_prefix = "windows-live:skydrive:";
 
   if (g_str_has_prefix (job->uri, "https://docs.google.com")) {
     job->document_id = document_id_from_entry_id (job->uri);
     pdf_load_job_from_gdata_cache (job);
+    return;
+  }
+
+  if (g_str_has_prefix (job->uri, zpj_prefix)) {
+    job->document_id = g_strdup (job->uri + strlen (zpj_prefix));
+    pdf_load_job_from_zpj_cache (job);
     return;
   }
 
@@ -703,6 +833,8 @@ pdf_load_job_start (PdfLoadJob *job)
 {
   if (job->gdata_entry != NULL)
     pdf_load_job_from_google_documents (job);
+  else if (job->zpj_entry != NULL)
+    pdf_load_job_from_skydrive (job);
   else
     pdf_load_job_from_regular_file (job);
 }
@@ -719,7 +851,7 @@ gd_pdf_loader_load_uri_async (const gchar *uri,
   result = g_simple_async_result_new (NULL, callback, user_data,
                                       gd_pdf_loader_load_uri_async);
 
-  job = pdf_load_job_new (result, uri, NULL, cancellable);
+  job = pdf_load_job_new (result, uri, NULL, NULL, cancellable);
 
   pdf_load_job_start (job);
 
@@ -748,19 +880,19 @@ gd_pdf_loader_load_uri_finish (GAsyncResult *res,
 
 
 void
-gd_pdf_loader_load_entry_async (GDataEntry *entry,
-                                GDataDocumentsService *service,
-                                GCancellable *cancellable,
-                                GAsyncReadyCallback callback,
-                                gpointer user_data)
+gd_pdf_loader_load_gdata_entry_async (GDataEntry *entry,
+                                      GDataDocumentsService *service,
+                                      GCancellable *cancellable,
+                                      GAsyncReadyCallback callback,
+                                      gpointer user_data)
 {
   PdfLoadJob *job;
   GSimpleAsyncResult *result;
 
   result = g_simple_async_result_new (NULL, callback, user_data,
-                                      gd_pdf_loader_load_entry_async);
+                                      gd_pdf_loader_load_gdata_entry_async);
 
-  job = pdf_load_job_new (result, NULL, entry, cancellable);
+  job = pdf_load_job_new (result, NULL, entry, NULL, cancellable);
   job->gdata_service = g_object_ref (service);
 
   pdf_load_job_start (job);
@@ -769,15 +901,57 @@ gd_pdf_loader_load_entry_async (GDataEntry *entry,
 }
 
 /**
- * gd_pdf_loader_load_entry_finish:
+ * gd_pdf_loader_load_gdata_entry_finish:
  * @res:
  * @error: (allow-none) (out):
  *
  * Returns: (transfer full):
  */
 EvDocument *
-gd_pdf_loader_load_entry_finish (GAsyncResult *res,
-                                 GError **error)
+gd_pdf_loader_load_gdata_entry_finish (GAsyncResult *res,
+                                       GError **error)
+{
+  EvDocument *retval;
+
+  if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (res), error))
+    return NULL;
+
+  retval = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (res));
+  return retval;
+}
+
+
+void
+gd_pdf_loader_load_zpj_entry_async (ZpjSkydriveEntry *entry,
+                                    ZpjSkydrive *service,
+                                    GCancellable *cancellable,
+                                    GAsyncReadyCallback callback,
+                                    gpointer user_data)
+{
+  PdfLoadJob *job;
+  GSimpleAsyncResult *result;
+
+  result = g_simple_async_result_new (NULL, callback, user_data,
+                                      gd_pdf_loader_load_zpj_entry_async);
+
+  job = pdf_load_job_new (result, NULL, NULL, entry, cancellable);
+  job->zpj_service = g_object_ref (service);
+
+  pdf_load_job_start (job);
+
+  g_object_unref (result);
+}
+
+/**
+ * gd_pdf_loader_load_zpj_entry_finish:
+ * @res:
+ * @error: (allow-none) (out):
+ *
+ * Returns: (transfer full):
+ */
+EvDocument *
+gd_pdf_loader_load_zpj_entry_finish (GAsyncResult *res,
+                                     GError **error)
 {
   EvDocument *retval;
 

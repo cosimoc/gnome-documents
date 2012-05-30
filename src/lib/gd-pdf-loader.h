@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Red Hat, Inc.
+ * Copyright (c) 2011, 2012 Red Hat, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by 
@@ -26,6 +26,7 @@
 #include <gio/gio.h>
 #include <evince-document.h>
 #include <gdata/gdata.h>
+#include <zpj/zpj.h>
 
 G_BEGIN_DECLS
 
@@ -36,13 +37,21 @@ void gd_pdf_loader_load_uri_async (const gchar *uri,
 EvDocument *gd_pdf_loader_load_uri_finish (GAsyncResult *res,
                                            GError **error);
 
-void gd_pdf_loader_load_entry_async (GDataEntry *entry,
-                                     GDataDocumentsService *service,
-                                     GCancellable *cancellable,
-                                     GAsyncReadyCallback callback,
-                                     gpointer user_data);
-EvDocument *gd_pdf_loader_load_entry_finish (GAsyncResult *res,
-                                             GError **error);
+void gd_pdf_loader_load_gdata_entry_async (GDataEntry *entry,
+                                           GDataDocumentsService *service,
+                                           GCancellable *cancellable,
+                                           GAsyncReadyCallback callback,
+                                           gpointer user_data);
+EvDocument *gd_pdf_loader_load_gdata_entry_finish (GAsyncResult *res,
+                                                   GError **error);
+
+void gd_pdf_loader_load_zpj_entry_async (ZpjSkydriveEntry *entry,
+                                         ZpjSkydrive *service,
+                                         GCancellable *cancellable,
+                                         GAsyncReadyCallback callback,
+                                         gpointer user_data);
+EvDocument *gd_pdf_loader_load_zpj_entry_finish (GAsyncResult *res,
+                                                 GError **error);
 
 G_END_DECLS
 

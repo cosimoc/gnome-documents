@@ -27,6 +27,7 @@ const GData = imports.gi.GData;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
+const Zpj = imports.gi.Zpj;
 const _ = imports.gettext.gettext;
 
 const Lang = imports.lang;
@@ -716,11 +717,11 @@ const GoogleDocument = new Lang.Class({
                     return;
                 }
 
-                Gd.pdf_loader_load_entry_async
+                Gd.pdf_loader_load_gdata_entry_async
                     (entry, service, cancellable, Lang.bind(this,
                         function(source, res) {
                             try {
-                                let document = Gd.pdf_loader_load_entry_finish(res);
+                                let document = Gd.pdf_loader_load_gdata_entry_finish(res);
                                 callback(this, document, null);
                             } catch (e) {
                                 callback(this, null, e);

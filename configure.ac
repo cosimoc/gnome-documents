@@ -70,6 +70,7 @@ PKG_CHECK_MODULES(DOCUMENTS,
                   tracker-sparql-0.14 >= $TRACKER_MIN_VERSION
                   goa-1.0 >= $GOA_MIN_VERSION
                   libgdata >= $GDATA_MIN_VERSION
+                  zapojit-0.0
                   oauth)
 
 PKG_CHECK_MODULES(MINER,

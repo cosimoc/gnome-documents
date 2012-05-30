@@ -76,7 +76,8 @@ Gd_1_0_gir_INCLUDES = \
    Goa-1.0 \
    Gtk-3.0 \
    EvinceDocument-3.0 \
-   EvinceView-3.0
+   EvinceView-3.0 \
+   Zpj-0.0
 
 Gd_1_0_gir_FILES = \
     $(addprefix $(srcdir)/,$(gdprivate_source_h)) \
