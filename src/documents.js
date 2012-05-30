@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Red Hat, Inc.
+ * Copyright (c) 2011, 2012 Red Hat, Inc.
  *
  * Gnome Documents is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by the
@@ -796,6 +796,105 @@ const GoogleDocument = new Lang.Class({
     }
 });
 
+function SkydriveDocument(cursor) {
+    this._init(cursor);
+}
+
+SkydriveDocument.prototype = {
+    __proto__: DocCommon.prototype,
+
+    _init: function(cursor) {
+        this._triedThumbnailing = true;
+        this._failedThumbnailing = true;
+
+        DocCommon.prototype._init.call(this, cursor);
+
+        // overridden
+        this.defaultAppName = _("Skydrive");
+        this.sourceName = _("Skydrive");
+    },
+
+    _createZpjEntry: function(cancellable, callback) {
+        let source = Global.sourceManager.getItemById(this.resourceUrn);
+
+        let authorizer = new Zpj.GoaAuthorizer({ goa_object: source.object });
+        let service = new Zpj.Skydrive({ authorizer: authorizer });
+
+        const zpj_prefix = "windows-live:skydrive:";
+        let zpj_id = this.identifier.substring(zpj_prefix.length);
+
+        service.query_info_from_id_async
+            (zpj_id, cancellable,
+             Lang.bind(this,
+                 function(object, res) {
+                     let entry = null;
+                     let exception = null;
+
+                     try {
+                         entry = object.query_info_from_id_finish(res);
+                     } catch (e) {
+                         exception = e;
+                     }
+
+                     callback(entry, service, exception);
+                 }));
+    },
+
+    load: function(cancellable, callback) {
+        this._createZpjEntry(cancellable, Lang.bind(this,
+            function(entry, service, exception) {
+                if (exception) {
+                    // try loading from the most recent cache, if any
+                    Gd.pdf_loader_load_uri_async(this.identifier, cancellable, Lang.bind(this,
+                        function(source, res) {
+                            try {
+                                let document = Gd.pdf_loader_load_uri_finish(res);
+                                callback(this, document, null);
+                            } catch (e) {
+                                // report the outmost error only
+                                callback(this, null, exception);
+                                return;
+                            }
+                        }));
+
+                    return;
+                }
+
+                Gd.pdf_loader_load_zpj_entry_async
+                    (entry, service, cancellable, Lang.bind(this,
+                        function(source, res) {
+                            try {
+                                let document = Gd.pdf_loader_load_zpj_entry_finish(res);
+                                callback(this, document, null);
+                            } catch (e) {
+                                callback(this, null, e);
+                            }
+                        }));
+            }));
+    },
+
+    updateTypeDescription: function() {
+        let description;
+
+        if (this.rdfType.indexOf('nfo#DataContainer') != -1)
+            description = _("Collection");
+        else
+            description = _("Document");
+
+        this.typeDescription = description;
+    },
+
+    setFavorite: function(favorite) {
+    },
+
+    canTrash: function() {
+        return false;
+    }
+}
+
+function DocumentManager() {
+    this._init();
+}
 
 const DocumentManager = new Lang.Class({
     Name: 'DocumentManager',
