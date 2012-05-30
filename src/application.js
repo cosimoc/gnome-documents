@@ -198,12 +198,12 @@ const Application = new Lang.Class({
         Global.notificationManager = new Notifications.NotificationManager();
 
         // startup a refresh of the gdocs cache
-        this._gdataMiner = new GDataMiner.GDataMiner();
-        this._refreshMinerNow(this._gdataMiner);
+        let gdataMiner = new GDataMiner.GDataMiner();
+        this._refreshMinerNow(gdataMiner);
 
         // startup a refresh of the skydrive cache
-        this._zpjMiner = new ZpjMiner.ZpjMiner();
-        this._refreshMinerNow(this._zpjMiner);
+        let zpjMiner = new ZpjMiner.ZpjMiner();
+        this._refreshMinerNow(zpjMiner);
 
         this._initMenus();
         this._mainWindow = new MainWindow.MainWindow(this.application);
