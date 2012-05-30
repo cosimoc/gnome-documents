@@ -15,12 +15,20 @@ searchprovider_in_files = gnome-documents-search-provider.ini.in
 
 servicedir = $(datadir)/dbus-1/services
 service_DATA = $(service_in_files:.service.in=.service)
-$(service_DATA): $(service_in_files) Makefile
+
+org.gnome.Documents.GDataMiner.service: org.gnome.Documents.GDataMiner.service.in Makefile
 	$(AM_V_GEN)	\
 		[ -d $(@D) ] || $(mkdir_p) $(@D) ; \
 		sed -e "s|\@libexecdir\@|$(libexecdir)|" $< > $@.tmp && mv $@.tmp $@
 
-service_in_files = org.gnome.Documents.GDataMiner.service.in
+org.gnome.Documents.ZpjMiner.service: org.gnome.Documents.ZpjMiner.service.in Makefile
+	$(AM_V_GEN)	\
+		[ -d $(@D) ] || $(mkdir_p) $(@D) ; \
+		sed -e "s|\@libexecdir\@|$(libexecdir)|" $< > $@.tmp && mv $@.tmp $@
+
+service_in_files = \
+    org.gnome.Documents.GDataMiner.service.in \
+    org.gnome.Documents.ZpjMiner.service.in
 
 gsettings_ENUM_NAMESPACE = org.gnome.Documents
 gsettings_ENUM_FILES = \
