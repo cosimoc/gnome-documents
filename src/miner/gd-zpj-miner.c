@@ -300,6 +300,15 @@ account_miner_job_process_entry (AccountMinerJob *job,
   if (*error != NULL)
     goto out;
 
+  gd_miner_tracker_sparql_connection_insert_or_replace_triple
+    (job->connection,
+     job->cancellable, error,
+     job->datasource_urn, resource,
+     "nie:url", identifier);
+
+  if (*error != NULL)
+    goto out;
+
   if (ZPJ_IS_SKYDRIVE_FILE (entry))
     {
       gchar *parent_resource_urn, *parent_identifier;
