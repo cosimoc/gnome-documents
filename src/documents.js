@@ -956,12 +956,19 @@ const DocumentManager = new Lang.Class({
                 (identifier.indexOf('https://docs.google.com') != -1));
     },
 
+    _identifierIsSkydrive: function(identifier) {
+        return (identifier &&
+                (identifier.indexOf('windows-live:skydrive:') != -1));
+    },
+
     createDocumentFromCursor: function(cursor) {
         let identifier = cursor.get_string(Query.QueryColumns.IDENTIFIER)[0];
         let doc;
 
         if (this._identifierIsGoogle(identifier))
             doc = new GoogleDocument(cursor);
+        else if (this._identifierIsSkydrive(identifier))
+            doc = new SkydriveDocument(cursor);
         else
             doc = new LocalDocument(cursor);
 
