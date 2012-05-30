@@ -334,6 +334,15 @@ account_miner_job_process_entry (AccountMinerJob *job,
   if (*error != NULL)
     goto out;
 
+  gd_miner_tracker_sparql_connection_insert_or_replace_triple
+    (job->connection,
+     job->cancellable, error,
+     job->datasource_urn, resource,
+     "nfo:fileName", zpj_skydrive_entry_get_name (entry));
+
+  if (*error != NULL)
+    goto out;
+
   contact_resource = _tracker_utils_ensure_contact_resource
     (job->connection,
      job->cancellable, error,
