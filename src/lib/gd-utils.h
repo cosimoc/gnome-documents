@@ -64,6 +64,8 @@ GdkPixbuf *gd_embed_image_in_frame (GdkPixbuf *source_image,
 
 char *gd_filename_strip_extension (const char * filename_with_extension);
 
+const char *gd_filename_to_rdf_type (const gchar *filename_with_extension);
+
 gboolean gd_time_val_from_iso8601 (const gchar *string,
                                    GTimeVal *timeval);
 gchar *gd_iso8601_from_timestamp (gint64 timestamp);

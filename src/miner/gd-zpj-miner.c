@@ -265,7 +265,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
   gchar *contact_resource;
   gchar *resource = NULL;
   gchar *date, *identifier;
-  const gchar *class = NULL, *id;
+  const gchar *class = NULL, *id, *name;
 
   id = zpj_skydrive_entry_get_id (entry);
 
@@ -276,8 +276,10 @@ account_miner_job_process_entry (AccountMinerJob *job,
   /* remove from the list of the previous resources */
   g_hash_table_remove (job->previous_resources, identifier);
 
+  name = zpj_skydrive_entry_get_name (entry);
+
   if (ZPJ_IS_SKYDRIVE_FILE (entry))
-    class = "nfo:Document";
+    class = gd_filename_to_rdf_type (name);
   else if (ZPJ_IS_SKYDRIVE_FOLDER (entry))
     class = "nfo:DataContainer";
 
@@ -338,7 +340,7 @@ account_miner_job_process_entry (AccountMinerJob *job,
     (job->connection,
      job->cancellable, error,
      job->datasource_urn, resource,
-     "nfo:fileName", zpj_skydrive_entry_get_name (entry));
+     "nfo:fileName", name);
 
   if (*error != NULL)
     goto out;

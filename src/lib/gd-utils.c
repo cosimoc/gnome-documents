@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Red Hat, Inc.
+ * Copyright (c) 2011, 2012 Red Hat, Inc.
  *
  * Gnome Documents is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by the
@@ -395,6 +395,57 @@ gd_filename_strip_extension (const char * filename_with_extension)
 	}
 
 	return filename;
+}
+
+/**
+ * gd_filename_to_rdf_type:
+ * @filename_with_extension:
+ *
+ * Returns: (transfer none):
+ */
+const char *
+gd_filename_to_rdf_type (const gchar *filename_with_extension)
+{
+  const gchar *extension;
+  const gchar *type = NULL;
+
+  g_return_val_if_fail (filename_with_extension != NULL, NULL);
+
+  extension = gd_filename_get_extension_offset (filename_with_extension);
+
+  if (g_strcmp0 (extension, ".txt") == 0)
+    type = "nfo:HtmlDocument";
+
+  else if (g_strcmp0 (extension, ".doc") == 0
+      || g_strcmp0 (extension, ".docm") == 0
+      || g_strcmp0 (extension, ".docx") == 0
+      || g_strcmp0 (extension, ".dot") == 0
+      || g_strcmp0 (extension, ".dotx") == 0
+      || g_strcmp0 (extension, ".epub") == 0
+      || g_strcmp0 (extension, ".pdf") == 0)
+    type = "nfo:PaginatedTextDocument";
+
+  else if (g_strcmp0 (extension, ".pot") == 0
+           || g_strcmp0 (extension, ".potm") == 0
+           || g_strcmp0 (extension, ".potx") == 0
+           || g_strcmp0 (extension, ".pps") == 0
+           || g_strcmp0 (extension, ".ppsm") == 0
+           || g_strcmp0 (extension, ".ppsx") == 0
+           || g_strcmp0 (extension, ".ppt") == 0
+           || g_strcmp0 (extension, ".pptm") == 0
+           || g_strcmp0 (extension, ".pptx") == 0)
+    type = "nfo:Presentation";
+
+  else if (g_strcmp0 (extension, ".txt") == 0)
+    type = "nfo:PlainTextDocument";
+
+  else if (g_strcmp0 (extension, ".xls") == 0
+           || g_strcmp0 (extension, ".xlsb") == 0
+           || g_strcmp0 (extension, ".xlsm") == 0
+           || g_strcmp0 (extension, ".xlsx") == 0)
+    type = "nfo:Spreadsheet";
+
+  return type;
 }
 
 /**
