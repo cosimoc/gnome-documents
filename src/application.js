@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Red Hat, Inc.
+ * Copyright (c) 2011, 2012 Red Hat, Inc.
  *
  * Gnome Documents is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by the
@@ -52,6 +52,7 @@ const TrackerController = imports.trackerController;
 const Tweener = imports.util.tweener;
 const Utils = imports.utils;
 const WindowMode = imports.windowMode;
+const ZpjMiner = imports.zpjMiner;
 
 const MINER_REFRESH_TIMEOUT = 60; /* seconds */
 
@@ -145,16 +146,18 @@ const Application = new Lang.Class({
 	this.application.set_app_menu(menu);
     },
 
-    _refreshMinerNow: function() {
-        this._miner.RefreshDBRemote(DBus.CALL_FLAG_START, Lang.bind(this,
+    _refreshMinerNow: function(miner) {
+        miner.RefreshDBRemote(DBus.CALL_FLAG_START, Lang.bind(this,
             function(res, error) {
                 if (error) {
-                    log('Error updating the GData cache: ' + error.toString());
+                    log('Error updating the cache: ' + error.toString());
                     return;
                 }
 
                 Mainloop.timeout_add_seconds(MINER_REFRESH_TIMEOUT,
-                                             Lang.bind(this, this._refreshMinerNow));
+                                             Lang.bind(this, function() {
+                                                 this._refreshMinerNow(miner)
+                                             }));
             }));
 
         return false;
@@ -195,8 +198,12 @@ const Application = new Lang.Class({
         Global.notificationManager = new Notifications.NotificationManager();
 
         // startup a refresh of the gdocs cache
-        this._miner = new GDataMiner.GDataMiner();
-        this._refreshMinerNow();
+        this._gdataMiner = new GDataMiner.GDataMiner();
+        this._refreshMinerNow(this._gdataMiner);
+
+        // startup a refresh of the skydrive cache
+        this._zpjMiner = new ZpjMiner.ZpjMiner();
+        this._refreshMinerNow(this._zpjMiner);
 
         this._initMenus();
         this._mainWindow = new MainWindow.MainWindow(this.application);
