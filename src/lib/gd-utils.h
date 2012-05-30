@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Red Hat, Inc.
+ * Copyright (c) 2011, 2012 Red Hat, Inc.
  *
  * Gnome Documents is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by the
@@ -63,6 +63,8 @@ GdkPixbuf *gd_embed_image_in_frame (GdkPixbuf *source_image,
                                     GtkBorder *border_width);
 
 char *gd_filename_strip_extension (const char * filename_with_extension);
+
+const char *gd_filename_to_mime_type (const gchar *filename_with_extension);
 
 const char *gd_filename_to_rdf_type (const gchar *filename_with_extension);
 

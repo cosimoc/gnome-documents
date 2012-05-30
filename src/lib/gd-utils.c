@@ -398,6 +398,28 @@ gd_filename_strip_extension (const char * filename_with_extension)
 }
 
 /**
+ * gd_filename_to_mime_type:
+ * @filename_with_extension:
+ *
+ * Returns: (transfer none):
+ */
+const char *
+gd_filename_to_mime_type (const gchar *filename_with_extension)
+{
+  const gchar *extension;
+  const gchar *type = NULL;
+
+  g_return_val_if_fail (filename_with_extension != NULL, NULL);
+
+  extension = gd_filename_get_extension_offset (filename_with_extension);
+
+  if (g_strcmp0 (extension, ".pdf") == 0)
+    type = "application/pdf";
+
+  return type;
+}
+
+/**
  * gd_filename_to_rdf_type:
  * @filename_with_extension:
  *
