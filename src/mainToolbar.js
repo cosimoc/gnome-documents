@@ -232,8 +232,12 @@ MainToolbar.prototype = {
     },
 
     _populateForPreview: function(model) {
+        let iconName =
+            (this.widget.get_direction() == Gtk.TextDirection.RTL) ?
+            'go-next-symbolic' : 'go-previous-symbolic';
+
         let backButton =
-            this.widget.add_button('go-previous-symbolic', _("Back"), true);
+            this.widget.add_button(iconName, _("Back"), true);
         backButton.connect('clicked', Lang.bind(this,
             function() {
                 Global.modeController.setWindowMode(WindowMode.WindowMode.OVERVIEW);
