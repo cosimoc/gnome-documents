@@ -121,6 +121,11 @@ Application.prototype = {
             function() {
                 viewAsAction.state = Global.settings.get_value('view-as');
             }));
+        Global.modeController.connect('window-mode-changed', Lang.bind(this,
+            function() {
+                let mode = Global.modeController.getWindowMode();
+                viewAsAction.set_enabled(mode == WindowMode.WindowMode.OVERVIEW);
+            }));
         this.application.add_action(viewAsAction);
 
 	let menu = new Gio.Menu();
