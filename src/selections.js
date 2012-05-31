@@ -755,6 +755,7 @@ SelectionToolbar.prototype = {
 
         this._toolbarPrint = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'printer-symbolic',
                                                                       pixel_size: 32 })});
+        this._toolbarPrint.set_tooltip_text(_("Print"));
         this._leftBox.add(this._toolbarPrint);
         this._toolbarPrint.connect('clicked', Lang.bind(this, this._onToolbarPrint));
 
