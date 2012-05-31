@@ -109,7 +109,9 @@ Application.prototype = {
             }));
         this.application.add_action(fsAction);
 
-        /* FIXME: use GSettings.create_action() once it's introspectable */
+        /* We can't use GSettings.create_action(), since we want to be able
+         * to control the enabled state of the action ourselves
+         */
         let viewAsAction = Gio.SimpleAction.new_stateful('view-as',
                                                          GLib.VariantType.new('s'),
                                                          Global.settings.get_value('view-as'));
