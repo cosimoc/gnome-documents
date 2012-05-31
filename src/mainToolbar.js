@@ -46,6 +46,7 @@ MainToolbar.prototype = {
     _init: function() {
         this._model = null;
 
+        this._collBackButton = null;
         this._collectionId = 0;
         this._selectionChangedId = 0;
 
@@ -77,15 +78,15 @@ MainToolbar.prototype = {
                                          Lang.bind(this, this._setToolbarTitle));
         this._selectionModeId =
             Global.selectionController.connect('selection-mode-changed',
-                                               Lang.bind(this, this._onSelectionModeChanged));
+                                               Lang.bind(this, this._resetToolbarMode));
         this._windowModeId =
             Global.modeController.connect('window-mode-changed',
-                                          Lang.bind(this, this._onWindowModeChanged));
-        this._onWindowModeChanged();
+                                          Lang.bind(this, this._resetToolbarMode));
+        this._resetToolbarMode();
 
         this.widget.connect('destroy', Lang.bind(this,
             function() {
-                this._onToolbarClear();
+                this._clearStateData();
 
                 if (this._windowModeId != 0) {
                     Global.modeController.disconnect(this._windowModeId);
@@ -117,26 +118,9 @@ MainToolbar.prototype = {
                     this._searchSourceId = 0;
                 }
             }));
-
-        // setup listeners from toolbar actions to window mode changes
-        this.widget.connect('selection-mode-request', Lang.bind(this,
-            function(toolbar, requestMode) {
-                Global.selectionController.setSelectionMode(requestMode);
-            }));
-
-        this.widget.connect('go-back-request', Lang.bind(this,
-            function(toolbar) {
-                let mode = Global.modeController.getWindowMode();
-                if (mode == WindowMode.WindowMode.PREVIEW)
-                    Global.modeController.setWindowMode(WindowMode.WindowMode.OVERVIEW);
-                else
-                    Global.collectionManager.setActiveItem(null);
-            }));
-
-        this.widget.connect('clear-request', Lang.bind(this, this._onToolbarClear));
     },
 
-    _onToolbarClear: function() {
+    _clearStateData: function() {
         this._model = null;
 
         if (this._collectionId != 0) {
@@ -150,72 +134,67 @@ MainToolbar.prototype = {
         }
     },
 
-    _populateForSelectionMode: function() {
-        this.widget.set_mode(Gd.MainToolbarMode.SELECTION);
+    _clearToolbar: function() {
+        this._clearStateData();
 
-        // connect to selection changes while in this mode
-        this._selectionChangedId =
-            Global.selectionController.connect('selection-changed',
-                                               Lang.bind(this, this._setToolbarTitle));
-        this._setToolbarTitle();
-
-        this.widget.show_all();
-    },
-
-    _populateForOverview: function() {
-        this.widget.set_mode(Gd.MainToolbarMode.OVERVIEW);
-
-        // connect to active collection changes while in this mode
-        this._collectionId =
-            Global.collectionManager.connect('active-changed',
-                                             Lang.bind(this, this._onActiveCollectionChanged));
-        this._onActiveCollectionChanged();
-
-        this.widget.show_all();
-    },
-
-    _onActiveCollectionChanged: function() {
-        let item = Global.collectionManager.getActiveItem();
-        this.widget.set_back_visible(item != null);
-
-        this._setToolbarTitle();
-        this.searchbar.hide();
+        this.widget.get_style_context().remove_class('documents-selection-mode');
+        this.widget.reset_style();
+        this.widget.clear();
     },
 
     _setToolbarTitle: function() {
-        let mode = this.widget.get_mode();
+        let windowMode = Global.modeController.getWindowMode();
+        let selectionMode = Global.selectionController.getSelectionMode();
         let activeCollection = Global.collectionManager.getActiveItem();
         let primary = null;
         let detail = null;
 
-        if (mode == Gd.MainToolbarMode.OVERVIEW) {
-            if (activeCollection) {
-                primary = activeCollection.name;
-            } else {
-                let string = Global.searchController.getString();
-
-                if (string == '') {
-                    let searchType = Global.searchTypeManager.getActiveItem();
-                    let searchSource = Global.sourceManager.getActiveItem();
-
-                    if (searchType.id != 'all')
-                        primary = searchType.name;
-                    else
-                        primary = _("New and Recent");
-
-                    if (searchSource.id != 'all')
-                        detail = searchSource.name;
+        if (windowMode == WindowMode.WindowMode.OVERVIEW) {
+            if (!selectionMode) {
+                if (activeCollection) {
+                    primary = activeCollection.name;
                 } else {
-                    let searchMatch = Global.searchMatchManager.getActiveItem();
+                    let string = Global.searchController.getString();
 
-                    primary = _("Results for \"%s\"").format(string);
-                    if (searchMatch.id == 'title')
-                        detail = _("filtered by title");
-                    else if (searchMatch.id == 'author')
-                        detail = _("filtered by author");
+                    if (string == '') {
+                        let searchType = Global.searchTypeManager.getActiveItem();
+                        let searchSource = Global.sourceManager.getActiveItem();
+
+                        if (searchType.id != 'all')
+                            primary = searchType.name;
+                        else
+                            primary = _("New and Recent");
+
+                        if (searchSource.id != 'all')
+                            detail = searchSource.name;
+                    } else {
+                        let searchMatch = Global.searchMatchManager.getActiveItem();
+
+                        primary = _("Results for \"%s\"").format(string);
+                        if (searchMatch.id == 'title')
+                            detail = _("filtered by title");
+                        else if (searchMatch.id == 'author')
+                            detail = _("filtered by author");
+                    }
+                }
+            } else {
+                let length = Global.selectionController.getSelection().length;
+
+                if (length == 0)
+                    detail = _("Click on items to select them");
+                else
+                    detail = Gettext.ngettext("%d selected",
+                                              "%d selected",
+                                              length).format(length);
+
+                if (activeCollection) {
+                    primary = activeCollection.name;
+                } else if (length != 0) {
+                    primary = detail;
+                    detail = null;
                 }
             }
-        } else if (mode == Gd.MainToolbarMode.PREVIEW) {
+        } else if (windowMode == WindowMode.WindowMode.PREVIEW) {
             let doc = Global.documentManager.getActiveItem();
             primary = doc.name;
 
@@ -227,22 +206,6 @@ MainToolbar.prototype = {
 
                 detail = _("%d of %d").format(curPage + 1, totPages);
             }
-        } else if (mode == Gd.MainToolbarMode.SELECTION) {
-            let length = Global.selectionController.getSelection().length;
-
-            if (length == 0)
-                detail = _("Click on items to select them");
-            else
-                detail = Gettext.ngettext("%d selected",
-                                          "%d selected",
-                                          length).format(length);
-
-            if (activeCollection) {
-                primary = activeCollection.name;
-            } else if (length != 0) {
-                primary = detail;
-                detail = null;
-            }
         }
 
         if (detail)
@@ -251,32 +214,82 @@ MainToolbar.prototype = {
         this.widget.set_labels(primary, detail);
     },
 
+    _populateForSelectionMode: function() {
+        this.widget.get_style_context().add_class('documents-selection-mode');
+        this.widget.reset_style();
+
+        let selectionButton =
+            this.widget.add_button(null, _("Done"), false);
+        selectionButton.connect('clicked', Lang.bind(this,
+            function() {
+                Global.selectionController.setSelectionMode(false);
+            }));
+
+        // connect to selection changes while in this mode
+        this._selectionChangedId =
+            Global.selectionController.connect('selection-changed',
+                                               Lang.bind(this, this._setToolbarTitle));
+    },
+
     _populateForPreview: function(model) {
-        this.widget.set_mode(Gd.MainToolbarMode.PREVIEW);
+        let backButton =
+            this.widget.add_button('go-previous-symbolic', _("Back"), true);
+        backButton.connect('clicked', Lang.bind(this,
+            function() {
+                Global.modeController.setWindowMode(WindowMode.WindowMode.OVERVIEW);
+            }));
+    },
+
+    _populateForOverview: function() {
+        let selectionButton =
+            this.widget.add_button('emblem-default-symbolic', _("Select Items"), false);
+        selectionButton.connect('clicked', Lang.bind(this,
+            function() {
+                Global.selectionController.setSelectionMode(true);
+            }));
+
+        // connect to active collection changes while in this mode
+        this._collectionId =
+            Global.collectionManager.connect('active-changed',
+                                             Lang.bind(this, this._onActiveCollectionChanged));
+        this._onActiveCollectionChanged();
+    },
+
+    _onActiveCollectionChanged: function() {
+        let item = Global.collectionManager.getActiveItem();
+
+        if (item && !this._collBackButton) {
+            this._collBackButton =
+                this.widget.add_button('go-previous-symbolic', _("Back"), true);
+            this._collBackButton.connect('clicked', Lang.bind(this,
+                function() {
+                    Global.collectionManager.setActiveItem(null);
+                }));
+        } else if (!item && this._collBackButton) {
+            this._collBackButton.destroy();
+            this._collBackButton = null;
+        }
+
         this._setToolbarTitle();
-
-        this.widget.show_all();
+        this.searchbar.hide();
     },
 
-    _onWindowModeChanged: function() {
-        let mode = Global.modeController.getWindowMode();
+    _resetToolbarMode: function() {
+        this._clearToolbar();
 
-        if (mode == WindowMode.WindowMode.OVERVIEW)
-            this._populateForOverview();
-        else if (mode == WindowMode.WindowMode.PREVIEW)
+        let windowMode = Global.modeController.getWindowMode();
+        if (windowMode == WindowMode.WindowMode.OVERVIEW) {
+            let selectionMode = Global.selectionController.getSelectionMode();
+            if (selectionMode)
+                this._populateForSelectionMode();
+            else
+                this._populateForOverview();
+        } else if (windowMode == WindowMode.WindowMode.PREVIEW) {
             this._populateForPreview();
-    },
+        }
 
-    _onSelectionModeChanged: function() {
-        if (Global.modeController.getWindowMode() != WindowMode.WindowMode.OVERVIEW)
-            return;
-
-        let mode = Global.selectionController.getSelectionMode();
-
-        if (mode)
-            this._populateForSelectionMode();
-        else
-            this._populateForOverview();
+        this._setToolbarTitle();
+        this.widget.show_all();
     },
 
     setModel: function(model) {
