@@ -354,15 +354,15 @@ OverviewToolbar.prototype = {
                          Clutter.BoxAlignment.CENTER, Clutter.BoxAlignment.START);
     },
 
-    _onWindowModeChanged: function() {
-        MainToolbar.prototype._onWindowModeChanged.call(this);
+    _resetToolbarMode: function() {
+        MainToolbar.prototype._resetToolbarMode.call(this);
 
         let mode = Global.modeController.getWindowMode();
 
         if (mode == WindowMode.WindowMode.PREVIEW)
             this.searchbar.hide();
         else if (mode == WindowMode.WindowMode.OVERVIEW &&
-                   Global.searchController.getString() != '')
+                 Global.searchController.getString() != '')
             this.searchbar.show();
     }
 };
