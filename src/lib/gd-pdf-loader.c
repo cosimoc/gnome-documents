@@ -380,16 +380,15 @@ pdf_load_job_gdata_refresh_cache (PdfLoadJob *job)
 }
 
 static void
-pdf_load_job_zpj_refresh_cache (PdfLoadJob *job)
+zpj_download_stream_ready (GObject *source,
+                       GAsyncResult *res,
+                       gpointer user_data)
 {
-  GInputStream *stream;
   GError *error = NULL;
   GFile *pdf_file;
+  PdfLoadJob *job = (PdfLoadJob *) user_data;
 
-  job->stream = zpj_skydrive_download_file_to_stream (job->zpj_service,
-                                                      ZPJ_SKYDRIVE_FILE (job->zpj_entry),
-                                                      job->cancellable, &error);
-
+  job->stream = zpj_skydrive_download_file_to_stream_finish (ZPJ_SKYDRIVE (source), res, &error);
   if (error != NULL) {
     pdf_load_job_complete_error (job, error);
     return;
@@ -404,6 +403,16 @@ pdf_load_job_zpj_refresh_cache (PdfLoadJob *job)
                         job);
 
   g_object_unref (pdf_file);
+}
+
+static void
+pdf_load_job_zpj_refresh_cache (PdfLoadJob *job)
+{
+  zpj_skydrive_download_file_to_stream_async (job->zpj_service,
+                                              ZPJ_SKYDRIVE_FILE (job->zpj_entry),
+                                              job->cancellable,
+                                              zpj_download_stream_ready,
+                                              job);
 }
 
 static void
