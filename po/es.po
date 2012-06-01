@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-05-31 02:21+0000\n"
-"PO-Revision-Date: 2012-05-31 11:17+0200\n"
+"POT-Creation-Date: 2012-05-31 17:54+0000\n"
+"PO-Revision-Date: 2012-06-01 10:21+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:53
-#: ../src/mainWindow.js:228
+#: ../src/mainWindow.js:229
 msgid "Documents"
 msgstr "Documentos"
 
@@ -122,11 +122,6 @@ msgstr "No se pudo cargar «%s» para su vista previa"
 msgid "Unable to fetch the list of documents"
 msgstr "No se pudo obtener la lista de documentos"
 
-#. right section
-#: ../src/lib/gd-main-toolbar.c:269
-msgid "Done"
-msgstr "Hecho"
-
 #: ../src/lib/gd-pdf-loader.c:208
 msgid "Unable to load the document"
 msgstr "No se pudo cargar el documento"
@@ -142,44 +137,56 @@ msgid_plural "Load %d more documents"
 msgstr[0] "Cargar %d documento más"
 msgstr[1] "Cargar %d documentos más"
 
-#: ../src/mainToolbar.js:204
+#: ../src/mainToolbar.js:166
 msgid "New and Recent"
 msgstr "Nuevos y recientes"
 
-#: ../src/mainToolbar.js:211
+#: ../src/mainToolbar.js:173
 #, c-format
 msgid "Results for \"%s\""
 msgstr "Resultados para «%s»"
 
-#: ../src/mainToolbar.js:213
+#: ../src/mainToolbar.js:175
 msgid "filtered by title"
 msgstr "filtrado por título"
 
-#: ../src/mainToolbar.js:215
+#: ../src/mainToolbar.js:177
 msgid "filtered by author"
 msgstr "filtrado por autor"
 
-#: ../src/mainToolbar.js:228
-#, c-format
-msgid "%d of %d"
-msgstr "%d de %d"
-
-#: ../src/mainToolbar.js:234
+#: ../src/mainToolbar.js:184
 msgid "Click on items to select them"
 msgstr "Pulse sobre los elementos para seleccionarlos"
 
-#: ../src/mainToolbar.js:236
+#: ../src/mainToolbar.js:186
 #, c-format
 msgid "%d selected"
 msgid_plural "%d selected"
 msgstr[0] "%d seleccionado"
 msgstr[1] "%d seleccionados"
 
-#: ../src/mainWindow.js:227
+#: ../src/mainToolbar.js:207
+#, c-format
+msgid "%d of %d"
+msgstr "%d de %d"
+
+#: ../src/mainToolbar.js:222
+msgid "Done"
+msgstr "Hecho"
+
+#: ../src/mainToolbar.js:236 ../src/mainToolbar.js:263
+msgid "Back"
+msgstr "Atrás"
+
+#: ../src/mainToolbar.js:245
+msgid "Select Items"
+msgstr "Seleccionar elementos"
+
+#: ../src/mainWindow.js:228
 msgid "translator-credits"
 msgstr "Daniel Mustieles <daniel.mustieles@gmail.com>, 2011-2012"
 
-#: ../src/mainWindow.js:229
+#: ../src/mainWindow.js:230
 msgid "A document manager application"
 msgstr "Una aplicación para gestionar documentos"
 
@@ -244,7 +251,6 @@ msgid "Author"
 msgstr "Autor"
 
 #: ../src/selections.js:758
-#| msgid "Private"
 msgid "Print"
 msgstr "Imprimir"
 
