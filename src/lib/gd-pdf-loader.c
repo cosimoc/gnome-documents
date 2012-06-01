@@ -20,6 +20,7 @@
  */
 
 #include "gd-pdf-loader.h"
+#include "gd-utils.h"
 
 #include "gd-gdata-goa-authorizer.h"
 
@@ -39,6 +40,7 @@ typedef struct {
   gchar *pdf_path;
   GPid unoconv_pid;
 
+  GFile *download_file;
   GInputStream *stream;
 
   GDataEntry *gdata_entry;
@@ -55,6 +57,7 @@ typedef struct {
   gboolean from_old_cache;
 } PdfLoadJob;
 
+static void pdf_load_job_from_openoffice (PdfLoadJob *job);
 static void pdf_load_job_gdata_refresh_cache (PdfLoadJob *job);
 static void pdf_load_job_openoffice_refresh_cache (PdfLoadJob *job);
 static void pdf_load_job_zpj_refresh_cache (PdfLoadJob *job);
@@ -119,6 +122,7 @@ pdf_load_job_free (PdfLoadJob *job)
   g_clear_object (&job->result);
   g_clear_object (&job->cancellable);
   g_clear_object (&job->stream);
+  g_clear_object (&job->download_file);
   g_clear_object (&job->gdata_service);
   g_clear_object (&job->gdata_entry);
   g_clear_object (&job->zpj_service);
@@ -287,6 +291,29 @@ pdf_load_job_cache_set_attributes (PdfLoadJob *job)
   GFileInfo *info;
   GFile *file;
 
+  if (job->download_file != NULL)
+    {
+      gchar *path;
+
+      path = g_file_get_path (job->download_file);
+
+      /* In case the downloaded file is not the final PDF, then we
+       * need to convert it.
+       */
+      if (g_strcmp0 (path, job->pdf_path) != 0)
+        {
+          /* make the file private */
+          g_chmod (path, 0600);
+          job->uri = g_file_get_uri (job->download_file);
+          pdf_load_job_from_openoffice (job);
+          g_free (path);
+          return;
+        }
+
+      g_clear_object (&job->download_file);
+      g_free (path);
+    }
+
   /* make the file private */
   g_chmod (job->pdf_path, 0600);
 
@@ -368,15 +395,13 @@ pdf_load_job_gdata_refresh_cache (PdfLoadJob *job)
   }
 
   job->stream = G_INPUT_STREAM (stream);
-  pdf_file = g_file_new_for_path (job->pdf_path);
+  job->download_file = g_file_new_for_path (job->pdf_path);
 
-  g_file_replace_async (pdf_file, NULL, FALSE,
+  g_file_replace_async (job->download_file, NULL, FALSE,
                         G_FILE_CREATE_PRIVATE,
                         G_PRIORITY_DEFAULT,
                         job->cancellable, file_replace_ready_cb,
                         job);
-
-  g_object_unref (pdf_file);
 }
 
 static void
@@ -387,6 +412,8 @@ zpj_download_stream_ready (GObject *source,
   GError *error = NULL;
   GFile *pdf_file;
   PdfLoadJob *job = (PdfLoadJob *) user_data;
+  const gchar *name;
+  const gchar *extension;
 
   job->stream = zpj_skydrive_download_file_to_stream_finish (ZPJ_SKYDRIVE (source), res, &error);
   if (error != NULL) {
@@ -394,15 +421,33 @@ zpj_download_stream_ready (GObject *source,
     return;
   }
 
-  pdf_file = g_file_new_for_path (job->pdf_path);
+  name = zpj_skydrive_entry_get_name (job->zpj_entry);
+  extension = gd_filename_get_extension_offset (name);
 
-  g_file_replace_async (pdf_file, NULL, FALSE,
+  /* If it is not a PDF, we need to convert it afterwards.
+   * http://msdn.microsoft.com/en-us/library/live/hh826545#fileformats
+   */
+  if (g_strcmp0 (extension, ".pdf") != 0)
+    {
+      GFileIOStream *iostream;
+
+      job->download_file = g_file_new_tmp (NULL, &iostream, &error);
+      if (error != NULL) {
+        pdf_load_job_complete_error (job, error);
+        return;
+      }
+
+      /* We don't need the iostream. */
+      g_io_stream_close (G_IO_STREAM (iostream), NULL, NULL);
+    }
+  else
+    job->download_file = g_file_new_for_path (job->pdf_path);
+
+  g_file_replace_async (job->download_file, NULL, FALSE,
                         G_FILE_CREATE_PRIVATE,
                         G_PRIORITY_DEFAULT,
                         job->cancellable, file_replace_ready_cb,
                         job);
-
-  g_object_unref (pdf_file);
 }
 
 static void
@@ -591,6 +636,15 @@ unoconv_child_watch_cb (GPid pid,
   g_spawn_close_pid (pid);
   job->unoconv_pid = -1;
 
+  /* We need to clean up the downloaded file (if any) that was
+   * converted.
+   */
+  if (job->download_file != NULL)
+    {
+      g_file_delete (job->download_file, NULL, NULL);
+      g_clear_object (&job->download_file);
+    }
+
   if (g_cancellable_is_cancelled (job->cancellable)) {
     pdf_load_job_complete_error 
       (job, 
@@ -724,16 +778,32 @@ openoffice_cache_query_info_original_ready_cb (GObject *source,
     return;
   }
 
-  job->original_file_mtime = mtime = 
-    g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
+  /* If we are converting a downloaded file then we already know its
+   * mtime. Moreover, we we don't want to find the mtime of the
+   * temporary file.
+   */
+  if (job->original_file_mtime == 0)
+    job->original_file_mtime = mtime =
+      g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
+
   g_object_unref (info);
 
-  tmp_name = g_strdup_printf ("gnome-documents-%u.pdf", g_str_hash (job->uri));
   tmp_path = g_build_filename (g_get_user_cache_dir (), "gnome-documents", NULL);
-  job->pdf_path = pdf_path =
-    g_build_filename (tmp_path, tmp_name, NULL);
-
   g_mkdir_with_parents (tmp_path, 0700);
+
+  /* If we are converting a downloaded file then we already know its
+   * location in the cache. Moreover, we we don't want to hash the
+   * temporary file.
+   */
+  if (job->pdf_path == NULL)
+    {
+      tmp_name = g_strdup_printf ("gnome-documents-%u.pdf", g_str_hash (job->uri));
+      job->pdf_path = pdf_path =
+        g_build_filename (tmp_path, tmp_name, NULL);
+      g_free (tmp_name);
+    }
+
+  g_free (tmp_path);
 
   cache_file = g_file_new_for_path (pdf_path);
   g_file_query_info_async (cache_file,
@@ -744,8 +814,6 @@ openoffice_cache_query_info_original_ready_cb (GObject *source,
                            openoffice_cache_query_info_ready_cb,
                            job);
 
-  g_free (tmp_name);
-  g_free (tmp_path);
   g_object_unref (cache_file);
 }
 
