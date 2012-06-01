@@ -169,7 +169,8 @@ const MainWindow = new Lang.Class({
         let fullscreen = Global.modeController.getFullscreen();
         let direction = this.window.get_direction();
 
-        if (keyval == Gdk.KEY_f) {
+        if ((keyval == Gdk.KEY_f || keyval == Gdk.KEY_F11) &&
+            ((state & Gdk.ModifierType.CONTROL_MASK) == 0)) {
             Global.modeController.toggleFullscreen();
             return true;
         }
