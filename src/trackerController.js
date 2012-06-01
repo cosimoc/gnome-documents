@@ -120,27 +120,18 @@ const TrackerController = new Lang.Class({
         // useful for debugging
         this._lastQueryTime = 0;
 
-        this._sourceManager = Global.sourceManager;
-        this._sourceManager.connect('item-added', Lang.bind(this, this._onSourceAddedRemoved));
-        this._sourceManager.connect('item-removed', Lang.bind(this, this._onSourceAddedRemoved));
-        this._sourceManager.connect('active-changed',
-                                    Lang.bind(this, this._refreshForObject));
+        Global.sourceManager.connect('item-added', Lang.bind(this, this._onSourceAddedRemoved));
+        Global.sourceManager.connect('item-removed', Lang.bind(this, this._onSourceAddedRemoved));
+        Global.sourceManager.connect('active-changed', Lang.bind(this, this._refreshForObject));
 
-        this._offsetController = Global.offsetController;
-        this._offsetController.connect('offset-changed',
-                                       Lang.bind(this, this._performCurrentQuery));
+        Global.offsetController.connect('offset-changed', Lang.bind(this, this._performCurrentQuery));
 
-        Global.collectionManager.connect('active-changed',
-                                         Lang.bind(this, this._refreshForObject));
-        Global.searchController.connect('search-string-changed',
-                                        Lang.bind(this, this._refreshForObject));
-        Global.searchCategoryManager.connect('active-changed',
-                                             Lang.bind(this, this._refreshForObject));
-        Global.searchTypeManager.connect('active-changed',
-                                         Lang.bind(this, this._refreshForObject));
+        Global.collectionManager.connect('active-changed', Lang.bind(this, this._refreshForObject));
+        Global.searchController.connect('search-string-changed', Lang.bind(this, this._refreshForObject));
+        Global.searchCategoryManager.connect('active-changed', Lang.bind(this, this._refreshForObject));
+        Global.searchTypeManager.connect('active-changed', Lang.bind(this, this._refreshForObject));
 
-        Global.searchMatchManager.connect('active-changed',
-                                          Lang.bind(this, this._onSearchMatchChanged));
+        Global.searchMatchManager.connect('active-changed', Lang.bind(this, this._onSearchMatchChanged));
     },
 
     _setQueryStatus: function(status) {
@@ -169,7 +160,7 @@ const TrackerController = new Lang.Class({
         if (exception)
             Global.errorHandler.addQueryError(exception);
         else
-            this._offsetController.resetItemCount();
+            Global.offsetController.resetItemCount();
 
         if (this._queryQueued) {
             this._queryQueued = false;
