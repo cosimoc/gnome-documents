@@ -57,6 +57,7 @@ GDATA_MIN_VERSION=0.11.0
 GOA_MIN_VERSION=3.2.0
 CLUTTER_GTK_MIN_VERSION=1.0.2
 TRACKER_MIN_VERSION=0.13.1
+ZAPOJIT_MIN_VERSION=0.0.2
 
 PKG_CHECK_MODULES(DOCUMENTS,
                   clutter-gtk-1.0 >= $CLUTTER_GTK_MIN_VERSION
@@ -70,7 +71,7 @@ PKG_CHECK_MODULES(DOCUMENTS,
                   tracker-sparql-0.14 >= $TRACKER_MIN_VERSION
                   goa-1.0 >= $GOA_MIN_VERSION
                   libgdata >= $GDATA_MIN_VERSION
-                  zapojit-0.0
+                  zapojit-0.0 >= $ZAPOJIT_MIN_VERSION
                   oauth)
 
 PKG_CHECK_MODULES(MINER,
@@ -79,7 +80,7 @@ PKG_CHECK_MODULES(MINER,
                   gio-2.0 >= $GLIB_MIN_VERSION
                   goa-1.0 >= $GOA_MIN_VERSION
                   libgdata >= $GDATA_MIN_VERSION
-                  zapojit-0.0
+                  zapojit-0.0 >= $ZAPOJIT_MIN_VERSION
                   oauth)
 
 GJS_CONSOLE=`$PKG_CONFIG --variable=gjs_console gjs-1.0`
