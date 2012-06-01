@@ -62,6 +62,8 @@ GdkPixbuf *gd_embed_image_in_frame (GdkPixbuf *source_image,
                                     GtkBorder *slice_width,
                                     GtkBorder *border_width);
 
+const char *gd_filename_get_extension_offset (const char *filename);
+
 char *gd_filename_strip_extension (const char * filename_with_extension);
 
 const char *gd_filename_to_mime_type (const gchar *filename_with_extension);

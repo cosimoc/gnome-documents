@@ -346,7 +346,7 @@ gd_embed_image_in_frame (GdkPixbuf *source_image,
   return retval;
 }
 
-static char *
+const char *
 gd_filename_get_extension_offset (const char *filename)
 {
 	char *end, *end2;
