@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Gnome-Documents\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-24 19:39+0200\n"
-"PO-Revision-Date: 2012-03-24 19:44+0200\n"
+"POT-Creation-Date: 2012-06-02 12:55+0300\n"
+"PO-Revision-Date: 2012-06-02 12:55+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <sh.yaron@gmail.com>\n"
 "Language: he\n"
@@ -21,106 +21,99 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 
 #: ../data/gnome-documents.desktop.in.in.h:1
-msgid "Access, manage and share documents"
-msgstr "גישה, ניהול ושיתוף של מסמכים"
-
-#: ../data/gnome-documents.desktop.in.in.h:2
-msgid "Docs;PDF;Document;"
-msgstr "מסמכים;PDF;מסמך;"
-
-#: ../data/gnome-documents.desktop.in.in.h:3
-#: ../src/mainWindow.js:54
+#: ../src/mainWindow.js:53
+#: ../src/mainWindow.js:233
 msgid "Documents"
 msgstr "מסמכים"
 
+#: ../data/gnome-documents.desktop.in.in.h:2
+msgid "Access, manage and share documents"
+msgstr "גישה, ניהול ושיתוף של מסמכים"
+
+#: ../data/gnome-documents.desktop.in.in.h:3
+msgid "Docs;PDF;Document;"
+msgstr "מסמכים;PDF;מסמך;"
+
 #: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "The active source filter"
-msgstr "The active source filter"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:2
-msgid "The last active source filter"
-msgstr "The last active source filter"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:3
-#: ../src/application.js:131
+#: ../src/application.js:138
 msgid "View as"
 msgstr "צפייה בתור"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:4
+#: ../data/org.gnome.documents.gschema.xml.in.h:2
 msgid "View as type"
 msgstr "צפייה כסוג"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:5
-msgid "Window maximized"
-msgstr "Window maximized"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:6
-msgid "Window maximized state"
-msgstr "Window maximized state"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:7
-msgid "Window position"
-msgstr "Window position"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:8
-msgid "Window position (x and y)."
-msgstr "Window position (x and y)."
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:9
+#: ../data/org.gnome.documents.gschema.xml.in.h:3
 msgid "Window size"
 msgstr "Window size"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:10
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
 msgid "Window size (width and height)."
 msgstr "Window size (width and height)."
 
-#: ../src/application.js:129
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
+msgid "Window position"
+msgstr "Window position"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
+msgid "Window position (x and y)."
+msgstr "Window position (x and y)."
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
+msgid "Window maximized"
+msgstr "Window maximized"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
+msgid "Window maximized state"
+msgstr "Window maximized state"
+
+#: ../src/application.js:136
 msgid "Grid"
 msgstr "רשת"
 
-#: ../src/application.js:130
+#: ../src/application.js:137
 msgid "List"
 msgstr "רשימה"
 
-#: ../src/application.js:134
+#: ../src/application.js:141
 msgid "Fullscreen"
 msgstr "מסך מלא"
 
-#: ../src/application.js:137
+#: ../src/application.js:144
 msgid "About Documents"
 msgstr "על אודות מסמכים"
 
-#: ../src/application.js:138
+#: ../src/application.js:145
 msgid "Quit"
 msgstr "יציאה"
 
-#: ../src/documents.js:619
+#: ../src/documents.js:623
 #: ../src/sources.js:100
 msgid "Local"
 msgstr "מקומי"
 
 #. overridden
-#: ../src/documents.js:675
+#: ../src/documents.js:679
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:676
+#: ../src/documents.js:680
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:745
+#: ../src/documents.js:749
 msgid "Spreadsheet"
 msgstr "גיליון אלקטרוני"
 
-#: ../src/documents.js:747
+#: ../src/documents.js:751
 msgid "Presentation"
 msgstr "מצגת"
 
-#: ../src/documents.js:749
+#: ../src/documents.js:753
 msgid "Collection"
 msgstr "אוסף"
 
-#: ../src/documents.js:751
+#: ../src/documents.js:755
 msgid "Document"
 msgstr "מסמך"
 
@@ -133,11 +126,6 @@ msgstr "לא ניתן לטעון את ”%s“ לתצוגה מקדימה"
 #: ../src/error.js:49
 msgid "Unable to fetch the list of documents"
 msgstr "לא ניתן לקבל את רשימת המסמכים"
-
-#. right section
-#: ../src/lib/gd-main-toolbar.c:269
-msgid "Done"
-msgstr "בוצע"
 
 #: ../src/lib/gd-pdf-loader.c:208
 msgid "Unable to load the document"
@@ -155,33 +143,28 @@ msgstr[0] "טעינת מסמך נוסף"
 msgstr[1] "טעינת %d מסמכים נוספים"
 msgstr[2] "טעינת 2 מסמכים נוספים"
 
-#: ../src/mainToolbar.js:194
+#: ../src/mainToolbar.js:166
 msgid "New and Recent"
 msgstr "חדש ו"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:173
 #, c-format
 msgid "Results for \"%s\""
 msgstr "תוצאות עבור „%s“"
 
-#: ../src/mainToolbar.js:203
+#: ../src/mainToolbar.js:175
 msgid "filtered by title"
 msgstr "מסונן לפי כותרת"
 
-#: ../src/mainToolbar.js:205
+#: ../src/mainToolbar.js:177
 msgid "filtered by author"
 msgstr "מסונן לפי יוצר"
 
-#: ../src/mainToolbar.js:218
-#, c-format
-msgid "%d of %d"
-msgstr "%d מתוך %d"
-
-#: ../src/mainToolbar.js:224
+#: ../src/mainToolbar.js:184
 msgid "Click on items to select them"
 msgstr "יש ללחוץ על פריטים כדי לבחור אותם"
 
-#: ../src/mainToolbar.js:226
+#: ../src/mainToolbar.js:186
 #, c-format
 msgid "%d selected"
 msgid_plural "%d selected"
@@ -189,107 +172,125 @@ msgstr[0] "נבחר אחד"
 msgstr[1] "נבחרו %d"
 msgstr[2] "נבחרו 2"
 
-#: ../src/mainWindow.js:252
+#: ../src/mainToolbar.js:207
+#, c-format
+msgid "%d of %d"
+msgstr "%d מתוך %d"
+
+#: ../src/mainToolbar.js:222
+msgid "Done"
+msgstr "בוצע"
+
+#: ../src/mainToolbar.js:240
+#: ../src/mainToolbar.js:267
+msgid "Back"
+msgstr "חזרה"
+
+#: ../src/mainToolbar.js:249
+msgid "Select Items"
+msgstr "בחירת פריטים"
+
+#: ../src/mainWindow.js:232
 msgid "translator-credits"
 msgstr "ירון שהרבני <sh.yaron@gmail.com>"
 
-#: ../src/mainWindow.js:253
-msgid "GNOME Documents"
-msgstr "מסמכים מבית GNOME"
-
-#: ../src/mainWindow.js:254
+#: ../src/mainWindow.js:234
 msgid "A document manager application"
 msgstr "יישום לניהול מסמכים"
 
-#: ../src/notifications.js:85
+#: ../src/notifications.js:86
 #, c-format
 msgid "Printing \"%s\": %s"
 msgstr "מתבצעת הדפסה של „%s“:‏ %s"
 
-#: ../src/searchbar.js:86
+#: ../src/searchbar.js:87
 msgid "Category"
 msgstr "קטגוריה"
 
-#: ../src/searchbar.js:91
-#: ../src/searchbar.js:141
-#: ../src/searchbar.js:210
+#: ../src/searchbar.js:92
+#: ../src/searchbar.js:142
+#: ../src/searchbar.js:211
 #: ../src/sources.js:94
 msgid "All"
 msgstr "הכול"
 
-#: ../src/searchbar.js:97
+#: ../src/searchbar.js:98
 msgid "Favorites"
 msgstr "מועדפים"
 
-#: ../src/searchbar.js:102
+#: ../src/searchbar.js:103
 msgid "Shared with you"
 msgstr "משותף אתך"
 
-#: ../src/searchbar.js:138
+#: ../src/searchbar.js:139
 msgid "Type"
 msgstr "סוג"
 
-#: ../src/searchbar.js:143
+#: ../src/searchbar.js:144
 msgid "Collections"
 msgstr "אוספים"
 
-#: ../src/searchbar.js:147
+#: ../src/searchbar.js:148
 msgid "PDF Documents"
 msgstr "מסמכי PDF"
 
-#: ../src/searchbar.js:150
+#: ../src/searchbar.js:151
 msgid "Presentations"
 msgstr "מצגות"
 
-#: ../src/searchbar.js:153
+#: ../src/searchbar.js:154
 msgid "Spreadsheets"
 msgstr "גיליונות אלקטרוניים"
 
-#: ../src/searchbar.js:156
+#: ../src/searchbar.js:157
 msgid "Text Documents"
 msgstr "מסמכי טקסט"
 
 #. Translators: this is a verb that refers to "All", "Title" and "Author",
 #. as in "Match All", "Match Title" and "Match Author"
-#: ../src/searchbar.js:207
+#: ../src/searchbar.js:208
 msgid "Match"
 msgstr "התאמה"
 
-#: ../src/searchbar.js:212
+#: ../src/searchbar.js:213
 msgid "Title"
 msgstr "כותרת"
 
-#: ../src/searchbar.js:214
+#: ../src/searchbar.js:215
 msgid "Author"
 msgstr "מאת"
 
-#: ../src/selections.js:735
+#: ../src/selections.js:758
+msgid "Print"
+msgstr "הדפסה"
+
+#: ../src/selections.js:773
 msgid "Organize"
 msgstr "ארגון"
 
-#: ../src/selections.js:742
+#: ../src/selections.js:780
 msgid "Delete"
 msgstr "מחיקה"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:842
+#: ../src/selections.js:869
 #: ../src/view.js:69
 #, c-format
 msgid "Open with %s"
 msgstr "פתיחה באמצעות %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:845
+#: ../src/selections.js:872
 #: ../src/view.js:72
 msgid "Open"
 msgstr "פתיחה"
 
-#: ../src/selections.js:858
+#: ../src/selections.js:881
 #: ../src/view.js:82
 msgid "Remove from favorites"
 msgstr "הסרה מהמועדפים"
 
-#: ../src/selections.js:862
+#: ../src/selections.js:885
 #: ../src/view.js:82
 msgid "Add to favorites"
 msgstr "הוספה למועדפים"
@@ -353,6 +354,15 @@ msgid_plural "%d years ago"
 msgstr[0] "לפני שנה"
 msgstr[1] "לפני %d שנים"
 msgstr[2] "לפני שנתיים"
+
+#~ msgid "The active source filter"
+#~ msgstr "The active source filter"
+
+#~ msgid "The last active source filter"
+#~ msgstr "The last active source filter"
+
+#~ msgid "GNOME Documents"
+#~ msgstr "מסמכים מבית GNOME"
 
 #~ msgid "Enable list view"
 #~ msgstr "Enable list view"
