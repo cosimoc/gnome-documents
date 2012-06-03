@@ -30,11 +30,9 @@ const Mainloop = imports.mainloop;
 
 const _SPINNER_SIZE = 128;
 
-function SpinnerBox() {
-    this._init();
-}
+const SpinnerBox = new Lang.Class({
+    Name: 'SpinnerBox',
 
-SpinnerBox.prototype = {
     _init: function() {
         this._delayedMoveId = 0;
 
@@ -104,4 +102,4 @@ SpinnerBox.prototype = {
                 return false;
             }));
     }
-};
+});

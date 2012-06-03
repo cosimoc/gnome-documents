@@ -39,11 +39,9 @@ const _ = imports.gettext.gettext;
 
 const _CONFIGURE_ID_TIMEOUT = 100; // msecs
 
-function MainWindow(app) {
-    this._init(app);
-}
+const MainWindow = new Lang.Class({
+    Name: 'MainWindow',
 
-MainWindow.prototype = {
     _init: function(app) {
         this._configureId = 0;
 
@@ -247,4 +245,4 @@ MainWindow.prototype = {
             aboutDialog.destroy();
         });
     }
-};
+});

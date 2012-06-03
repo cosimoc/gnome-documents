@@ -55,11 +55,9 @@ const WindowMode = imports.windowMode;
 
 const MINER_REFRESH_TIMEOUT = 60; /* seconds */
 
-function Application() {
-    this._init();
-}
+const Application = new Lang.Class({
+    Name: 'Application',
 
-Application.prototype = {
     _init: function() {
         Gettext.bindtextdomain('gnome-documents', Path.LOCALE_DIR);
         Gettext.textdomain('gnome-documents');
@@ -230,4 +228,4 @@ Application.prototype = {
 
         return 0;
     }
-};
+});

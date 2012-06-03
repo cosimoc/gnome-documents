@@ -35,11 +35,9 @@ const TrackerUtils = imports.trackerUtils;
 const WindowMode = imports.windowMode;
 const Utils = imports.utils;
 
-function ContextMenu(urns) {
-    this._init(urns);
-}
+const ContextMenu = new Lang.Class({
+    Name: 'ContextMenu',
 
-ContextMenu.prototype = {
     _init: function(urns) {
         let favCount = 0;
         let apps = [];
@@ -103,13 +101,11 @@ ContextMenu.prototype = {
 
         this.widget.show_all();
     }
-};
+});
 
-function View() {
-    this._init();
-}
+const View = new Lang.Class({
+    Name: 'View',
 
-View.prototype = {
     _init: function() {
         this.widget = new Gd.MainView();
 
@@ -296,4 +292,4 @@ View.prototype = {
                                                   this._treeModel);
         Global.selectionController.setSelection(selectedURNs);
     }
-};
+});

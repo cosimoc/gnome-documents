@@ -113,11 +113,9 @@ function _createGIcon(cursor) {
     return gicon;
 }
 
-function CreateCollectionIconJob(id) {
-    this._init(id);
-}
+const CreateCollectionIconJob = new Lang.Class({
+    Name: 'CreateCollectionIconJob',
 
-CreateCollectionIconJob.prototype = {
     _init: function(id) {
         this._id = id;
         this._itemIcons = [];
@@ -225,13 +223,11 @@ CreateCollectionIconJob.prototype = {
     _returnPixbuf: function() {
         this._callback(Gd.create_collection_icon(_SHELL_SEARCH_ICON_SIZE, this._itemIcons));
     }
-};
+});
 
-function FetchMetasJob(ids) {
-    this._init(ids);
-}
+const FetchMetasJob = new Lang.Class({
+    Name: 'FetchMetasJob',
 
-FetchMetasJob.prototype = {
     _init: function(ids) {
         this._ids = ids;
         this._metas = [];
@@ -295,13 +291,11 @@ FetchMetasJob.prototype = {
                     }));
             }));
     }
-};
+});
 
-function FetchIdsJob(terms) {
-    this._init(terms);
-}
+const FetchIdsJob = new Lang.Class({
+    Name: 'FetchIdsJob',
 
-FetchIdsJob.prototype = {
     _init: function(terms) {
         this._terms = terms;
         this._ids = [];
@@ -347,13 +341,11 @@ FetchIdsJob.prototype = {
             this._callback(this._ids);
         }
     }
-};
+});
 
-function ShellSearchProvider() {
-    this._init();
-}
+const ShellSearchProvider = new Lang.Class({
+    Name: 'ShellSearchProvider',
 
-ShellSearchProvider.prototype = {
     _init: function() {
         Gio.DBus.own_name(Gio.BusType.SESSION,
                           SEARCH_PROVIDER_NAME,
@@ -519,7 +511,7 @@ ShellSearchProvider.prototype = {
     run: function() {
         Mainloop.run(MAINLOOP_ID);
     }
-};
+});
 
 function start() {
     let searchProvider = new ShellSearchProvider();

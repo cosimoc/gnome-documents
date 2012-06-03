@@ -27,11 +27,9 @@ const _ = imports.gettext.gettext;
 
 const Lang = imports.lang;
 
-function LoadMoreButton() {
-    this._init();
-};
+const LoadMoreButton = new Lang.Class({
+    Name: 'LoadMoreButton',
 
-LoadMoreButton.prototype = {
     _init: function() {
         this._block = false;
 
@@ -80,4 +78,4 @@ LoadMoreButton.prototype = {
         this._block = block;
         this._onItemCountChanged();
     }
-};
+});

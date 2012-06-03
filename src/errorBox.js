@@ -21,14 +21,13 @@
 
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
 
 const _ICON_SIZE = 128;
 
-function ErrorBox(primary, secondary) {
-    this._init(primary, secondary);
-}
+const ErrorBox = new Lang.Class({
+    Name: 'ErrorBox',
 
-ErrorBox.prototype = {
     _init: function(primary, secondary) {
         this.widget = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,
                                      row_spacing: 12,
@@ -60,4 +59,4 @@ ErrorBox.prototype = {
 
         this.widget.show_all();
     }
-};
+});

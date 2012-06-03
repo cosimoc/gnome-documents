@@ -45,11 +45,9 @@ const SearchCategoryStock = {
     PRIVATE: 'private'
 };
 
-function SearchCategory(params) {
-    this._init(params);
-};
+const SearchCategory = new Lang.Class({
+    Name: 'SearchCategory',
 
-SearchCategory.prototype = {
     _init: function(params) {
         this.id = params.id;
         this.name = params.name;
@@ -74,17 +72,14 @@ SearchCategory.prototype = {
 
         return '(true)';
     }
-};
+});
 
-function SearchCategoryManager() {
-    this._init();
-};
-
-SearchCategoryManager.prototype = {
-    __proto__: Manager.BaseManager.prototype,
+const SearchCategoryManager = new Lang.Class({
+    Name: 'SearchCategoryManager',
+    Extends: Manager.BaseManager,
 
     _init: function() {
-        Manager.BaseManager.prototype._init.call(this, _("Category"));
+        this.parent(_("Category"));
 
         let category, recent;
         // Translators: this refers to new and recent documents
@@ -110,13 +105,11 @@ SearchCategoryManager.prototype = {
 
         this.setActiveItem(recent);
     }
-};
+});
 
-function SearchType(params) {
-    this._init(params);
-}
+const SearchType = new Lang.Class({
+    Name: 'SearchType',
 
-SearchType.prototype = {
     _init: function(params) {
         this.id = params.id;
         this.name = params.name;
@@ -126,17 +119,14 @@ SearchType.prototype = {
     getFilter: function() {
         return this._filter;
     }
-};
+});
 
-function SearchTypeManager() {
-    this._init();
-}
-
-SearchTypeManager.prototype = {
-    __proto__: Manager.BaseManager.prototype,
+const SearchTypeManager = new Lang.Class({
+    Name: 'SearchTypeManager',
+    Extends: Manager.BaseManager,
 
     _init: function() {
-        Manager.BaseManager.prototype._init.call(this, _("Type"));
+        this.parent(_("Type"));
 
         this.addItem(new SearchType({ id: 'all',
                                       name: _("All") }));
@@ -159,7 +149,7 @@ SearchTypeManager.prototype = {
 
         this.setActiveItemById('all');
     }
-};
+});
 
 const SearchMatchStock = {
     ALL: 'all',
@@ -167,11 +157,9 @@ const SearchMatchStock = {
     AUTHOR: 'author'
 };
 
-function SearchMatch(params) {
-    this._init(params);
-}
+const SearchMatch = new Lang.Class({
+    Name: 'SearchMatch',
 
-SearchMatch.prototype = {
     _init: function(params) {
         this.id = params.id;
         this.name = params.name;
@@ -193,19 +181,16 @@ SearchMatch.prototype = {
                     '"%s")').format(this._term);
         return '';
     }
-};
+});
 
-function SearchMatchManager() {
-    this._init();
-}
-
-SearchMatchManager.prototype = {
-    __proto__: Manager.BaseManager.prototype,
+const SearchMatchManager = new Lang.Class({
+    Name: 'SearchMatchManager',
+    Extends: Manager.BaseManager,
 
     _init: function() {
         // Translators: this is a verb that refers to "All", "Title" and "Author",
         // as in "Match All", "Match Title" and "Match Author"
-        Manager.BaseManager.prototype._init.call(this, _("Match"));
+        this.parent(_("Match"));
 
         this.addItem(new SearchMatch({ id: SearchMatchStock.ALL,
                                        name: _("All") }));
@@ -225,17 +210,15 @@ SearchMatchManager.prototype = {
             this.forEachItem(function(item) {
                 item.setFilterTerm(terms[i]);
             });
-            filters.push(Manager.BaseManager.prototype.getFilter.call(this));
+            filters.push(this.parent());
         }
         return filters.length ? '( ' + filters.join(' && ') + ')' : '';
     }
-};
+});
 
-function SearchController() {
-    this._init();
-};
+const SearchController = new Lang.Class({
+    Name: 'SearchController',
 
-SearchController.prototype = {
     _init: function() {
         this._dropdownState = false;
         this._string = '';
@@ -269,14 +252,12 @@ SearchController.prototype = {
     getDropdownState: function() {
         return this._dropdownState;
     }
-};
+});
 Signals.addSignalMethods(SearchController.prototype);
 
-function Dropdown() {
-    this._init();
-}
+const Dropdown = new Lang.Class({
+    Name: 'Dropdown',
 
-Dropdown.prototype = {
     _init: function() {
         this._sourceView = new Manager.BaseView(Global.sourceManager);
         this._typeView = new Manager.BaseView(Global.searchTypeManager);
@@ -341,13 +322,11 @@ Dropdown.prototype = {
                                        },
                                        onCompleteScope: this });
     }
-};
+});
 
-function Searchbar() {
-    this._init();
-}
+const Searchbar = new Lang.Class({
+    Name: 'Searchbar',
 
-Searchbar.prototype = {
     _init: function() {
         this._searchEventId = 0;
         this._searchFocusId = 0;
@@ -616,4 +595,4 @@ Searchbar.prototype = {
                                        },
                                        onCompleteScope: this });
     }
-};
+});

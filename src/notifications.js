@@ -31,11 +31,9 @@ const Utils = imports.utils;
 const Lang = imports.lang;
 const Signals = imports.signals;
 
-function PrintNotification(printOp, doc) {
-    this._init(printOp, doc);
-}
+const PrintNotification = new Lang.Class({
+    Name: 'PrintNotification',
 
-PrintNotification.prototype = {
     _init: function(printOp, doc) {
         this.widget = null;
         this._printOp = printOp;
@@ -91,13 +89,11 @@ PrintNotification.prototype = {
         if (fraction == 1)
             this.widget.destroy();
     }
-};
+});
 
-function NotificationManager() {
-    this._init();
-}
+const NotificationManager = new Lang.Class({
+    Name: 'NotificationManager',
 
-NotificationManager.prototype = {
     _init: function() {
         this.widget = new Gd.Notification({ timeout: -1,
                                             show_close_button: false });
@@ -132,5 +128,5 @@ NotificationManager.prototype = {
 
     _onNotificationDismissed: function() {
     }
-};
+});
 Signals.addSignalMethods(NotificationManager.prototype);

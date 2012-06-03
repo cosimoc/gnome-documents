@@ -35,11 +35,9 @@ const QueryType = {
     UPDATE_BLANK: 2
 };
 
-function TrackerConnectionQueue() {
-    this._init();
-}
+const TrackerConnectionQueue = new Lang.Class({
+    Name: 'TrackerConnectionQueue',
 
-TrackerConnectionQueue.prototype = {
     _init: function() {
         this._queue = [];
         this._running = false;
@@ -101,18 +99,16 @@ TrackerConnectionQueue.prototype = {
         this._running = false;
         this._checkQueue();
     }
-};
+});
 
 const RefreshFlags = {
     NONE: 0,
     RESET_OFFSET: 1 << 0
 };
 
-function TrackerController() {
-    this._init();
-}
+const TrackerController = new Lang.Class({
+    Name: 'TrackerController',
 
-TrackerController.prototype = {
     _init: function() {
         this._currentQuery = null;
         this._cancellable = new Gio.Cancellable();
@@ -270,5 +266,5 @@ TrackerController.prototype = {
 
         this._refreshInternal(RefreshFlags.NONE);
     }
-};
+});
 Signals.addSignalMethods(TrackerController.prototype);
