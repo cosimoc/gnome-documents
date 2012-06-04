@@ -383,7 +383,6 @@ pdf_load_job_gdata_refresh_cache (PdfLoadJob *job)
 {
   GDataDownloadStream *stream;
   GError *error = NULL;
-  GFile *pdf_file;
 
   stream = gdata_documents_document_download (GDATA_DOCUMENTS_DOCUMENT (job->gdata_entry),
                                               GDATA_DOCUMENTS_SERVICE (job->gdata_service),
@@ -410,7 +409,6 @@ zpj_download_stream_ready (GObject *source,
                        gpointer user_data)
 {
   GError *error = NULL;
-  GFile *pdf_file;
   PdfLoadJob *job = (PdfLoadJob *) user_data;
   const gchar *name;
   const gchar *extension;

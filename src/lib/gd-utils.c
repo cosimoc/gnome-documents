@@ -388,7 +388,7 @@ gd_filename_strip_extension (const char * filename_with_extension)
 	}
 
 	filename = g_strdup (filename_with_extension);
-	end = gd_filename_get_extension_offset (filename);
+	end = (gchar *) gd_filename_get_extension_offset (filename);
 
 	if (end && end != filename) {
 		*end = '\0';
