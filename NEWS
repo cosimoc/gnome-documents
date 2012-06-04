@@ -1,3 +1,30 @@
+0.5.2 - "The Great Salt Lake"
+=============================
+
+- Add support for Microsoft SkyDrive document sources using libzapojit
+  and gnome-online-accounts (Debarshi Ray)
+- Port to Lang.Class (Anna Zacchi)
+- Make "View As" app menu action insensitive when previewing
+- Add missing tooltip text to Print button
+- Switch to overview on Alt+Left/Backspace
+- Toggle fullscreen in preview with F11
+- Fix some layouting issues in RTL layouts
+
+0.4.2 - "Not a Martial Art Demonstration"
+=========================================
+
+- Don't store the active source in GSettings
+- Make sure a collection is created when the text field name
+  is confirmed by clicking on the OK button
+- Make button press/release tracking code less strict
+- Fix "Open" button showing up for collections under some circumstances
+- Fix thumbnails preview bar not fading in under some circumstances
+- Fix toolbar button spacing in RTL layouts
+- Show the search entry when going back from preview to search results
+- Hide the search entry when switching to a collection
+- Fix type filter not cleaning up when switching to a collection
+- Fix some critical warnings
+
 0.5.1 - "Mr. Turtle"
 ====================
 
