@@ -44,12 +44,6 @@ struct _GdGDataMinerPrivate {
   GList *pending_jobs;
 };
 
-static gchar *
-_tracker_utils_format_into_graph (const gchar *graph)
-{
-  return (graph != NULL) ? g_strdup_printf ("INTO <%s> ", graph) : g_strdup ("");
-}
-
 static gboolean
 _tracker_sparql_connection_toggle_favorite (TrackerSparqlConnection *connection,
                                             GCancellable *cancellable,
