@@ -1,3 +1,9 @@
+0.5.2.1
+=======
+
+- Fix problem at startup
+- Index entire SkyDrive root
+
 0.5.2 - "The Great Salt Lake"
 =============================
 
