@@ -136,27 +136,28 @@ const QueryBuilder = new Lang.Class({
     },
 
     _buildQueryInternal: function(global, flags) {
-        let globalSparql =
+        let whereSparql =
             'WHERE { ?urn a rdfs:Resource ' +
             this._buildOptional();
 
-        if (global) {
-            if ((flags & QueryFlags.UNFILTERED) == 0)
-                globalSparql +=
+        if ((flags & QueryFlags.UNFILTERED) == 0) {
+            if (global)
+                whereSparql +=
                     Global.searchCategoryManager.getWhere() +
-                    Global.collectionManager.getWhere() +
-                    this._buildFilterString();
+                    Global.collectionManager.getWhere();
 
-            globalSparql +=
-                ' } ' +
+            whereSparql += this._buildFilterString();
+        }
+
+        whereSparql += ' }';
+
+        let tailSparql = '';
+
+        if (global) {
+            tailSparql +=
                 'ORDER BY DESC (?mtime)' +
                 ('LIMIT %d OFFSET %d').format(Global.offsetController.getOffsetStep(),
                                               Global.offsetController.getOffset());
-        } else {
-            if ((flags & QueryFlags.UNFILTERED) == 0)
-                globalSparql += this._buildFilterString();
-
-            globalSparql += ' }';
         }
 
         let sparql =
@@ -172,18 +173,12 @@ const QueryBuilder = new Lang.Class({
             'nie:dataSource(?urn) ' + // resource URN
             '( EXISTS { ?urn nao:hasTag nao:predefined-tag-favorite } ) ' + // favorite
             '( EXISTS { ?urn nco:contributor ?contributor FILTER ( ?contributor != ?creator ) } ) ' + // shared
-            globalSparql;
+            whereSparql + tailSparql;
 
         return sparql;
     },
 
-    buildSingleQuery: function() {
-        let resource = arguments[0];
-        let flags = QueryFlags.NONE;
-
-        if (arguments.length == 2)
-            flags = arguments[1];
-
+    buildSingleQuery: function(flags, resource) {
         let sparql = this._buildQueryInternal(false, flags);
         sparql = sparql.replace('?urn', '<' + resource + '>', 'g');
 

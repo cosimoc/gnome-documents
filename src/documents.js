@@ -53,7 +53,7 @@ const SingleItemJob = new Lang.Class({
     run: function(flags, callback) {
         this._callback = callback;
 
-        let query = Global.queryBuilder.buildSingleQuery(this._urn, flags);
+        let query = Global.queryBuilder.buildSingleQuery(flags, this._urn);
         Global.connectionQueue.add(query.sparql, null, Lang.bind(this,
             function(object, res) {
                 try {
