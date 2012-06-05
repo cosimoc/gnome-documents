@@ -796,18 +796,15 @@ const GoogleDocument = new Lang.Class({
     }
 });
 
-function SkydriveDocument(cursor) {
-    this._init(cursor);
-}
-
-SkydriveDocument.prototype = {
-    __proto__: DocCommon.prototype,
+const SkydriveDocument = new Lang.Class({
+    Name: 'SkydriveDocument',
+    Extends: DocCommon,
 
     _init: function(cursor) {
         this._triedThumbnailing = true;
         this._failedThumbnailing = true;
 
-        DocCommon.prototype._init.call(this, cursor);
+        this.parent(cursor);
 
         // overridden
         this.defaultAppName = _("Skydrive");
@@ -894,11 +891,7 @@ SkydriveDocument.prototype = {
     canTrash: function() {
         return false;
     }
-}
-
-function DocumentManager() {
-    this._init();
-}
+});
 
 const DocumentManager = new Lang.Class({
     Name: 'DocumentManager',
