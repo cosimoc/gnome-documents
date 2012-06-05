@@ -24,30 +24,6 @@
 
 #include <gtk/gtk.h>
 
-GtkListStore* gd_create_list_store (void);
-void gd_store_set (GtkListStore *store,
-                   GtkTreeIter *iter,
-                   const gchar *urn,
-                   const gchar *uri,
-                   const gchar *title,
-                   const gchar *author,
-                   GdkPixbuf *icon,
-                   glong mtime);
-
-GtkListStore* gd_create_item_store (void);
-void gd_item_store_set (GtkListStore *store,
-                        GtkTreeIter *iter,
-                        const gchar *id,
-                        const gchar *name,
-                        const gchar *heading_text);
-
-GtkListStore* gd_create_organize_store (void);
-void gd_organize_store_set (GtkListStore *store,
-                            GtkTreeIter *iter,
-                            const gchar *id,
-                            const gchar *name,
-                            gint state);
-
 void gd_queue_thumbnail_job_for_file_async (GFile *file,
                                             GAsyncReadyCallback callback,
                                             gpointer user_data);
