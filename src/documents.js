@@ -331,7 +331,7 @@ const DocCommon = new Lang.Class({
             let timeVal = GLib.time_val_from_iso8601(mtime)[1];
             this.mtime = timeVal.tv_sec;
         } else {
-            this.mtime = GLib.get_real_time();
+            this.mtime = Math.floor(GLib.get_real_time() / 1000000);
         }
 
         this.mimeType = cursor.get_string(Query.QueryColumns.MIMETYPE)[0];
@@ -1033,7 +1033,6 @@ const DocumentModel = new Lang.Class({
 
     documentAdded: function(doc) {
         let iter = this.model.append();
-
         this.model.set(iter,
             [ 0, 1, 2, 3, 4, 5 ],
             [ doc.id, doc.uri, doc.name,
