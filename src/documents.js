@@ -327,8 +327,12 @@ const DocCommon = new Lang.Class({
         this.favorite = cursor.get_boolean(Query.QueryColumns.FAVORITE);
 
         let mtime = cursor.get_string(Query.QueryColumns.MTIME)[0];
-        let timeVal = Gd.time_val_from_iso8601(mtime)[1];
-        this.mtime = timeVal.tv_sec;
+        if (mtime) {
+            let timeVal = GLib.time_val_from_iso8601(mtime)[1];
+            this.mtime = timeVal.tv_sec;
+        } else {
+            this.mtime = GLib.get_real_time();
+        }
 
         this.mimeType = cursor.get_string(Query.QueryColumns.MIMETYPE)[0];
         this.rdfType = cursor.get_string(Query.QueryColumns.RDFTYPE)[0];
