@@ -468,7 +468,7 @@ account_miner_job_query_zpj (AccountMinerJob *job,
                              GError **error)
 {
   account_miner_job_traverse_folder (job,
-                                     ZPJ_SKYDRIVE_FOLDER_MY_DOCUMENTS,
+                                     ZPJ_SKYDRIVE_FOLDER_SKYDRIVE,
                                      error);
 }
 
