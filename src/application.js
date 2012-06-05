@@ -156,7 +156,7 @@ const Application = new Lang.Class({
 
                 Mainloop.timeout_add_seconds(MINER_REFRESH_TIMEOUT,
                                              Lang.bind(this, function() {
-                                                 this._refreshMinerNow(miner)
+                                                 this._refreshMinerNow(miner);
                                              }));
             }));
 
