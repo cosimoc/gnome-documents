@@ -277,7 +277,7 @@ gd_filename_get_extension_offset (const char *filename)
 
 /**
  * gd_filename_strip_extension:
- * @filename_with_extension:
+ * @filename_with_extension: (allow-none):
  *
  * Returns: (transfer full):
  */

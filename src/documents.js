@@ -343,11 +343,14 @@ const DocCommon = new Lang.Class({
             this.uri = '';
 
         let title = cursor.get_string(Query.QueryColumns.TITLE)[0];
+        let filename = cursor.get_string(Query.QueryColumns.FILENAME)[0];
+
         if (title && title != '')
             this.name = title;
+        else if (filename)
+            this.name = Gd.filename_strip_extension(filename);
         else
-            this.name = Gd.filename_strip_extension(
-                cursor.get_string(Query.QueryColumns.FILENAME)[0]);
+            this.name = '';
 
         this._sanitizeTitle();
 
