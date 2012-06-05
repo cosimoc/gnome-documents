@@ -649,15 +649,3 @@ gd_create_variant_from_pixbuf (GdkPixbuf *pixbuf)
                                                     g_object_ref (pixbuf)));
   return g_variant_ref_sink (variant);
 }
-
-/**
- * gd_format_int_alternative_output:
- * @intval:
- *
- * Returns: (transfer full):
- */
-gchar *
-gd_format_int_alternative_output (gint intval)
-{
-  return g_strdup_printf ("%Id", intval);
-}

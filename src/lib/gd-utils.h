@@ -57,7 +57,5 @@ void   gd_entry_focus_hack (GtkWidget *entry,
 
 GVariant *gd_create_variant_from_pixbuf (GdkPixbuf *pixbuf);
 
-gchar * gd_format_int_alternative_output (gint intval);
-
 #endif /* __GD_UTILS_H__ */
                                   

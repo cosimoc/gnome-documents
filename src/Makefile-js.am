@@ -28,7 +28,6 @@ dist_js_DATA = \
     view.js \
     windowMode.js \
     zpjMiner.js \
-    format.js \
     path.js
 
 jsutildir = $(pkgdatadir)/js/util/
