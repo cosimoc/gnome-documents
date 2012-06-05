@@ -21,6 +21,7 @@
 
 const Gd = imports.gi.Gd;
 const Gdk = imports.gi.Gdk;
+const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const Pango = imports.gi.Pango;
 
@@ -177,7 +178,10 @@ const BaseModel = new Lang.Class({
     Name: 'BaseModel',
 
     _init: function(manager) {
-        this.model = Gd.create_item_store();
+        this.model = Gtk.ListStore.new(
+            [ GObject.TYPE_STRING, // ID
+              GObject.TYPE_STRING, // NAME
+              GObject.TYPE_STRING ]); // HEADING_TEXT
         this._manager = manager;
         this._manager.connect('item-added', Lang.bind(this, this._refreshModel));
         this._manager.connect('item-removed', Lang.bind(this, this._refreshModel));
@@ -193,16 +197,18 @@ const BaseModel = new Lang.Class({
 
         if (title) {
             iter = this.model.append();
-            Gd.item_store_set(this.model, iter,
-                              'heading', '', title);
+            this.model.set(iter,
+                [ 0, 1, 2 ],
+                [ 'heading', '', title ]);
         }
 
         let items = this._manager.getItems();
         for (idx in items) {
             let item = items[idx];
             iter = this.model.append();
-            Gd.item_store_set(this.model, iter,
-                              item.id, item.name, '');
+            this.model.set(iter,
+                [ 0, 1, 2 ],
+                [ item.id, item.name, '' ]);
         }
     }
 });

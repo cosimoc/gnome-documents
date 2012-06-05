@@ -1012,7 +1012,14 @@ const DocumentModel = new Lang.Class({
     Name: 'DocumentModel',
 
     _init: function() {
-        this.model = Gd.create_list_store();
+        this.model = Gtk.ListStore.new(
+            [ GObject.TYPE_STRING,
+              GObject.TYPE_STRING,
+              GObject.TYPE_STRING,
+              GObject.TYPE_STRING,
+              GdkPixbuf.Pixbuf,
+              GObject.TYPE_INT,
+              GObject.TYPE_BOOLEAN ]);
         this.model.set_sort_column_id(Gd.MainColumns.MTIME,
                                       Gtk.SortType.DESCENDING);
     },
@@ -1024,10 +1031,10 @@ const DocumentModel = new Lang.Class({
     documentAdded: function(doc) {
         let iter = this.model.append();
 
-        Gd.store_set(this.model, iter,
-                     doc.id, doc.uri,
-                     doc.name, doc.author,
-                     doc.pixbuf, doc.mtime);
+        this.model.set(iter,
+            [ 0, 1, 2, 3, 4, 5 ],
+            [ doc.id, doc.uri, doc.name,
+              doc.author, doc.pixbuf, doc.mtime ]);
 
         let treePath = this.model.get_path(iter);
         let treeRowRef = Gtk.TreeRowReference.new(this.model, treePath);
@@ -1040,10 +1047,10 @@ const DocumentModel = new Lang.Class({
 
                 let objectIter = this.model.get_iter(objectPath)[1];
                 if (objectIter)
-                    Gd.store_set(this.model, iter,
-                                 doc.id, doc.uri,
-                                 doc.name, doc.author,
-                                 doc.pixbuf, doc.mtime);
+                    this.model.set(objectIter,
+                        [ 0, 1, 2, 3, 4, 5 ],
+                        [ doc.id, doc.uri, doc.name,
+                          doc.author, doc.pixbuf, doc.mtime ]);
             }));
     },
 

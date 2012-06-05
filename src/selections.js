@@ -23,6 +23,7 @@ const EvView = imports.gi.EvinceView;
 const Gd = imports.gi.Gd;
 const Gdk = imports.gi.Gdk;
 const GLib = imports.gi.GLib;
+const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const GtkClutter = imports.gi.GtkClutter;
 const Pango = imports.gi.Pango;
@@ -317,7 +318,10 @@ const OrganizeCollectionModel = new Lang.Class({
     Name: 'OrganizeCollectionModel',
 
     _init: function() {
-        this.model = Gd.create_organize_store();
+        this.model = Gtk.ListStore.new(
+            [ GObject.TYPE_STRING,
+              GObject.TYPE_STRING,
+              GObject.TYPE_INT ]);
         this._placeholderRef = null;
 
         this._collAddedId =
@@ -367,8 +371,9 @@ const OrganizeCollectionModel = new Lang.Class({
             if (!iter)
                 iter = this.model.append();
 
-            Gd.organize_store_set(this.model, iter,
-                                  item.id, item.name, collectionState[item.id]);
+            this.model.set(iter,
+                [ 0, 1, 2 ],
+                [ item.id, item.name, collectionState[item.id] ]);
         }
     },
 
@@ -396,8 +401,9 @@ const OrganizeCollectionModel = new Lang.Class({
         this.removePlaceholder();
 
         let iter = this.model.append();
-        Gd.organize_store_set(this.model, iter,
-                              _COLLECTION_PLACEHOLDER_ID, '', OrganizeCollectionState.ACTIVE);
+        this.model.set(iter,
+            [ 0, 1, 2 ],
+            [ _COLLECTION_PLACEHOLDER_ID, '', OrganizeCollectionState.ACTIVE ]);
 
         let placeholderPath = this.model.get_path(iter);
         if (placeholderPath != null)
