@@ -147,6 +147,10 @@ const Application = new Lang.Class({
     },
 
     _refreshMinerNow: function(miner) {
+        let env = GLib.getenv('DOCUMENTS_DISABLE_MINERS');
+        if (env)
+            return false;
+
         miner.RefreshDBRemote(DBus.CALL_FLAG_START, Lang.bind(this,
             function(res, error) {
                 if (error) {
