@@ -113,11 +113,16 @@ const SearchType = new Lang.Class({
     _init: function(params) {
         this.id = params.id;
         this.name = params.name;
-        this._filter = (params.filter) ? (params.filter) : '';
+        this._filter = (params.filter) ? (params.filter) : '(true)';
+        this._where = (params.where) ? (params.where) : '';
     },
 
     getFilter: function() {
         return this._filter;
+    },
+
+    getWhere: function() {
+        return this._where;
     }
 });
 
@@ -132,22 +137,42 @@ const SearchTypeManager = new Lang.Class({
                                       name: _("All") }));
         this.addItem(new SearchType({ id: 'collections',
                                       name: _("Collections"),
-                                      filter: '((fn:contains(rdf:type(?urn), \"nfo#DataContainer\")) && '
-                                              + '(fn:starts-with(nao:identifier(?urn), \"gd:collection\")))' }));
+                                      filter: 'fn:starts-with(nao:identifier(?urn), \"gd:collection\")',
+                                      where: '?urn rdf:type nfo:DataContainer .' }));
         this.addItem(new SearchType({ id: 'pdf',
                                       name: _("PDF Documents"),
-                                      filter: 'fn:contains(nie:mimeType(?urn), \"application/pdf\")' }));
+                                      where: '?urn nie:mimeType \"application/pdf\" .' }));
         this.addItem(new SearchType({ id: 'presentations',
                                       name: _("Presentations"),
-                                      filter: 'fn:contains(rdf:type(?urn), \"nfo#Presentation\")' }));
+                                      where: '?urn rdf:type nfo:Presentation .' }));
         this.addItem(new SearchType({ id: 'spreadsheets',
                                       name: _("Spreadsheets"),
-                                      filter: 'fn:contains(rdf:type(?urn), \"nfo#Spreadsheet\")'}));
+                                      where: '?urn rdf:type nfo:Spreadsheet .' }));
         this.addItem(new SearchType({ id: 'textdocs',
                                       name: _("Text Documents"),
-                                      filter: 'fn:contains(rdf:type(?urn), \"nfo#PaginatedTextDocument\")' }));
+                                      where: '?urn rdf:type nfo:PaginatedTextDocument .' }));
 
         this.setActiveItemById('all');
+    },
+
+    getCurrentTypes: function() {
+        let activeItem = this.getActiveItem();
+
+        if (activeItem.id == 'all')
+            return this.getAllTypes();
+
+        return [ activeItem ];
+    },
+
+    getAllTypes: function() {
+        let types = [];
+
+        this.forEachItem(function(item) {
+            if (item.id != 'all')
+                types.push(item);
+            });
+
+        return types;
     }
 });
 

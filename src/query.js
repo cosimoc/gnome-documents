@@ -111,7 +111,7 @@ const QueryBuilder = new Lang.Class({
         return sparql;
     },
 
-    _buildFilterString: function() {
+    _buildFilterString: function(currentType) {
         let sparql = 'FILTER (';
 
         sparql += Global.searchMatchManager.getFilter();
@@ -119,8 +119,11 @@ const QueryBuilder = new Lang.Class({
         sparql += Global.sourceManager.getFilter();
         sparql += ' && ';
         sparql += Global.searchCategoryManager.getFilter();
-        sparql += ' && ';
-        sparql += Global.searchTypeManager.getFilter();
+
+        if (currentType) {
+            sparql += ' && ';
+            sparql += currentType.getFilter();
+        }
 
         sparql += ')';
 
@@ -135,24 +138,46 @@ const QueryBuilder = new Lang.Class({
         return sparql;
     },
 
-    _buildQueryInternal: function(global, flags) {
-        let whereSparql =
-            'WHERE { ?urn a rdfs:Resource ' +
-            this._buildOptional();
+    _buildWhere: function(global, flags) {
+        let whereSparql = 'WHERE { ';
+        let whereParts = [];
+        let searchTypes = [];
 
-        if ((flags & QueryFlags.UNFILTERED) == 0) {
-            if (global)
-                whereSparql +=
-                    Global.searchCategoryManager.getWhere() +
-                    Global.collectionManager.getWhere();
+        if (flags & QueryFlags.UNFILTERED)
+            searchTypes = Global.searchTypeManager.getAllTypes();
+        else
+            searchTypes = Global.searchTypeManager.getCurrentTypes();
 
-            whereSparql += this._buildFilterString();
-        }
+        // build an array of WHERE clauses; each clause maps to one
+        // type of resource we're looking for.
+        searchTypes.forEach(Lang.bind(this,
+            function(currentType) {
+                let part = '{ ' + currentType.getWhere() + this._buildOptional();
 
+                if ((flags & QueryFlags.UNFILTERED) == 0) {
+                    if (global)
+                        part += Global.searchCategoryManager.getWhere() +
+                                Global.collectionManager.getWhere();
+
+                    part += this._buildFilterString(currentType);
+                }
+
+                part += ' }';
+                whereParts.push(part);
+            }));
+
+        // put all the clauses in an UNION
+        whereSparql += whereParts.join(' UNION ');
         whereSparql += ' }';
 
+        return whereSparql;
+    },
+
+    _buildQueryInternal: function(global, flags) {
+        let whereSparql = this._buildWhere(global, flags);
         let tailSparql = '';
 
+        // order results by mtime
         if (global) {
             tailSparql +=
                 'ORDER BY DESC (?mtime)' +
@@ -190,11 +215,8 @@ const QueryBuilder = new Lang.Class({
     },
 
     buildCountQuery: function() {
-        let sparql =
-            'SELECT DISTINCT COUNT(?urn) WHERE { ' +
-            this._buildOptional() +
-            this._buildFilterString() +
-            '}';
+        let sparql = 'SELECT DISTINCT COUNT(?urn) ' +
+            this._buildWhere(true, QueryFlags.NONE);
 
         return new Query(sparql);
     },
