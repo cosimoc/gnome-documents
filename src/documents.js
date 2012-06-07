@@ -1021,7 +1021,7 @@ const DocumentModel = new Lang.Class({
               GObject.TYPE_STRING,
               GObject.TYPE_STRING,
               GdkPixbuf.Pixbuf,
-              GObject.TYPE_INT,
+              GObject.TYPE_LONG,
               GObject.TYPE_BOOLEAN ]);
         this.model.set_sort_column_id(Gd.MainColumns.MTIME,
                                       Gtk.SortType.DESCENDING);
