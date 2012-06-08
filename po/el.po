@@ -24,7 +24,7 @@ msgstr "Προσεγγίστε,διαχειριστείτε και μοιρασ�
 
 #: ../data/gnome-documents.desktop.in.in.h:2
 msgid "Docs;PDF;Document;"
-msgstr "Έγγραφα;PDF;Έγγραφο"
+msgstr "Έγγραφα;PDF;Έγγραφο;"
 
 #: ../data/gnome-documents.desktop.in.in.h:3 ../src/mainWindow.js:54
 #: ../src/mainWindow.js:249
