@@ -33,6 +33,7 @@ const Documents = imports.documents;
 const Global = imports.global;
 const Manager = imports.manager;
 const Notifications = imports.notifications;
+const Properties = imports.properties;
 const Query = imports.query;
 const Tweener = imports.util.tweener;
 const Utils = imports.utils;
@@ -739,6 +740,12 @@ const SelectionToolbar = new Lang.Class({
         this._leftBox.add(this._toolbarFavorite);
         this._toolbarFavorite.connect('clicked', Lang.bind(this, this._onToolbarFavorite));
 
+	this._toolbarProperties = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'preferences-other-symbolic',//replace this icon
+                                                                      pixel_size: 32 })});
+	this._toolbarProperties.set_tooltip_text(_("Properties"));
+        this._leftBox.add(this._toolbarProperties);
+        this._toolbarProperties.connect('clicked', Lang.bind(this, this._onToolbarProperties));
+
         this._toolbarPrint = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'printer-symbolic',
                                                                       pixel_size: 32 })});
         this._toolbarPrint.set_tooltip_text(_("Print"));
@@ -823,6 +830,7 @@ const SelectionToolbar = new Lang.Class({
         let showFavorite = true;
         let showTrash = true;
         let showPrint = true;
+	let showProperties = true;
         let showOpen = true;
 
         this._insideRefresh = true;
@@ -841,6 +849,7 @@ const SelectionToolbar = new Lang.Class({
 
                 showTrash &= doc.canTrash();
                 showPrint &= !doc.collection;
+                showProperties &= !doc.collection; //is this necessary?
             }));
 
         showFavorite &= ((favCount == 0) || (favCount == selection.length));
@@ -848,6 +857,9 @@ const SelectionToolbar = new Lang.Class({
 
         if (selection.length > 1)
             showPrint = false;
+
+	if (selections.length > 1)
+	    showProperties = false;
 
         let openLabel = null;
         if (apps.length == 1) {
@@ -878,6 +890,7 @@ const SelectionToolbar = new Lang.Class({
         }
 
         this._toolbarPrint.set_visible(showPrint);
+        this._toolbarProperties.set_visible(showProperties);
         this._toolbarTrash.set_visible(showTrash);
         this._toolbarOpen.set_visible(showOpen);
         this._toolbarFavorite.set_visible(showFavorite);
@@ -932,6 +945,23 @@ const SelectionToolbar = new Lang.Class({
             function(urn) {
                 let doc = Global.documentManager.getItemById(urn);
                 doc.trash();
+            }));
+    },
+
+    _onToolbarProperties: function(widget) {
+        let toplevel = this.widget.get_toplevel();
+        if (!toplevel.is_toplevel())
+            return;
+
+        let dialog = new Properties.PropertiesDialog();//toplevel?
+        this._fadeOut();
+
+        dialog.widget.connect('response', Lang.bind(this,
+            function(widget, response) {
+                if (response == Gtk.ResponseType.OK) {
+                    dialog.widget.destroy();
+                    this._fadeIn();
+              }
             }));
     },
 
