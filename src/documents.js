@@ -293,6 +293,8 @@ const DocCommon = new Lang.Class({
         this.thumbnailed = false;
         this._thumbPath = null;
 
+	this.dateCreated = null;
+
         this.populateFromCursor(cursor);
 
         this._refreshIconId =
@@ -331,7 +333,7 @@ const DocCommon = new Lang.Class({
             let timeVal = GLib.time_val_from_iso8601(mtime)[1];
             this.mtime = timeVal.tv_sec;
         } else {
-            this.mtime = Math.floor(GLib.get_real_time() / 1000000);
+            this.mtime = Math.floor(GLib.get_real_time() / 1000000);//ask about this reasoning
         }
 
         this.mimeType = cursor.get_string(Query.QueryColumns.MIMETYPE)[0];
@@ -354,7 +356,15 @@ const DocCommon = new Lang.Class({
 
         this._sanitizeTitle();
 
-        this.refreshIcon();
+        let dateCreated = cursor.get_string(Query.QueryColumns.DATE_CREATED)[0];
+        if (dateCreated) {
+            let timeVal = GLib.time_val_from_iso8601(dateCreated)[1];
+            this.dateCreated = timeVal.tv_sec;
+        } else {
+            this.dateCreated = GLib.get_real_time();
+        }
+   
+       this.refreshIcon();
     },
 
     updateIconFromType: function() {
