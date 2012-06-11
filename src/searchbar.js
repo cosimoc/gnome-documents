@@ -141,7 +141,7 @@ const SearchTypeManager = new Lang.Class({
                                       where: '?urn rdf:type nfo:DataContainer .' }));
         this.addItem(new SearchType({ id: 'pdf',
                                       name: _("PDF Documents"),
-                                      filter: 'fn:contains(nie:mimeType(?urn), \"application/pdf\"',
+                                      filter: 'fn:contains(nie:mimeType(?urn), \"application/pdf\")',
                                       where: '?urn rdf:type nfo:PaginatedTextDocument .' }));
         this.addItem(new SearchType({ id: 'presentations',
                                       name: _("Presentations"),
