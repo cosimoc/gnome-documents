@@ -371,9 +371,6 @@ const Searchbar = new Lang.Class({
                                             height: 0 });
 
         this._searchEntry = new Gd.TaggedEntry({ width_request: 260,
-                                                 secondary_icon_name: 'edit-find-symbolic',
-                                                 secondary_icon_sensitive: false,
-                                                 secondary_icon_activatable: false,
                                                  no_show_all: true,
                                                  hexpand: true });
         this._searchEntry.connect('tag-clicked',
@@ -429,17 +426,6 @@ const Searchbar = new Lang.Class({
             }));
 
         this._searchEntry.connect('changed', Lang.bind(this, function() {
-            let text = this._searchEntry.get_text();
-            if (text && text != '') {
-                this._searchEntry.secondary_icon_name = 'edit-clear-symbolic';
-                this._searchEntry.secondary_icon_sensitive = true;
-                this._searchEntry.secondary_icon_activatable = true;
-            } else {
-                this._searchEntry.secondary_icon_name = 'edit-find-symbolic';
-                this._searchEntry.secondary_icon_sensitive = false;
-                this._searchEntry.secondary_icon_activatable = false;
-            }
-
             if (this._searchEntryTimeout != 0) {
                 Mainloop.source_remove(this._searchEntryTimeout);
                 this._searchEntryTimeout = 0;
@@ -452,10 +438,6 @@ const Searchbar = new Lang.Class({
                     let currentText = this._searchEntry.get_text().toLowerCase();
                     Global.searchController.setString(currentText);
             }));
-        }));
-
-        this._searchEntry.connect('icon-release', Lang.bind(this, function() {
-            this._searchEntry.set_text('');
         }));
 
         this.widget.insert(item, 0);
