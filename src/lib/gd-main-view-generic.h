@@ -58,18 +58,18 @@ struct _GdMainViewGenericIface
   GTypeInterface base_iface;
 
   /* signals */
-  void          (* selection_changed)    (GdMainViewGeneric  *view);
+  void          (* selection_changed)    (GdMainViewGeneric  *self);
 
   /* vtable */
-  void          (* set_model)            (GdMainViewGeneric  *view,
+  void          (* set_model)            (GdMainViewGeneric  *self,
                                           GtkTreeModel       *model);
 
-  GtkTreePath * (* get_path_at_pos)      (GdMainViewGeneric *view,
+  GtkTreePath * (* get_path_at_pos)      (GdMainViewGeneric *self,
                                           gint               x, 
                                           gint               y);
-  void          (* scroll_to_path)       (GdMainViewGeneric *view,
+  void          (* scroll_to_path)       (GdMainViewGeneric *self,
                                           GtkTreePath       *path);
-  void          (* set_selection_mode)   (GdMainViewGeneric *view,
+  void          (* set_selection_mode)   (GdMainViewGeneric *self,
                                           gboolean           selection_mode);
 };
 
