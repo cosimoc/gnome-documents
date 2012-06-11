@@ -22,6 +22,7 @@
 const Lang = imports.lang;
 const Signals = imports.signals;
 
+const Gio = imports.gi.Gio;
 const _ = imports.gettext.gettext;
 
 const ErrorHandler = new Lang.Class({
@@ -31,25 +32,19 @@ const ErrorHandler = new Lang.Class({
     },
 
     addLoadError: function(doc, exception) {
-        // Translators: %s is the title of a document
-        let message = _("Unable to load \"%s\" for preview").format(doc.name);
-
-        // FIXME: we need support for error codes in GJS
-        if (exception.toString().indexOf('Operation was cancelled') != -1)
+        if (exception.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
             return;
 
-        log('Error caught: ' + message + ' - ' + exception.message);
-
+        // Translators: %s is the title of a document
+        let message = _("Unable to load \"%s\" for preview").format(doc.name);
         this.emit('load-error', message, exception);
     },
 
     addQueryError: function(exception) {
-        let message = _("Unable to fetch the list of documents");
-
-        // FIXME: we need support for error codes in GJS
-        if (exception.toString().indexOf('Operation was cancelled') != -1)
+        if (exception.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
             return;
 
+        let message = _("Unable to fetch the list of documents");
         this.emit('query-error', message, exception);
     }
 });
