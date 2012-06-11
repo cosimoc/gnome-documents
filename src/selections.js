@@ -740,9 +740,9 @@ const SelectionToolbar = new Lang.Class({
         this._leftBox.add(this._toolbarFavorite);
         this._toolbarFavorite.connect('clicked', Lang.bind(this, this._onToolbarFavorite));
 
-	this._toolbarProperties = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'preferences-other-symbolic',//replace this icon
+	    this._toolbarProperties = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'preferences-other-symbolic',//replace this icon
                                                                       pixel_size: 32 })});
-	this._toolbarProperties.set_tooltip_text(_("Properties"));
+	    this._toolbarProperties.set_tooltip_text(_("Properties"));
         this._leftBox.add(this._toolbarProperties);
         this._toolbarProperties.connect('clicked', Lang.bind(this, this._onToolbarProperties));
 
@@ -830,7 +830,7 @@ const SelectionToolbar = new Lang.Class({
         let showFavorite = true;
         let showTrash = true;
         let showPrint = true;
-	let showProperties = true;
+	    let showProperties = true;
         let showOpen = true;
 
         this._insideRefresh = true;
@@ -858,8 +858,8 @@ const SelectionToolbar = new Lang.Class({
         if (selection.length > 1)
             showPrint = false;
 
-	if (selections.length > 1)
-	    showProperties = false;
+	    if (selection.length > 1)
+	        showProperties = false;
 
         let openLabel = null;
         if (apps.length == 1) {
