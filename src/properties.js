@@ -25,35 +25,26 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
-//const GtkClutter = imports.gi.GtkClutter;
 const _ = imports.gettext.gettext;
 
 const Documents = imports.documents;
 const Global = imports.global;
-//const Manager = imports.manager;
-//const Notifications = imports.notifications;
 const Query = imports.query;
-//const Tweener = imports.util.tweener;
 const Utils = imports.utils;
 
 const Lang = imports.lang;
-//const Signals = imports.signals;
+//cost Signals = imports.signals;
 //FIXME Not sure which import statements I can safely remove **need to test; also review gjs styleguide & pretty-up the code
 
-//const Properties = new Lang.Class({
-//    Name: 'Properties',
-function PropertiesDialog(toplevel) {
-    this._init(toplevel);
-}
+const PropertiesDialog = new Lang.Class({
+    Name: 'PropertiesDialog',
 
-PropertiesDialog.prototype = {
     _init: function() {
        let selection = Global.selectionController.getSelection();
         selection.forEach(Lang.bind(this,
             function(urn) {
         let doc = Global.documentManager.getItemById(urn);
         
-         
         this._nameMetadata = doc.name;
         this._authorMetadata = doc.author;
 
@@ -72,101 +63,98 @@ PropertiesDialog.prototype = {
         this._dateCreatedMetadata = this._dateCreatedMetadata.format('%c');
         this._documentTypeMetadata = doc.typeDescription;
 
-        this.widget = new Gtk.Dialog({ //transient_for: toplevel,
+        this.widget = new Gtk.Dialog ({ resizable: false, //transient_for: toplevel,
                                        modal: true,
                                        destroy_with_parent: true,
-                                       default_width: 400,
-                                       default_height:500 });
-        
-        this.widget.set_border_width(6);
+                                       border_width: 12 });
        
-        this.widget.add_button('gtk-ok', Gtk.ResponseType.OK);
-        this.widget.set_default_response(Gtk.ResponseType.OK);
+        let grid = new Gtk.Grid ({ orientation: Gtk.Orientation.HORIZONTAL, column_homogeneous: true,
+                                   column_spacing: 12 });
 
-        let grid = new Gtk.Grid ({ orientation: Gtk.Orientation.VERTICAL, 
-                                   margin: 20, 
-                                   row_spacing: 10, 
-                                   column_spacing: 30,
-                                   valign: Gtk.Align.START});
         let contentArea = this.widget.get_content_area();
 
+        this._add = new Gtk.Button({label: "Done"});
+        this.widget.add_button('Done', Gtk.ResponseType.OK);
+        this._add.get_style_context ().add_class ('raised');
+
+
         this._message = new Gtk.Label ({ label: _("Properties"), 
-                                         margin_bottom: 10, 
+                                         margin_bottom: 12, 
                                          halign: Gtk.Align.CENTER, 
                                          hexpand: false });
-            
-        grid.attach (this._message, 0, 0, 2, 1);
+        grid.attach (this._message, 0, 0, 1, 1);
         
         this._title = new Gtk.Label({ label: _("Title: "),
-                                      margin_bottom: 10, 
-                                      halign: Gtk.Align.START, 
-                                      hexpand: false });
-        grid.attach (this._title, 0, 1, 2, 1);
+                                      halign: Gtk.Align.START,
+                                      margin_left: 12 });
+        grid.attach (this._title, 0, 1, 1, 1);
 
        
-   
         this._author = new Gtk.Label({ label: _("Author: "),
-                                       margin_bottom: 10, 
-                                       halign: Gtk.Align.START, 
-                                       hexpand: false });
-        grid.attach (this._author, 0, 2, 2, 1);
+                                       halign: Gtk.Align.START,
+                                       margin_left: 12 });
+        grid.attach (this._author, 0, 2, 1, 1);
      
 
         this._source = new Gtk.Label({ label: _("Source: "),
-                                       margin_bottom: 10, 
-                                       halign: Gtk.Align.START, 
-                                       hexpand: false });
-        grid.attach (this._source, 0, 3, 2, 1);
+                                       halign: Gtk.Align.START,
+                                       margin_left: 12 });
+        grid.attach (this._source, 0, 3, 1, 1);
 
         
         this._dateModified = new Gtk.Label({ label: _("Date Modified: "),
-                                             margin_bottom: 10, 
-                                             halign: Gtk.Align.START, 
-                                             hexpand: false });
-        grid.attach (this._dateModified, 0, 4, 2, 1);
+                                             halign: Gtk.Align.START,
+                                             margin_left: 12 });
+        grid.attach (this._dateModified, 0, 4, 1, 1);
 
 
-        this._dateCreated = new Gtk.Label({ label: _("Date Created: "), 
-                                            margin_bottom: 10, 
+        this._dateCreated = new Gtk.Label({ label: _("Date Created: "),
                                             halign: Gtk.Align.START, 
-                                            hexpand: false }); 
-        grid.attach (this._dateCreated, 0, 5, 2, 1);
+                                            margin_left: 12 }); 
+        grid.attach (this._dateCreated, 0, 5, 1, 1);
+
 
         this._docType = new Gtk.Label({ label: _("Type: "),
-                                        margin_bottom: 10, 
-                                        halign: Gtk.Align.START, 
-                                        hexpand: false });
-        grid.attach (this._docType, 0, 6, 2, 1);
+                                        halign: Gtk.Align.START,
+                                        margin_left: 12 });
+        grid.attach (this._docType, 0, 6, 1, 1);
+
 
         this._titleData = new Gtk.Label({ label: this._nameMetadata,
-                                          margin_bottom: 10,  
-                                          hexpand: false });
-        grid.attach (this._titleData, 1, 1, 2, 1);
+                                          halign: Gtk.Align.START, 
+                                         margin_right: 12 });
+        grid.attach_next_to (this._titleData, this._title, 1, 2, 1);
+
 
         this._authorData = new Gtk.Label({ label: this._authorMetadata,
-                                           margin_bottom: 10, 
-                                           hexpand: false });
-        grid.attach (this._authorData, 1, 2, 2, 1);
+                                           halign: Gtk.Align.START,
+                                           margin_right: 12 });
+        grid.attach_next_to (this._authorData, this._author, 1, 2, 1);
+
 
         this._sourceData = new Gtk.Label({ label: this._directoryMetadata,
-                                           margin_bottom: 10, 
-                                           hexpand: false });
-        grid.attach (this._sourceData, 1, 3, 2, 1);
+                                           halign: Gtk.Align.START,
+                                           margin_right: 12 });
+        grid.attach_next_to (this._sourceData, this._source, 1, 2, 1);
+
 
         this._dateModifiedData = new Gtk.Label({ label: this._dateModifiedMetadata,
-                                                 margin_bottom: 10, 
-                                                 hexpand: false });
-        grid.attach (this._dateModifiedData, 1, 4, 2, 1);
+                                                 halign: Gtk.Align.START,
+                                                  margin_right: 12 });
+        grid.attach_next_to (this._dateModifiedData, this._dateModified, 1, 2, 1);
+
 
         this._dateCreatedData = new Gtk.Label({ label: this._dateCreatedMetadata,
-                                                margin_bottom: 10, 
-                                                hexpand: false });
-        grid.attach (this._dateCreatedData, 1, 5, 2, 1);
+                                                halign: Gtk.Align.START,
+                                                margin_right: 12 });
+        grid.attach_next_to (this._dateCreatedData, this._dateCreated, 1, 2, 1);
+
 
         this._documentTypeData = new Gtk.Label({ label: this._documentTypeMetadata,
-                                                margin_bottom: 10, 
-                                                hexpand: false });
-        grid.attach (this._documentTypeData, 1, 6, 2, 1);
+                                                 halign: Gtk.Align.START,
+                                                 margin_right: 12 });
+        grid.attach_next_to (this._documentTypeData, this._docType, 1, 2, 1);
+
 
         contentArea.pack_start(grid, true, true, 6);
          }));  
