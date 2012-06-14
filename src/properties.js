@@ -63,12 +63,16 @@ const PropertiesDialog = new Lang.Class({
         this._dateCreatedMetadata = this._dateCreatedMetadata.format('%c');
         this._documentTypeMetadata = doc.typeDescription;
 
-        this.widget = new Gtk.Dialog ({ resizable: false, //transient_for: toplevel,
-                                       modal: true,
-                                       destroy_with_parent: true,
-                                       border_width: 12 });
+        this.widget = new Gtk.Dialog ({ resizable: false,
+				        //transient_for: toplevel,
+                                        modal: true,
+                                        destroy_with_parent: true,
+                                        border_width: 12,
+					default_width: 816,
+					default_height: 525 });
        
-        let grid = new Gtk.Grid ({ orientation: Gtk.Orientation.HORIZONTAL, column_homogeneous: true,
+        let grid = new Gtk.Grid ({ orientation: Gtk.Orientation.HORIZONTAL,
+				   column_homogeneous: true,
                                    column_spacing: 12 });
 
         let contentArea = this.widget.get_content_area();
@@ -79,44 +83,52 @@ const PropertiesDialog = new Lang.Class({
 
 
         this._message = new Gtk.Label ({ label: _("Properties"), 
-                                         margin_bottom: 12, 
-                                         halign: Gtk.Align.CENTER, 
+                                         margin_top:12,
+					 margin_bottom: 12,
+					 margin_left: 80, 
+                                         halign: Gtk.Align.START, 
                                          hexpand: false });
         grid.attach (this._message, 0, 0, 1, 1);
         
         this._title = new Gtk.Label({ label: _("Title: "),
-                                      halign: Gtk.Align.START,
-                                      margin_left: 12 });
+                                      halign: Gtk.Align.END,
+                                      margin_left: 88,
+				      margin_right: 78 });
         grid.attach (this._title, 0, 1, 1, 1);
 
        
         this._author = new Gtk.Label({ label: _("Author: "),
-                                       halign: Gtk.Align.START,
-                                       margin_left: 12 });
+                                       halign: Gtk.Align.END,
+                                       margin_left: 88,
+				       margin_right: 78 });
         grid.attach (this._author, 0, 2, 1, 1);
      
 
         this._source = new Gtk.Label({ label: _("Source: "),
-                                       halign: Gtk.Align.START,
-                                       margin_left: 12 });
+                                       halign: Gtk.Align.END,
+                                       margin_left: 88,
+				       margin_right: 78 });
         grid.attach (this._source, 0, 3, 1, 1);
 
         
         this._dateModified = new Gtk.Label({ label: _("Date Modified: "),
-                                             halign: Gtk.Align.START,
-                                             margin_left: 12 });
+                                             halign: Gtk.Align.END,
+                                             margin_left: 88,
+					     margin_right: 78 });
         grid.attach (this._dateModified, 0, 4, 1, 1);
 
 
         this._dateCreated = new Gtk.Label({ label: _("Date Created: "),
-                                            halign: Gtk.Align.START, 
-                                            margin_left: 12 }); 
+                                            halign: Gtk.Align.END, 
+                                            margin_left: 88,
+					    margin_right: 78 }); 
         grid.attach (this._dateCreated, 0, 5, 1, 1);
 
 
         this._docType = new Gtk.Label({ label: _("Type: "),
-                                        halign: Gtk.Align.START,
-                                        margin_left: 12 });
+                                        halign: Gtk.Align.END,
+                                        margin_left: 88,
+					margin_right: 78 });
         grid.attach (this._docType, 0, 6, 1, 1);
 
 
