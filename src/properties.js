@@ -73,7 +73,7 @@ const PropertiesDialog = new Lang.Class({
        
         let grid = new Gtk.Grid ({ orientation: Gtk.Orientation.HORIZONTAL,
 				   column_homogeneous: true,
-				   row_spacing: 12,
+				   row_spacing: 20,
                                    column_spacing: 12 });
 
         let contentArea = this.widget.get_content_area();
