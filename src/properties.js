@@ -12,7 +12,7 @@
  * for more details.
  *
  * You should have received a copy of the GNU General Public License along
- * withconst Gio = imports.gi.Gio; Gnome Documents; if not, write to the Free Software Foundation,
+ * with Gnome Documents; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * Author: Meg Ford <megford@gnome.org>
