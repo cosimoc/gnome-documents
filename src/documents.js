@@ -343,7 +343,7 @@ const DocCommon = new Lang.Class({
             let timeVal = GLib.time_val_from_iso8601(dateCreated)[1];
             this.dateCreated = timeVal.tv_sec;
         } else {
-            this.dateCreated = GLib.get_real_time();
+            this.dateCreated = -1;
         }
 
         // sanitize

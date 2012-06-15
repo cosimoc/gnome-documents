@@ -199,7 +199,7 @@ const QueryBuilder = new Lang.Class({
             'nie:dataSource(?urn) ' + // resource URN
             '( EXISTS { ?urn nao:hasTag nao:predefined-tag-favorite } ) ' + // favorite
             '( EXISTS { ?urn nco:contributor ?contributor FILTER ( ?contributor != ?creator ) } ) ' + // shared
-            'tracker:coalesce(nfo:fileCreated(?urn), nie:contentCreated(?urn)) AS ?mtime ' + //date created 
+            'tracker:coalesce(nfo:fileCreated(?urn), nie:contentCreated(?urn)) ' + //date created 
             whereSparql + tailSparql;
 
         return sparql;
