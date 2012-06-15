@@ -40,7 +40,7 @@ const PropertiesDialog = new Lang.Class({
     Name: 'PropertiesDialog',
 
     _init: function() {
-       let selection = Global.selectionController.getSelection();
+        let selection = Global.selectionController.getSelection();
         selection.forEach(Lang.bind(this,
             function(urn) {
         let doc = Global.documentManager.getItemById(urn);
@@ -55,16 +55,26 @@ const PropertiesDialog = new Lang.Class({
         this._directoryMetadata = this._sourcePath.get_path();
         }else
           this._directoryMetadata = doc.sourceName;
+	this._documentTypeMetadata = doc.typeDescription;
 
         this._dateModifiedMetadata = GLib.DateTime.new_from_unix_local(doc.mtime);
         this._dateModifiedMetadata = this._dateModifiedMetadata.format('%c');
 
-        this._dateCreatedMetadata = GLib.DateTime.new_from_unix_local(doc.dateCreated);
-        this._dateCreatedMetadata = this._dateCreatedMetadata.format('%c');
-        this._documentTypeMetadata = doc.typeDescription;
+        if (doc.dateCreated != -1) {
 
+          this._dateCreatedMetadata = GLib.DateTime.new_from_unix_local(doc.dateCreated);
+
+          this._dateCreatedMetadata = this._dateCreatedMetadata.format('%c');
+
+        } else {
+
+          this._dateCreatedMetadata = null;
+
+        }
+       
+	let toplevel = Global.application.application.get_windows()[0];
         this.widget = new Gtk.Dialog ({ resizable: false,
-				        //transient_for: toplevel,
+				        transient_for: toplevel,
                                         modal: true,
                                         destroy_with_parent: true,
                                         border_width: 12,
@@ -118,13 +128,13 @@ const PropertiesDialog = new Lang.Class({
 					     margin_right: 78 });
         grid.attach (this._dateModified, 0, 4, 1, 1);
 
-
+	if (this._dateCreatedMetadata) {
         this._dateCreated = new Gtk.Label({ label: _("Date Created: "),
                                             halign: Gtk.Align.END, 
                                             margin_left: 88,
 					    margin_right: 78 }); 
         grid.attach (this._dateCreated, 0, 5, 1, 1);
-
+	}
 
         this._docType = new Gtk.Label({ label: _("Type: "),
                                         halign: Gtk.Align.END,
@@ -173,4 +183,4 @@ const PropertiesDialog = new Lang.Class({
          }));  
       this.widget.show_all();
     }
-};
+});
