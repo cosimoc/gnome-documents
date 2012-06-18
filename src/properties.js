@@ -82,7 +82,8 @@ const PropertiesDialog = new Lang.Class({
                                    row_spacing: 12,
                                    column_spacing: 24,
                                    margin_left: 24,
-                                   margin_right: 36 });
+                                   margin_right: 24,
+				   margin_bottom: 12 });
 
         let contentArea = this.widget.get_content_area();
 
@@ -156,7 +157,7 @@ const PropertiesDialog = new Lang.Class({
         grid.attach_next_to (this._documentTypeData, this._docType, 1, 2, 1);
 
 
-        contentArea.pack_start(grid, true, true, 6);
+        contentArea.pack_start(grid, true, true, 2);
          }));  
         this.widget.show_all();
     }
