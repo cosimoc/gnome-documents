@@ -45,7 +45,7 @@ const PropertiesDialog = new Lang.Class({
     Name: 'PropertiesDialog',
  
     _init: function() {
-        let selection = Global.selectionController.getSelection();
+       let selection = Global.selectionController.getSelection();
         selection.forEach(Lang.bind(this,
             function(urn) {
         let doc = Global.documentManager.getItemById(urn);
@@ -82,7 +82,7 @@ const PropertiesDialog = new Lang.Class({
                                         default_width: 400, 
                                         hexpand: true });
        
-        let grid = new Gtk.Grid ({ orientation: Gtk.Orientation.HORIZONTAL, 
+        let grid = new Gtk.Grid ({ orientation: Gtk.Orientation.VERTICAL, 
                                    column_homogeneous: true,
                                    halign: Gtk.Align.CENTER,
                                    row_spacing: 12,
@@ -93,49 +93,51 @@ const PropertiesDialog = new Lang.Class({
 
         let contentArea = this.widget.get_content_area();
 
-        this._add = new Gtk.Button({label: "Done"}); //label for Done button
-        this.widget.add_button('Done', Gtk.ResponseType.OK);
-        this._add.get_style_context ().add_class ('raised');
+        this._done = new Gtk.Button({label: "Done"}); //label for Done button
+        this.widget.add_button('Done', Gtk.ResponseType.OK); 
 
 
-        this._message = new Gtk.Label ({ label: _("<b>Properties</b>"), //label for Properties Dialog
+       
+        this._message = new Gtk.Label ({ label: _("<span size='large'><b>"+"Properties"+"</b></span>"), //label for Properties dialog
                                          halign: Gtk.Align.CENTER,
-                                         margin_bottom:12,
                                          use_markup: true, 
                                          hexpand: false });
         grid.attach (this._message, 1, 0, 1, 1);
- 
-        this._title = new Gtk.Label({ label: _("Title: "), //label for Title item in properties dialog
-                                          halign: Gtk.Align.END });
-      
-        grid.attach (this._title, 0, 1, 1, 1);
+        
+        this._title = new Gtk.Label({ label: _("Title: "), //label for Title item in Properties dialog
+                                      halign: Gtk.Align.END });
+        this._title.get_style_context ().add_class('dim-label')
+        grid.add(this._title);
 
        
-        this._author = new Gtk.Label({ label: _("Author: "), //label for Author item in properties dialog
+        this._author = new Gtk.Label({ label: _("Author: "), //label for Author item in Properties dialog
                                        halign: Gtk.Align.END });
-        grid.attach (this._author, 0, 2, 1, 1);
+        this._author.get_style_context ().add_class('dim-label')
+        grid.add(this._author);
      
 
-        this._source = new Gtk.Label({ label: _("Source: "), //label for directory address or remote location
+        this._source = new Gtk.Label({ label: _("Source: "), //Label for Source item in Properties dialog
                                        halign: Gtk.Align.END });
-        grid.attach (this._source, 0, 3, 1, 1);
+        this._source.get_style_context ().add_class('dim-label')
+        grid.add (this._source);
 
         
-        this._dateModified = new Gtk.Label({ label: _("Date Modified: "), //Label for Date last modified
+        this._dateModified = new Gtk.Label({ label: _("Date Modified: "),//Label for Date Modified item in Properties dialog
                                              halign: Gtk.Align.END });
-        grid.attach (this._dateModified, 0, 4, 1, 1);
+        this._dateModified.get_style_context ().add_class('dim-label')
+        grid.add (this._dateModified);
 
-
-        if (this._dateCreatedMetadata){
-        this._dateCreated = new Gtk.Label({ label: _("Date Created: "), //label for Date Created
-                                            halign: Gtk.Align.END }); 
-        grid.attach (this._dateCreated, 0, 5, 1, 1);
+        if (this._dateCreatedMetadata) {
+        this._dateCreated = new Gtk.Label({ label: _("Date Created: "), //Label for Date Created item in Properties dialog
+                                            halign: Gtk.Align.END });
+        this._dateCreated.get_style_context ().add_class('dim-label') 
+        grid.add (this._dateCreated);
         }
 
-
-        this._docType = new Gtk.Label({ label: _("Type: "), //label for Type
+        this._docType = new Gtk.Label({ label: _("Type: "), //label for document Type in Properties dialog
                                         halign: Gtk.Align.END });
-        grid.attach (this._docType, 0, 6, 1, 1);
+        this._docType.get_style_context ().add_class('dim-label')
+        grid.add (this._docType);
 
         
         if (doc instanceof Documents.LocalDocument ) {
@@ -165,7 +167,7 @@ const PropertiesDialog = new Lang.Class({
         grid.attach_next_to (this._dateModifiedData, this._dateModified, 1, 2, 1);
      
 
-        if (this._dateCreatedMetadata){
+        if (this._dateCreatedMetadata) {
         this._dateCreatedData = new Gtk.Label({ label: this._dateCreatedMetadata,
                                                 halign: Gtk.Align.START });
         grid.attach_next_to (this._dateCreatedData, this._dateCreated, 1, 2, 1);
@@ -177,7 +179,7 @@ const PropertiesDialog = new Lang.Class({
 
 
         contentArea.pack_start(grid, true, true, 2);
-         }));  
+        }));  
         this.widget.show_all();
     }
 });
