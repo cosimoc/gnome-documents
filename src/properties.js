@@ -55,17 +55,23 @@ const PropertiesDialog = new Lang.Class({
 
         this._sourceDetail = doc.sourceName;
 
-        if (this. _sourceDetail == "Local"){
-        this._sourcePath = Gio.file_new_for_uri(doc.uri).get_parent();
-        this._directoryMetadata = this._sourcePath.get_path();
-        }else
-          this._directoryMetadata = doc.sourceName;
+        if (doc instanceof Documents.LocalDocument ){
+            this._sourcePath = Gio.file_new_for_uri(doc.uri).get_parent();
+            this._directoryMetadata = this._sourcePath.get_path();
+        } else {
+            this._directoryMetadata = doc.sourceName;
+        }
 
         this._dateModifiedMetadata = GLib.DateTime.new_from_unix_local(doc.mtime);
         this._dateModifiedMetadata = this._dateModifiedMetadata.format('%c');
 
-        this._dateCreatedMetadata = GLib.DateTime.new_from_unix_local(doc.dateCreated);
-        this._dateCreatedMetadata = this._dateCreatedMetadata.format('%c');
+        if (doc.dateCreated != -1) {
+            this._dateCreatedMetadata = GLib.DateTime.new_from_unix_local(doc.dateCreated);
+            this._dateCreatedMetadata = this._dateCreatedMetadata.format('%c');
+        } else {
+            this._dateCreatedMetadata = null;
+        }
+ 
         this._documentTypeMetadata = doc.typeDescription;
 
         let toplevel = Global.application.application.get_windows()[0];
@@ -83,7 +89,7 @@ const PropertiesDialog = new Lang.Class({
                                    column_spacing: 24,
                                    margin_left: 24,
                                    margin_right: 24,
-				   margin_bottom: 12 });
+				                   margin_bottom: 12 });
 
         let contentArea = this.widget.get_content_area();
 
@@ -94,12 +100,14 @@ const PropertiesDialog = new Lang.Class({
 
         this._message = new Gtk.Label ({ label: _("<b>Properties</b>"), //label for Properties Dialog
                                          halign: Gtk.Align.CENTER,
+                                         margin_bottom:12,
                                          use_markup: true, 
                                          hexpand: false });
         grid.attach (this._message, 1, 0, 1, 1);
-        
+ 
         this._title = new Gtk.Label({ label: _("Title: "), //label for Title item in properties dialog
-                                      halign: Gtk.Align.END });
+                                          halign: Gtk.Align.END });
+      
         grid.attach (this._title, 0, 1, 1, 1);
 
        
@@ -118,18 +126,27 @@ const PropertiesDialog = new Lang.Class({
         grid.attach (this._dateModified, 0, 4, 1, 1);
 
 
+        if (this._dateCreatedMetadata){
         this._dateCreated = new Gtk.Label({ label: _("Date Created: "), //label for Date Created
                                             halign: Gtk.Align.END }); 
         grid.attach (this._dateCreated, 0, 5, 1, 1);
+        }
 
 
         this._docType = new Gtk.Label({ label: _("Type: "), //label for Type
                                         halign: Gtk.Align.END });
         grid.attach (this._docType, 0, 6, 1, 1);
 
-
-        this._titleData = new Gtk.Label({ label: this._nameMetadata,
-                                          halign: Gtk.Align.START });
+        
+        if (doc instanceof Documents.LocalDocument ) {
+            this._titleData = new Gtk.Entry({ text: this._nameMetadata,
+                                              editable: true,
+                                              hexpand: true,
+                                              halign: Gtk.Align.START });
+        } else {
+            this._titleData = new Gtk.Label({ label: this._nameMetadata,
+                                              halign: Gtk.Align.START });
+        }
         grid.attach_next_to (this._titleData, this._title, 1, 2, 1);
 
 
@@ -142,15 +159,17 @@ const PropertiesDialog = new Lang.Class({
                                            halign: Gtk.Align.START });
         grid.attach_next_to (this._sourceData, this._source, 1, 2, 1);
 
-
+ 
         this._dateModifiedData = new Gtk.Label({ label: this._dateModifiedMetadata,
                                                  halign: Gtk.Align.START });
         grid.attach_next_to (this._dateModifiedData, this._dateModified, 1, 2, 1);
+     
 
-
+        if (this._dateCreatedMetadata){
         this._dateCreatedData = new Gtk.Label({ label: this._dateCreatedMetadata,
                                                 halign: Gtk.Align.START });
         grid.attach_next_to (this._dateCreatedData, this._dateCreated, 1, 2, 1);
+        }
 
         this._documentTypeData = new Gtk.Label({ label: this._documentTypeMetadata,
                                                  halign: Gtk.Align.START });
