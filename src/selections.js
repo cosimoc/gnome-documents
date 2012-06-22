@@ -740,7 +740,7 @@ const SelectionToolbar = new Lang.Class({
         this._leftBox.add(this._toolbarFavorite);
         this._toolbarFavorite.connect('clicked', Lang.bind(this, this._onToolbarFavorite));
 
-	    this._toolbarProperties = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'document-properties-symbolic',
+        this._toolbarProperties = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'document-properties-symbolic',
                                                                       pixel_size: 32 })});
         this._toolbarProperties.set_tooltip_text(_("Properties"));
         this._leftBox.add(this._toolbarProperties);
