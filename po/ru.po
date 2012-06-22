@@ -1,24 +1,29 @@
 # Russian translation for gnome-documents.
 # Copyright (C) 2011 gnome-documents's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-documents package.
+#
 # Yuri Myasoedov <omerta13@yandex.ru>, 2011.
 # Stas Solovey <whats_up@tut.by>, 2011.
-#
+# Yuri Kozlov <yuray@komyakino.ru>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-03-10 10:26+0000\n"
-"PO-Revision-Date: 2012-03-10 14:44+0300\n"
-"Last-Translator: Yuri Myasoedov <omerta13@yandex.ru>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
+"documents&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-06-11 04:29+0000\n"
+"PO-Revision-Date: 2012-06-11 09:07+0400\n"
+"Last-Translator: Yuri Kozlov <yuray@komyakino.ru>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: ru\n"
+"X-Generator: Lokalize 1.2\n"
 
-#: ../data/gnome-documents.desktop.in.in.h:1
-#: ../src/mainWindow.js:54
+#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:51
+#: ../src/mainWindow.js:232
 msgid "Documents"
 msgstr "Документы"
 
@@ -27,12 +32,10 @@ msgid "Access, manage and share documents"
 msgstr "Управление и предоставление доступа к документам"
 
 #: ../data/gnome-documents.desktop.in.in.h:3
-#| msgid "PDF Documents"
 msgid "Docs;PDF;Document;"
 msgstr "Документы;PDF;Документ;"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1
-#: ../src/application.js:128
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:137
 msgid "View as"
 msgstr "Вид"
 
@@ -41,112 +44,102 @@ msgid "View as type"
 msgstr "Вид"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:3
-msgid "The active source filter"
-msgstr "Активный фильтр источников"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:4
-msgid "The last active source filter"
-msgstr "Последний активный фильтр источников"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:5
 msgid "Window size"
 msgstr "Размер окна"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:6
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
 msgid "Window size (width and height)."
 msgstr "Размер окна (ширина и высота)."
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:7
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
 msgid "Window position"
 msgstr "Положение окна"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:8
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
 msgid "Window position (x and y)."
 msgstr "Положение окна (x и y)."
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:9
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
 msgid "Window maximized"
 msgstr "Окно развёрнуто"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:10
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
 msgid "Window maximized state"
 msgstr "Состояние развёрнутого окна"
 
-#: ../src/application.js:126
+#: ../src/application.js:135
 msgid "Grid"
 msgstr "Сетка"
 
-#: ../src/application.js:127
+#: ../src/application.js:136
 msgid "List"
 msgstr "Список"
 
-#: ../src/application.js:131
+#: ../src/application.js:140
 msgid "Fullscreen"
 msgstr "На полный экран"
 
-#: ../src/application.js:134
-#| msgid "Text Documents"
+#: ../src/application.js:143
 msgid "About Documents"
 msgstr "О приложении"
 
-#: ../src/application.js:135
+#: ../src/application.js:144
 msgid "Quit"
 msgstr "Закончить"
 
-#: ../src/documents.js:619
-#: ../src/sources.js:100
+#: ../src/documents.js:621 ../src/sources.js:95
 msgid "Local"
 msgstr "Локальные"
 
 #. overridden
-#: ../src/documents.js:675
+#: ../src/documents.js:674
 msgid "Google Docs"
 msgstr "Документы Google"
 
-#: ../src/documents.js:676
+#: ../src/documents.js:675
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:745
+#: ../src/documents.js:744 ../src/documents.js:884
 msgid "Spreadsheet"
 msgstr "Таблица"
 
-#: ../src/documents.js:747
+#: ../src/documents.js:746 ../src/documents.js:886
 msgid "Presentation"
 msgstr "Презентация"
 
-#: ../src/documents.js:749
+#: ../src/documents.js:748 ../src/documents.js:888
 msgid "Collection"
 msgstr "Коллекция"
 
-#: ../src/documents.js:751
+#: ../src/documents.js:750 ../src/documents.js:890
 msgid "Document"
 msgstr "Документ"
 
+#. overridden
+#: ../src/documents.js:817 ../src/documents.js:818
+msgid "Skydrive"
+msgstr "Skydrive"
+
 #. Translators: %s is the title of a document
-#: ../src/error.js:37
+#: ../src/error.js:35
 #, c-format
 msgid "Unable to load \"%s\" for preview"
 msgstr "Не удалось загрузить «%s» для просмотра"
 
-#: ../src/error.js:49
+#: ../src/error.js:47
 msgid "Unable to fetch the list of documents"
 msgstr "Не удалось получить список документов"
 
-#. right section
-#: ../src/lib/gd-main-toolbar.c:269
-msgid "Done"
-msgstr "Выполнено"
-
-#: ../src/lib/gd-pdf-loader.c:208
+#: ../src/lib/gd-pdf-loader.c:224
 msgid "Unable to load the document"
 msgstr "Не удалось загрузить документ"
 
-#: ../src/lib/gd-pdf-loader.c:489
+#: ../src/lib/gd-pdf-loader.c:673
 msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
 msgstr "Не удалось найти «unoconv», проверьте, установлен ли LibreOffice"
 
-#: ../src/loadMore.js:70
+#: ../src/loadMore.js:68
 #, c-format
 msgid "Load %d more document"
 msgid_plural "Load %d more documents"
@@ -154,165 +147,168 @@ msgstr[0] "Загрузить ещё %d документ"
 msgstr[1] "Загрузить ещё %d документа"
 msgstr[2] "Загрузить ещё %d документов"
 
-#: ../src/mainToolbar.js:194
+#: ../src/mainToolbar.js:164
 msgid "New and Recent"
 msgstr "Новые и недавние"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:171
 #, c-format
 msgid "Results for \"%s\""
 msgstr "Результаты для «%s»"
 
-#: ../src/mainToolbar.js:203
+#: ../src/mainToolbar.js:173
 msgid "filtered by title"
 msgstr "отфильтровано по заголовку"
 
-#: ../src/mainToolbar.js:205
+#: ../src/mainToolbar.js:175
 msgid "filtered by author"
 msgstr "отфильтровано по автору"
 
-#: ../src/mainToolbar.js:218
-#, c-format
-#| msgid "(%d of %d)"
-msgid "%d of %d"
-msgstr "%d из %d"
-
-#: ../src/mainToolbar.js:224
+#: ../src/mainToolbar.js:182
 msgid "Click on items to select them"
 msgstr "Щёлкните по элементам, чтобы выбрать их"
 
-#: ../src/mainToolbar.js:226
+#: ../src/mainToolbar.js:184
 #, c-format
-#| msgid "%d selected"
 msgid "%d selected"
 msgid_plural "%d selected"
 msgstr[0] "Выбрано: %d"
 msgstr[1] "Выбрано: %d"
 msgstr[2] "Выбрано: %d"
 
-#: ../src/mainWindow.js:254
+#: ../src/mainToolbar.js:205
+#, c-format
+msgid "%d of %d"
+msgstr "%d из %d"
+
+#: ../src/mainToolbar.js:220
+msgid "Done"
+msgstr "Выполнено"
+
+#: ../src/mainToolbar.js:238 ../src/mainToolbar.js:265
+msgid "Back"
+msgstr "Назад"
+
+#: ../src/mainToolbar.js:247
+msgid "Select Items"
+msgstr "Выбрать элементы"
+
+#: ../src/mainWindow.js:231
 msgid "translator-credits"
 msgstr "Юрий Мясоедов <omerta13@yandex.ru>, 2012"
 
-#: ../src/mainWindow.js:255
-#| msgid "Documents"
-msgid "GNOME Documents"
-msgstr "Документы GNOME"
-
-#: ../src/mainWindow.js:256
+#: ../src/mainWindow.js:233
 msgid "A document manager application"
 msgstr "Приложение для управления документами"
 
-#: ../src/notifications.js:85
+#: ../src/notifications.js:84
 #, c-format
 msgid "Printing \"%s\": %s"
 msgstr "Печать «%s»: %s"
 
-#: ../src/searchbar.js:86
+#: ../src/searchbar.js:82
 msgid "Category"
 msgstr "Категория"
 
-#: ../src/searchbar.js:91
-#: ../src/searchbar.js:141
-#: ../src/searchbar.js:210
-#: ../src/sources.js:94
+#: ../src/searchbar.js:87 ../src/searchbar.js:137 ../src/searchbar.js:222
+#: ../src/sources.js:89
 msgid "All"
 msgstr "Все"
 
-#: ../src/searchbar.js:97
+#: ../src/searchbar.js:93
 msgid "Favorites"
 msgstr "Избранное"
 
-#: ../src/searchbar.js:102
+#: ../src/searchbar.js:98
 msgid "Shared with you"
 msgstr "В открытом для вас доступе"
 
-#: ../src/searchbar.js:138
+#: ../src/searchbar.js:134
 msgid "Type"
 msgstr "Тип"
 
-#: ../src/searchbar.js:143
+#: ../src/searchbar.js:139
 msgid "Collections"
 msgstr "Коллекции"
 
-#: ../src/searchbar.js:147
+#: ../src/searchbar.js:143
 msgid "PDF Documents"
 msgstr "Документы PDF"
 
-#: ../src/searchbar.js:150
+#: ../src/searchbar.js:147
 msgid "Presentations"
 msgstr "Презентации"
 
-#: ../src/searchbar.js:153
+#: ../src/searchbar.js:150
 msgid "Spreadsheets"
 msgstr "Таблицы"
 
-#: ../src/searchbar.js:156
+#: ../src/searchbar.js:153
 msgid "Text Documents"
 msgstr "Текстовые документы"
 
 #. Translators: this is a verb that refers to "All", "Title" and "Author",
 #. as in "Match All", "Match Title" and "Match Author"
-#: ../src/searchbar.js:207
+#: ../src/searchbar.js:219
 msgid "Match"
 msgstr "Совпадение"
 
-#: ../src/searchbar.js:212
+#: ../src/searchbar.js:224
 msgid "Title"
 msgstr "Заголовок"
 
-#: ../src/searchbar.js:214
+#: ../src/searchbar.js:226
 msgid "Author"
 msgstr "Автор"
 
-#: ../src/selections.js:735
+#: ../src/selections.js:744
+msgid "Print"
+msgstr "Печать"
+
+#: ../src/selections.js:759
 msgid "Organize"
 msgstr "Создать"
 
-#: ../src/selections.js:742
+#: ../src/selections.js:766
 msgid "Delete"
 msgstr "Удалить"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:842
-#: ../src/view.js:69
+#: ../src/selections.js:855 ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "Открыть с помощью %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:845
-#: ../src/view.js:72
+#: ../src/selections.js:858 ../src/view.js:70
 msgid "Open"
 msgstr "Открыть"
 
-#: ../src/selections.js:858
-#: ../src/view.js:82
+#: ../src/selections.js:867 ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "Удалить из избранного"
 
-#: ../src/selections.js:862
-#: ../src/view.js:82
+#: ../src/selections.js:871 ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Добавить в избранное"
 
-#: ../src/shellSearchProvider.js:332
+#: ../src/shellSearchProvider.js:281
 msgid "Untitled Document"
 msgstr "Безымянный документ"
 
-#: ../src/sources.js:90
+#: ../src/sources.js:85
 msgid "Sources"
 msgstr "Источники"
 
-#: ../src/spinnerBox.js:58
+#: ../src/spinnerBox.js:56
 msgid "Loading..."
 msgstr "Загрузка…"
 
-#: ../src/view.js:196
+#: ../src/view.js:194
 msgid "Yesterday"
 msgstr "Вчера"
 
-#: ../src/view.js:198
+#: ../src/view.js:196
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
@@ -320,11 +316,11 @@ msgstr[0] "%d день назад"
 msgstr[1] "%d дня назад"
 msgstr[2] "%d дней назад"
 
-#: ../src/view.js:202
+#: ../src/view.js:200
 msgid "Last week"
 msgstr "На прошлой неделе"
 
-#: ../src/view.js:204
+#: ../src/view.js:202
 #, c-format
 msgid "%d week ago"
 msgid_plural "%d weeks ago"
@@ -332,11 +328,11 @@ msgstr[0] "%d неделя назад"
 msgstr[1] "%d недели назад"
 msgstr[2] "%d недель назад"
 
-#: ../src/view.js:208
+#: ../src/view.js:206
 msgid "Last month"
 msgstr "В прошлом месяце"
 
-#: ../src/view.js:210
+#: ../src/view.js:208
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
@@ -344,17 +340,27 @@ msgstr[0] "%d месяц назад"
 msgstr[1] "%d месяца назад"
 msgstr[2] "%d месяцев назад"
 
-#: ../src/view.js:214
+#: ../src/view.js:212
 msgid "Last year"
 msgstr "В прошлом году"
 
-#: ../src/view.js:216
+#: ../src/view.js:214
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
 msgstr[0] "%d год назад"
 msgstr[1] "%d года назад"
 msgstr[2] "%d лет назад"
+
+#~ msgid "The active source filter"
+#~ msgstr "Активный фильтр источников"
+
+#~ msgid "The last active source filter"
+#~ msgstr "Последний активный фильтр источников"
+
+#~| msgid "Documents"
+#~ msgid "GNOME Documents"
+#~ msgstr "Документы GNOME"
 
 #~ msgid "Enable list view"
 #~ msgstr "Включить списочный вид"

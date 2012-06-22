@@ -23,7 +23,7 @@
 
 #include <math.h>
 
-G_DEFINE_TYPE (GdTaggedEntry, gd_tagged_entry, GTK_TYPE_ENTRY)
+G_DEFINE_TYPE (GdTaggedEntry, gd_tagged_entry, GTK_TYPE_SEARCH_ENTRY)
 
 #define BUTTON_INTERNAL_SPACING 6
 

@@ -56,14 +56,14 @@ typedef struct _GdTaggedEntryPrivate GdTaggedEntryPrivate;
 
 struct _GdTaggedEntry
 {
-  GtkEntry parent;
+  GtkSearchEntry parent;
 
   GdTaggedEntryPrivate *priv;
 };
 
 struct _GdTaggedEntryClass
 {
-  GtkEntryClass parent_class;
+  GtkSearchEntryClass parent_class;
 };
 
 GType gd_tagged_entry_get_type (void) G_GNUC_CONST;

@@ -39,7 +39,7 @@ gd_main_view_generic_default_init (GdMainViewGenericInterface *iface)
  */
 void
 gd_main_view_generic_set_model (GdMainViewGeneric *self,
-                        GtkTreeModel *model)
+                                GtkTreeModel *model)
 {
   GdMainViewGenericInterface *iface;
 
