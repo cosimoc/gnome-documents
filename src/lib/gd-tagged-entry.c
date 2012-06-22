@@ -45,6 +45,7 @@ struct _GdTaggedEntryPrivate {
   gboolean in_child_button;
   gboolean in_child_active;
   gboolean in_child_button_active;
+  gboolean button_visible;
 };
 
 enum {
@@ -53,7 +54,14 @@ enum {
   LAST_SIGNAL
 };
 
+enum {
+  PROP_0,
+  PROP_TAG_BUTTON_VISIBLE,
+  NUM_PROPERTIES
+};
+
 static guint signals[LAST_SIGNAL] = { 0, };
+static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
 static void gd_tagged_entry_get_text_area_size (GtkEntry *entry,
                                                 gint *x,
@@ -234,6 +242,7 @@ gd_tagged_entry_tag_get_width (GdTaggedEntryTag *tag,
   GtkStyleContext *context;
   GtkStateFlags state;
   gint layout_width;
+  gint button_width;
 
   gd_tagged_entry_tag_ensure_layout (tag, entry);
   pango_layout_get_pixel_size (tag->layout, &layout_width, NULL);
@@ -249,10 +258,14 @@ gd_tagged_entry_tag_get_width (GdTaggedEntryTag *tag,
 
   g_object_unref (context);
 
+  button_width = 0;
+  if (entry->priv->button_visible)
+    button_width = gdk_pixbuf_get_width (tag->close_pixbuf) + BUTTON_INTERNAL_SPACING;
+
   return layout_width + button_padding.left + button_padding.right +
     button_border.left + button_border.right +
     button_margin.left + button_margin.right +
-    gdk_pixbuf_get_width (tag->close_pixbuf) + BUTTON_INTERNAL_SPACING;
+    button_width;
 }
 
 static void
@@ -313,8 +326,16 @@ gd_tagged_entry_tag_get_relative_allocations (GdTaggedEntryTag *tag,
   layout_allocation.x += border.left + padding.left;
   layout_allocation.y += (layout_allocation.height - layout_height) / 2;
 
-  pix_width = gdk_pixbuf_get_width (tag->close_pixbuf);
-  pix_height = gdk_pixbuf_get_height (tag->close_pixbuf);
+  if (entry->priv->button_visible)
+    {
+      pix_width = gdk_pixbuf_get_width (tag->close_pixbuf);
+      pix_height = gdk_pixbuf_get_height (tag->close_pixbuf);
+    }
+  else
+    {
+      pix_width = 0;
+      pix_height = 0;
+    }
 
   button_allocation.x += width - pix_width - border.right - padding.right;
   button_allocation.y += (height - pix_height) / 2;
@@ -337,6 +358,9 @@ gd_tagged_entry_tag_event_is_button (GdTaggedEntryTag *tag,
 {
   GtkAllocation button_allocation;
   GtkStyleContext *context;
+
+  if (!entry->priv->button_visible)
+    return FALSE;
 
   context = gd_tagged_entry_tag_get_context (entry);
   gd_tagged_entry_tag_get_relative_allocations (tag, entry, context, NULL, NULL, &button_allocation);
@@ -388,6 +412,9 @@ gd_tagged_entry_tag_draw (GdTaggedEntryTag *tag,
 
   gtk_style_context_restore (context);
 
+  if (!entry->priv->button_visible)
+    goto done;
+
   gtk_style_context_add_class (context, GTK_STYLE_CLASS_BUTTON);
   state = gd_tagged_entry_tag_get_button_state (tag, entry);
   gtk_style_context_set_state (context, state);
@@ -414,6 +441,7 @@ gd_tagged_entry_tag_draw (GdTaggedEntryTag *tag,
                    tag->close_pixbuf,
                    button_allocation.x, button_allocation.y);
 
+done:
   cairo_restore (cr);
 
   g_object_unref (context);
@@ -818,6 +846,43 @@ static void
 gd_tagged_entry_init (GdTaggedEntry *self)
 {
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, GD_TYPE_TAGGED_ENTRY, GdTaggedEntryPrivate);
+  self->priv->button_visible = TRUE;
+}
+
+static void
+gd_tagged_entry_get_property (GObject      *object,
+                              guint         property_id,
+                              GValue       *value,
+                              GParamSpec   *pspec)
+{
+  GdTaggedEntry *self = GD_TAGGED_ENTRY (object);
+
+  switch (property_id)
+    {
+      case PROP_TAG_BUTTON_VISIBLE:
+        g_value_set_boolean (value, gd_tagged_entry_get_tag_button_visible (self));
+        break;
+      default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+    }
+}
+
+static void
+gd_tagged_entry_set_property (GObject      *object,
+                              guint         property_id,
+                              const GValue *value,
+                              GParamSpec   *pspec)
+{
+  GdTaggedEntry *self = GD_TAGGED_ENTRY (object);
+
+  switch (property_id)
+    {
+      case PROP_TAG_BUTTON_VISIBLE:
+        gd_tagged_entry_set_tag_button_visible (self, g_value_get_boolean (value));
+        break;
+      default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+    }
 }
 
 static void
@@ -828,6 +893,8 @@ gd_tagged_entry_class_init (GdTaggedEntryClass *klass)
   GObjectClass *oclass = G_OBJECT_CLASS (klass);
 
   oclass->finalize = gd_tagged_entry_finalize;
+  oclass->set_property = gd_tagged_entry_set_property;
+  oclass->get_property = gd_tagged_entry_get_property;
 
   wclass->realize = gd_tagged_entry_realize;
   wclass->unrealize = gd_tagged_entry_unrealize;
@@ -859,7 +926,13 @@ gd_tagged_entry_class_init (GdTaggedEntryClass *klass)
                   G_TYPE_NONE,
                   1, G_TYPE_STRING);
 
+  properties[PROP_TAG_BUTTON_VISIBLE] =
+    g_param_spec_boolean ("tag-close-visible", "Tag close icon visibility",
+                          "Whether the close button should be shown in tags.", TRUE,
+                          G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS);
+
   g_type_class_add_private (klass, sizeof (GdTaggedEntryPrivate));
+  g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 }
 
 GdTaggedEntry *
@@ -938,4 +1011,27 @@ gd_tagged_entry_set_tag_label (GdTaggedEntry *self,
     }
 
   return res;  
+}
+
+void
+gd_tagged_entry_set_tag_button_visible (GdTaggedEntry *self,
+                                        gboolean       visible)
+{
+  g_return_if_fail (GD_IS_TAGGED_ENTRY (self));
+
+  if (self->priv->button_visible == visible)
+    return;
+
+  self->priv->button_visible = visible;
+  gtk_widget_queue_resize (GTK_WIDGET (self));
+
+  g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TAG_BUTTON_VISIBLE]);
+}
+
+gboolean
+gd_tagged_entry_get_tag_button_visible (GdTaggedEntry *self)
+{
+  g_return_val_if_fail (GD_IS_TAGGED_ENTRY (self), FALSE);
+
+  return self->priv->button_visible;
 }
