@@ -93,7 +93,7 @@ const PropertiesDialog = new Lang.Class({
 
         let contentArea = this.widget.get_content_area();
 
-        this._done = new Gtk.Button({label: "Done"}); //label for Done button
+        this._done = new Gtk.Button({label: "Done"}); //label for Done button in Properties dialog
         this.widget.add_button('Done', Gtk.ResponseType.OK); 
 
 
@@ -140,16 +140,18 @@ const PropertiesDialog = new Lang.Class({
         grid.add (this._docType);
 
         
-        if (doc instanceof Documents.LocalDocument ) {
+       // if (doc instanceof Documents.LocalDocument ) {
             this._titleData = new Gtk.Entry({ text: this._nameMetadata,
                                               editable: true,
                                               hexpand: true,
                                               halign: Gtk.Align.START });
-        } else {
-            this._titleData = new Gtk.Label({ label: this._nameMetadata,
+            grid.attach_next_to (this._titleData, this._title, 1, 2, 1);
+            this._titleData.connect("changed", Lang.bind (this, this._setEditedName));
+          // } else {
+         //   this._titleData = new Gtk.Label({ label: this._nameMetadata,
                                               halign: Gtk.Align.START });
-        }
-        grid.attach_next_to (this._titleData, this._title, 1, 2, 1);
+      //  }
+      //  grid.attach_next_to (this._titleData, this._title, 1, 2, 1);
 
 
         this._authorData = new Gtk.Label({ label: this._authorMetadata,
@@ -181,5 +183,10 @@ const PropertiesDialog = new Lang.Class({
         contentArea.pack_start(grid, true, true, 2);
         }));  
         this.widget.show_all();
+      },
+
+     _setEditedName: function(urn) {
+        this._newTitle = this._titleData.get_text();
+        TrackerUtils._setEditedName(urn, this._newTitle, null); 
     }
 });
