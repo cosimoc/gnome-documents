@@ -1,5 +1,4 @@
 [encoding: UTF-8]
-data/gnome-documents-search-provider.ini.in
 data/gnome-documents.desktop.in.in
 data/org.gnome.documents.gschema.xml.in
 src/application.js
