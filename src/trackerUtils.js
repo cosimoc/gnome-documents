@@ -37,4 +37,19 @@ function setFavorite(urn, isFavorite, callback) {
             if (callback)
                 callback();
         });
+
+function _setEditedName(urn, _newTitle, callback) {
+    let sparql = ('INSERT OR REPLACE {<%s>  a nfo:TextDocument;  nfo:fileName\"%s\"}'.format(urn, _newTitle));
+    Global.connectionQueue.update(sparql, null,
+        function(object, res) {
+            try {
+                object.update_finish(res);
+            } catch (e) {
+                log('Unable to set the new title on ' + urn + ' to : ' + e.toString());
+            }
+
+            if (callback)
+                callback();
+        });
 }
+	
