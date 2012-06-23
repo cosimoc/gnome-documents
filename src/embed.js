@@ -53,9 +53,6 @@ const ViewEmbed = new Lang.Class({
         this._queryErrorId = 0;
         this._scrollbarVisibleId = 0;
 
-        this._scrolledWinView = null;
-        this._scrolledWinPreview = null;
-
         // the embed is a vertical ClutterBox
         this._overlayLayout = new Clutter.BinLayout();
         this.actor = new Clutter.Box({ layout_manager: this._overlayLayout });
@@ -88,6 +85,10 @@ const ViewEmbed = new Lang.Class({
         this._viewLayout.add(this._spinnerBox.actor, Clutter.BinAlignment.FILL, Clutter.BinAlignment.FILL);
         this._spinnerBox.actor.lower_bottom();
 
+        this._errorBox = new ErrorBox.ErrorBox();
+        this._viewLayout.add(this._errorBox.actor, Clutter.BinAlignment.FILL, Clutter.BinAlignment.FILL);
+        this._errorBox.actor.lower_bottom();
+
         // also pack a white background to use for spotlights between window modes
         this._background =
             new Clutter.Rectangle({ color: new Clutter.Color ({ red: 255,
@@ -106,33 +107,7 @@ const ViewEmbed = new Lang.Class({
                                                                             coordinate: Clutter.BindCoordinate.Y }));
 
         // create the OSD toolbar for selected items, it's hidden by default
-        this._selectionToolbar = new Selections.SelectionToolbar();
-        let widthConstraint =
-            new Clutter.BindConstraint({ source: this._contentsActor,
-                                         coordinate: Clutter.BindCoordinate.WIDTH,
-                                         offset: - 300 });
-        this._selectionToolbar.actor.add_constraint(widthConstraint);
-        this._selectionToolbar.actor.connect('notify::width', Lang.bind(this,
-            function() {
-                let width = this._contentsActor.width;
-                let offset = 300;
-
-                if (width > 1000)
-                    offset += (width - 1000);
-                else if (width < 600)
-                    offset -= (600 - width);
-
-                widthConstraint.offset = - offset;
-            }));
-
-        this._selectionToolbar.actor.add_constraint(
-            new Clutter.AlignConstraint({ align_axis: Clutter.AlignAxis.X_AXIS,
-                                          source: this._contentsActor,
-                                          factor: 0.50 }));
-        this._selectionToolbar.actor.add_constraint(
-            new Clutter.AlignConstraint({ align_axis: Clutter.AlignAxis.Y_AXIS,
-                                          source: this._contentsActor,
-                                          factor: 0.95 }));
+        this._selectionToolbar = new Selections.SelectionToolbar(this._contentsActor);
         this._overlayLayout.add(this._selectionToolbar.actor,
             Clutter.BinAlignment.FIXED, Clutter.BinAlignment.FIXED);
 
@@ -158,16 +133,17 @@ const ViewEmbed = new Lang.Class({
     _onQueryStatusChanged: function() {
         let queryStatus = Global.trackerController.getQueryStatus();
 
-        if (queryStatus)
+        if (queryStatus) {
+            this._errorBox.moveOut();
             this._spinnerBox.moveIn();
-        else
+        } else {
             this._spinnerBox.moveOut();
+        }
     },
 
     _onFullscreenChanged: function(controller, fullscreen) {
         if (fullscreen) {
-            this._previewEmbed = new Preview.PreviewEmbed(this._docModel,
-                this._overlayLayout, this._contentsActor, this._scrolledWinPreview);
+            this._previewEmbed = new Preview.PreviewEmbed(this._preview, this._overlayLayout, this._contentsActor);
         } else {
             this._previewEmbed.destroy();
             this._previewEmbed = null;
@@ -204,37 +180,13 @@ const ViewEmbed = new Lang.Class({
             this._windowModeChangeFlash();
     },
 
-    _destroyScrollPreviewChild: function() {
-        let child = this._scrolledWinPreview.get_child();
-        if (child)
-            child.destroy();
-    },
-
-    _destroyPreview: function() {
-        if (this._loaderCancellable) {
-            this._loaderCancellable.cancel();
-            this._loaderCancellable = null;
-        }
-
-        if (this._preview) {
-            this._preview.destroy();
-            this._preview = null;
-        }
-
-        this._spinnerBox.moveOut();
-        this._docModel = null;
-    },
-
     _onActiveItemChanged: function() {
         let doc = Global.documentManager.getActiveItem();
 
         if (!doc)
             return;
 
-        this._destroyPreview();
-
         let collection = Global.collectionManager.getItemById(doc.id);
-
         if (collection) {
             Global.collectionManager.setActiveItem(collection);
             Global.modeController.setWindowMode(WindowMode.WindowMode.OVERVIEW);
@@ -258,31 +210,34 @@ const ViewEmbed = new Lang.Class({
             return;
         }
 
-        this._docModel = EvView.DocumentModel.new_with_document(evDoc);
-        this._toolbar.setModel(this._docModel);
+        let docModel = EvView.DocumentModel.new_with_document(evDoc);
+
+        this._toolbar.setModel(docModel);
+        this._preview.setModel(docModel);
+        this._preview.widget.grab_focus();
 
         this._spinnerBox.moveOut();
         Global.modeController.setCanFullscreen(true);
-        this._preview = new Preview.PreviewView(this._docModel);
-
-        this._scrolledWinPreview.add(this._preview.widget);
-        this._preview.widget.grab_focus();
     },
 
     _prepareForOverview: function() {
-        this._destroyPreview();
-
         Global.documentManager.setActiveItem(null);
 
-        this._queryErrorId =
-            Global.errorHandler.connect('query-error',
-                                        Lang.bind(this, this._onQueryError));
+        if (this._loaderCancellable) {
+            this._loaderCancellable.cancel();
+            this._loaderCancellable = null;
+        }
 
-        if (!this._scrolledWinView) {
+        this._spinnerBox.moveOut();
+        this._errorBox.moveOut();
+
+        if (this._preview)
+            this._preview.setModel(null);
+
+        if (!this._view) {
             let grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
             this._view = new View.View();
-            this._scrolledWinView = this._view.widget;
-            grid.add(this._scrolledWinView);
+            grid.add(this._view.widget);
 
             this._loadMore = new LoadMore.LoadMoreButton();
             grid.add(this._loadMore.widget);
@@ -291,23 +246,26 @@ const ViewEmbed = new Lang.Class({
             this._viewPage = this._notebook.append_page(grid, null);
         }
 
+        this._queryErrorId =
+            Global.errorHandler.connect('query-error',
+                                        Lang.bind(this, this._onQueryError));
         this._adjustmentValueId =
-            this._scrolledWinView.vadjustment.connect('value-changed',
-                                                      Lang.bind(this, this._onScrolledWinChange));
+            this._view.widget.vadjustment.connect('value-changed',
+                                                  Lang.bind(this, this._onScrolledWinChange));
         this._adjustmentChangedId =
-            this._scrolledWinView.vadjustment.connect('changed',
-                                                      Lang.bind(this, this._onScrolledWinChange));
+            this._view.widget.vadjustment.connect('changed',
+                                                  Lang.bind(this, this._onScrolledWinChange));
         this._scrollbarVisibleId =
-            this._scrolledWinView.get_vscrollbar().connect('notify::visible',
-                                                           Lang.bind(this, this._onScrolledWinChange));
+            this._view.widget.get_vscrollbar().connect('notify::visible',
+                                                       Lang.bind(this, this._onScrolledWinChange));
         this._onScrolledWinChange();
 
         this._notebook.set_current_page(this._viewPage);
     },
 
     _onScrolledWinChange: function() {
-        let vScrollbar = this._scrolledWinView.get_vscrollbar();
-        let adjustment = this._scrolledWinView.vadjustment;
+        let vScrollbar = this._view.widget.get_vscrollbar();
+        let adjustment = this._view.widget.vadjustment;
         let revealAreaHeight = 32;
 
         // if there's no vscrollbar, or if it's not visible, hide the button
@@ -333,10 +291,7 @@ const ViewEmbed = new Lang.Class({
     },
 
     _onQueryError: function(manager, message, exception) {
-        this._prepareForPreview();
-
-        let errorBox = new ErrorBox.ErrorBox(message, exception.message);
-        this._scrolledWinPreview.add_with_viewport(errorBox.widget);
+        this._setError(message, exception.message);
     },
 
     _prepareForPreview: function() {
@@ -346,37 +301,35 @@ const ViewEmbed = new Lang.Class({
         }
 
         if (this._adjustmentValueId != 0) {
-            this._scrolledWinView.vadjustment.disconnect(this._adjustmentValueId);
+            this._view.widget.vadjustment.disconnect(this._adjustmentValueId);
             this._adjustmentValueId = 0;
         }
         if (this._adjustmentChangedId != 0) {
-            this._scrolledWinView.vadjustment.disconnect(this._adjustmentChangedId);
+            this._view.widget.vadjustment.disconnect(this._adjustmentChangedId);
             this._adjustmentChangedId = 0;
         }
         if (this._scrollbarVisibleId != 0) {
-            this._scrolledWinView.get_vscrollbar().disconnect(this._scrollbarVisibleId);
+            this._view.widget.get_vscrollbar().disconnect(this._scrollbarVisibleId);
             this._scrollbarVisibleId = 0;
         }
 
-        if (!this._scrolledWinPreview) {
-            this._scrolledWinPreview = new Gtk.ScrolledWindow({ hexpand: true,
-                                                                vexpand: true,
-                                                                shadow_type: Gtk.ShadowType.IN });
-            this._scrolledWinPreview.get_style_context().add_class('documents-scrolledwin');
-            this._scrolledWinPreview.show();
-            this._previewPage = this._notebook.append_page(this._scrolledWinPreview, null);
-        } else {
-            this._destroyScrollPreviewChild();
+        if (!this._preview) {
+            this._preview = new Preview.PreviewView();
+            this._previewPage = this._notebook.append_page(this._preview.widget, null);
         }
 
         this._notebook.set_current_page(this._previewPage);
+    },
+
+    _setError: function(primary, secondary) {
+        this._errorBox.update(primary, secondary);
+        this._errorBox.moveIn();
     },
 
     _onLoadError: function(manager, message, exception) {
         this._loaderCancellable = null;
         this._spinnerBox.moveOut();
 
-        let errorBox = new ErrorBox.ErrorBox(message, exception.message);
-        this._scrolledWinPreview.add_with_viewport(errorBox.widget);
+        this._setError(message, exception.message);
     }
 });
