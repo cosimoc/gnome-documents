@@ -50,6 +50,7 @@ const PropertiesDialog = new Lang.Class({
             function(urn) {
         let doc = Global.documentManager.getItemById(urn);
 
+	this.docId = doc.id;
         this._nameMetadata = doc.name;
         this._authorMetadata = doc.author;
 
@@ -93,24 +94,24 @@ const PropertiesDialog = new Lang.Class({
 
         let contentArea = this.widget.get_content_area();
 
-        this._done = new Gtk.Button({label: "Done"}); //label for Done button in Properties dialog
+        this._done = new Gtk.Button({label: "Done"}); //Label for Done button in Properties dialog
         this.widget.add_button('Done', Gtk.ResponseType.OK); 
 
 
        
-        this._message = new Gtk.Label ({ label: _("<span size='large'><b>"+"Properties"+"</b></span>"), //label for Properties dialog
+        this._message = new Gtk.Label ({ label: _("<span size='large'><b>"+"Properties"+"</b></span>"), //Label for Properties dialog
                                          halign: Gtk.Align.CENTER,
                                          use_markup: true, 
                                          hexpand: false });
         grid.attach (this._message, 1, 0, 1, 1);
         
-        this._title = new Gtk.Label({ label: _("Title: "), //label for Title item in Properties dialog
+        this._title = new Gtk.Label({ label: _("Title: "), //Label for Title item in Properties dialog
                                       halign: Gtk.Align.END });
         this._title.get_style_context ().add_class('dim-label')
         grid.add(this._title);
 
        
-        this._author = new Gtk.Label({ label: _("Author: "), //label for Author item in Properties dialog
+        this._author = new Gtk.Label({ label: _("Author: "), //Label for Author item in Properties dialog
                                        halign: Gtk.Align.END });
         this._author.get_style_context ().add_class('dim-label')
         grid.add(this._author);
@@ -122,7 +123,7 @@ const PropertiesDialog = new Lang.Class({
         grid.add (this._source);
 
         
-        this._dateModified = new Gtk.Label({ label: _("Date Modified: "),//Label for Date Modified item in Properties dialog
+        this._dateModified = new Gtk.Label({ label: _("Date Modified: "), //Label for Date Modified item in Properties dialog
                                              halign: Gtk.Align.END });
         this._dateModified.get_style_context ().add_class('dim-label')
         grid.add (this._dateModified);
@@ -134,24 +135,24 @@ const PropertiesDialog = new Lang.Class({
         grid.add (this._dateCreated);
         }
 
-        this._docType = new Gtk.Label({ label: _("Type: "), //label for document Type in Properties dialog
+        this._docType = new Gtk.Label({ label: _("Type: "), //Label for document Type in Properties dialog
                                         halign: Gtk.Align.END });
         this._docType.get_style_context ().add_class('dim-label')
         grid.add (this._docType);
 
         
-       // if (doc instanceof Documents.LocalDocument ) {
+        if (doc instanceof Documents.LocalDocument ) {
             this._titleData = new Gtk.Entry({ text: this._nameMetadata,
                                               editable: true,
                                               hexpand: true,
                                               halign: Gtk.Align.START });
             grid.attach_next_to (this._titleData, this._title, 1, 2, 1);
-            this._titleData.connect("changed", Lang.bind (this, this._setEditedName));
-          // } else {
-         //   this._titleData = new Gtk.Label({ label: this._nameMetadata,
+            this._titleData.connect("changed", Lang.bind (this, this._setEditedName, this.docId));
+         } else {
+            this._titleData = new Gtk.Label({ label: this._nameMetadata,
                                               halign: Gtk.Align.START });
-      //  }
-      //  grid.attach_next_to (this._titleData, this._title, 1, 2, 1);
+       	    grid.attach_next_to (this._titleData, this._title, 1, 2, 1);
+	}
 
 
         this._authorData = new Gtk.Label({ label: this._authorMetadata,
@@ -170,9 +171,9 @@ const PropertiesDialog = new Lang.Class({
      
 
         if (this._dateCreatedMetadata) {
-        this._dateCreatedData = new Gtk.Label({ label: this._dateCreatedMetadata,
-                                                halign: Gtk.Align.START });
-        grid.attach_next_to (this._dateCreatedData, this._dateCreated, 1, 2, 1);
+      	  this._dateCreatedData = new Gtk.Label({ label: this._dateCreatedMetadata,
+                                                  halign: Gtk.Align.START });
+          grid.attach_next_to (this._dateCreatedData, this._dateCreated, 1, 2, 1);
         }
 
         this._documentTypeData = new Gtk.Label({ label: this._documentTypeMetadata,
@@ -185,8 +186,8 @@ const PropertiesDialog = new Lang.Class({
         this.widget.show_all();
       },
 
-     _setEditedName: function(urn) {
+     _setEditedName: function(_newTitle, docId) {
         this._newTitle = this._titleData.get_text();
-        TrackerUtils._setEditedName(urn, this._newTitle, null); 
+        TrackerUtils.setEditedName(this._newTitle, docId, null); 
     }
 });
