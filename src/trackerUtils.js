@@ -21,6 +21,8 @@
 
 const GLib = imports.gi.GLib;
 
+const Properties = imports.properties;
+
 const Global = imports.global;
 
 function setFavorite(urn, isFavorite, callback) {
@@ -38,18 +40,18 @@ function setFavorite(urn, isFavorite, callback) {
                 callback();
         });
 
-function _setEditedName(urn, _newTitle, callback) {
-    let sparql = ('INSERT OR REPLACE {<%s>  a nfo:TextDocument;  nfo:fileName\"%s\"}'.format(urn, _newTitle));
+function setEditedName( _newTitle, docId, callback) {
+    let sparql = ('INSERT OR REPLACE {<%s>  a nfo:TextDocument;  nfo:fileName\"%s\"}'.format(docId, _newTitle));
     Global.connectionQueue.update(sparql, null,
         function(object, res) {
             try {
                 object.update_finish(res);
             } catch (e) {
-                log('Unable to set the new title on ' + urn + ' to : ' + e.toString());
+                log('Unable to set the new title on ' + docId + ' to : ' + e.toString());
             }
 
             if (callback)
                 callback();
         });
 }
-	
+
