@@ -958,10 +958,8 @@ const SelectionToolbar = new Lang.Class({
 
         dialog.widget.connect('response', Lang.bind(this,
             function(widget, response) {
-                if (response == Gtk.ResponseType.OK) {
                     dialog.widget.destroy();
                     this._fadeIn();
-              }
             }));
     },
 
