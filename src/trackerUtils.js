@@ -41,6 +41,7 @@ function setFavorite(urn, isFavorite, callback) {
 
 function setEditedName( _newTitle, docId, callback) {
     let sparql = ('INSERT OR REPLACE {<%s>  a nfo:TextDocument;  nfo:fileName\"%s\"}'.format(docId, _newTitle));
+
     Global.connectionQueue.update(sparql, null,
         function(object, res) {
             try {
