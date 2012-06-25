@@ -21,9 +21,8 @@
 
 const GLib = imports.gi.GLib;
 
-const Properties = imports.properties;
-
 const Global = imports.global;
+const Properties = imports.properties;
 
 function setFavorite(urn, isFavorite, callback) {
     let sparql = ('%s { <%s> nao:hasTag nao:predefined-tag-favorite }').format((isFavorite ? 'INSERT OR REPLACE' : 'DELETE'), urn);
