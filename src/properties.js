@@ -44,8 +44,8 @@ const PropertiesDialog = new Lang.Class({
     Name: 'PropertiesDialog',
  	
     _init: function(urn) {
-        
-        	let doc = Global.documentManager.getItemById(urn);
+       this._urn = urn; 
+        	let doc = Global.documentManager.getItemById(this._urn);
 
 		this.docId = doc.id;
         	this._nameMetadata = doc.name;

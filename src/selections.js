@@ -956,7 +956,7 @@ const SelectionToolbar = new Lang.Class({
      // this.selection(Lang.bind(this,
  //           function(urn) {
         let dialog = new Properties.PropertiesDialog(urn);
-        this._fadeOut();
+        this._fadeOut();//}));
 
         dialog.widget.connect('response', Lang.bind(this,
             function(widget, response) {
