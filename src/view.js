@@ -35,6 +35,59 @@ const TrackerUtils = imports.trackerUtils;
 const WindowMode = imports.windowMode;
 const Utils = imports.utils;
 
+const LoadMoreButton = new Lang.Class({
+    Name: 'LoadMoreButton',
+
+    _init: function() {
+        this._block = false;
+
+        this._controller = Global.offsetController;
+        this._controllerId =
+            this._controller.connect('item-count-changed',
+                                     Lang.bind(this, this._onItemCountChanged));
+
+        this.widget = new Gtk.Button({ no_show_all: true });
+        this.widget.get_style_context().add_class('documents-load-more');
+        this.widget.connect('clicked', Lang.bind(this,
+            function() {
+                this._controller.increaseOffset();
+            }));
+
+        this.widget.connect('destroy', Lang.bind(this,
+            function() {
+                this._controller.disconnect(this._controllerId);
+            }));
+
+        this._onItemCountChanged();
+    },
+
+    _onItemCountChanged: function() {
+        let remainingDocs = this._controller.getRemainingDocs();
+        let offsetStep = this._controller.getOffsetStep();
+
+        if (remainingDocs <= 0 || this._block) {
+            this.widget.hide();
+            return;
+        }
+
+        if (remainingDocs > offsetStep)
+            remainingDocs = offsetStep;
+
+        this.widget.label = Gettext.ngettext("Load %d more document",
+                                             "Load %d more documents",
+                                             remainingDocs).format(remainingDocs);
+        this.widget.show();
+    },
+
+    setBlock: function(block) {
+        if (this._block == block)
+            return;
+
+        this._block = block;
+        this._onItemCountChanged();
+    }
+});
+
 const ContextMenu = new Lang.Class({
     Name: 'ContextMenu',
 
@@ -103,17 +156,28 @@ const ContextMenu = new Lang.Class({
     }
 });
 
-const View = new Lang.Class({
-    Name: 'View',
+const ViewContainer = new Lang.Class({
+    Name: 'ViewContainer',
 
     _init: function() {
-        this.widget = new Gd.MainView();
+        this._adjustmentValueId = 0;
+        this._adjustmentChangedId = 0;
+        this._scrollbarVisibleId = 0;
 
-        this.widget.connect('item-activated',
+        this.widget = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
+        this.view = new Gd.MainView();
+        this.widget.add(this.view);
+
+        this._loadMore = new LoadMoreButton();
+        this.widget.add(this._loadMore.widget);
+
+        this.widget.show_all();
+
+        this.view.connect('item-activated',
                             Lang.bind(this, this._onItemActivated));
-        this.widget.connect('selection-mode-request',
+        this.view.connect('selection-mode-request',
                             Lang.bind(this, this._onSelectionModeRequest));
-        this.widget.connect('view-selection-changed',
+        this.view.connect('view-selection-changed',
                             Lang.bind(this, this._onViewSelectionChanged));
 
         // connect to settings change for list/grid view
@@ -128,6 +192,10 @@ const View = new Lang.Class({
                                                Lang.bind(this, this._onSelectionModeChanged));
         this._onSelectionModeChanged();
 
+        Global.modeController.connect('window-mode-changed',
+                                      Lang.bind(this, this._onWindowModeChanged));
+        this._onWindowModeChanged();
+
         this._queryId =
             Global.trackerController.connect('query-status-changed',
                                              Lang.bind(this, this._onQueryStatusChanged));
@@ -136,19 +204,18 @@ const View = new Lang.Class({
 
         // this will create the model if we're done querying
         this._onQueryStatusChanged();
-        this.widget.show();
     },
 
     _updateTypeForSettings: function() {
         let viewType = Global.settings.get_enum('view-as');
-        this.widget.set_view_type(viewType);
+        this.view.set_view_type(viewType);
 
         if (viewType == Gd.MainViewType.LIST)
             this._addListRenderers();
     },
 
     _addListRenderers: function() {
-        let listWidget = this.widget.get_generic_view();
+        let listWidget = this.view.get_generic_view();
 
         let typeRenderer =
             new Gd.StyledTextRenderer({ xpad: 16 });
@@ -232,7 +299,7 @@ const View = new Lang.Class({
         if (!status) {
             // setup a model if we're not querying
             this._treeModel = Global.documentManager.getModel().model;
-            this.widget.set_model(this._treeModel);
+            this.view.set_model(this._treeModel);
 
             // unfreeze selection
             Global.selectionController.freezeSelection(false);
@@ -244,7 +311,7 @@ const View = new Lang.Class({
             // if we're querying, clear the model from the view,
             // so that we don't uselessly refresh the rows
             this._treeModel = null;
-            this.widget.set_model(null);
+            this.view.set_model(null);
         }
     },
 
@@ -255,7 +322,7 @@ const View = new Lang.Class({
         if (!selected.length)
             return;
 
-        let generic = this.widget.get_generic_view();
+        let generic = this.view.get_generic_view();
         let first = true;
         this._treeModel.foreach(Lang.bind(this,
             function(model, path, iter) {
@@ -283,13 +350,76 @@ const View = new Lang.Class({
 
     _onSelectionModeChanged: function() {
         let selectionMode = Global.selectionController.getSelectionMode();
-        this.widget.set_selection_mode(selectionMode);
+        this.view.set_selection_mode(selectionMode);
     },
 
     _onViewSelectionChanged: function() {
         // update the selection on the controller when the view signals a change
-        let selectedURNs = Utils.getURNsFromPaths(this.widget.get_selection(),
+        let selectedURNs = Utils.getURNsFromPaths(this.view.get_selection(),
                                                   this._treeModel);
         Global.selectionController.setSelection(selectedURNs);
+    },
+
+    _onWindowModeChanged: function() {
+        let mode = Global.modeController.getWindowMode();
+        if (mode == WindowMode.WindowMode.OVERVIEW)
+            this._connectView();
+        else
+            this._disconnectView();
+    },
+
+    _connectView: function() {
+        this._adjustmentValueId =
+            this.view.vadjustment.connect('value-changed',
+                                          Lang.bind(this, this._onScrolledWinChange));
+        this._adjustmentChangedId =
+            this.view.vadjustment.connect('changed',
+                                          Lang.bind(this, this._onScrolledWinChange));
+        this._scrollbarVisibleId =
+            this.view.get_vscrollbar().connect('notify::visible',
+                                               Lang.bind(this, this._onScrolledWinChange));
+        this._onScrolledWinChange();
+    },
+
+    _onScrolledWinChange: function() {
+        let vScrollbar = this.view.get_vscrollbar();
+        let adjustment = this.view.vadjustment;
+        let revealAreaHeight = 32;
+
+        // if there's no vscrollbar, or if it's not visible, hide the button
+        if (!vScrollbar ||
+            !vScrollbar.get_visible()) {
+            this._loadMore.setBlock(true);
+            return;
+        }
+
+        let value = adjustment.value;
+        let upper = adjustment.upper;
+        let page_size = adjustment.page_size;
+
+        let end = false;
+
+        // special case this values which happen at construction
+        if ((value == 0) && (upper == 1) && (page_size == 1))
+            end = false;
+        else
+            end = !(value < (upper - page_size - revealAreaHeight));
+
+        this._loadMore.setBlock(!end);
+    },
+
+    _disconnectView: function() {
+        if (this._adjustmentValueId != 0) {
+            this.view.vadjustment.disconnect(this._adjustmentValueId);
+            this._adjustmentValueId = 0;
+        }
+        if (this._adjustmentChangedId != 0) {
+            this.view.vadjustment.disconnect(this._adjustmentChangedId);
+            this._adjustmentChangedId = 0;
+        }
+        if (this._scrollbarVisibleId != 0) {
+            this.view.get_vscrollbar().disconnect(this._scrollbarVisibleId);
+            this._scrollbarVisibleId = 0;
+        }
     }
 });

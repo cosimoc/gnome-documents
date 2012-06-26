@@ -8,7 +8,6 @@ dist_js_DATA = \
     errorBox.js \
     gDataMiner.js \
     global.js \
-    loadMore.js \
     main.js \
     mainToolbar.js \
     mainWindow.js \

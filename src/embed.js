@@ -24,7 +24,6 @@ const Mainloop = imports.mainloop;
 
 const ErrorBox = imports.errorBox;
 const Global = imports.global;
-const LoadMore = imports.loadMore;
 const MainToolbar = imports.mainToolbar;
 const Preview = imports.preview;
 const Searchbar = imports.searchbar;
@@ -47,11 +46,8 @@ const Embed = new Lang.Class({
     Name: 'Embed',
 
     _init: function() {
-        this._adjustmentValueId = 0;
-        this._adjustmentChangedId = 0;
         this._loaderCancellable = null;
         this._queryErrorId = 0;
-        this._scrollbarVisibleId = 0;
 
         // the embed is a vertical ClutterBox
         this._overlayLayout = new Clutter.BinLayout();
@@ -114,6 +110,10 @@ const Embed = new Lang.Class({
         // pack the OSD notification actor
         this._viewLayout.add(Global.notificationManager.actor,
             Clutter.BinAlignment.CENTER, Clutter.BinAlignment.START);
+
+        // now create the actual content widgets
+        this._view = new View.ViewContainer();
+        this._viewPage = this._notebook.append_page(this._view.widget, null);
 
         Global.errorHandler.connect('load-error',
                                     Lang.bind(this, this._onLoadError));
@@ -228,60 +228,11 @@ const Embed = new Lang.Class({
         this._spinnerBox.moveOut();
         this._errorBox.moveOut();
 
-        if (!this._view) {
-            let grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
-            this._view = new View.View();
-            grid.add(this._view.widget);
-
-            this._loadMore = new LoadMore.LoadMoreButton();
-            grid.add(this._loadMore.widget);
-
-            grid.show_all();
-            this._viewPage = this._notebook.append_page(grid, null);
-        }
-
         this._queryErrorId =
             Global.errorHandler.connect('query-error',
                                         Lang.bind(this, this._onQueryError));
-        this._adjustmentValueId =
-            this._view.widget.vadjustment.connect('value-changed',
-                                                  Lang.bind(this, this._onScrolledWinChange));
-        this._adjustmentChangedId =
-            this._view.widget.vadjustment.connect('changed',
-                                                  Lang.bind(this, this._onScrolledWinChange));
-        this._scrollbarVisibleId =
-            this._view.widget.get_vscrollbar().connect('notify::visible',
-                                                       Lang.bind(this, this._onScrolledWinChange));
-        this._onScrolledWinChange();
 
         this._notebook.set_current_page(this._viewPage);
-    },
-
-    _onScrolledWinChange: function() {
-        let vScrollbar = this._view.widget.get_vscrollbar();
-        let adjustment = this._view.widget.vadjustment;
-        let revealAreaHeight = 32;
-
-        // if there's no vscrollbar, or if it's not visible, hide the button
-        if (!vScrollbar ||
-            !vScrollbar.get_visible()) {
-            this._loadMore.setBlock(true);
-            return;
-        }
-
-        let value = adjustment.value;
-        let upper = adjustment.upper;
-        let page_size = adjustment.page_size;
-
-        let end = false;
-
-        // special case this values which happen at construction
-        if ((value == 0) && (upper == 1) && (page_size == 1))
-            end = false;
-        else
-            end = !(value < (upper - page_size - revealAreaHeight));
-
-        this._loadMore.setBlock(!end);
     },
 
     _onQueryError: function(manager, message, exception) {
@@ -292,19 +243,6 @@ const Embed = new Lang.Class({
         if (this._queryErrorId != 0) {
             Global.errorHandler.disconnect(this._queryErrorId);
             this._queryErrorId = 0;
-        }
-
-        if (this._adjustmentValueId != 0) {
-            this._view.widget.vadjustment.disconnect(this._adjustmentValueId);
-            this._adjustmentValueId = 0;
-        }
-        if (this._adjustmentChangedId != 0) {
-            this._view.widget.vadjustment.disconnect(this._adjustmentChangedId);
-            this._adjustmentChangedId = 0;
-        }
-        if (this._scrollbarVisibleId != 0) {
-            this._view.widget.get_vscrollbar().disconnect(this._scrollbarVisibleId);
-            this._scrollbarVisibleId = 0;
         }
 
         if (!this._preview) {
