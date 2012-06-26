@@ -19,6 +19,7 @@
  *
  */
 
+const EvView = imports.gi.EvinceView;
 const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const Gd = imports.gi.Gd;
@@ -604,6 +605,17 @@ const DocCommon = new Lang.Class({
             retval = '{ ?urn nie:isPartOf <' + this.id + '> }';
 
         return retval;
+    },
+
+    _finishLoad: function(document, callback, exception) {
+        let docModel = null;
+        if (exception) {
+            Global.errorHandler.addLoadError(this, exception);
+        } else {
+            docModel = EvView.DocumentModel.new_with_document(document);
+        }
+
+        callback(this, docModel, exception);
     }
 });
 Signals.addSignalMethods(DocCommon.prototype);
@@ -638,9 +650,9 @@ const LocalDocument = new Lang.Class({
             function(source, res) {
                 try {
                     let document = Gd.pdf_loader_load_uri_finish(res);
-                    callback(this, document, null);
+                    this._finishLoad(document, callback, null);
                 } catch (e) {
-                    callback(this, null, e);
+                    this._finishLoad(null, callback, e);
                 }
             }));
     },
@@ -709,11 +721,10 @@ const GoogleDocument = new Lang.Class({
                         function(source, res) {
                             try {
                                 let document = Gd.pdf_loader_load_uri_finish(res);
-                                callback(this, document, null);
+                                this._finishLoad(document, callback, null);
                             } catch (e) {
                                 // report the outmost error only
-                                callback(this, null, exception);
-                                return;
+                                this._finishLoad(null, callback, exception);
                             }
                         }));
 
@@ -724,10 +735,10 @@ const GoogleDocument = new Lang.Class({
                     (entry, service, cancellable, Lang.bind(this,
                         function(source, res) {
                             try {
-                                let document = Gd.pdf_loader_load_gdata_entry_finish(res);
-                                callback(this, document, null);
+                                let document = Gd.pdf_loader_load_uri_finish(res);
+                                this._finishLoad(document, callback, null);
                             } catch (e) {
-                                callback(this, null, e);
+                                this._finishLoad(null, callback, e);
                             }
                         }));
             }));
@@ -849,11 +860,10 @@ const SkydriveDocument = new Lang.Class({
                         function(source, res) {
                             try {
                                 let document = Gd.pdf_loader_load_uri_finish(res);
-                                callback(this, document, null);
+                                this._finishLoad(document, callback, null);
                             } catch (e) {
                                 // report the outmost error only
-                                callback(this, null, exception);
-                                return;
+                                this._finishLoad(null, callback, exception);
                             }
                         }));
 
@@ -865,9 +875,9 @@ const SkydriveDocument = new Lang.Class({
                         function(source, res) {
                             try {
                                 let document = Gd.pdf_loader_load_zpj_entry_finish(res);
-                                callback(this, document, null);
+                                this._finishLoad(document, callback, null);
                             } catch (e) {
-                                callback(this, null, e);
+                                this._finishLoad(null, callback, e);
                             }
                         }));
             }));

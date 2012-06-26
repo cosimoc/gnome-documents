@@ -201,15 +201,12 @@ const ViewEmbed = new Lang.Class({
         doc.load(this._loaderCancellable, Lang.bind(this, this._onDocumentLoaded));
     },
 
-    _onDocumentLoaded: function(doc, evDoc, error) {
+    _onDocumentLoaded: function(doc, docModel, error) {
         this._loaderCancellable = null;
 
-        if (!evDoc) {
-            Global.errorHandler.addLoadError(doc, error);
+        if (!docModel) {
             return;
         }
-
-        let docModel = EvView.DocumentModel.new_with_document(evDoc);
 
         this._toolbar.setModel(docModel);
         this._preview.setModel(docModel);
@@ -220,7 +217,8 @@ const ViewEmbed = new Lang.Class({
     },
 
     _prepareForOverview: function() {
-        Global.documentManager.setActiveItem(null);
+        if (this._preview)
+            this._preview.setModel(null);
 
         if (this._loaderCancellable) {
             this._loaderCancellable.cancel();
@@ -229,9 +227,6 @@ const ViewEmbed = new Lang.Class({
 
         this._spinnerBox.moveOut();
         this._errorBox.moveOut();
-
-        if (this._preview)
-            this._preview.setModel(null);
 
         if (!this._view) {
             let grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
