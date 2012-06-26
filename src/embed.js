@@ -115,6 +115,9 @@ const Embed = new Lang.Class({
         this._view = new View.ViewContainer();
         this._viewPage = this._notebook.append_page(this._view.widget, null);
 
+        this._preview = new Preview.PreviewView();
+        this._previewPage = this._notebook.append_page(this._preview.widget, null);
+
         Global.errorHandler.connect('load-error',
                                     Lang.bind(this, this._onLoadError));
 
@@ -243,11 +246,6 @@ const Embed = new Lang.Class({
         if (this._queryErrorId != 0) {
             Global.errorHandler.disconnect(this._queryErrorId);
             this._queryErrorId = 0;
-        }
-
-        if (!this._preview) {
-            this._preview = new Preview.PreviewView();
-            this._previewPage = this._notebook.append_page(this._preview.widget, null);
         }
 
         this._notebook.set_current_page(this._previewPage);
