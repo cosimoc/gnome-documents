@@ -89,7 +89,7 @@ const MainWindow = new Lang.Class({
         Global.modeController.connect('fullscreen-changed',
                                       Lang.bind(this, this._onFullscreenChanged));
 
-        this._embed = new Embed.ViewEmbed();
+        this._embed = new Embed.Embed();
         this._embed.actor.add_constraint(
             new Clutter.BindConstraint({ coordinate: Clutter.BindCoordinate.SIZE,
                                          source: stage }));

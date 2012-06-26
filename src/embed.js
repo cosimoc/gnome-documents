@@ -43,8 +43,8 @@ const GtkClutter = imports.gi.GtkClutter;
 
 const _PDF_LOADER_TIMEOUT = 400;
 
-const ViewEmbed = new Lang.Class({
-    Name: 'ViewEmbed',
+const Embed = new Lang.Class({
+    Name: 'Embed',
 
     _init: function() {
         this._adjustmentValueId = 0;
