@@ -43,10 +43,8 @@ const Signals = imports.signals;
 const PropertiesDialog = new Lang.Class({
     Name: 'PropertiesDialog',
  	
-    _init: function() {
-        let selection = Global.selectionController.getSelection();
-        selection.forEach(Lang.bind(this,
-            function(urn) {
+    _init: function(urn) {
+        
         	let doc = Global.documentManager.getItemById(urn);
 
 		this.docId = doc.id;
