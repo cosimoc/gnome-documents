@@ -143,10 +143,10 @@ const ViewEmbed = new Lang.Class({
 
     _onFullscreenChanged: function(controller, fullscreen) {
         if (fullscreen) {
-            this._previewEmbed = new Preview.PreviewEmbed(this._preview, this._overlayLayout, this._contentsActor);
+            this._previewFullscreen = new Preview.PreviewFullscreen(this._preview, this._overlayLayout, this._contentsActor);
         } else {
-            this._previewEmbed.destroy();
-            this._previewEmbed = null;
+            this._previewFullscreen.destroy();
+            this._previewFullscreen = null;
         }
 
         Gtk.Settings.get_default().gtk_application_prefer_dark_theme = fullscreen;

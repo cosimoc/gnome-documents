@@ -173,8 +173,8 @@ const PreviewThumbnails = new Lang.Class({
     }
 });
 
-const PreviewEmbed = new Lang.Class({
-    Name: 'PreviewEmbed',
+const PreviewFullscreen = new Lang.Class({
+    Name: 'PreviewFullscreen',
 
     _init: function(previewView, layout, parentActor) {
         this._motionTimeoutId = 0;
