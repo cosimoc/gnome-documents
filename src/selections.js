@@ -952,8 +952,10 @@ const SelectionToolbar = new Lang.Class({
         let toplevel = this.widget.get_toplevel();
         if (!toplevel.is_toplevel())
             return;
-
-        let dialog = new Properties.PropertiesDialog();//toplevel?
+      //let selection = Global.selectionController.getSelection();
+     // this.selection(Lang.bind(this,
+ //           function(urn) {
+        let dialog = new Properties.PropertiesDialog(urn);
         this._fadeOut();
 
         dialog.widget.connect('response', Lang.bind(this,
