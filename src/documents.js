@@ -993,13 +993,19 @@ const DocumentManager = new Lang.Class({
     },
 
     setActiveItem: function(doc) {
-        if (this.parent(doc)) {
+        if (!this.parent(doc))
+            return;
 
-            if (doc && !doc.collection) {
-                let recentManager = Gtk.RecentManager.get_default();
-                recentManager.add_item(doc.uri);
-            }
+        if (!doc)
+            return;
+
+        if (doc.collection) {
+            Global.collectionManager.setActiveItem(doc);
+            return;
         }
+
+        let recentManager = Gtk.RecentManager.get_default();
+        recentManager.add_item(doc.uri);
     },
 
     getModel: function() {

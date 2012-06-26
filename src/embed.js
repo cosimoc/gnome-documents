@@ -188,7 +188,6 @@ const ViewEmbed = new Lang.Class({
 
         let collection = Global.collectionManager.getItemById(doc.id);
         if (collection) {
-            Global.collectionManager.setActiveItem(collection);
             Global.modeController.setWindowMode(WindowMode.WindowMode.OVERVIEW);
             return;
         }
