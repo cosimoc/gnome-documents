@@ -681,14 +681,10 @@ const GoogleDocument = new Lang.Class({
         let authorizer = new Gd.GDataGoaAuthorizer({ goa_object: source.object });
         let service = new GData.DocumentsService({ authorizer: authorizer });
 
-        // HACK: GJS doesn't support introspecting GTypes, so we need to use
-        // GObject.type_from_name(); but for that to work, we need at least one
-        // instance of the GType in question to have ever been created. Ensure that
-        let temp = new GData.DocumentsText();
         service.query_single_entry_async
             (service.get_primary_authorization_domain(),
              this.identifier, null,
-             GObject.type_from_name('GDataDocumentsText'),
+             GData.DocumentsText,
              cancellable, Lang.bind(this,
                  function(object, res) {
                      let entry = null;
