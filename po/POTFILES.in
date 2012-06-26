@@ -6,7 +6,6 @@ src/documents.js
 src/error.js
 src/lib/gd-main-toolbar.c
 src/lib/gd-pdf-loader.c
-src/loadMore.js
 src/mainToolbar.js
 src/mainWindow.js
 src/notifications.js
