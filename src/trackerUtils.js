@@ -38,6 +38,7 @@ function setFavorite(urn, isFavorite, callback) {
             if (callback)
                 callback();
         });
+}
 
 function setEditedName( _newTitle, docId, callback) {
     let sparql = ('INSERT OR REPLACE {<%s>  a nfo:TextDocument;  nfo:fileName\"%s\"}'.format(docId, _newTitle));
