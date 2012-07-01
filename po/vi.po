@@ -114,7 +114,7 @@ msgstr "Tài liệu"
 #. overridden
 #: ../src/documents.js:813 ../src/documents.js:814
 msgid "Skydrive"
-msgstr ""
+msgstr "Skydrive"
 
 #. Translators: %s is the title of a document
 #: ../src/error.js:35
@@ -180,11 +180,11 @@ msgstr "Hoàn tất"
 
 #: ../src/mainToolbar.js:238 ../src/mainToolbar.js:265
 msgid "Back"
-msgstr ""
+msgstr "Lùi"
 
 #: ../src/mainToolbar.js:247
 msgid "Select Items"
-msgstr ""
+msgstr "Chọn mục"
 
 #: ../src/mainWindow.js:231
 msgid "translator-credits"
@@ -256,7 +256,7 @@ msgstr "Tác giả"
 
 #: ../src/selections.js:738
 msgid "Print"
-msgstr ""
+msgstr "In"
 
 #: ../src/selections.js:753
 msgid "Organize"
