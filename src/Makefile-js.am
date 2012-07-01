@@ -20,7 +20,6 @@ dist_js_DATA = \
     query.js \
     searchbar.js \
     selections.js \
-    sharing.js\
     shellSearchProvider.js \
     sources.js \
     spinnerBox.js \
