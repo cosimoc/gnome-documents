@@ -49,7 +49,7 @@ const Embed = new Lang.Class({
         this._loaderCancellable = null;
         this._queryErrorId = 0;
 
-        this.widget = new GtkClutter.Embed();
+        this.widget = new GtkClutter.Embed({ use_layout_size: true });
         this.widget.show();
 
         // the embed is a vertical ClutterBox
