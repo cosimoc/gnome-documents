@@ -49,11 +49,6 @@ const MainWindow = new Lang.Class({
 						  window_position: Gtk.WindowPosition.CENTER,
                                                   hide_titlebar_when_maximized: true,
 						  title: _("Documents") });
-        this._clutterEmbed = new GtkClutter.Embed();
-        this.window.add(this._clutterEmbed);
-        this._clutterEmbed.show();
-
-        let stage = this._clutterEmbed.get_stage();
 
         // apply the last saved window size and position
         let size = Global.settings.get_value('window-size');
@@ -90,10 +85,7 @@ const MainWindow = new Lang.Class({
                                       Lang.bind(this, this._onFullscreenChanged));
 
         this._embed = new Embed.Embed();
-        this._embed.actor.add_constraint(
-            new Clutter.BindConstraint({ coordinate: Clutter.BindCoordinate.SIZE,
-                                         source: stage }));
-        stage.add_actor(this._embed.actor);
+        this.window.add(this._embed.widget);
     },
 
     _saveWindowGeometry: function() {

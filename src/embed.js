@@ -49,9 +49,17 @@ const Embed = new Lang.Class({
         this._loaderCancellable = null;
         this._queryErrorId = 0;
 
+        this.widget = new GtkClutter.Embed();
+        this.widget.show();
+
         // the embed is a vertical ClutterBox
+        let stage = this.widget.get_stage();
         this._overlayLayout = new Clutter.BinLayout();
         this.actor = new Clutter.Box({ layout_manager: this._overlayLayout });
+        this.actor.add_constraint(
+            new Clutter.BindConstraint({ coordinate: Clutter.BindCoordinate.SIZE,
+                                         source: stage }));
+        stage.add_actor(this.actor);
 
         this._contentsLayout = new Clutter.BoxLayout({ vertical: true });
         this._contentsActor = new Clutter.Box({ layout_manager: this._contentsLayout });
