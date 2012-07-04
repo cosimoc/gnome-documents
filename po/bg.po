@@ -8,17 +8,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-07 07:00+0200\n"
-"PO-Revision-Date: 2012-03-07 07:00+0200\n"
+"POT-Creation-Date: 2012-07-04 21:08+0300\n"
+"PO-Revision-Date: 2012-07-04 21:08+0300\n"
 "Last-Translator: Alexander Shopov <ash@kambanaria.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "Language: bg\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:54
+#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:51
+#: ../src/mainWindow.js:224
 msgid "Documents"
 msgstr "Документи"
 
@@ -30,7 +31,7 @@ msgstr "Преглед, управление и споделяне на доку
 msgid "Docs;PDF;Document;"
 msgstr "Документи;PDF;"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:128
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:137
 msgid "View as"
 msgstr "Изглед като"
 
@@ -39,308 +40,314 @@ msgid "View as type"
 msgstr "Изглед като"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:3
-msgid "The active source filter"
-msgstr "Активният изходен филтър"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:4
-msgid "The last active source filter"
-msgstr "Последният активен изходен филтър"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:5
 msgid "Window size"
 msgstr "Размер на прозореца"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:6
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
 msgid "Window size (width and height)."
 msgstr "Размер на прозореца (широчина и височина)."
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:7
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
 msgid "Window position"
 msgstr "Местоположение"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:8
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
 msgid "Window position (x and y)."
 msgstr "Местоположение (x и y)."
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:9
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
 msgid "Window maximized"
 msgstr "Максимизиране на прозорец"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:10
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
 msgid "Window maximized state"
 msgstr "Максимизирано състояние на прозорец"
 
-#: ../src/application.js:126
+#: ../src/application.js:135
 msgid "Grid"
 msgstr "Мрежа"
 
-#: ../src/application.js:127
+#: ../src/application.js:136
 msgid "List"
 msgstr "Списък"
 
-#: ../src/application.js:131
+#: ../src/application.js:140
 msgid "Fullscreen"
 msgstr "На цял екран"
 
-#: ../src/application.js:134
+#: ../src/application.js:143
 msgid "About Documents"
 msgstr "Относно"
 
-#: ../src/application.js:135
+#: ../src/application.js:144
 msgid "Quit"
 msgstr "Спиране на програмата"
 
-#: ../src/documents.js:618 ../src/sources.js:100
+#: ../src/documents.js:633 ../src/sources.js:95
 msgid "Local"
 msgstr "Местни"
 
 # Това е официалният превод, който използват от Google.
 # Не ми харесва, но предполагам, че друго ще създаде объркване.
 #. overridden
-#: ../src/documents.js:681
+#: ../src/documents.js:686
 msgid "Google Docs"
 msgstr "Документи от Google "
 
-#: ../src/documents.js:682
+#: ../src/documents.js:687
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:751
+#: ../src/documents.js:751 ../src/documents.js:890
 msgid "Spreadsheet"
 msgstr "Електронна таблица"
 
-#: ../src/documents.js:753
+#: ../src/documents.js:753 ../src/documents.js:892
 msgid "Presentation"
 msgstr "Презентация"
 
-#: ../src/documents.js:755
+#: ../src/documents.js:755 ../src/documents.js:894
 msgid "Collection"
 msgstr "Колекция"
 
-#: ../src/documents.js:757
+#: ../src/documents.js:757 ../src/documents.js:896
 msgid "Document"
 msgstr "Документ"
 
+#. overridden
+#: ../src/documents.js:824 ../src/documents.js:825
+msgid "Skydrive"
+msgstr "SkyDrive"
+
 #. Translators: %s is the title of a document
-#: ../src/error.js:37
+#: ../src/error.js:39
 #, c-format
 msgid "Unable to load \"%s\" for preview"
 msgstr "Неуспех при зареждането на „%s“ за преглед"
 
-#: ../src/error.js:49
+#: ../src/error.js:47
 msgid "Unable to fetch the list of documents"
 msgstr "Неуспех при извличането на списъка с документи"
 
-#. right section
-#: ../src/lib/gd-main-toolbar.c:269
-msgid "Done"
-msgstr "Готово"
-
-#: ../src/lib/gd-pdf-loader.c:208
+#: ../src/lib/gd-pdf-loader.c:224
 msgid "Unable to load the document"
 msgstr "Неуспешно зареждане на документа"
 
-#: ../src/lib/gd-pdf-loader.c:489
+#: ../src/lib/gd-pdf-loader.c:673
 msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
 msgstr ""
 "Програмата „unoconv“. липсва Проверете дали пакетът LibreOffice е инсталиран "
 "правилно."
 
-#: ../src/loadMore.js:70
-#, c-format
-msgid "Load %d more document"
-msgid_plural "Load %d more documents"
-msgstr[0] "Зареждане на още %d документ"
-msgstr[1] "Зареждане на още %d документа"
-
-#: ../src/mainToolbar.js:194
+#: ../src/mainToolbar.js:165
 msgid "New and Recent"
 msgstr "Нови и скоро отваряни"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:172
 #, c-format
 msgid "Results for \"%s\""
 msgstr "Резултати за „%s“"
 
-#: ../src/mainToolbar.js:203
+#: ../src/mainToolbar.js:174
 msgid "filtered by title"
 msgstr "подбрани по заглавие"
 
-#: ../src/mainToolbar.js:205
+#: ../src/mainToolbar.js:176
 msgid "filtered by author"
 msgstr "подбрани по автор"
 
-#: ../src/mainToolbar.js:218
-#, c-format
-msgid "%d of %d"
-msgstr "%d от %d"
-
-#: ../src/mainToolbar.js:224
+#: ../src/mainToolbar.js:183
 msgid "Click on items to select them"
 msgstr "Натиснете върху обектите, за да ги изберете."
 
-#: ../src/mainToolbar.js:226
+#: ../src/mainToolbar.js:185
 #, c-format
 msgid "%d selected"
 msgid_plural "%d selected"
 msgstr[0] "Избран е %d обект"
 msgstr[1] "Избрани са %d обекта"
 
-#: ../src/mainWindow.js:254
+#: ../src/mainToolbar.js:206
+#, c-format
+msgid "%d of %d"
+msgstr "%d от %d"
+
+#: ../src/mainToolbar.js:221
+msgid "Done"
+msgstr "Готово"
+
+#: ../src/mainToolbar.js:239 ../src/mainToolbar.js:266
+msgid "Back"
+msgstr "Назад"
+
+#: ../src/mainToolbar.js:248
+msgid "Select Items"
+msgstr "Избор на документи"
+
+#: ../src/mainWindow.js:223
 msgid "translator-credits"
 msgstr ""
 "Ивайло Вълков <ivaylo@e-valkov.org>\n"
 "Александър Шопов <ash@kambanaria.org>\n"
 "\n"
 "Проектът за превод на GNOME има нужда от подкрепа.\n"
-"Научете повече за нас на http://gnome.cult.bg\n"
-"Докладвайте за грешки на http://gnome.cult.bg/bugs"
+"Научете повече за нас на <a href=\"http://gnome.cult.bg\">http://gnome.cult."
+"bg</a>\n"
+"Докладвайте за грешки на <a href=\"http://gnome.cult.bg/bugs\">http://gnome."
+"cult.bg/bugs</a>"
 
-#: ../src/mainWindow.js:255
-msgid "GNOME Documents"
-msgstr "Документи на GNOME"
-
-#: ../src/mainWindow.js:256
+#: ../src/mainWindow.js:225
 msgid "A document manager application"
 msgstr "Програма за управление на документи"
 
-#: ../src/notifications.js:85
+#: ../src/notifications.js:84
 #, c-format
 msgid "Printing \"%s\": %s"
 msgstr "Печат на „%s“: %s"
 
-#: ../src/searchbar.js:86
+#: ../src/searchbar.js:82
 msgid "Category"
 msgstr "Категория"
 
-#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:210
-#: ../src/sources.js:94
+#: ../src/searchbar.js:87 ../src/searchbar.js:137 ../src/searchbar.js:222
+#: ../src/sources.js:89
 msgid "All"
 msgstr "Всички"
 
-#: ../src/searchbar.js:97
+#: ../src/searchbar.js:93
 msgid "Favorites"
 msgstr "Любими"
 
-#: ../src/searchbar.js:102
+#: ../src/searchbar.js:98
 msgid "Shared with you"
 msgstr "Споделени с вас"
 
-#: ../src/searchbar.js:138
+#: ../src/searchbar.js:134
 msgid "Type"
 msgstr "Вид"
 
-#: ../src/searchbar.js:143
+#: ../src/searchbar.js:139
 msgid "Collections"
 msgstr "Колекции"
 
-#: ../src/searchbar.js:147
+#: ../src/searchbar.js:143
 msgid "PDF Documents"
 msgstr "Документи — PDF"
 
-#: ../src/searchbar.js:150
+#: ../src/searchbar.js:147
 msgid "Presentations"
 msgstr "Презентации"
 
-#: ../src/searchbar.js:153
+#: ../src/searchbar.js:150
 msgid "Spreadsheets"
 msgstr "Електронни таблици"
 
-#: ../src/searchbar.js:156
+#: ../src/searchbar.js:153
 msgid "Text Documents"
 msgstr "Документи — текст"
 
 #. Translators: this is a verb that refers to "All", "Title" and "Author",
 #. as in "Match All", "Match Title" and "Match Author"
-#: ../src/searchbar.js:207
+#: ../src/searchbar.js:219
 msgid "Match"
 msgstr "Търсене за"
 
-#: ../src/searchbar.js:212
+#: ../src/searchbar.js:224
 msgid "Title"
 msgstr "Заглавие"
 
-#: ../src/searchbar.js:214
+#: ../src/searchbar.js:226
 msgid "Author"
 msgstr "Автор"
 
-#: ../src/selections.js:698
+#: ../src/selections.js:773
+msgid "Print"
+msgstr "Печат"
+
+#: ../src/selections.js:788
 msgid "Organize"
 msgstr "Подреждане"
 
-#: ../src/selections.js:705
+#: ../src/selections.js:795
 msgid "Delete"
 msgstr "Изтриване"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:808 ../src/view.js:69
+#: ../src/selections.js:884 ../src/view.js:120
 #, c-format
 msgid "Open with %s"
 msgstr "Отваряне с %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:811 ../src/view.js:72
+#: ../src/selections.js:887 ../src/view.js:123
 msgid "Open"
 msgstr "Отваряне"
 
-#: ../src/selections.js:824 ../src/view.js:82
+#: ../src/selections.js:896 ../src/view.js:133
 msgid "Remove from favorites"
 msgstr "Премахване от „Любими“"
 
-#: ../src/selections.js:828 ../src/view.js:82
+#: ../src/selections.js:900 ../src/view.js:133
 msgid "Add to favorites"
 msgstr "Добавяне в „Любими“"
 
-#: ../src/shellSearchProvider.js:332
+#: ../src/shellSearchProvider.js:281
 msgid "Untitled Document"
 msgstr "Документ без име"
 
-#: ../src/sources.js:90
+#: ../src/sources.js:85
 msgid "Sources"
 msgstr "Изходни файлове"
 
-#: ../src/spinnerBox.js:58
+#: ../src/spinnerBox.js:56
 msgid "Loading..."
 msgstr "Зареждане…"
 
-#: ../src/view.js:196
+#: ../src/view.js:76
+#, c-format
+msgid "Load %d more document"
+msgid_plural "Load %d more documents"
+msgstr[0] "Зареждане на още %d документ"
+msgstr[1] "Зареждане на още %d документа"
+
+#: ../src/view.js:261
 msgid "Yesterday"
 msgstr "Вчера"
 
-#: ../src/view.js:198
+#: ../src/view.js:263
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "Преди %d ден"
 msgstr[1] "Преди %d дена"
 
-#: ../src/view.js:202
+#: ../src/view.js:267
 msgid "Last week"
 msgstr "Последната седмица"
 
-#: ../src/view.js:204
+#: ../src/view.js:269
 #, c-format
 msgid "%d week ago"
 msgid_plural "%d weeks ago"
 msgstr[0] "Преди %d седмица"
 msgstr[1] "Преди %d седмици"
 
-#: ../src/view.js:208
+#: ../src/view.js:273
 msgid "Last month"
 msgstr "Последният месец"
 
-#: ../src/view.js:210
+#: ../src/view.js:275
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
 msgstr[0] "Преди %d месец"
 msgstr[1] "Преди %d месеца"
 
-#: ../src/view.js:214
+#: ../src/view.js:279
 msgid "Last year"
 msgstr "Последната година"
 
-#: ../src/view.js:216
+#: ../src/view.js:281
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
