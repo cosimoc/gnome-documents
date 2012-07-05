@@ -494,11 +494,15 @@ const DocCommon = new Lang.Class({
                             function(object, res) {
                                 try {
                                     this.pixbuf = GdkPixbuf.Pixbuf.new_from_stream_finish(res);
+
                                     this.thumbnailed = true;
                                     this.checkEffectsAndUpdateInfo();
                                 } catch (e) {
                                     this._failedThumbnailing = true;
                                 }
+
+                                // close the underlying stream immediately
+                                stream.close_async(0, null, null);
                             }));
                 } catch (e) {
                     this._failedThumbnailing = true;
