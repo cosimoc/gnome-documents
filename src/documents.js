@@ -611,13 +611,9 @@ const DocCommon = new Lang.Class({
         return retval;
     },
 
-    _finishLoad: function(document, callback, exception) {
-        let docModel = null;
-        if (exception) {
+    _finishLoad: function(docModel, callback, exception) {
+        if (exception)
             Global.errorHandler.addLoadError(this, exception);
-        } else {
-            docModel = EvView.DocumentModel.new_with_document(document);
-        }
 
         callback(this, docModel, exception);
     }
@@ -653,8 +649,8 @@ const LocalDocument = new Lang.Class({
         Gd.pdf_loader_load_uri_async(this.uri, cancellable, Lang.bind(this,
             function(source, res) {
                 try {
-                    let document = Gd.pdf_loader_load_uri_finish(res);
-                    this._finishLoad(document, callback, null);
+                    let docModel = Gd.pdf_loader_load_uri_finish(res);
+                    this._finishLoad(docModel, callback, null);
                 } catch (e) {
                     this._finishLoad(null, callback, e);
                 }
@@ -724,8 +720,8 @@ const GoogleDocument = new Lang.Class({
                     Gd.pdf_loader_load_uri_async(this.identifier, cancellable, Lang.bind(this,
                         function(source, res) {
                             try {
-                                let document = Gd.pdf_loader_load_uri_finish(res);
-                                this._finishLoad(document, callback, null);
+                                let docModel = Gd.pdf_loader_load_uri_finish(res);
+                                this._finishLoad(docModel, callback, null);
                             } catch (e) {
                                 // report the outmost error only
                                 this._finishLoad(null, callback, exception);
@@ -739,8 +735,8 @@ const GoogleDocument = new Lang.Class({
                     (entry, service, cancellable, Lang.bind(this,
                         function(source, res) {
                             try {
-                                let document = Gd.pdf_loader_load_uri_finish(res);
-                                this._finishLoad(document, callback, null);
+                                let docModel = Gd.pdf_loader_load_uri_finish(res);
+                                this._finishLoad(docModel, callback, null);
                             } catch (e) {
                                 this._finishLoad(null, callback, e);
                             }
@@ -863,8 +859,8 @@ const SkydriveDocument = new Lang.Class({
                     Gd.pdf_loader_load_uri_async(this.identifier, cancellable, Lang.bind(this,
                         function(source, res) {
                             try {
-                                let document = Gd.pdf_loader_load_uri_finish(res);
-                                this._finishLoad(document, callback, null);
+                                let docModel = Gd.pdf_loader_load_uri_finish(res);
+                                this._finishLoad(docModel, callback, null);
                             } catch (e) {
                                 // report the outmost error only
                                 this._finishLoad(null, callback, exception);
@@ -878,8 +874,8 @@ const SkydriveDocument = new Lang.Class({
                     (entry, service, cancellable, Lang.bind(this,
                         function(source, res) {
                             try {
-                                let document = Gd.pdf_loader_load_zpj_entry_finish(res);
-                                this._finishLoad(document, callback, null);
+                                let docModel = Gd.pdf_loader_load_zpj_entry_finish(res);
+                                this._finishLoad(docModel, callback, null);
                             } catch (e) {
                                 this._finishLoad(null, callback, e);
                             }
