@@ -35,6 +35,7 @@ const Global = imports.global;
 const Manager = imports.manager;
 const Notifications = imports.notifications;
 const Query = imports.query;
+const Sharing = imports.sharing;
 const Tweener = imports.util.tweener;
 const Utils = imports.utils;
 
@@ -787,9 +788,16 @@ const SelectionToolbar = new Lang.Class({
                                                                            pixel_size: 32 })});
         this._toolbarCollection.set_tooltip_text(_("Organize"));
         this._rightBox.add(this._toolbarCollection);
-        this._toolbarCollection.connect('clicked', Lang.bind(this, this._onToolbarCollection));
-        this._toolbarCollection.show_all();
 
+	this._toolbarCollection.connect('clicked', Lang.bind(this, this._onToolbarCollection));
+	this._toolbarCollection.show_all();
+	
+	this._toolbarShare = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'emblem-shared-symbolic',
+                                                                           pixel_size: 32 })});
+        this._toolbarShare.set_tooltip_text(_("Share"));
+        this._rightBox.add(this._toolbarShare);
+        this._toolbarShare.connect('clicked', Lang.bind(this, this._onToolbarShare));
+        
         this._toolbarTrash = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'user-trash-symbolic',
                                                                       pixel_size: 32 })});
         this._toolbarTrash.set_tooltip_text(_("Delete"));
@@ -853,6 +861,7 @@ const SelectionToolbar = new Lang.Class({
         let showTrash = true;
         let showPrint = true;
         let showOpen = true;
+	let showShare = true;
 
         this._insideRefresh = true;
 
@@ -868,6 +877,16 @@ const SelectionToolbar = new Lang.Class({
                     (apps.indexOf(doc.defaultAppName) == -1))
                     apps.push(doc.defaultAppName);
 
+		if ((doc instanceof Documents.LocalDocument)||
+		    (doc.collection != false))
+		    showShare = false;
+
+		
+		if ((doc instanceof Documents.LocalDocument)||
+		    (doc.collection != false))
+		    showShare = false;
+
+		
                 showTrash &= doc.canTrash();
                 showPrint &= !doc.collection;
             }));
@@ -910,6 +929,7 @@ const SelectionToolbar = new Lang.Class({
         this._toolbarTrash.set_visible(showTrash);
         this._toolbarOpen.set_visible(showOpen);
         this._toolbarFavorite.set_visible(showFavorite);
+	this._toolbarShare.set_visible(showShare);
 
         this._insideRefresh = false;
     },
@@ -951,6 +971,20 @@ const SelectionToolbar = new Lang.Class({
             function(urn) {
                 let doc = Global.documentManager.getItemById(urn);
                 doc.setFavorite(!doc.favorite);
+            }));
+    },
+
+    _onToolbarShare: function(widget) {
+        let urn = Global.selectionController.getSelection();
+	let dialog = new OrganizeCollectionDialog(toplevel);
+        this._fadeOut();
+
+        dialog.widget.connect('response', Lang.bind(this,
+            function(widget, response) {
+                if (response == Gtk.ResponseType.OK) {
+                    dialog.widget.destroy();
+                    this._fadeIn();
+              }
             }));
     },
 
@@ -1010,3 +1044,10 @@ const SelectionToolbar = new Lang.Class({
               onCompleteScope: this });
     }
 });
+
+
+
+
+
+
+
