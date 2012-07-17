@@ -3,7 +3,6 @@ data/gnome-documents.desktop.in.in
 data/org.gnome.documents.gschema.xml.in
 src/application.js
 src/documents.js
-src/error.js
 src/lib/gd-main-toolbar.c
 src/lib/gd-pdf-loader.c
 src/mainToolbar.js
@@ -15,3 +14,4 @@ src/shellSearchProvider.js
 src/sources.js
 src/spinnerBox.js
 src/view.js
+[type: gettext/glade]src/resources/app-menu.ui
