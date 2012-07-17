@@ -128,21 +128,12 @@ const Application = new Lang.Class({
             }));
         this.application.add_action(viewAsAction);
 
-	let menu = new Gio.Menu();
+        let builder = new Gtk.Builder();
+        builder.add_from_resource('/org/gnome/documents/app-menu.ui');
 
-        let viewAs = new Gio.Menu();
-        viewAs.append(_("Grid"), 'app.view-as::icon');
-        viewAs.append(_("List"), 'app.view-as::list');
-        menu.append_section(_("View as"), viewAs);
-
-        let docActions = new Gio.Menu();
-        docActions.append(_("Fullscreen"), 'app.fullscreen');
-        menu.append_section(null, docActions);
-
-        menu.append(_("About Documents"), 'app.about');
-        menu.append(_("Quit"), 'app.quit');
-
+        let menu = builder.get_object('app-menu');
         this.application.set_app_menu(menu);
+
         this.application.add_accelerator('<Primary>q', 'app.quit', null);
         this.application.add_accelerator('F11', 'app.fullscreen', null);
     },
@@ -174,6 +165,9 @@ const Application = new Lang.Class({
         GtkClutter.init(null, null);
         EvDoc.init();
         Tweener.init();
+
+        let resource = Gio.Resource.load(Path.RESOURCE_DIR + '/gnome-documents.gresource');
+        resource._register();
 
         Global.application = this;
 
