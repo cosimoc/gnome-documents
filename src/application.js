@@ -81,7 +81,7 @@ const Application = new Lang.Class({
             }));
     },
 
-    _initMenus: function() {
+    _initActions: function() {
 	let quitAction = new Gio.SimpleAction({ name: 'quit' });
 	quitAction.connect('activate', Lang.bind(this,
             function() {
@@ -143,7 +143,9 @@ const Application = new Lang.Class({
         menu.append(_("About Documents"), 'app.about');
         menu.append(_("Quit"), 'app.quit');
 
-	this.application.set_app_menu(menu);
+        this.application.set_app_menu(menu);
+        this.application.add_accelerator('<Primary>q', 'app.quit', null);
+        this.application.add_accelerator('F11', 'app.fullscreen', null);
     },
 
     _refreshMinerNow: function(miner) {
@@ -209,7 +211,7 @@ const Application = new Lang.Class({
         let zpjMiner = new ZpjMiner.ZpjMiner();
         this._refreshMinerNow(zpjMiner);
 
-        this._initMenus();
+        this._initActions();
         this._mainWindow = new MainWindow.MainWindow(this.application);
     },
 

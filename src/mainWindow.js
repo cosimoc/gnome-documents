@@ -140,15 +140,6 @@ const MainWindow = new Lang.Class({
     },
 
     _onKeyPressEvent: function(widget, event) {
-        let keyval = event.get_keyval()[1];
-        let state = event.get_state()[1];
-
-        if ((keyval == Gdk.KEY_q) &&
-            ((state & Gdk.ModifierType.CONTROL_MASK) != 0)) {
-            this.window.destroy();
-            return true;
-        }
-
         if (Global.modeController.getWindowMode() == WindowMode.WindowMode.PREVIEW)
             return this._handleKeyPreview(event);
         else
@@ -160,12 +151,6 @@ const MainWindow = new Lang.Class({
         let state = event.get_state()[1];
         let fullscreen = Global.modeController.getFullscreen();
         let direction = this.window.get_direction();
-
-        if ((keyval == Gdk.KEY_f || keyval == Gdk.KEY_F11) &&
-            ((state & Gdk.ModifierType.CONTROL_MASK) == 0)) {
-            Global.modeController.toggleFullscreen();
-            return true;
-        }
 
         if ((fullscreen && keyval == Gdk.KEY_Escape) ||
             ((state & Gdk.ModifierType.MOD1_MASK) != 0 &&
