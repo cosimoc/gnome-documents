@@ -254,6 +254,7 @@ const MainToolbar = new Lang.Class({
         menu.show();
         this._menuButton.set_menu( menu );
         Global.screen = this.widget.get_screen();
+        Global.menuWidget = this._menuButton;//TO DO change this, not global
     },
 
     _populateForOverview: function() {
@@ -398,16 +399,16 @@ function filePrint() {
     let doc = Global.documentManager.getActiveItem();
     //let doc = documentManager.getActiveItem();
     doc.load(null, Lang.bind(this,
-            function(doc, evDoc, error) {
-                if (!evDoc) {
+            function(doc, docModel, error) {
+                if (error) {
                     // TODO: handle error here!
                     return;
                 }
 
-                let printOp = EvView.PrintOperation.new(evDoc);
+                let printOp = EvView.PrintOperation.new(docModel.get_document());
                 let printNotification = new Notifications.PrintNotification(printOp, doc);
 
-                let toplevel = this.widget.get_toplevel();
+                let toplevel = Global.menuWidget.get_toplevel();
                 printOp.run(toplevel);
             }));
 };

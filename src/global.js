@@ -49,6 +49,7 @@ let settings = null;
 let sourceManager = null;
 let trackerController = null;
 let screen = null;
+let menuWidget = null;
 
 function initSearch() {
     sourceManager = new Sources.SourceManager();
