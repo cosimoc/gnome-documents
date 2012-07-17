@@ -1006,9 +1006,12 @@ const DocumentManager = new Lang.Class({
             return;
         }
 
-        // save loaded model and connect metadata
-        this._initLoadState(docModel);
+        // save loaded model and signal
+        this._activeDocModel = docModel;
         this.emit('load-finished', doc, docModel);
+
+        // load metadata
+        this._connectMetadata(docModel);
     },
 
     setActiveItem: function(doc) {
@@ -1016,7 +1019,7 @@ const DocumentManager = new Lang.Class({
             return;
 
         // cleanup any state we have for previously loaded model
-        this._cleanupLoadState();
+        this._clearActiveDocModel();
 
         if (!doc)
             return;
@@ -1034,7 +1037,7 @@ const DocumentManager = new Lang.Class({
         this.emit('load-started', doc);
     },
 
-    _cleanupLoadState: function() {
+    _clearActiveDocModel: function() {
         // cancel any pending load operation
         if (this._loaderCancellable) {
             this._loaderCancellable.cancel();
@@ -1053,9 +1056,7 @@ const DocumentManager = new Lang.Class({
         }
     },
 
-    _initLoadState: function(docModel) {
-        this._activeDocModel = docModel;
-
+    _connectMetadata: function(docModel) {
         let evDoc = docModel.get_document();
         let file = Gio.File.new_for_uri(evDoc.get_uri());
 
