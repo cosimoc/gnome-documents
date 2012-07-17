@@ -21,6 +21,7 @@ data/gnome-documents.desktop
 data/gnome-documents.desktop.in
 data/org.gnome.Documents.enums.xml
 data/org.gnome.Documents.GDataMiner.service
+data/org.gnome.Documents.ZpjMiner.service
 data/org.gnome.documents.gschema.valid
 data/org.gnome.documents.gschema.xml
 intltool-extract.in
@@ -33,6 +34,7 @@ po/*.gmo
 po/*.header
 po/*.sed
 po/*.sin
+po/*.pot
 po/.intltool-merge-cache
 po/Makefile.in.in
 po/Makevars.template
@@ -45,11 +47,13 @@ src/config.js
 src/Makefile
 src/Makefile.in
 src/gd-tracker-gdata-miner
+src/gd-tracker-zpj-miner
 src/gnome-documents
 src/gnome-documents-debug
 src/gnome-documents-search-provider
 src/path.js
 src/org.gnome.Documents.SearchProvider.service
+src/gnome-documents.gresource
 stamp-h1
 xmldocs.make
 *~
