@@ -905,6 +905,7 @@ const DocumentManager = new Lang.Class({
         this.parent();
 
         this._activeDocModel = null;
+        this._activeDocModelIds = [];
         this._loaderCancellable = null;
 
         Global.changeMonitor.connect('changes-pending',
@@ -1005,7 +1006,8 @@ const DocumentManager = new Lang.Class({
             return;
         }
 
-        this._activeDocModel = docModel;
+        // save loaded model and connect metadata
+        this._initLoadState(docModel);
         this.emit('load-finished', doc, docModel);
     },
 
@@ -1013,14 +1015,8 @@ const DocumentManager = new Lang.Class({
         if (!this.parent(doc))
             return;
 
-        // cancel any pending load operation
-        if (this._loaderCancellable) {
-            this._loaderCancellable.cancel();
-            this._loaderCancellable = null;
-        }
-
-        // clear any previously loaded document model
-        this._activeDocModel = null;
+        // cleanup any state we have for previously loaded model
+        this._cleanupLoadState();
 
         if (!doc)
             return;
@@ -1036,5 +1032,47 @@ const DocumentManager = new Lang.Class({
         this._loaderCancellable = new Gio.Cancellable();
         doc.load(this._loaderCancellable, Lang.bind(this, this._onDocumentLoaded));
         this.emit('load-started', doc);
+    },
+
+    _cleanupLoadState: function() {
+        // cancel any pending load operation
+        if (this._loaderCancellable) {
+            this._loaderCancellable.cancel();
+            this._loaderCancellable = null;
+        }
+
+        // clear any previously loaded document model
+        if (this._activeDocModel) {
+            this._activeDocModelIds.forEach(Lang.bind(this,
+                function(id) {
+                    this._activeDocModel.disconnect(id);
+                }));
+
+            this._activeDocModel = null;
+            this._activeDocModelIds = [];
+        }
+    },
+
+    _initLoadState: function(docModel) {
+        this._activeDocModel = docModel;
+
+        let evDoc = docModel.get_document();
+        let file = Gio.File.new_for_uri(evDoc.get_uri());
+
+        if (!Gd.is_metadata_supported_for_file(file))
+            return;
+
+        let metadata = new Gd.Metadata({ file: file });
+
+        // save current page in metadata
+        let [res, val] = metadata.get_int('page');
+        if (res)
+            docModel.set_page(val);
+        this._activeDocModelIds.push(
+            docModel.connect('page-changed', Lang.bind(this,
+                function(source, oldPage, newPage) {
+                    metadata.set_int('page', newPage);
+                }))
+        );
     }
 });
