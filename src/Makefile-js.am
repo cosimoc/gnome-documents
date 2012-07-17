@@ -4,7 +4,6 @@ dist_js_DATA = \
     changeMonitor.js \
     documents.js \
     embed.js \
-    error.js \
     errorBox.js \
     gDataMiner.js \
     global.js \

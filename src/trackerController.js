@@ -28,6 +28,7 @@ const Utils = imports.utils;
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
+const _ = imports.gettext.gettext;
 
 const QueryType = {
     SELECT: 0,
@@ -154,11 +155,19 @@ const TrackerController = new Lang.Class({
         return this._querying;
     },
 
+    _onQueryError: function(exception) {
+        if (exception.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
+            return;
+
+        let message = _("Unable to fetch the list of documents");
+        this.emit('query-error', message, exception);
+    },
+
     _onQueryFinished: function(exception) {
         this._setQueryStatus(false);
 
         if (exception)
-            Global.errorHandler.addQueryError(exception);
+            this._onQueryError(exception);
         else
             Global.offsetController.resetItemCount();
 

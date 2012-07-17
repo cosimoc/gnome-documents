@@ -131,6 +131,8 @@ const Embed = new Lang.Class({
                                       Lang.bind(this, this._onFullscreenChanged));
         Global.trackerController.connect('query-status-changed',
                                          Lang.bind(this, this._onQueryStatusChanged));
+        Global.trackerController.connect('query-error',
+                                         Lang.bind(this, this._onQueryError));
 
         Global.documentManager.connect('active-changed',
                                        Lang.bind(this, this._onActiveItemChanged));
@@ -153,6 +155,10 @@ const Embed = new Lang.Class({
         } else {
             this._spinnerBox.moveOut();
         }
+    },
+
+    _onQueryError: function(manager, message, exception) {
+        this._setError(message, exception.message);
     },
 
     _onFullscreenChanged: function(controller, fullscreen) {
@@ -233,23 +239,10 @@ const Embed = new Lang.Class({
         this._spinnerBox.moveOut();
         this._errorBox.moveOut();
 
-        this._queryErrorId =
-            Global.errorHandler.connect('query-error',
-                                        Lang.bind(this, this._onQueryError));
-
         this._notebook.set_current_page(this._viewPage);
     },
 
-    _onQueryError: function(manager, message, exception) {
-        this._setError(message, exception.message);
-    },
-
     _prepareForPreview: function() {
-        if (this._queryErrorId != 0) {
-            Global.errorHandler.disconnect(this._queryErrorId);
-            this._queryErrorId = 0;
-        }
-
         this._notebook.set_current_page(this._previewPage);
     },
 

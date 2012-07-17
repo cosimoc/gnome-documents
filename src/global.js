@@ -31,7 +31,6 @@ let collectionManager = null;
 let connection = null;
 let connectionQueue = null;
 let documentManager = null;
-let errorHandler = null;
 let goaClient = null;
 let modeController = null;
 let notificationManager = null;

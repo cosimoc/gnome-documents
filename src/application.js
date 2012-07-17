@@ -36,7 +36,6 @@ const Tracker = imports.gi.Tracker;
 
 const ChangeMonitor = imports.changeMonitor;
 const Documents = imports.documents;
-const Error = imports.error;
 const Format = imports.format;
 const GDataMiner = imports.gDataMiner;
 const Global = imports.global;
@@ -197,7 +196,6 @@ const Application = new Lang.Class({
 
         Global.changeMonitor = new ChangeMonitor.TrackerChangeMonitor();
         Global.documentManager = new Documents.DocumentManager();
-        Global.errorHandler = new Error.ErrorHandler();
         Global.trackerController = new TrackerController.TrackerController();
         Global.selectionController = new Selections.SelectionController();
         Global.modeController = new WindowMode.ModeController();
