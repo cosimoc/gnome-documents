@@ -291,3 +291,29 @@ gd_main_toolbar_add_button (GdMainToolbar *self,
 
   return button;
 }
+
+/**
+ * gd_main_toolbar_add_menu:
+ * @self:
+ * @pack_start:
+ *
+ * Returns: (transfer none):
+ */
+GtkWidget *
+gd_main_toolbar_add_menu (GdMainToolbar *self,
+                            gboolean pack_start)
+{
+  GtkWidget *menuButton;
+
+  menuButton = gtk_menu_button_new ();
+
+  if (pack_start)
+    gtk_container_add (GTK_CONTAINER (self->priv->left_grid), menuButton);
+  else
+    gtk_container_add (GTK_CONTAINER (self->priv->right_grid), menuButton);
+
+  gtk_widget_show_all (menuButton);
+
+  return menuButton;
+}
+

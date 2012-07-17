@@ -25,6 +25,10 @@ const Query = imports.query;
 const Searchbar = imports.searchbar;
 const Sources = imports.sources;
 const TrackerController = imports.trackerController;
+const EvView = imports.gi.EvinceView;//for printing
+const Notifications = imports.notifications;//for printing
+const Lang = imports.lang;//for printing
+const Gtk = imports.gi.Gtk;//for opening
 
 let application = null;
 let collectionManager = null;
@@ -44,6 +48,7 @@ let selectionController = null;
 let settings = null;
 let sourceManager = null;
 let trackerController = null;
+let screen = null;
 
 function initSearch() {
     sourceManager = new Sources.SourceManager();
@@ -57,4 +62,6 @@ function initSearch() {
     offsetController = new OffsetController.OffsetController();
     queryBuilder = new Query.QueryBuilder();
     connectionQueue = new TrackerController.TrackerConnectionQueue();
-}
+};
+
+

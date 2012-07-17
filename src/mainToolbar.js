@@ -38,6 +38,9 @@ const Searchbar = imports.searchbar;
 const Tweener = imports.util.tweener;
 const WindowMode = imports.windowMode;
 
+const EvView = imports.gi.EvinceView;//for printing
+const Notifications = imports.notifications;//for printing
+
 const MainToolbar = new Lang.Class({
     Name: 'MainToolbar',
 
@@ -231,6 +234,7 @@ const MainToolbar = new Lang.Class({
     },
 
     _populateForPreview: function(model) {
+        //back button, on the left of the toolbar
         let iconName =
             (this.widget.get_direction() == Gtk.TextDirection.RTL) ?
             'go-next-symbolic' : 'go-previous-symbolic';
@@ -241,6 +245,15 @@ const MainToolbar = new Lang.Class({
             function() {
                 Global.documentManager.setActiveItem(null);
             }));
+        
+        //menu button, on the right of the toolbar (false)
+        this._menuButton = 
+            this.widget.add_menu( false );
+        this._initMenus();
+        let menu = new Gtk.Menu.new_from_model(this.menuModel);
+        menu.show();
+        this._menuButton.set_menu( menu );
+        Global.screen = this.widget.get_screen();
     },
 
     _populateForOverview: function() {
@@ -306,7 +319,16 @@ const MainToolbar = new Lang.Class({
             }));
 
         this._setToolbarTitle();
-    }
+    },
+    
+    _initMenus: function() {
+        this.menuModel = new Gio.Menu(); 
+  
+        let menuItemOpen = Gio.MenuItem.new(_("Open"), 'app.open');
+        let menuItemPrint = Gio.MenuItem.new(_("Print"), 'app.print');
+        this.menuModel.append_item(menuItemOpen);
+        this.menuModel.append_item(menuItemPrint);
+    },
 });
 
 const PreviewToolbar = new Lang.Class({
@@ -359,3 +381,33 @@ const OverviewToolbar = new Lang.Class({
             this.searchbar.show();
     }
 });
+
+function fileOpen(screen) {
+    print ("No fileOpen here.  This is temp.");
+    let doc = Global.documentManager.getActiveItem();
+    //let doc = documentManager.getActiveItem();
+    doc.open(Global.screen, Gtk.get_current_event_time());
+    
+};
+
+/**
+ * Prints the current document
+ */
+function filePrint() {
+    print ("No filePrint here.  This is temp.");
+    let doc = Global.documentManager.getActiveItem();
+    //let doc = documentManager.getActiveItem();
+    doc.load(null, Lang.bind(this,
+            function(doc, evDoc, error) {
+                if (!evDoc) {
+                    // TODO: handle error here!
+                    return;
+                }
+
+                let printOp = EvView.PrintOperation.new(evDoc);
+                let printNotification = new Notifications.PrintNotification(printOp, doc);
+
+                let toplevel = this.widget.get_toplevel();
+                printOp.run(toplevel);
+            }));
+};

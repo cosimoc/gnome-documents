@@ -41,6 +41,7 @@ const GDataMiner = imports.gDataMiner;
 const Global = imports.global;
 const Main = imports.main;
 const MainWindow = imports.mainWindow;
+const MainToolbar = imports.mainToolbar;
 const Manager = imports.manager;
 const Notifications = imports.notifications;
 const Path = imports.path;
@@ -136,6 +137,22 @@ const Application = new Lang.Class({
 
         this.application.add_accelerator('<Primary>q', 'app.quit', null);
         this.application.add_accelerator('F11', 'app.fullscreen', null);
+
+        //setting actions for other menus in topBar
+        let saveAction = new Gio.SimpleAction({ name: 'open' });
+        saveAction.connect('activate', Lang.bind(this,
+                function() {
+                MainToolbar.fileOpen();
+            }));
+        this.application.add_action(saveAction);
+        
+        let openAction = new Gio.SimpleAction({ name: 'print' });
+        openAction.connect('activate', Lang.bind(this,
+                function() {
+                MainToolbar.filePrint();
+            }));
+        this.application.add_action(openAction);
+
     },
 
     _refreshMinerNow: function(miner) {
