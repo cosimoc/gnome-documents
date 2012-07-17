@@ -19,14 +19,12 @@
  *
  */
 
-const EvView = imports.gi.EvinceView;
 const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const Gd = imports.gi.Gd;
 const Gdk = imports.gi.Gdk;
 const GData = imports.gi.GData;
 const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const Zpj = imports.gi.Zpj;
 const _ = imports.gettext.gettext;
@@ -609,13 +607,6 @@ const DocCommon = new Lang.Class({
             retval = '{ ?urn nie:isPartOf <' + this.id + '> }';
 
         return retval;
-    },
-
-    _finishLoad: function(docModel, callback, exception) {
-        if (exception)
-            Global.errorHandler.addLoadError(this, exception);
-
-        callback(this, docModel, exception);
     }
 });
 Signals.addSignalMethods(DocCommon.prototype);
@@ -650,9 +641,9 @@ const LocalDocument = new Lang.Class({
             function(source, res) {
                 try {
                     let docModel = Gd.pdf_loader_load_uri_finish(res);
-                    this._finishLoad(docModel, callback, null);
+                    callback(this, docModel, null);
                 } catch (e) {
-                    this._finishLoad(null, callback, e);
+                    callback(this, null, e);
                 }
             }));
     },
@@ -721,10 +712,10 @@ const GoogleDocument = new Lang.Class({
                         function(source, res) {
                             try {
                                 let docModel = Gd.pdf_loader_load_uri_finish(res);
-                                this._finishLoad(docModel, callback, null);
+                                callback(this, docModel, null);
                             } catch (e) {
                                 // report the outmost error only
-                                this._finishLoad(null, callback, exception);
+                                callback(this, null, exception);
                             }
                         }));
 
@@ -736,9 +727,9 @@ const GoogleDocument = new Lang.Class({
                         function(source, res) {
                             try {
                                 let docModel = Gd.pdf_loader_load_uri_finish(res);
-                                this._finishLoad(docModel, callback, null);
+                                callback(this, docModel, null);
                             } catch (e) {
-                                this._finishLoad(null, callback, e);
+                                callback(this, null, e);
                             }
                         }));
             }));
@@ -860,10 +851,10 @@ const SkydriveDocument = new Lang.Class({
                         function(source, res) {
                             try {
                                 let docModel = Gd.pdf_loader_load_uri_finish(res);
-                                this._finishLoad(docModel, callback, null);
+                                callback(this, docModel, null);
                             } catch (e) {
                                 // report the outmost error only
-                                this._finishLoad(null, callback, exception);
+                                callback(this, null, exception);
                             }
                         }));
 
@@ -875,9 +866,9 @@ const SkydriveDocument = new Lang.Class({
                         function(source, res) {
                             try {
                                 let docModel = Gd.pdf_loader_load_zpj_entry_finish(res);
-                                this._finishLoad(docModel, callback, null);
+                                callback(this, docModel, null);
                             } catch (e) {
-                                this._finishLoad(null, callback, e);
+                                callback(this, null, e);
                             }
                         }));
             }));
@@ -913,6 +904,8 @@ const DocumentManager = new Lang.Class({
     _init: function() {
         this.parent();
 
+        this._activeDocModel = null;
+        this._loaderCancellable = null;
 
         Global.changeMonitor.connect('changes-pending',
                                      Lang.bind(this, this._onChangesPending));
@@ -997,9 +990,37 @@ const DocumentManager = new Lang.Class({
         this.parent();
     },
 
+    _onDocumentLoadError: function(doc, error) {
+        if (error.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
+            return;
+
+        // Translators: %s is the title of a document
+        let message = _("Unable to load \"%s\" for preview").format(doc.name);
+        this.emit('load-error', doc, message, error);
+    },
+
+    _onDocumentLoaded: function(doc, docModel, error) {
+        if (error) {
+            this._onDocumentLoadError(doc, error);
+            return;
+        }
+
+        this._activeDocModel = docModel;
+        this.emit('load-finished', doc, docModel);
+    },
+
     setActiveItem: function(doc) {
         if (!this.parent(doc))
             return;
+
+        // cancel any pending load operation
+        if (this._loaderCancellable) {
+            this._loaderCancellable.cancel();
+            this._loaderCancellable = null;
+        }
+
+        // clear any previously loaded document model
+        this._activeDocModel = null;
 
         if (!doc)
             return;
@@ -1012,5 +1033,8 @@ const DocumentManager = new Lang.Class({
         let recentManager = Gtk.RecentManager.get_default();
         recentManager.add_item(doc.uri);
 
+        this._loaderCancellable = new Gio.Cancellable();
+        doc.load(this._loaderCancellable, Lang.bind(this, this._onDocumentLoaded));
+        this.emit('load-started', doc);
     }
 });

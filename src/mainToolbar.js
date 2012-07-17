@@ -240,7 +240,6 @@ const MainToolbar = new Lang.Class({
         backButton.connect('clicked', Lang.bind(this,
             function() {
                 Global.documentManager.setActiveItem(null);
-                Global.modeController.setWindowMode(WindowMode.WindowMode.OVERVIEW);
             }));
     },
 

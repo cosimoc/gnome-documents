@@ -31,15 +31,6 @@ const ErrorHandler = new Lang.Class({
     _init: function() {
     },
 
-    addLoadError: function(doc, exception) {
-        if (exception.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
-            return;
-
-        // Translators: %s is the title of a document
-        let message = _("Unable to load \"%s\" for preview").format(doc.name);
-        this.emit('load-error', message, exception);
-    },
-
     addQueryError: function(exception) {
         if (exception.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
             return;

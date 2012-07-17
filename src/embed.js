@@ -46,7 +46,6 @@ const Embed = new Lang.Class({
     Name: 'Embed',
 
     _init: function() {
-        this._loaderCancellable = null;
         this._queryErrorId = 0;
 
         this.widget = new GtkClutter.Embed({ use_layout_size: true });
@@ -126,17 +125,21 @@ const Embed = new Lang.Class({
         this._preview = new Preview.PreviewView();
         this._previewPage = this._notebook.append_page(this._preview.widget, null);
 
-        Global.errorHandler.connect('load-error',
-                                    Lang.bind(this, this._onLoadError));
-
         Global.modeController.connect('window-mode-changed',
                                       Lang.bind(this, this._onWindowModeChanged));
         Global.modeController.connect('fullscreen-changed',
                                       Lang.bind(this, this._onFullscreenChanged));
         Global.trackerController.connect('query-status-changed',
                                          Lang.bind(this, this._onQueryStatusChanged));
+
         Global.documentManager.connect('active-changed',
                                        Lang.bind(this, this._onActiveItemChanged));
+        Global.documentManager.connect('load-started',
+                                       Lang.bind(this, this._onLoadStarted));
+        Global.documentManager.connect('load-finished',
+                                       Lang.bind(this, this._onLoadFinished));
+        Global.documentManager.connect('load-error',
+                                       Lang.bind(this, this._onLoadError));
 
         this._onQueryStatusChanged();
     },
@@ -191,34 +194,25 @@ const Embed = new Lang.Class({
             this._windowModeChangeFlash();
     },
 
-    _onActiveItemChanged: function() {
-        let doc = Global.documentManager.getActiveItem();
+    _onActiveItemChanged: function(manager, doc) {
+        let newMode = WindowMode.WindowMode.OVERVIEW;
 
-        if (!doc)
-            return;
-
-        let collection = Global.collectionManager.getItemById(doc.id);
-        if (collection) {
-            Global.modeController.setWindowMode(WindowMode.WindowMode.OVERVIEW);
-            return;
+        if (doc) {
+            let collection = Global.collectionManager.getItemById(doc.id);
+            if (!collection)
+                newMode = WindowMode.WindowMode.PREVIEW;
         }
 
-        // switch to preview mode, and schedule the spinnerbox to
-        // move in if the document is not loaded by the timeout
-        Global.modeController.setWindowMode(WindowMode.WindowMode.PREVIEW);
-        this._spinnerBox.moveInDelayed(_PDF_LOADER_TIMEOUT);
-
-        this._loaderCancellable = new Gio.Cancellable();
-        doc.load(this._loaderCancellable, Lang.bind(this, this._onDocumentLoaded));
+        Global.modeController.setWindowMode(newMode);
     },
 
-    _onDocumentLoaded: function(doc, docModel, error) {
-        this._loaderCancellable = null;
+    _onLoadStarted: function() {
+        // switch to preview mode, and schedule the spinnerbox to
+        // move in if the document is not loaded by the timeout
+        this._spinnerBox.moveInDelayed(_PDF_LOADER_TIMEOUT);
+    },
 
-        if (!docModel) {
-            return;
-        }
-
+    _onLoadFinished: function(manager, doc, docModel) {
         this._toolbar.setModel(docModel);
         this._preview.setModel(docModel);
         this._preview.widget.grab_focus();
@@ -227,14 +221,14 @@ const Embed = new Lang.Class({
         Global.modeController.setCanFullscreen(true);
     },
 
+    _onLoadError: function(manager, doc, message, exception) {
+        this._spinnerBox.moveOut();
+        this._setError(message, exception.message);
+    },
+
     _prepareForOverview: function() {
         if (this._preview)
             this._preview.setModel(null);
-
-        if (this._loaderCancellable) {
-            this._loaderCancellable.cancel();
-            this._loaderCancellable = null;
-        }
 
         this._spinnerBox.moveOut();
         this._errorBox.moveOut();
@@ -262,12 +256,5 @@ const Embed = new Lang.Class({
     _setError: function(primary, secondary) {
         this._errorBox.update(primary, secondary);
         this._errorBox.moveIn();
-    },
-
-    _onLoadError: function(manager, message, exception) {
-        this._loaderCancellable = null;
-        this._spinnerBox.moveOut();
-
-        this._setError(message, exception.message);
     }
 });
