@@ -239,6 +239,7 @@ const MainToolbar = new Lang.Class({
             this.widget.add_button(iconName, _("Back"), true);
         backButton.connect('clicked', Lang.bind(this,
             function() {
+                Global.documentManager.setActiveItem(null);
                 Global.modeController.setWindowMode(WindowMode.WindowMode.OVERVIEW);
             }));
     },
