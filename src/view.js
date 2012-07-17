@@ -21,8 +21,10 @@
 
 const Gd = imports.gi.Gd;
 const Gdk = imports.gi.Gdk;
+const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gettext = imports.gettext;
 const GLib = imports.gi.GLib;
+const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const _ = imports.gettext.gettext;
 
@@ -156,6 +158,79 @@ const ContextMenu = new Lang.Class({
     }
 });
 
+const ViewModel = new Lang.Class({
+    Name: 'ViewModel',
+
+    _init: function() {
+        this.model = Gtk.ListStore.new(
+            [ GObject.TYPE_STRING,
+              GObject.TYPE_STRING,
+              GObject.TYPE_STRING,
+              GObject.TYPE_STRING,
+              GdkPixbuf.Pixbuf,
+              GObject.TYPE_LONG,
+              GObject.TYPE_BOOLEAN ]);
+        this.model.set_sort_column_id(Gd.MainColumns.MTIME,
+                                      Gtk.SortType.DESCENDING);
+
+        Global.documentManager.connect('item-added',
+            Lang.bind(this, this._onItemAdded));
+        Global.documentManager.connect('item-removed',
+            Lang.bind(this, this._onItemRemoved));
+        Global.documentManager.connect('clear',
+            Lang.bind(this, this._onClear));
+
+        // populate with the intial items
+        let items = Global.documentManager.getItems();
+        for (let idx in items) {
+            this._onItemAdded(null, items[idx]);
+        }
+    },
+
+    _onClear: function() {
+        this.model.clear();
+    },
+
+    _onItemAdded: function(source, doc) {
+        let iter = this.model.append();
+        this.model.set(iter,
+            [ 0, 1, 2, 3, 4, 5 ],
+            [ doc.id, doc.uri, doc.name,
+              doc.author, doc.pixbuf, doc.mtime ]);
+
+        let treePath = this.model.get_path(iter);
+        let treeRowRef = Gtk.TreeRowReference.new(this.model, treePath);
+
+        doc.connect('info-updated', Lang.bind(this,
+            function() {
+                let objectPath = treeRowRef.get_path();
+                if (!objectPath)
+                    return;
+
+                let objectIter = this.model.get_iter(objectPath)[1];
+                if (objectIter)
+                    this.model.set(objectIter,
+                        [ 0, 1, 2, 3, 4, 5 ],
+                        [ doc.id, doc.uri, doc.name,
+                          doc.author, doc.pixbuf, doc.mtime ]);
+            }));
+    },
+
+    _onItemRemoved: function(source, doc) {
+        this.model.foreach(Lang.bind(this,
+            function(model, path, iter) {
+                let id = model.get_value(iter, Gd.MainColumns.ID);
+
+                if (id == doc.id) {
+                    this.model.remove(iter);
+                    return true;
+                }
+
+                return false;
+            }));
+    }
+});
+
 const ViewContainer = new Lang.Class({
     Name: 'ViewContainer',
 
@@ -163,6 +238,8 @@ const ViewContainer = new Lang.Class({
         this._adjustmentValueId = 0;
         this._adjustmentChangedId = 0;
         this._scrollbarVisibleId = 0;
+
+        this._model = new ViewModel();
 
         this.widget = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
         this.view = new Gd.MainView();
@@ -298,8 +375,7 @@ const ViewContainer = new Lang.Class({
 
         if (!status) {
             // setup a model if we're not querying
-            this._treeModel = Global.documentManager.getModel().model;
-            this.view.set_model(this._treeModel);
+            this.view.set_model(this._model.model);
 
             // unfreeze selection
             Global.selectionController.freezeSelection(false);
@@ -310,7 +386,6 @@ const ViewContainer = new Lang.Class({
 
             // if we're querying, clear the model from the view,
             // so that we don't uselessly refresh the rows
-            this._treeModel = null;
             this.view.set_model(null);
         }
     },
@@ -324,13 +399,13 @@ const ViewContainer = new Lang.Class({
 
         let generic = this.view.get_generic_view();
         let first = true;
-        this._treeModel.foreach(Lang.bind(this,
+        this._model.model.foreach(Lang.bind(this,
             function(model, path, iter) {
-                let id = this._treeModel.get_value(iter, Gd.MainColumns.ID);
+                let id = this._model.model.get_value(iter, Gd.MainColumns.ID);
                 let idIndex = selected.indexOf(id);
 
                 if (idIndex != -1) {
-                    this._treeModel.set_value(iter, Gd.MainColumns.SELECTED, true);
+                    this._model.model.set_value(iter, Gd.MainColumns.SELECTED, true);
                     newSelection.push(id);
 
                     if (first) {
@@ -356,7 +431,7 @@ const ViewContainer = new Lang.Class({
     _onViewSelectionChanged: function() {
         // update the selection on the controller when the view signals a change
         let selectedURNs = Utils.getURNsFromPaths(this.view.get_selection(),
-                                                  this._treeModel);
+                                                  this._model.model);
         Global.selectionController.setSelection(selectedURNs);
     },
 

@@ -913,7 +913,6 @@ const DocumentManager = new Lang.Class({
     _init: function() {
         this.parent();
 
-        this._model = new DocumentModel();
 
         Global.changeMonitor.connect('changes-pending',
                                      Lang.bind(this, this._onChangesPending));
@@ -934,8 +933,6 @@ const DocumentManager = new Lang.Class({
                 let doc = this.getItemById(changeEvent.urn);
 
                 if (doc) {
-                    this._model.documentRemoved(doc);
-
                     doc.destroy();
                     this.removeItemById(changeEvent.urn);
 
@@ -984,7 +981,6 @@ const DocumentManager = new Lang.Class({
     addDocumentFromCursor: function(cursor) {
         let doc = this.createDocumentFromCursor(cursor);
         this.addItem(doc);
-        this._model.documentAdded(doc);
 
         if (doc.collection)
             Global.collectionManager.addItem(doc);
@@ -999,7 +995,6 @@ const DocumentManager = new Lang.Class({
         };
 
         this.parent();
-        this._model.clear();
     },
 
     setActiveItem: function(doc) {
@@ -1016,69 +1011,6 @@ const DocumentManager = new Lang.Class({
 
         let recentManager = Gtk.RecentManager.get_default();
         recentManager.add_item(doc.uri);
-    },
 
-    getModel: function() {
-        return this._model;
-    }
-});
-
-const DocumentModel = new Lang.Class({
-    Name: 'DocumentModel',
-
-    _init: function() {
-        this.model = Gtk.ListStore.new(
-            [ GObject.TYPE_STRING,
-              GObject.TYPE_STRING,
-              GObject.TYPE_STRING,
-              GObject.TYPE_STRING,
-              GdkPixbuf.Pixbuf,
-              GObject.TYPE_LONG,
-              GObject.TYPE_BOOLEAN ]);
-        this.model.set_sort_column_id(Gd.MainColumns.MTIME,
-                                      Gtk.SortType.DESCENDING);
-    },
-
-    clear: function() {
-        this.model.clear();
-    },
-
-    documentAdded: function(doc) {
-        let iter = this.model.append();
-        this.model.set(iter,
-            [ 0, 1, 2, 3, 4, 5 ],
-            [ doc.id, doc.uri, doc.name,
-              doc.author, doc.pixbuf, doc.mtime ]);
-
-        let treePath = this.model.get_path(iter);
-        let treeRowRef = Gtk.TreeRowReference.new(this.model, treePath);
-
-        doc.connect('info-updated', Lang.bind(this,
-            function() {
-                let objectPath = treeRowRef.get_path();
-                if (!objectPath)
-                    return;
-
-                let objectIter = this.model.get_iter(objectPath)[1];
-                if (objectIter)
-                    this.model.set(objectIter,
-                        [ 0, 1, 2, 3, 4, 5 ],
-                        [ doc.id, doc.uri, doc.name,
-                          doc.author, doc.pixbuf, doc.mtime ]);
-            }));
-    },
-
-    documentRemoved: function(doc) {
-        this.model.foreach(Lang.bind(this,
-            function(model, path, iter) {
-                let id = model.get_value(iter, Gd.MainColumns.ID);
-
-                if (id == doc.id) {
-                    this.model.remove(iter);
-                    return true;
-                }
-
-                return false;
-            }));
     }
 });

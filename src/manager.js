@@ -102,6 +102,7 @@ const BaseManager = new Lang.Class({
     clear: function() {
         this._items = {};
         this._activeItem = null;
+        this.emit('clear');
     },
 
     getFilter: function() {
