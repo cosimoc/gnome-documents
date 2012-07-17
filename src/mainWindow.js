@@ -158,7 +158,7 @@ const MainWindow = new Lang.Class({
              (direction == Gtk.TextDirection.RTL && keyval == Gdk.KEY_Right)) ||
             keyval == Gdk.KEY_BackSpace ||
             keyval == Gdk.KEY_Back) {
-            Global.modeController.setWindowMode(WindowMode.WindowMode.OVERVIEW);
+            Global.documentManager.setActiveItem(null);
             return true;
         }
 
