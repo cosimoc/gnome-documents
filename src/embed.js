@@ -65,11 +65,6 @@ const Embed = new Lang.Class({
         this._overlayLayout.add(this._contentsActor,
             Clutter.BinAlignment.FILL, Clutter.BinAlignment.FILL);
 
-        // pack the toolbar
-        this._toolbar = new MainToolbar.OverviewToolbar(this._overlayLayout);
-        this._contentsActor.add_actor(this._toolbar.actor);
-        this._contentsLayout.set_fill(this._toolbar.actor, true, false);
-
         // pack the main GtkNotebook and a spinnerbox in a BinLayout, so that
         // we can easily bring them front/back
         this._viewLayout = new Clutter.BinLayout();
@@ -229,6 +224,15 @@ const Embed = new Lang.Class({
         if (this._preview)
             this._preview.setModel(null);
 
+        if (this._toolbar)
+            this._toolbar.actor.destroy();
+
+        // pack the toolbar
+        this._toolbar = new MainToolbar.OverviewToolbar(this._overlayLayout);
+        this._contentsLayout.pack_start = true;
+        this._contentsActor.add_actor(this._toolbar.actor);
+        this._contentsLayout.set_fill(this._toolbar.actor, true, false);
+
         this._spinnerBox.moveOut();
         this._errorBox.moveOut();
 
@@ -236,11 +240,24 @@ const Embed = new Lang.Class({
     },
 
     _prepareForPreview: function() {
+        if (this._toolbar)
+            this._toolbar.actor.destroy();
+
+        // pack the toolbar
+        this._toolbar = new Preview.PreviewToolbar(this._preview);
+        this._contentsLayout.pack_start = true;
+        this._contentsActor.add_actor(this._toolbar.actor);
+        this._contentsLayout.set_fill(this._toolbar.actor, true, false);
+
         this._notebook.set_current_page(this._previewPage);
     },
 
     _setError: function(primary, secondary) {
         this._errorBox.update(primary, secondary);
         this._errorBox.moveIn();
+    },
+
+    getMainToolbar: function(event) {
+        return this._toolbar;
     }
 });

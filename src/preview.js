@@ -23,8 +23,10 @@ const Clutter = imports.gi.Clutter;
 const EvView = imports.gi.EvinceView;
 const Gd = imports.gi.Gd;
 const Gdk = imports.gi.Gdk;
+const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
 const GtkClutter = imports.gi.GtkClutter;
+const _ = imports.gettext.gettext;
 
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
@@ -32,6 +34,7 @@ const Mainloop = imports.mainloop;
 const Global = imports.global;
 const Tweener = imports.util.tweener;
 const MainToolbar = imports.mainToolbar;
+const Searchbar = imports.searchbar;
 const View = imports.view;
 
 const _FULLSCREEN_TOOLBAR_TIMEOUT = 2; // seconds
@@ -310,5 +313,168 @@ const PreviewFullscreenToolbar = new Lang.Class({
                          { y: -(this.widget.get_preferred_height()[1]),
                            time: 0.20,
                            transition: 'easeOutQuad' });
+    }
+});
+
+const PreviewToolbar = new Lang.Class({
+    Name: 'PreviewToolbar',
+    Extends: MainToolbar.MainToolbar,
+
+    _init: function(previewView) {
+        this._previewView = previewView;
+
+        this.parent();
+
+        // back button, on the left of the toolbar
+        let iconName =
+            (this.widget.get_direction() == Gtk.TextDirection.RTL) ?
+            'go-next-symbolic' : 'go-previous-symbolic';
+        let backButton =
+            this.widget.add_button(iconName, _("Back"), true);
+        backButton.connect('clicked', Lang.bind(this,
+            function() {
+                Global.documentManager.setActiveItem(null);
+            }));
+
+        // menu button, on the right of the toolbar
+        let menuModel = new Gio.Menu();
+        menuModel.append_item(Gio.MenuItem.new(_("Open"), 'app.open-current'));
+        menuModel.append_item(Gio.MenuItem.new(_("Print"), 'app.print-current'));
+
+        let menuButton = this.widget.add_menu('emblem-system-symbolic', null, false);
+        menuButton.set_menu_model(menuModel);
+
+        this._setToolbarTitle();
+        this.widget.show_all();
+    },
+
+    createSearchbar: function() {
+        this._searchbar = new PreviewSearchbar(this._previewView);
+        this.layout.pack_start = false;
+        this.layout.pack(this._searchbar.actor, false, true, false,
+                         Clutter.BoxAlignment.CENTER, Clutter.BoxAlignment.START);
+    },
+
+    _setToolbarTitle: function() {
+        let doc = Global.documentManager.getActiveItem();
+        let primary = doc.name;
+        let detail = null;
+
+        if (this._model) {
+            let curPage, totPages;
+
+            curPage = this._model.get_page();
+            totPages = this._model.get_document().get_n_pages();
+
+            detail = _("%d of %d").format(curPage + 1, totPages);
+        }
+
+        if (detail)
+            detail = '(' + detail + ')';
+
+        this.widget.set_labels(primary, detail);
+    },
+
+    setModel: function(model) {
+        if (!model)
+            return;
+
+        this._model = model;
+        this._model.connect('page-changed', Lang.bind(this,
+            function() {
+                this._setToolbarTitle();
+            }));
+
+        this._setToolbarTitle();
+    }
+});
+
+const PreviewSearchbar = new Lang.Class({
+    Name: 'PreviewSearchbar',
+    Extends: Searchbar.Searchbar,
+
+    _init: function(previewView) {
+        this.parent();
+
+        this._previewView = previewView;
+    },
+
+    createSearchWidgets: function() {
+        this._searchContainer = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL,
+                                              spacing: 6 });
+
+        this._searchEntry = new Gtk.SearchEntry({ hexpand: true });
+        this._searchEntry.connect('activate', Lang.bind(this, this._searchNext));
+        this._searchContainer.add(this._searchEntry);
+
+        let controlsBox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL });
+        controlsBox.get_style_context().add_class('linked');
+        controlsBox.get_style_context().add_class('raised');
+        this._searchContainer.add(controlsBox);
+
+        let prev = new Gtk.Button();
+        prev.connect('clicked', Lang.bind(this, this._searchPrev));
+        prev.set_image(new Gtk.Image({ icon_name: 'go-up-symbolic',
+                                       icon_size: Gtk.IconSize.MENU,
+                                       margin: 2 }));
+        prev.set_tooltip_text(_("Find Previous"));
+        controlsBox.add(prev);
+
+        let next = new Gtk.Button();
+        next.connect('clicked', Lang.bind(this, this._searchNext));
+        next.set_image(new Gtk.Image({ icon_name: 'go-down-symbolic',
+                                       icon_size: Gtk.IconSize.MENU,
+                                       margin: 2 }));
+        next.set_tooltip_text(_("Find Next"));
+        controlsBox.add(next);
+    },
+
+    entryChanged: function() {
+        this._previewView.view.find_search_changed();
+        this._startSearch();
+    },
+
+    show: function() {
+        this.parent();
+
+        this._previewView.view.find_set_highlight_search(true);
+        this._startSearch();
+    },
+
+    hide: function() {
+        this.parent();
+
+        this._previewView.view.find_set_highlight_search(false);
+    },
+
+    _startSearch: function() {
+        let model = this._previewView.getModel();
+        if (!model)
+            return;
+
+        let str = this._searchEntry.get_text();
+        if (!str)
+            return;
+
+        let evDoc = model.get_document();
+        let job = EvView.JobFind.new(evDoc, model.get_page(), evDoc.get_n_pages(),
+                                     str, false);
+        job.connect('updated', Lang.bind(this, this._onSearchJobUpdated));
+
+        job.scheduler_push_job(EvView.JobPriority.PRIORITY_NONE);
+    },
+
+    _searchPrev: function() {
+        this._previewView.view.find_previous();
+    },
+
+    _searchNext: function() {
+        this._previewView.view.find_next();
+    },
+
+    _onSearchJobUpdated: function(job, page) {
+        // FIXME: ev_job_find_get_results() returns a GList **
+        // and thus is not introspectable
+        Gd.ev_view_find_changed(this._previewView.view, job, page);
     }
 });

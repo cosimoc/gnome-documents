@@ -140,6 +140,16 @@ const MainWindow = new Lang.Class({
     },
 
     _onKeyPressEvent: function(widget, event) {
+        let toolbar = this._embed.getMainToolbar();
+
+        if (Utils.isSearchEvent(event)) {
+            toolbar.toggleSearch();
+            return true;
+        }
+
+        if (toolbar.handleEvent(event))
+            return true;
+
         if (Global.modeController.getWindowMode() == WindowMode.WindowMode.PREVIEW)
             return this._handleKeyPreview(event);
         else
@@ -156,7 +166,6 @@ const MainWindow = new Lang.Class({
             ((state & Gdk.ModifierType.MOD1_MASK) != 0 &&
              (direction == Gtk.TextDirection.LTR && keyval == Gdk.KEY_Left) ||
              (direction == Gtk.TextDirection.RTL && keyval == Gdk.KEY_Right)) ||
-            keyval == Gdk.KEY_BackSpace ||
             keyval == Gdk.KEY_Back) {
             Global.documentManager.setActiveItem(null);
             return true;
@@ -167,14 +176,6 @@ const MainWindow = new Lang.Class({
 
     _handleKeyOverview: function(event) {
         let keyval = event.get_keyval()[1];
-
-        if (Utils.isSearchEvent(event)) {
-            this._embed._toolbar.searchbar.toggle();
-            return true;
-        }
-
-        if (this._embed._toolbar.searchbar.deliverEvent(event))
-            return true;
 
         if (Global.selectionController.getSelectionMode() &&
             keyval == Gdk.KEY_Escape) {
