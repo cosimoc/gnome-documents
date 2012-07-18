@@ -355,7 +355,6 @@ const Searchbar = new Lang.Class({
 
     _init: function() {
         this._searchEventId = 0;
-        this._searchFocusId = 0;
         this._searchEntryTimeout = 0;
         this._sourcesId = 0;
         this._searchTypeId = 0;
@@ -457,11 +456,6 @@ const Searchbar = new Lang.Class({
     },
 
     destroy: function() {
-        if (this._searchFocusId != 0) {
-            Global.searchController.disconnect(this._searchFocusId);
-            this._searchFocusId = 0;
-        }
-
         if (this._searchEventId != 0) {
             Global.searchController.disconnect(this._searchEventId);
             this._searchEventId = 0;
