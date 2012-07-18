@@ -66,7 +66,7 @@ const Embed = new Lang.Class({
             Clutter.BinAlignment.FILL, Clutter.BinAlignment.FILL);
 
         // pack the toolbar
-        this._toolbar = new MainToolbar.OverviewToolbar();
+        this._toolbar = new MainToolbar.OverviewToolbar(this._overlayLayout);
         this._contentsActor.add_actor(this._toolbar.actor);
         this._contentsLayout.set_fill(this._toolbar.actor, true, false);
 
@@ -101,13 +101,6 @@ const Embed = new Lang.Class({
         this._viewLayout.add(this._background,
             Clutter.BinAlignment.FILL, Clutter.BinAlignment.FILL);
         this._background.lower_bottom();
-
-        // create the dropdown for the search bar, it's hidden by default
-        this._dropdownBox = new Searchbar.Dropdown();
-        this._overlayLayout.add(this._dropdownBox.actor,
-            Clutter.BinAlignment.CENTER, Clutter.BinAlignment.FIXED);
-        this._dropdownBox.actor.add_constraint(new Clutter.BindConstraint({ source: this._toolbar.toolbarActor,
-                                                                            coordinate: Clutter.BindCoordinate.Y }));
 
         // create the OSD toolbar for selected items, it's hidden by default
         this._selectionToolbar = new Selections.SelectionToolbar(this._contentsActor);

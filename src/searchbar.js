@@ -246,7 +246,6 @@ const SearchController = new Lang.Class({
     Name: 'SearchController',
 
     _init: function() {
-        this._dropdownState = false;
         this._string = '';
     },
 
@@ -265,98 +264,15 @@ const SearchController = new Lang.Class({
     getTerms: function() {
         let str = Tracker.sparql_escape_string(this._string);
         return str.replace(/ +/g, ' ').split(' ');
-    },
-
-    setDropdownState: function(state) {
-        if (this._dropdownState == state)
-            return;
-
-        this._dropdownState = state;
-        this.emit('search-dropdown-changed', this._dropdownState);
-    },
-
-    getDropdownState: function() {
-        return this._dropdownState;
     }
 });
 Signals.addSignalMethods(SearchController.prototype);
-
-const Dropdown = new Lang.Class({
-    Name: 'Dropdown',
-
-    _init: function() {
-        this._sourceView = new Manager.BaseView(Global.sourceManager);
-        this._typeView = new Manager.BaseView(Global.searchTypeManager);
-        this._matchView = new Manager.BaseView(Global.searchMatchManager);
-        // TODO: this is out for now, but should we move it somewhere
-        // else?
-        // this._categoryView = new Manager.BaseView(Global.searchCategoryManager);
-
-        this._sourceView.connect('item-activated',
-                                 Lang.bind(this, this._onItemActivated));
-        this._typeView.connect('item-activated',
-                               Lang.bind(this, this._onItemActivated));
-        this._matchView.connect('item-activated',
-                                Lang.bind(this, this._onItemActivated));
-
-        this.widget = new Gtk.Frame({ shadow_type: Gtk.ShadowType.IN });
-        this.actor = new GtkClutter.Actor({ contents: this.widget,
-                                            opacity: 0 });
-        let actorWidget = this.actor.get_widget();
-        actorWidget.get_style_context().add_class('documents-dropdown');
-
-        this._grid = new Gtk.Grid({ orientation: Gtk.Orientation.HORIZONTAL });
-        this.widget.add(this._grid);
-
-        this._grid.add(this._sourceView.widget);
-        this._grid.add(this._typeView.widget);
-        this._grid.add(this._matchView.widget);
-        //this._grid.add(this._categoryView.widget);
-
-        this.widget.show_all();
-
-        Global.searchController.connect('search-dropdown-changed',
-                                        Lang.bind(this, this._onSearchDropdown));
-        this._onSearchDropdown();
-    },
-
-    _onItemActivated: function() {
-        Global.searchController.setDropdownState(false);
-    },
-
-    _onSearchDropdown: function() {
-        let state = Global.searchController.getDropdownState();
-        if (state)
-            this._fadeIn();
-        else
-            this._fadeOut();
-    },
-
-    _fadeIn: function() {
-        this.actor.raise_top();
-        Tweener.addTween(this.actor, { opacity: 245,
-                                       time: 0.20,
-                                       transition: 'easeOutQuad' });
-    },
-
-    _fadeOut: function() {
-        Tweener.addTween(this.actor, { opacity: 0,
-                                       time: 0.20,
-                                       transition: 'easeOutQuad',
-                                       onComplete: function() {
-                                           this.actor.lower_bottom();
-                                       },
-                                       onCompleteScope: this });
-    }
-});
 
 const Searchbar = new Lang.Class({
     Name: 'Searchbar',
 
     _init: function() {
-        this._searchEventId = 0;
         this._searchEntryTimeout = 0;
-        this._sourcesId = 0;
         this._searchTypeId = 0;
         this._searchMatchId = 0;
 
@@ -369,15 +285,15 @@ const Searchbar = new Lang.Class({
         this.actor = new GtkClutter.Actor({ contents: this.widget,
                                             height: 0 });
 
-        this.container = new Gd.MarginContainer({ min_margin: 6,
-                                                  max_margin: 64 });
+        // subclasses will create this._searchEntry and this._searchContainer
+        // GtkWidgets
+        this.createSearchWidgets();
 
         let item = new Gtk.ToolItem();
         item.set_expand(true);
-        item.add(this.container);
+        item.add(this._searchContainer);
         this.widget.insert(item, 0);
 
-        this.createSearchEntry();
         this._searchEntry.connect('key-press-event', Lang.bind(this,
             function(widget, event) {
                 let keyval = event.get_keyval()[1];
@@ -407,8 +323,8 @@ const Searchbar = new Lang.Class({
         this.widget.show_all();
     },
 
-    createSearchEntry: function() {
-        log('Error: Searchbar implementations must override createSearchEntry');
+    createSearchWidgets: function() {
+        log('Error: Searchbar implementations must override createSearchWidgets');
     },
 
     entryChanged: function() {
@@ -419,7 +335,7 @@ const Searchbar = new Lang.Class({
         this.widget.destroy();
     },
 
-    deliverEvent: function(event) {
+    handleEvent: function(event) {
         if (this._in)
             return false;
 
@@ -488,11 +404,73 @@ const Searchbar = new Lang.Class({
     }
 });
 
+const Dropdown = new Lang.Class({
+    Name: 'Dropdown',
+
+    _init: function() {
+        this._sourceView = new Manager.BaseView(Global.sourceManager);
+        this._typeView = new Manager.BaseView(Global.searchTypeManager);
+        this._matchView = new Manager.BaseView(Global.searchMatchManager);
+        // TODO: this is out for now, but should we move it somewhere
+        // else?
+        // this._categoryView = new Manager.BaseView(Global.searchCategoryManager);
+
+        this._sourceView.connect('item-activated',
+                                 Lang.bind(this, this._onItemActivated));
+        this._typeView.connect('item-activated',
+                               Lang.bind(this, this._onItemActivated));
+        this._matchView.connect('item-activated',
+                                Lang.bind(this, this._onItemActivated));
+
+        this.widget = new Gtk.Frame({ shadow_type: Gtk.ShadowType.IN });
+        this.actor = new GtkClutter.Actor({ contents: this.widget,
+                                            opacity: 0 });
+        let actorWidget = this.actor.get_widget();
+        actorWidget.get_style_context().add_class('documents-dropdown');
+
+        this._grid = new Gtk.Grid({ orientation: Gtk.Orientation.HORIZONTAL });
+        this.widget.add(this._grid);
+
+        this._grid.add(this._sourceView.widget);
+        this._grid.add(this._typeView.widget);
+        this._grid.add(this._matchView.widget);
+        //this._grid.add(this._categoryView.widget);
+
+        this.hide();
+    },
+
+    _onItemActivated: function() {
+        this.emit('item-activated');
+    },
+
+    show: function() {
+        this.widget.show_all();
+        this.actor.raise_top();
+        Tweener.addTween(this.actor, { opacity: 245,
+                                       time: 0.20,
+                                       transition: 'easeOutQuad' });
+    },
+
+    hide: function() {
+        this.widget.hide();
+        Tweener.addTween(this.actor, { opacity: 0,
+                                       time: 0.20,
+                                       transition: 'easeOutQuad',
+                                       onComplete: function() {
+                                           this.actor.lower_bottom();
+                                       },
+                                       onCompleteScope: this });
+    }
+});
+Signals.addSignalMethods(Dropdown.prototype);
+
 const OverviewSearchbar = new Lang.Class({
     Name: 'OverviewSearchbar',
     Extends: Searchbar,
 
-    _init: function() {
+    _init: function(dropdown) {
+        this._dropdown = dropdown;
+
         this.parent();
 
         this._sourcesId = Global.sourceManager.connect('active-changed',
@@ -507,34 +485,41 @@ const OverviewSearchbar = new Lang.Class({
         this._onActiveSourceChanged();
         this._onActiveTypeChanged();
         this._onActiveMatchChanged();
-
-        let box = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL });
-        box.add(this._searchEntry);
-        this.container.add(box);
-
-        this._dropdownButton = new Gtk.ToggleButton(
-            { child: new Gtk.Arrow({ arrow_type: Gtk.ArrowType.DOWN }) });
-        this._dropdownButton.connect('toggled', Lang.bind(this,
-            function() {
-                let active = this._dropdownButton.get_active();
-                Global.searchController.setDropdownState(active);
-            }));
-
-        box.add(this._dropdownButton);
-        box.show_all();
-
-        this._searchDropdownId = Global.searchController.connect('search-dropdown-changed',
-            Lang.bind(this, this._onDropdownStateChanged));
     },
 
-    createSearchEntry: function() {
+    createSearchWidgets: function() {
+        this._searchContainer = new Gd.MarginContainer({ min_margin: 6,
+                                                         max_margin: 64 });
+        this._box = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL });
+        this._searchContainer.add(this._box);
+
+        // create the search entry
         this._searchEntry = new Gd.TaggedEntry({ width_request: 260,
                                                  no_show_all: true,
                                                  hexpand: true });
         this._searchEntry.connect('tag-clicked',
             Lang.bind(this, this._onTagClicked));
-
         this._searchEntry.set_text(Global.searchController.getString());
+
+        // create the dropdown button
+        this._dropdownButton = new Gtk.ToggleButton(
+            { child: new Gtk.Arrow({ arrow_type: Gtk.ArrowType.DOWN }) });
+        this._dropdownButton.connect('toggled', Lang.bind(this,
+            function() {
+                let active = this._dropdownButton.get_active();
+                if (active)
+                    this._dropdown.show();
+                else
+                    this._dropdown.hide();
+            }));
+        this._dropdown.connect('item-activated', Lang.bind(this,
+            function() {
+                this._dropdownButton.set_active(false);
+            }));
+
+        this._box.add(this._searchEntry);
+        this._box.add(this._dropdownButton);
+        this._box.show_all();
     },
 
     entryChanged: function() {
@@ -583,21 +568,11 @@ const OverviewSearchbar = new Lang.Class({
         this._onActiveChangedCommon('match', Global.searchMatchManager);
     },
 
-    _onDropdownStateChanged: function() {
-        let state = Global.searchController.getDropdownState();
-        this._dropdownButton.set_active(state);
-    },
-
     _onTagClicked: function() {
         this._dropdownButton.set_active(true);
     },
 
     destroy: function() {
-        if (this._searchEventId != 0) {
-            Global.searchController.disconnect(this._searchEventId);
-            this._searchEventId = 0;
-        }
-
         if (this._sourcesId != 0) {
             Global.sourceManager.disconnect(this._sourcesId);
             this._sourcesId = 0;
@@ -613,13 +588,8 @@ const OverviewSearchbar = new Lang.Class({
             this._searchMatchId = 0;
         }
 
-        if (this._searchDropdownId != 0) {
-            Global.searchController.disconnect(this._searchDropdownId);
-            this._searchDropdownId = 0;
-        }
-
         if (this._collectionId != 0) {
-            Global.searchController.disconnect(this._collectionId);
+            Global.collectionManager.disconnect(this._collectionId);
             this._collectionId = 0;
         }
 

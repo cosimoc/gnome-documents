@@ -350,10 +350,18 @@ const OverviewToolbar = new Lang.Class({
     Name: 'OverviewToolbar',
     Extends: MainToolbar,
 
-    _init: function() {
+    _init: function(overlayLayout) {
         this.parent();
 
-        this.searchbar = new Searchbar.OverviewSearchbar();
+        // create the dropdown for the search bar, it's hidden by default
+        let dropdown = new Searchbar.Dropdown();
+        overlayLayout.add(dropdown.actor,
+            Clutter.BinAlignment.CENTER, Clutter.BinAlignment.FIXED);
+        dropdown.actor.add_constraint(
+            new Clutter.BindConstraint({ source: this.toolbarActor,
+                                         coordinate: Clutter.BindCoordinate.Y }));
+
+        this.searchbar = new Searchbar.OverviewSearchbar(dropdown);
         this.layout.pack_start = true;
         this.layout.pack(this.searchbar.actor, false, true, false,
                          Clutter.BoxAlignment.CENTER, Clutter.BoxAlignment.START);
