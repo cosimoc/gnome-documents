@@ -353,7 +353,7 @@ const OverviewToolbar = new Lang.Class({
     _init: function() {
         this.parent();
 
-        this.searchbar = new Searchbar.Searchbar();
+        this.searchbar = new Searchbar.OverviewSearchbar();
         this.layout.pack_start = true;
         this.layout.pack(this.searchbar.actor, false, true, false,
                          Clutter.BoxAlignment.CENTER, Clutter.BoxAlignment.START);

@@ -369,49 +369,15 @@ const Searchbar = new Lang.Class({
         this.actor = new GtkClutter.Actor({ contents: this.widget,
                                             height: 0 });
 
-        this._searchEntry = new Gd.TaggedEntry({ width_request: 260,
-                                                 no_show_all: true,
-                                                 hexpand: true });
-        this._searchEntry.connect('tag-clicked',
-            Lang.bind(this, this._onTagClicked));
-
-        this._sourcesId = Global.sourceManager.connect('active-changed',
-            Lang.bind(this, this._onActiveSourceChanged));
-        this._searchTypeId = Global.searchTypeManager.connect('active-changed',
-            Lang.bind(this, this._onActiveTypeChanged));
-        this._searchMatchId = Global.searchMatchManager.connect('active-changed',
-            Lang.bind(this, this._onActiveMatchChanged));
-        this._collectionId = Global.collectionManager.connect('active-changed',
-            Lang.bind(this, this._onActiveCollectionChanged));
-
-        this._onActiveSourceChanged();
-        this._onActiveTypeChanged();
-        this._onActiveMatchChanged();
-
-        let box = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL });
-        box.add(this._searchEntry);
-
-        this._dropdownButton = new Gtk.ToggleButton(
-            { child: new Gtk.Arrow({ arrow_type: Gtk.ArrowType.DOWN }) });
-        this._dropdownButton.connect('toggled', Lang.bind(this,
-            function() {
-                let active = this._dropdownButton.get_active();
-                Global.searchController.setDropdownState(active);
-            }));
-
-        box.add(this._dropdownButton);
-
-        this._searchDropdownId = Global.searchController.connect('search-dropdown-changed',
-            Lang.bind(this, this._onDropdownStateChanged));
-
-        let container = new Gd.MarginContainer({ min_margin: 6,
-                                                 max_margin: 64 });
-        container.add(box);
+        this.container = new Gd.MarginContainer({ min_margin: 6,
+                                                  max_margin: 64 });
 
         let item = new Gtk.ToolItem();
         item.set_expand(true);
-        item.add(container);
+        item.add(this.container);
+        this.widget.insert(item, 0);
 
+        this.createSearchEntry();
         this._searchEntry.connect('key-press-event', Lang.bind(this,
             function(widget, event) {
                 let keyval = event.get_keyval()[1];
@@ -424,109 +390,33 @@ const Searchbar = new Lang.Class({
                 return false;
             }));
 
-        this._searchEntry.connect('changed', Lang.bind(this, function() {
-            if (this._searchEntryTimeout != 0) {
-                Mainloop.source_remove(this._searchEntryTimeout);
-                this._searchEntryTimeout = 0;
-            }
-
-            this._searchEntryTimeout = Mainloop.timeout_add(_SEARCH_ENTRY_TIMEOUT, Lang.bind(this,
-                function() {
+        this._searchEntry.connect('changed', Lang.bind(this,
+            function() {
+                if (this._searchEntryTimeout != 0) {
+                    Mainloop.source_remove(this._searchEntryTimeout);
                     this._searchEntryTimeout = 0;
+                }
 
-                    let currentText = this._searchEntry.get_text().toLowerCase();
-                    Global.searchController.setString(currentText);
+                this._searchEntryTimeout = Mainloop.timeout_add(_SEARCH_ENTRY_TIMEOUT, Lang.bind(this,
+                    function() {
+                        this._searchEntryTimeout = 0;
+                        this.entryChanged();
+                    }));
             }));
-        }));
-
-        this.widget.insert(item, 0);
-        this._searchEntry.set_text(Global.searchController.getString());
 
         this.widget.show_all();
     },
 
-    _onActiveCollectionChanged: function() {
-        let searchType = Global.searchTypeManager.getActiveItem();
+    createSearchEntry: function() {
+        log('Error: Searchbar implementations must override createSearchEntry');
+    },
 
-        if (Global.searchController.getString() != '' ||
-            searchType.id != 'all') {
-            Global.searchTypeManager.setActiveItemById('all');
-            this._searchEntry.set_text('');
-        }
+    entryChanged: function() {
+        log('Error: Searchbar implementations must override entryChanged');
     },
 
     destroy: function() {
-        if (this._searchEventId != 0) {
-            Global.searchController.disconnect(this._searchEventId);
-            this._searchEventId = 0;
-        }
-
-        if (this._sourcesId != 0) {
-            Global.sourceManager.disconnect(this._sourcesId);
-            this._sourcesId = 0;
-        }
-
-        if (this._searchTypeId != 0) {
-            Global.searchTypeManager.disconnect(this._searchTypeId);
-            this._searchTypeId = 0;
-        }
-
-        if (this._searchMatchId != 0) {
-            Global.searchMatchManager.disconnect(this._searchMatchId);
-            this._searchMatchId = 0;
-        }
-
-        if (this._searchDropdownId != 0) {
-            Global.searchController.disconnect(this._searchDropdownId);
-            this._searchDropdownId = 0;
-        }
-
-        if (this._collectionId != 0) {
-            Global.searchController.disconnect(this._collectionId);
-            this._collectionId = 0;
-        }
-
         this.widget.destroy();
-    },
-
-    _onTagClicked: function() {
-        this._dropdownButton.set_active(true);
-    },
-
-    _onActiveChangedCommon: function(id, manager) {
-        let item = manager.getActiveItem();
-
-        if (item.id == 'all') {
-            this._searchEntry.remove_tag(id);
-        } else {
-            let res = this._searchEntry.add_tag(id, item.name);
-
-            if (res) {
-                this._searchEntry.connect('tag-button-clicked::' + id, Lang.bind(this,
-                    function() {
-                        manager.setActiveItemById('all');
-                    }));
-            } else {
-                this._searchEntry.set_tag_label(id, item.name);
-            }
-        }
-    },
-
-    _onActiveSourceChanged: function() {
-        this._onActiveChangedCommon('source', Global.sourceManager);
-    },
-
-    _onActiveTypeChanged: function() {
-        this._onActiveChangedCommon('type', Global.searchTypeManager);
-    },
-
-    _onActiveMatchChanged: function() {
-        this._onActiveChangedCommon('match', Global.searchMatchManager);
-    },
-
-    _onDropdownStateChanged: function() {
-        let state = Global.searchController.getDropdownState();
-        this._dropdownButton.set_active(state);
     },
 
     deliverEvent: function(event) {
@@ -585,7 +475,6 @@ const Searchbar = new Lang.Class({
     },
 
     hide: function() {
-        this._dropdownButton.set_active(false);
         this._visible = false;
 
         Tweener.addTween(this.actor, { height: 0,
@@ -596,5 +485,149 @@ const Searchbar = new Lang.Class({
                                            this._in = false;
                                        },
                                        onCompleteScope: this });
+    }
+});
+
+const OverviewSearchbar = new Lang.Class({
+    Name: 'OverviewSearchbar',
+    Extends: Searchbar,
+
+    _init: function() {
+        this.parent();
+
+        this._sourcesId = Global.sourceManager.connect('active-changed',
+            Lang.bind(this, this._onActiveSourceChanged));
+        this._searchTypeId = Global.searchTypeManager.connect('active-changed',
+            Lang.bind(this, this._onActiveTypeChanged));
+        this._searchMatchId = Global.searchMatchManager.connect('active-changed',
+            Lang.bind(this, this._onActiveMatchChanged));
+        this._collectionId = Global.collectionManager.connect('active-changed',
+            Lang.bind(this, this._onActiveCollectionChanged));
+
+        this._onActiveSourceChanged();
+        this._onActiveTypeChanged();
+        this._onActiveMatchChanged();
+
+        let box = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL });
+        box.add(this._searchEntry);
+        this.container.add(box);
+
+        this._dropdownButton = new Gtk.ToggleButton(
+            { child: new Gtk.Arrow({ arrow_type: Gtk.ArrowType.DOWN }) });
+        this._dropdownButton.connect('toggled', Lang.bind(this,
+            function() {
+                let active = this._dropdownButton.get_active();
+                Global.searchController.setDropdownState(active);
+            }));
+
+        box.add(this._dropdownButton);
+        box.show_all();
+
+        this._searchDropdownId = Global.searchController.connect('search-dropdown-changed',
+            Lang.bind(this, this._onDropdownStateChanged));
+    },
+
+    createSearchEntry: function() {
+        this._searchEntry = new Gd.TaggedEntry({ width_request: 260,
+                                                 no_show_all: true,
+                                                 hexpand: true });
+        this._searchEntry.connect('tag-clicked',
+            Lang.bind(this, this._onTagClicked));
+
+        this._searchEntry.set_text(Global.searchController.getString());
+    },
+
+    entryChanged: function() {
+        let currentText = this._searchEntry.get_text().toLowerCase();
+        Global.searchController.setString(currentText);
+    },
+
+    _onActiveCollectionChanged: function() {
+        let searchType = Global.searchTypeManager.getActiveItem();
+
+        if (Global.searchController.getString() != '' ||
+            searchType.id != 'all') {
+            Global.searchTypeManager.setActiveItemById('all');
+            this._searchEntry.set_text('');
+        }
+    },
+
+    _onActiveChangedCommon: function(id, manager) {
+        let item = manager.getActiveItem();
+
+        if (item.id == 'all') {
+            this._searchEntry.remove_tag(id);
+        } else {
+            let res = this._searchEntry.add_tag(id, item.name);
+
+            if (res) {
+                this._searchEntry.connect('tag-button-clicked::' + id, Lang.bind(this,
+                    function() {
+                        manager.setActiveItemById('all');
+                    }));
+            } else {
+                this._searchEntry.set_tag_label(id, item.name);
+            }
+        }
+    },
+
+    _onActiveSourceChanged: function() {
+        this._onActiveChangedCommon('source', Global.sourceManager);
+    },
+
+    _onActiveTypeChanged: function() {
+        this._onActiveChangedCommon('type', Global.searchTypeManager);
+    },
+
+    _onActiveMatchChanged: function() {
+        this._onActiveChangedCommon('match', Global.searchMatchManager);
+    },
+
+    _onDropdownStateChanged: function() {
+        let state = Global.searchController.getDropdownState();
+        this._dropdownButton.set_active(state);
+    },
+
+    _onTagClicked: function() {
+        this._dropdownButton.set_active(true);
+    },
+
+    destroy: function() {
+        if (this._searchEventId != 0) {
+            Global.searchController.disconnect(this._searchEventId);
+            this._searchEventId = 0;
+        }
+
+        if (this._sourcesId != 0) {
+            Global.sourceManager.disconnect(this._sourcesId);
+            this._sourcesId = 0;
+        }
+
+        if (this._searchTypeId != 0) {
+            Global.searchTypeManager.disconnect(this._searchTypeId);
+            this._searchTypeId = 0;
+        }
+
+        if (this._searchMatchId != 0) {
+            Global.searchMatchManager.disconnect(this._searchMatchId);
+            this._searchMatchId = 0;
+        }
+
+        if (this._searchDropdownId != 0) {
+            Global.searchController.disconnect(this._searchDropdownId);
+            this._searchDropdownId = 0;
+        }
+
+        if (this._collectionId != 0) {
+            Global.searchController.disconnect(this._collectionId);
+            this._collectionId = 0;
+        }
+
+        this.parent();
+    },
+
+    hide: function() {
+        this._dropdownButton.set_active(false);
+        this.parent();
     }
 });
