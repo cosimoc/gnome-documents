@@ -219,7 +219,7 @@ const PreviewFullscreen = new Lang.Class({
                                           factor: 0.95 }));
 
         // create toolbar
-        this._fsToolbar = new MainToolbar.PreviewToolbar();
+        this._fsToolbar = new PreviewFullscreenToolbar();
         this._fsToolbar.setModel(model);
 
         layout.add(this._fsToolbar.actor,
@@ -285,5 +285,30 @@ const PreviewFullscreen = new Lang.Class({
 
                     return false;
             }));
+    }
+});
+
+const PreviewFullscreenToolbar = new Lang.Class({
+    Name: 'PreviewFullscreenToolbar',
+    Extends: MainToolbar.MainToolbar,
+
+    _init: function() {
+        this.parent();
+
+        this.actor.y = -(this.widget.get_preferred_height()[1]);
+    },
+
+    show: function() {
+        Tweener.addTween(this.actor,
+                         { y: 0,
+                           time: 0.20,
+                           transition: 'easeInQuad' });
+    },
+
+    hide: function() {
+        Tweener.addTween(this.actor,
+                         { y: -(this.widget.get_preferred_height()[1]),
+                           time: 0.20,
+                           transition: 'easeOutQuad' });
     }
 });

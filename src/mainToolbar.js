@@ -321,31 +321,6 @@ const MainToolbar = new Lang.Class({
     }
 });
 
-const PreviewToolbar = new Lang.Class({
-    Name: 'PreviewToolbar',
-    Extends: MainToolbar,
-
-    _init: function() {
-        this.parent();
-
-        this.actor.y = -(this.widget.get_preferred_height()[1]);
-    },
-
-    show: function() {
-        Tweener.addTween(this.actor,
-                         { y: 0,
-                           time: 0.20,
-                           transition: 'easeInQuad' });
-    },
-
-    hide: function() {
-        Tweener.addTween(this.actor,
-                         { y: -(this.widget.get_preferred_height()[1]),
-                           time: 0.20,
-                           transition: 'easeOutQuad' });
-    }
-});
-
 const OverviewToolbar = new Lang.Class({
     Name: 'OverviewToolbar',
     Extends: MainToolbar,
