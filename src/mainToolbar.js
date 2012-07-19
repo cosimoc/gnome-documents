@@ -36,10 +36,6 @@ const Mainloop = imports.mainloop;
 const Global = imports.global;
 const Searchbar = imports.searchbar;
 const Tweener = imports.util.tweener;
-const WindowMode = imports.windowMode;
-
-const EvView = imports.gi.EvinceView;//for printing
-const Notifications = imports.notifications;//for printing
 
 const MainToolbar = new Lang.Class({
     Name: 'MainToolbar',
@@ -72,8 +68,10 @@ const MainToolbar = new Lang.Class({
         return res;
     },
 
-    toggleSearch: function() {
-        this._searchbar.toggle();
+    addSearchButton: function() {
+        let searchButton =
+            this.widget.add_toggle('edit-find-symbolic', _("Search"), false);
+        searchButton.action_name = 'app.search';
     }
 });
 
@@ -199,6 +197,8 @@ const OverviewToolbar = new Lang.Class({
         this.widget.get_style_context().add_class('documents-selection-mode');
         this.widget.reset_style();
 
+        this.addSearchButton();
+
         let selectionButton =
             this.widget.add_button(null, _("Done"), false);
         selectionButton.connect('clicked', Lang.bind(this,
@@ -232,6 +232,8 @@ const OverviewToolbar = new Lang.Class({
     },
 
     _populateForOverview: function() {
+        this.addSearchButton();
+
         let selectionButton =
             this.widget.add_button('emblem-default-symbolic', _("Select Items"), false);
         selectionButton.connect('clicked', Lang.bind(this,

@@ -142,11 +142,6 @@ const MainWindow = new Lang.Class({
     _onKeyPressEvent: function(widget, event) {
         let toolbar = this._embed.getMainToolbar();
 
-        if (Utils.isSearchEvent(event)) {
-            toolbar.toggleSearch();
-            return true;
-        }
-
         if (toolbar.handleEvent(event))
             return true;
 

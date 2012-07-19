@@ -97,19 +97,6 @@ function getURNFromPath(path, model) {
     return id;
 }
 
-function isSearchEvent(event) {
-    let keyval = event.get_keyval()[1];
-    let state = event.get_state()[1];
-
-    let retval =
-        (((keyval == Gdk.KEY_f) &&
-          ((state & Gdk.ModifierType.CONTROL_MASK) != 0)) ||
-         ((keyval == Gdk.KEY_s) &&
-          ((state & Gdk.ModifierType.CONTROL_MASK) != 0)));
-
-    return retval;
-}
-
 function alphaGtkWidget(widget) {
     widget.override_background_color(0, new Gdk.RGBA({ red: 0,
                                                        green: 0,

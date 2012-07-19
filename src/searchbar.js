@@ -21,6 +21,7 @@
 
 const Gd = imports.gi.Gd;
 const Gdk = imports.gi.Gdk;
+const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 const GtkClutter = imports.gi.GtkClutter;
 const Tracker = imports.gi.Tracker;
@@ -299,7 +300,7 @@ const Searchbar = new Lang.Class({
                 let keyval = event.get_keyval()[1];
 
                 if (keyval == Gdk.KEY_Escape) {
-                    this.hide();
+                    Global.application.change_action_state('search', GLib.Variant.new('b', false));
                     return true;
                 }
 
@@ -318,6 +319,20 @@ const Searchbar = new Lang.Class({
                         this._searchEntryTimeout = 0;
                         this.entryChanged();
                     }));
+            }));
+
+        // connect to the search action state for visibility
+        let searchStateId = Global.application.connect('action-state-changed::search', Lang.bind(this,
+            function(source, actionName, state) {
+                if (state.get_boolean())
+                    this.show();
+                else
+                    this.hide();
+            }));
+        this.widget.connect('destroy', Lang.bind(this,
+            function() {
+                Global.application.disconnect(searchStateId);
+                Global.application.change_action_state('search', GLib.Variant.new('b', false));
             }));
 
         this.widget.show_all();
@@ -361,17 +376,10 @@ const Searchbar = new Lang.Class({
             handled = true;
 
             if (!this._in)
-                this.show();
+                Global.application.change_action_state('search', GLib.Variant.new('b', true));
         }
 
         return handled;
-    },
-
-    toggle: function() {
-        if (this._visible)
-            this.hide();
-        else
-            this.show();
     },
 
     show: function() {

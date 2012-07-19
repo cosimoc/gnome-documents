@@ -311,6 +311,9 @@ const PreviewToolbar = new Lang.Class({
                 Global.documentManager.setActiveItem(null);
             }));
 
+        // search button, on the right of the toolbar
+        this.addSearchButton();
+
         // menu button, on the right of the toolbar
         let menuModel = new Gio.Menu();
         menuModel.append_item(Gio.MenuItem.new(_("Open"), 'app.open-current'));

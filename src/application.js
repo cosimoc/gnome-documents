@@ -137,6 +137,17 @@ const Application = new Lang.Class({
                     doc.print(this._mainWindow.window);
             }));
         this.add_action(printAction);
+
+        // search toolbar button
+        let searchAction = Gio.SimpleAction.new_stateful('search',
+            null, GLib.Variant.new('b', false));
+        searchAction.connect('activate', Lang.bind(this,
+            function() {
+                let state = searchAction.get_state();
+                searchAction.change_state(GLib.Variant.new('b', !state.get_boolean()));
+            }));
+        this.add_action(searchAction);
+        this.add_accelerator('<Primary>f', 'app.search', null);
     },
 
     _initAppMenu: function() {
