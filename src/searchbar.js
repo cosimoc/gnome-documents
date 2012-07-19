@@ -278,7 +278,6 @@ const Searchbar = new Lang.Class({
         this._searchMatchId = 0;
 
         this._in = false;
-        this._visible = false;
 
         this.widget = new Gtk.Toolbar();
         this.widget.get_style_context().add_class(Gtk.STYLE_CLASS_PRIMARY_TOOLBAR);
@@ -384,8 +383,6 @@ const Searchbar = new Lang.Class({
 
     show: function() {
         let eventDevice = Gtk.get_current_event_device();
-
-        this._visible = true;
         this._searchEntry.show();
 
         Tweener.addTween(this.actor, { height: this.widget.get_preferred_height()[1],
@@ -399,8 +396,6 @@ const Searchbar = new Lang.Class({
     },
 
     hide: function() {
-        this._visible = false;
-
         Tweener.addTween(this.actor, { height: 0,
                                        time: 0.20,
                                        transition: 'easeOutQuad',

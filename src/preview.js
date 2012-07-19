@@ -222,7 +222,7 @@ const PreviewFullscreen = new Lang.Class({
                                           factor: 0.95 }));
 
         // create toolbar
-        this._fsToolbar = new PreviewFullscreenToolbar();
+        this._fsToolbar = new PreviewFullscreenToolbar(previewView);
         this._fsToolbar.setModel(model);
 
         layout.add(this._fsToolbar.actor,
@@ -461,8 +461,8 @@ const PreviewFullscreenToolbar = new Lang.Class({
     Name: 'PreviewFullscreenToolbar',
     Extends: PreviewToolbar,
 
-    _init: function() {
-        this.parent();
+    _init: function(previewView) {
+        this.parent(previewView);
 
         log(this.actor);
 
