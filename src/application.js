@@ -152,6 +152,10 @@ const Application = new Lang.Class({
             { name: 'zoom-in', accel: '<Primary>plus',
               window_mode: WindowMode.WindowMode.PREVIEW },
             { name: 'zoom-out', accel: '<Primary>minus',
+              window_mode: WindowMode.WindowMode.PREVIEW },
+            { name: 'rotate-left', accel: '<Primary>Left',
+              window_mode: WindowMode.WindowMode.PREVIEW },
+            { name: 'rotate-right', accel: '<Primary>Right',
               window_mode: WindowMode.WindowMode.PREVIEW }
         ];
 

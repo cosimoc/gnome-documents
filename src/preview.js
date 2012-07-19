@@ -75,6 +75,18 @@ const PreviewView = new Lang.Class({
         this._findNext = Global.application.lookup_action('find-next');
         this._findNext.connect('activate', Lang.bind(this,
             function() {
+                this.view.find_next();
+            }));
+
+        let rotLeft = Global.application.lookup_action('rotate-left');
+        rotLeft.connect('activate', Lang.bind(this,
+            function() {
+                this._changeRotation(-90);
+            }));
+        let rotRight = Global.application.lookup_action('rotate-right');
+        rotRight.connect('activate', Lang.bind(this,
+            function() {
+                this._changeRotation(90);
             }));
     },
 
@@ -129,6 +141,11 @@ const PreviewView = new Lang.Class({
         }
 
         return false;
+    },
+
+    _changeRotation: function(offset) {
+        let rotation = this._model.get_rotation();
+        this._model.set_rotation(rotation + offset);
     },
 
     startSearch: function(str) {
@@ -354,6 +371,12 @@ const PreviewToolbar = new Lang.Class({
 
         section.append_item(Gio.MenuItem.new(_("Zoom In"), 'app.zoom-in'));
         section.append_item(Gio.MenuItem.new(_("Zoom Out"), 'app.zoom-out'));
+
+        section = new Gio.Menu();
+        menuModel.append_section(null, section);
+
+        section.append_item(Gio.MenuItem.new(_("Rotate Left"), 'app.rotate-left'));
+        section.append_item(Gio.MenuItem.new(_("Rotate Right"), 'app.rotate-right'));
 
         let menuButton = this.widget.add_menu('emblem-system-symbolic', null, false);
         menuButton.set_menu_model(menuModel);
