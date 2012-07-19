@@ -52,6 +52,20 @@ const PreviewView = new Lang.Class({
 
         this._createView();
         this.widget.show_all();
+
+        this._zoomIn = Global.application.lookup_action('zoom-in');
+        this._zoomIn.connect('activate', Lang.bind(this,
+            function() {
+                this._model.set_sizing_mode(EvView.SizingMode.FREE);
+                this.view.zoom_in();
+            }));
+
+        this._zoomOut = Global.application.lookup_action('zoom-out');
+        this._zoomOut.connect('activate', Lang.bind(this,
+            function() {
+                this._model.set_sizing_mode(EvView.SizingMode.FREE);
+                this.view.zoom_out();
+            }));
     },
 
     _createView: function() {
@@ -299,8 +313,18 @@ const PreviewToolbar = new Lang.Class({
 
         // menu button, on the right of the toolbar
         let menuModel = new Gio.Menu();
-        menuModel.append_item(Gio.MenuItem.new(this._getOpenItemLabel(), 'app.open-current'));
-        menuModel.append_item(Gio.MenuItem.new(_("Print"), 'app.print-current'));
+
+        let section = new Gio.Menu();
+        menuModel.append_section(null, section);
+
+        section.append_item(Gio.MenuItem.new(this._getOpenItemLabel(), 'app.open-current'));
+        section.append_item(Gio.MenuItem.new(_("Print"), 'app.print-current'));
+
+        section = new Gio.Menu();
+        menuModel.append_section(null, section);
+
+        section.append_item(Gio.MenuItem.new(_("Zoom In"), 'app.zoom-in'));
+        section.append_item(Gio.MenuItem.new(_("Zoom Out"), 'app.zoom-out'));
 
         let menuButton = this.widget.add_menu('emblem-system-symbolic', null, false);
         menuButton.set_menu_model(menuModel);

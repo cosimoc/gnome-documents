@@ -145,7 +145,9 @@ const Application = new Lang.Class({
             { name: 'search',
               callback: this._onActionSearch,
               state: GLib.Variant.new('b', false),
-              accel: '<Primary>f' }
+              accel: '<Primary>f' },
+            { name: 'zoom-in', accel: '<Primary>plus' },
+            { name: 'zoom-out', accel: '<Primary>minus' }
         ];
 
         actionEntries.forEach(Lang.bind(this,
@@ -164,11 +166,13 @@ const Application = new Lang.Class({
                 if (actionEntry.create_hook)
                     actionEntry.create_hook.apply(this, [action]);
 
-                action.connect('activate', Lang.bind(this, actionEntry.callback));
-                this.add_action(action);
+                if (actionEntry.callback)
+                    action.connect('activate', Lang.bind(this, actionEntry.callback));
 
                 if (actionEntry.accel)
                     this.add_accelerator(actionEntry.accel, 'app.' + actionEntry.name, null);
+
+                this.add_action(action);
             }));
     },
 
