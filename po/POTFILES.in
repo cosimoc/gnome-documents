@@ -15,3 +15,4 @@ src/sources.js
 src/spinnerBox.js
 src/view.js
 [type: gettext/glade]src/resources/app-menu.ui
+[type: gettext/glade]src/resources/preview-menu.ui
