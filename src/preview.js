@@ -358,39 +358,27 @@ const PreviewToolbar = new Lang.Class({
         this.addSearchButton();
 
         // menu button, on the right of the toolbar
-        let menuModel = new Gio.Menu();
-
-        let section = new Gio.Menu();
-        menuModel.append_section(null, section);
-
-        section.append_item(Gio.MenuItem.new(this._getOpenItemLabel(), 'app.open-current'));
-        section.append_item(Gio.MenuItem.new(_("Print"), 'app.print-current'));
-
-        section = new Gio.Menu();
-        menuModel.append_section(null, section);
-
-        section.append_item(Gio.MenuItem.new(_("Zoom In"), 'app.zoom-in'));
-        section.append_item(Gio.MenuItem.new(_("Zoom Out"), 'app.zoom-out'));
-
-        section = new Gio.Menu();
-        menuModel.append_section(null, section);
-
-        section.append_item(Gio.MenuItem.new(_("Rotate Left"), 'app.rotate-left'));
-        section.append_item(Gio.MenuItem.new(_("Rotate Right"), 'app.rotate-right'));
-
+        let previewMenu = this._getPreviewMenu();
         let menuButton = this.widget.add_menu('emblem-system-symbolic', null, false);
-        menuButton.set_menu_model(menuModel);
+        menuButton.set_menu_model(previewMenu);
 
         this._setToolbarTitle();
         this.widget.show_all();
     },
 
-    _getOpenItemLabel: function() {
-        let doc = Global.documentManager.getActiveItem();
-        if (!doc || (doc && !doc.defaultAppName))
-            return _("Open");
+    _getPreviewMenu: function() {
+        let builder = new Gtk.Builder();
+        builder.add_from_resource('/org/gnome/documents/preview-menu.ui');
+        let menu = builder.get_object('preview-menu');
 
-        return _("Open with %s").format(doc.defaultAppName);
+        let doc = Global.documentManager.getActiveItem();
+        if (doc && doc.defaultAppName) {
+            let section = builder.get_object('open-section');
+            section.remove(0);
+            section.prepend(_("Open with %s").format(doc.defaultAppName), 'app.open-current');
+        }
+
+        return menu;
     },
 
     createSearchbar: function() {

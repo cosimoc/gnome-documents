@@ -1,0 +1,34 @@
+<interface>
+  <menu id="preview-menu">
+    <section id="open-section">
+      <item>
+        <attribute name="action">app.open-current</attribute>
+        <attribute name="label" translatable="yes">Open</attribute>
+      </item>
+      <item>
+        <attribute name="action">app.print-current</attribute>
+        <attribute name="label" translatable="yes">Print...</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="action">app.zoom-in</attribute>
+        <attribute name="label" translatable="yes">Zoom In</attribute>
+      </item>
+      <item>
+        <attribute name="action">app.zoom-out</attribute>
+        <attribute name="label" translatable="yes">Zoom Out</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="action">app.rotate-left</attribute>
+        <attribute name="label" translatable="yes">Rotate Left</attribute>
+      </item>
+      <item>
+        <attribute name="action">app.rotate-right</attribute>
+        <attribute name="label" translatable="yes">Rotate Right</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>
