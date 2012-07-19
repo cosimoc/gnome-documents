@@ -56,6 +56,7 @@ const MINER_REFRESH_TIMEOUT = 60; /* seconds */
 
 const Application = new Lang.Class({
     Name: 'Application',
+    Extends: Gtk.Application,
 
     _init: function() {
         Gettext.bindtextdomain('gnome-documents', Path.LOCALE_DIR);
@@ -64,19 +65,8 @@ const Application = new Lang.Class({
 
         Global.settings = new Gio.Settings({ schema: 'org.gnome.documents' });
 
-        // TODO: subclass Gtk.Application once we support GObject inheritance,
-        //       see https://bugzilla.gnome.org/show_bug.cgi?id=663492
-        this.application = new Gtk.Application({
-            application_id: 'org.gnome.Documents',
-            flags: Gio.ApplicationFlags.HANDLES_COMMAND_LINE
-        });
-
-        this.application.connect('startup', Lang.bind(this, this._onStartup));
-        this.application.connect('command-line', Lang.bind(this, this._commandLine));
-        this.application.connect('activate', Lang.bind(this,
-            function() {
-                this._mainWindow.window.present();
-            }));
+        this.parent({ application_id: 'org.gnome.Documents',
+                      flags: Gio.ApplicationFlags.HANDLES_COMMAND_LINE });
     },
 
     _initActions: function() {
@@ -85,14 +75,14 @@ const Application = new Lang.Class({
             function() {
                 this._mainWindow.window.destroy();
 	    }));
-	this.application.add_action(quitAction);
+	this.add_action(quitAction);
 
         let aboutAction = new Gio.SimpleAction({ name: 'about' });
         aboutAction.connect('activate', Lang.bind(this,
             function() {
                 this._mainWindow.showAbout();
             }));
-        this.application.add_action(aboutAction);
+        this.add_action(aboutAction);
 
         let fsAction = new Gio.SimpleAction({ name: 'fullscreen' });
         fsAction.connect('activate', Lang.bind(this,
@@ -104,7 +94,7 @@ const Application = new Lang.Class({
                 let canFullscreen = Global.modeController.getCanFullscreen();
                 fsAction.set_enabled(canFullscreen);
             }));
-        this.application.add_action(fsAction);
+        this.add_action(fsAction);
 
         // We can't use GSettings.create_action(), since we want to be able
         // to control the enabled state of the action ourselves
@@ -124,10 +114,10 @@ const Application = new Lang.Class({
                 let mode = Global.modeController.getWindowMode();
                 viewAsAction.set_enabled(mode == WindowMode.WindowMode.OVERVIEW);
             }));
-        this.application.add_action(viewAsAction);
+        this.add_action(viewAsAction);
 
-        this.application.add_accelerator('<Primary>q', 'app.quit', null);
-        this.application.add_accelerator('F11', 'app.fullscreen', null);
+        this.add_accelerator('<Primary>q', 'app.quit', null);
+        this.add_accelerator('F11', 'app.fullscreen', null);
 
         // actions for other toolbar menus
         let openAction = new Gio.SimpleAction({ name: 'open-current' });
@@ -137,7 +127,7 @@ const Application = new Lang.Class({
                 if (doc)
                     doc.open(this._mainWindow.window.get_screen(), Gtk.get_current_event_time());
             }));
-        this.application.add_action(openAction);
+        this.add_action(openAction);
 
         let printAction = new Gio.SimpleAction({ name: 'print-current' });
         printAction.connect('activate', Lang.bind(this,
@@ -146,7 +136,7 @@ const Application = new Lang.Class({
                 if (doc)
                     doc.print(this._mainWindow.window);
             }));
-        this.application.add_action(printAction);
+        this.add_action(printAction);
     },
 
     _initAppMenu: function() {
@@ -154,7 +144,7 @@ const Application = new Lang.Class({
         builder.add_from_resource('/org/gnome/documents/app-menu.ui');
 
         let menu = builder.get_object('app-menu');
-        this.application.set_app_menu(menu);
+        this.set_app_menu(menu);
     },
 
     _refreshMinerNow: function(miner) {
@@ -178,7 +168,8 @@ const Application = new Lang.Class({
         return false;
     },
 
-    _onStartup: function() {
+    vfunc_startup: function() {
+        this.parent();
         String.prototype.format = Format.format;
 
         GtkClutter.init(null);
@@ -224,10 +215,14 @@ const Application = new Lang.Class({
 
         this._initActions();
         this._initAppMenu();
-        this._mainWindow = new MainWindow.MainWindow(this.application);
+        this._mainWindow = new MainWindow.MainWindow(this);
     },
 
-    _commandLine: function(app, commandLine) {
+    vfunc_activate: function() {
+        this._mainWindow.window.present();
+    },
+
+    vfunc_command_line: function(commandLine) {
         let args = commandLine.get_arguments();
         if (args.length) {
             let urn = args[0]; // gjs eats argv[0]
@@ -249,7 +244,7 @@ const Application = new Lang.Class({
             Global.modeController.setWindowMode(WindowMode.WindowMode.OVERVIEW);
         }
 
-        app.activate();
+        this.activate();
 
         return 0;
     }
