@@ -108,9 +108,8 @@ const Application = new Lang.Class({
             }));
         this.application.add_action(fsAction);
 
-        /* We can't use GSettings.create_action(), since we want to be able
-         * to control the enabled state of the action ourselves
-         */
+        // We can't use GSettings.create_action(), since we want to be able
+        // to control the enabled state of the action ourselves
         let viewAsAction = Gio.SimpleAction.new_stateful('view-as',
                                                          GLib.VariantType.new('s'),
                                                          Global.settings.get_value('view-as'));
@@ -128,12 +127,6 @@ const Application = new Lang.Class({
                 viewAsAction.set_enabled(mode == WindowMode.WindowMode.OVERVIEW);
             }));
         this.application.add_action(viewAsAction);
-
-        let builder = new Gtk.Builder();
-        builder.add_from_resource('/org/gnome/documents/app-menu.ui');
-
-        let menu = builder.get_object('app-menu');
-        this.application.set_app_menu(menu);
 
         this.application.add_accelerator('<Primary>q', 'app.quit', null);
         this.application.add_accelerator('F11', 'app.fullscreen', null);
@@ -153,6 +146,14 @@ const Application = new Lang.Class({
             }));
         this.application.add_action(openAction);
 
+    },
+
+    _initAppMenu: function() {
+        let builder = new Gtk.Builder();
+        builder.add_from_resource('/org/gnome/documents/app-menu.ui');
+
+        let menu = builder.get_object('app-menu');
+        this.application.set_app_menu(menu);
     },
 
     _refreshMinerNow: function(miner) {
@@ -221,6 +222,7 @@ const Application = new Lang.Class({
         this._refreshMinerNow(zpjMiner);
 
         this._initActions();
+        this._initAppMenu();
         this._mainWindow = new MainWindow.MainWindow(this.application);
     },
 
