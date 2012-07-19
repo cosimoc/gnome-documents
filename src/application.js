@@ -69,85 +69,107 @@ const Application = new Lang.Class({
                       flags: Gio.ApplicationFlags.HANDLES_COMMAND_LINE });
     },
 
-    _initActions: function() {
-	let quitAction = new Gio.SimpleAction({ name: 'quit' });
-	quitAction.connect('activate', Lang.bind(this,
-            function() {
-                this._mainWindow.window.destroy();
-	    }));
-	this.add_action(quitAction);
-
-        let aboutAction = new Gio.SimpleAction({ name: 'about' });
-        aboutAction.connect('activate', Lang.bind(this,
-            function() {
-                this._mainWindow.showAbout();
-            }));
-        this.add_action(aboutAction);
-
-        let fsAction = new Gio.SimpleAction({ name: 'fullscreen' });
-        fsAction.connect('activate', Lang.bind(this,
-            function() {
-                Global.modeController.toggleFullscreen();
-            }));
+    _fullscreenCreateHook: function(action) {
         Global.modeController.connect('can-fullscreen-changed', Lang.bind(this,
             function() {
                 let canFullscreen = Global.modeController.getCanFullscreen();
-                fsAction.set_enabled(canFullscreen);
+                action.set_enabled(canFullscreen);
             }));
-        this.add_action(fsAction);
+    },
 
-        // We can't use GSettings.create_action(), since we want to be able
-        // to control the enabled state of the action ourselves
-        let viewAsAction = Gio.SimpleAction.new_stateful('view-as',
-                                                         GLib.VariantType.new('s'),
-                                                         Global.settings.get_value('view-as'));
-        viewAsAction.connect('activate', Lang.bind(this,
-            function(action, variant) {
-                Global.settings.set_value('view-as', variant);
-            }));
+    _viewAsCreateHook: function(action) {
         Global.settings.connect('changed::view-as', Lang.bind(this,
             function() {
-                viewAsAction.state = Global.settings.get_value('view-as');
+                action.state = Global.settings.get_value('view-as');
             }));
         Global.modeController.connect('window-mode-changed', Lang.bind(this,
             function() {
                 let mode = Global.modeController.getWindowMode();
-                viewAsAction.set_enabled(mode == WindowMode.WindowMode.OVERVIEW);
+                action.set_enabled(mode == WindowMode.WindowMode.OVERVIEW);
             }));
-        this.add_action(viewAsAction);
+    },
 
-        this.add_accelerator('<Primary>q', 'app.quit', null);
-        this.add_accelerator('F11', 'app.fullscreen', null);
+    _onActionQuit: function() {
+        this._mainWindow.window.destroy();
+    },
 
-        // actions for other toolbar menus
-        let openAction = new Gio.SimpleAction({ name: 'open-current' });
-        openAction.connect('activate', Lang.bind(this,
-            function() {
-                let doc = Global.documentManager.getActiveItem();
-                if (doc)
-                    doc.open(this._mainWindow.window.get_screen(), Gtk.get_current_event_time());
+    _onActionAbout: function() {
+        this._mainWindow.showAbout();
+    },
+
+    _onActionFullscreen: function() {
+        Global.modeController.toggleFullscreen();
+    },
+
+    _onActionViewAs: function() {
+        Global.settings.set_value('view-as', variant);
+    },
+
+    _onActionOpenCurrent: function() {
+        let doc = Global.documentManager.getActiveItem();
+        if (doc)
+            doc.open(this._mainWindow.window.get_screen(), Gtk.get_current_event_time());
+    },
+
+    _onActionPrintCurrent: function() {
+        let doc = Global.documentManager.getActiveItem();;
+        if (doc)
+            doc.print(this._mainWindow.window);
+    },
+
+    _onActionSearch: function(action) {
+        let state = action.get_state();
+        action.change_state(GLib.Variant.new('b', !state.get_boolean()));
+    },
+
+    _initActions: function() {
+        let actionEntries = [
+            { name: 'quit',
+              callback: this._onActionQuit,
+              accel: '<Primary>q' },
+            { name: 'about',
+              callback: this._onActionAbout },
+            { name: 'fullscreen',
+              callback: this._onActionFullscreen,
+              create_hook: this._fullscreenCreateHook,
+              accel: 'F11' },
+            { name: 'view-as',
+              callback: this._onActionViewAs,
+              create_hook: this._viewAsCreateHook,
+              parameter_type: 's',
+              state: Global.settings.get_value('view-as') },
+            { name: 'open-current',
+              callback: this._onActionOpenCurrent },
+            { name: 'print-current',
+              callback: this._onActionPrintCurrent },
+            { name: 'search',
+              callback: this._onActionSearch,
+              state: GLib.Variant.new('b', false),
+              accel: '<Primary>f' }
+        ];
+
+        actionEntries.forEach(Lang.bind(this,
+            function(actionEntry) {
+                let state = actionEntry.state;
+                let parameterType = actionEntry.parameter_type ?
+                    GLib.VariantType.new(actionEntry.parameter_type) : null;
+                let action;
+
+                if (state)
+                    action = Gio.SimpleAction.new_stateful(actionEntry.name,
+                        parameterType, actionEntry.state);
+                else
+                    action = new Gio.SimpleAction({ name: actionEntry.name });
+
+                if (actionEntry.create_hook)
+                    actionEntry.create_hook.apply(this, [action]);
+
+                action.connect('activate', Lang.bind(this, actionEntry.callback));
+                this.add_action(action);
+
+                if (actionEntry.accel)
+                    this.add_accelerator(actionEntry.accel, 'app.' + actionEntry.name, null);
             }));
-        this.add_action(openAction);
-
-        let printAction = new Gio.SimpleAction({ name: 'print-current' });
-        printAction.connect('activate', Lang.bind(this,
-            function() {
-                let doc = Global.documentManager.getActiveItem();;
-                if (doc)
-                    doc.print(this._mainWindow.window);
-            }));
-        this.add_action(printAction);
-
-        // search toolbar button
-        let searchAction = Gio.SimpleAction.new_stateful('search',
-            null, GLib.Variant.new('b', false));
-        searchAction.connect('activate', Lang.bind(this,
-            function() {
-                let state = searchAction.get_state();
-                searchAction.change_state(GLib.Variant.new('b', !state.get_boolean()));
-            }));
-        this.add_action(searchAction);
-        this.add_accelerator('<Primary>f', 'app.search', null);
     },
 
     _initAppMenu: function() {
