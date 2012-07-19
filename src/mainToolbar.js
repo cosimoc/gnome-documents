@@ -371,33 +371,3 @@ const OverviewToolbar = new Lang.Class({
             this.searchbar.show();
     }
 });
-
-function fileOpen(screen) {
-    print ("No fileOpen here.  This is temp.");
-    let doc = Global.documentManager.getActiveItem();
-    //let doc = documentManager.getActiveItem();
-    doc.open(Global.screen, Gtk.get_current_event_time());
-    
-};
-
-/**
- * Prints the current document
- */
-function filePrint() {
-    print ("No filePrint here.  This is temp.");
-    let doc = Global.documentManager.getActiveItem();
-    //let doc = documentManager.getActiveItem();
-    doc.load(null, Lang.bind(this,
-            function(doc, docModel, error) {
-                if (error) {
-                    // TODO: handle error here!
-                    return;
-                }
-
-                let printOp = EvView.PrintOperation.new(docModel.get_document());
-                let printNotification = new Notifications.PrintNotification(printOp, doc);
-
-                let toplevel = Global.menuWidget.get_toplevel();
-                printOp.run(toplevel);
-            }));
-};
