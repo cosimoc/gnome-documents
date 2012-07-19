@@ -291,31 +291,6 @@ const PreviewFullscreen = new Lang.Class({
     }
 });
 
-const PreviewFullscreenToolbar = new Lang.Class({
-    Name: 'PreviewFullscreenToolbar',
-    Extends: MainToolbar.MainToolbar,
-
-    _init: function() {
-        this.parent();
-
-        this.actor.y = -(this.widget.get_preferred_height()[1]);
-    },
-
-    show: function() {
-        Tweener.addTween(this.actor,
-                         { y: 0,
-                           time: 0.20,
-                           transition: 'easeInQuad' });
-    },
-
-    hide: function() {
-        Tweener.addTween(this.actor,
-                         { y: -(this.widget.get_preferred_height()[1]),
-                           time: 0.20,
-                           transition: 'easeOutQuad' });
-    }
-});
-
 const PreviewToolbar = new Lang.Class({
     Name: 'PreviewToolbar',
     Extends: MainToolbar.MainToolbar,
@@ -476,5 +451,32 @@ const PreviewSearchbar = new Lang.Class({
         // FIXME: ev_job_find_get_results() returns a GList **
         // and thus is not introspectable
         Gd.ev_view_find_changed(this._previewView.view, job, page);
+    }
+});
+
+const PreviewFullscreenToolbar = new Lang.Class({
+    Name: 'PreviewFullscreenToolbar',
+    Extends: PreviewToolbar,
+
+    _init: function() {
+        this.parent();
+
+        log(this.actor);
+
+        this.actor.y = -(this.widget.get_preferred_height()[1]);
+    },
+
+    show: function() {
+        Tweener.addTween(this.actor,
+                         { y: 0,
+                           time: 0.20,
+                           transition: 'easeInQuad' });
+    },
+
+    hide: function() {
+        Tweener.addTween(this.actor,
+                         { y: -(this.widget.get_preferred_height()[1]),
+                           time: 0.20,
+                           transition: 'easeOutQuad' });
     }
 });
