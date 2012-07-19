@@ -183,7 +183,7 @@ const Application = new Lang.Class({
     _onStartup: function() {
         String.prototype.format = Format.format;
 
-        GtkClutter.init(null, null);
+        GtkClutter.init(null);
         EvDoc.init();
         Tweener.init();
 
