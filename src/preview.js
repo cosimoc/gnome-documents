@@ -316,7 +316,7 @@ const PreviewToolbar = new Lang.Class({
 
         // menu button, on the right of the toolbar
         let menuModel = new Gio.Menu();
-        menuModel.append_item(Gio.MenuItem.new(_("Open"), 'app.open-current'));
+        menuModel.append_item(Gio.MenuItem.new(this._getOpenItemLabel(), 'app.open-current'));
         menuModel.append_item(Gio.MenuItem.new(_("Print"), 'app.print-current'));
 
         let menuButton = this.widget.add_menu('emblem-system-symbolic', null, false);
@@ -324,6 +324,14 @@ const PreviewToolbar = new Lang.Class({
 
         this._setToolbarTitle();
         this.widget.show_all();
+    },
+
+    _getOpenItemLabel: function() {
+        let doc = Global.documentManager.getActiveItem();
+        if (!doc || (doc && !doc.defaultAppName))
+            return _("Open");
+
+        return _("Open with %s").format(doc.defaultAppName);
     },
 
     createSearchbar: function() {
