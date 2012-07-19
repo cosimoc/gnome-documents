@@ -19,6 +19,7 @@
  *
  */
 
+const EvView = imports.gi.EvinceView;
 const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const Gd = imports.gi.Gd;
@@ -35,6 +36,7 @@ const Signals = imports.signals;
 const ChangeMonitor = imports.changeMonitor;
 const Global = imports.global;
 const Manager = imports.manager;
+const Notifications = imports.notifications;
 const Path = imports.path;
 const Query = imports.query;
 const Searchbar = imports.searchbar;
@@ -594,6 +596,21 @@ const DocCommon = new Lang.Class({
         } catch (e) {
             log('Unable to show URI ' + this.uri + ': ' + e.toString());
         }
+    },
+
+    print: function(toplevel) {
+        this.load(null, Lang.bind(this,
+            function(doc, docModel, error) {
+                if (error) {
+                    log('Unable to print document ' + this.uri + ': ' + error);
+                    return;
+                }
+
+                let printOp = EvView.PrintOperation.new(docModel.get_document());
+                let printNotification = new Notifications.PrintNotification(printOp, doc);
+
+                printOp.run(toplevel);
+            }));
     },
 
     setFavorite: function(favorite) {

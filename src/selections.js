@@ -971,19 +971,7 @@ const SelectionToolbar = new Lang.Class({
             return;
 
         let doc = Global.documentManager.getItemById(selection[0]);
-        doc.load(null, Lang.bind(this,
-            function(doc, docModel, error) {
-                if (error) {
-                    // TODO: handle error here!
-                    return;
-                }
-
-                let printOp = EvView.PrintOperation.new(docModel.get_document());
-                let printNotification = new Notifications.PrintNotification(printOp, doc);
-
-                let toplevel = this.widget.get_toplevel();
-                printOp.run(toplevel);
-            }));
+        doc.print(this.widget.get_toplevel());
     },
 
     _fadeIn: function() {
