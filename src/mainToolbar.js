@@ -245,16 +245,14 @@ const MainToolbar = new Lang.Class({
             function() {
                 Global.documentManager.setActiveItem(null);
             }));
-        
-        //menu button, on the right of the toolbar (false)
-        this._menuButton = 
-            this.widget.add_menu( false );
-        this._initMenus();
-        let menu = new Gtk.Menu.new_from_model(this.menuModel);
-        menu.show();
-        this._menuButton.set_menu( menu );
-        Global.screen = this.widget.get_screen();
-        Global.menuWidget = this._menuButton;//TO DO change this, not global
+
+        // menu button, on the right of the toolbar
+        let menuModel = new Gio.Menu();
+        menuModel.append_item(Gio.MenuItem.new(_("Open"), 'app.open-current'));
+        menuModel.append_item(Gio.MenuItem.new(_("Print"), 'app.print-current'));
+
+        let menuButton = this.widget.add_menu('emblem-system-symbolic', null, false);
+        menuButton.set_menu_model(menuModel);
     },
 
     _populateForOverview: function() {
@@ -320,16 +318,7 @@ const MainToolbar = new Lang.Class({
             }));
 
         this._setToolbarTitle();
-    },
-    
-    _initMenus: function() {
-        this.menuModel = new Gio.Menu(); 
-  
-        let menuItemOpen = Gio.MenuItem.new(_("Open"), 'app.open');
-        let menuItemPrint = Gio.MenuItem.new(_("Print"), 'app.print');
-        this.menuModel.append_item(menuItemOpen);
-        this.menuModel.append_item(menuItemPrint);
-    },
+    }
 });
 
 const PreviewToolbar = new Lang.Class({

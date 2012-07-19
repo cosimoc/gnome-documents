@@ -26,6 +26,12 @@
 
 G_DEFINE_TYPE (GdMainToolbar, gd_main_toolbar, GTK_TYPE_TOOLBAR)
 
+typedef enum {
+  CHILD_NORMAL = 0,
+  CHILD_TOGGLE = 1,
+  CHILD_MENU = 2,
+} ChildType;
+
 struct _GdMainToolbarPrivate {
   GtkSizeGroup *size_group;
   GtkSizeGroup *vertical_size_group;
@@ -85,11 +91,48 @@ get_vertical_size_group (void)
 }
 
 static GtkWidget *
-get_symbolic_button (const gchar *icon_name)
+get_empty_button (ChildType type)
+{
+  GtkWidget *button;
+
+  switch (type)
+    {
+    case CHILD_MENU:
+      button = gtk_menu_button_new ();
+      break;
+    case CHILD_TOGGLE:
+      button = gtk_toggle_button_new ();
+      break;
+    case CHILD_NORMAL:
+    default:
+      button = gtk_button_new ();
+      break;
+    }
+
+  return button;
+}
+
+static GtkWidget *
+get_symbolic_button (const gchar *icon_name,
+                     ChildType    type)
 {
   GtkWidget *button, *w;
 
-  button = gtk_button_new ();
+  switch (type)
+    {
+    case CHILD_MENU:
+      button = gtk_menu_button_new ();
+      gtk_widget_destroy (gtk_bin_get_child (GTK_BIN (button)));
+      break;
+    case CHILD_TOGGLE:
+      button = gtk_toggle_button_new ();
+      break;
+    case CHILD_NORMAL:
+    default:
+      button = gtk_button_new ();
+      break;
+    }
+
   gtk_style_context_add_class (gtk_widget_get_style_context (button), "raised");
 
   w = gtk_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_MENU);
@@ -101,15 +144,34 @@ get_symbolic_button (const gchar *icon_name)
 }
 
 static GtkWidget *
-get_text_button (const gchar *label)
+get_text_button (const gchar *label,
+                 ChildType    type)
 {
-  GtkWidget *w;
+  GtkWidget *button, *w;
 
-  w = gtk_button_new_with_label (label);
-  gtk_widget_set_vexpand (w, TRUE);
-  gtk_style_context_add_class (gtk_widget_get_style_context (w), "raised");
+  switch (type)
+    {
+    case CHILD_MENU:
+      button = gtk_menu_button_new ();
+      gtk_widget_destroy (gtk_bin_get_child (GTK_BIN (button)));
 
-  return w;
+      w = gtk_label_new (label);
+      gtk_widget_show (w);
+      gtk_container_add (GTK_CONTAINER (button), w);
+      break;
+    case CHILD_TOGGLE:
+      button = gtk_toggle_button_new_with_label (label);
+      break;
+    case CHILD_NORMAL:
+    default:
+      button = gtk_button_new_with_label (label);
+      break;
+    }
+
+  gtk_widget_set_vexpand (button, TRUE);
+  gtk_style_context_add_class (gtk_widget_get_style_context (button), "raised");
+
+  return button;
 }
 
 static void
@@ -254,6 +316,40 @@ gd_main_toolbar_new (void)
   return g_object_new (GD_TYPE_MAIN_TOOLBAR, NULL);
 }
 
+static GtkWidget *
+add_button_internal (GdMainToolbar *self,
+                     const gchar *icon_name,
+                     const gchar *label,
+                     gboolean pack_start,
+                     ChildType type)
+{
+  GtkWidget *button;
+
+  if (icon_name != NULL)
+    {
+      button = get_symbolic_button (icon_name, type);
+      if (label != NULL)
+        gtk_widget_set_tooltip_text (button, label);
+    }
+  else if (label != NULL)
+    {
+      button = get_text_button (label, type);
+    }
+  else
+    {
+      button = get_empty_button (type);
+    }
+
+  if (pack_start)
+    gtk_container_add (GTK_CONTAINER (self->priv->left_grid), button);
+  else
+    gtk_container_add (GTK_CONTAINER (self->priv->right_grid), button);    
+
+  gtk_widget_show_all (button);
+
+  return button;
+}
+
 /**
  * gd_main_toolbar_add_button:
  * @self:
@@ -269,51 +365,41 @@ gd_main_toolbar_add_button (GdMainToolbar *self,
                             const gchar *label,
                             gboolean pack_start)
 {
-  GtkWidget *button;
-
-  if (icon_name != NULL)
-    {
-      button = get_symbolic_button (icon_name);
-      if (label != NULL)
-        gtk_widget_set_tooltip_text (button, label);
-    }
-  else if (label != NULL)
-    {
-      button = get_text_button (label);
-    }
-
-  if (pack_start)
-    gtk_container_add (GTK_CONTAINER (self->priv->left_grid), button);
-  else
-    gtk_container_add (GTK_CONTAINER (self->priv->right_grid), button);    
-
-  gtk_widget_show_all (button);
-
-  return button;
+  return add_button_internal (self, icon_name, label, pack_start, CHILD_NORMAL);
 }
 
 /**
  * gd_main_toolbar_add_menu:
  * @self:
+ * @icon_name: (allow-none):
+ * @label: (allow-none):
  * @pack_start:
  *
  * Returns: (transfer none):
  */
 GtkWidget *
 gd_main_toolbar_add_menu (GdMainToolbar *self,
-                            gboolean pack_start)
+                          const gchar *icon_name,
+                          const gchar *label,
+                          gboolean pack_start)
 {
-  GtkWidget *menuButton;
-
-  menuButton = gtk_menu_button_new ();
-
-  if (pack_start)
-    gtk_container_add (GTK_CONTAINER (self->priv->left_grid), menuButton);
-  else
-    gtk_container_add (GTK_CONTAINER (self->priv->right_grid), menuButton);
-
-  gtk_widget_show_all (menuButton);
-
-  return menuButton;
+  return add_button_internal (self, icon_name, label, pack_start, CHILD_MENU);
 }
 
+/**
+ * gd_main_toolbar_add_toggle:
+ * @self:
+ * @icon_name: (allow-none):
+ * @label: (allow-none):
+ * @pack_start:
+ *
+ * Returns: (transfer none):
+ */
+GtkWidget *
+gd_main_toolbar_add_toggle (GdMainToolbar *self,
+                            const gchar *icon_name,
+                            const gchar *label,
+                            gboolean pack_start)
+{
+  return add_button_internal (self, icon_name, label, pack_start, CHILD_TOGGLE);
+}
