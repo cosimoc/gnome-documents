@@ -61,8 +61,6 @@ const PreviewView = new Lang.Class({
 
         this.view.connect('button-press-event',
                             Lang.bind(this, this._onButtonPressEvent));
-        this.view.connect('button-release-event',
-                            Lang.bind(this, this._onButtonReleaseEvent));
         this.view.connect('key-press-event',
                             Lang.bind(this, this._onKeyPressEvent));
     },
@@ -96,21 +94,6 @@ const PreviewView = new Lang.Class({
 
         return false;
      },
-
-    _onButtonReleaseEvent: function(widget, event) {
-        let button = event.get_button()[1];
-        let timestamp = event.get_time();
-
-        if (button != 3)
-            return false;
-
-        let doc = Global.documentManager.getActiveItem();
-        let menu = new View.ContextMenu([ doc.id ]);
-
-        menu.widget.popup_for_device(null, null, null, null, null, null, button, timestamp);
-
-        return true;
-    },
 
     _onButtonPressEvent: function(widget, event) {
         let button = event.get_button()[1];
@@ -471,8 +454,6 @@ const PreviewFullscreenToolbar = new Lang.Class({
 
     _init: function(previewView) {
         this.parent(previewView);
-
-        log(this.actor);
 
         this.actor.y = -(this.widget.get_preferred_height()[1]);
     },
