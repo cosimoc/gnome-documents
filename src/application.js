@@ -82,11 +82,6 @@ const Application = new Lang.Class({
             function() {
                 action.state = Global.settings.get_value('view-as');
             }));
-        Global.modeController.connect('window-mode-changed', Lang.bind(this,
-            function() {
-                let mode = Global.modeController.getWindowMode();
-                action.set_enabled(mode == WindowMode.WindowMode.OVERVIEW);
-            }));
     },
 
     _onActionQuit: function() {
@@ -132,22 +127,32 @@ const Application = new Lang.Class({
             { name: 'fullscreen',
               callback: this._onActionFullscreen,
               create_hook: this._fullscreenCreateHook,
-              accel: 'F11' },
+              accel: 'F11',
+              window_mode: WindowMode.WindowMode.PREVIEW },
             { name: 'view-as',
               callback: this._onActionViewAs,
               create_hook: this._viewAsCreateHook,
               parameter_type: 's',
-              state: Global.settings.get_value('view-as') },
+              state: Global.settings.get_value('view-as'),
+              window_mode: WindowMode.WindowMode.OVERVIEW },
             { name: 'open-current',
-              callback: this._onActionOpenCurrent },
+              callback: this._onActionOpenCurrent,
+              window_mode: WindowMode.WindowMode.PREVIEW },
             { name: 'print-current',
-              callback: this._onActionPrintCurrent },
+              callback: this._onActionPrintCurrent,
+              window_mode: WindowMode.WindowMode.PREVIEW },
             { name: 'search',
               callback: this._onActionSearch,
               state: GLib.Variant.new('b', false),
               accel: '<Primary>f' },
-            { name: 'zoom-in', accel: '<Primary>plus' },
-            { name: 'zoom-out', accel: '<Primary>minus' }
+            { name: 'find-next', accel: '<Primary>g',
+              window_mode: WindowMode.WindowMode.PREVIEW },
+            { name: 'find-prev', accel: '<Shift><Primary>g',
+              window_mode: WindowMode.WindowMode.PREVIEW },
+            { name: 'zoom-in', accel: '<Primary>plus',
+              window_mode: WindowMode.WindowMode.PREVIEW },
+            { name: 'zoom-out', accel: '<Primary>minus',
+              window_mode: WindowMode.WindowMode.PREVIEW }
         ];
 
         actionEntries.forEach(Lang.bind(this,
@@ -171,6 +176,14 @@ const Application = new Lang.Class({
 
                 if (actionEntry.accel)
                     this.add_accelerator(actionEntry.accel, 'app.' + actionEntry.name, null);
+
+                if (actionEntry.window_mode) {
+                    Global.modeController.connect('window-mode-changed', Lang.bind(this,
+                        function() {
+                            let mode = Global.modeController.getWindowMode();
+                            action.set_enabled(mode == actionEntry.window_mode);
+                        }));
+                }
 
                 this.add_action(action);
             }));

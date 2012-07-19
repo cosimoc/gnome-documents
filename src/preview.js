@@ -66,6 +66,16 @@ const PreviewView = new Lang.Class({
                 this._model.set_sizing_mode(EvView.SizingMode.FREE);
                 this.view.zoom_out();
             }));
+
+        this._findPrev = Global.application.lookup_action('find-prev');
+        this._findPrev.connect('activate', Lang.bind(this,
+            function() {
+                this.view.find_previous();
+            }));
+        this._findNext = Global.application.lookup_action('find-next');
+        this._findNext.connect('activate', Lang.bind(this,
+            function() {
+            }));
     },
 
     _createView: function() {
@@ -121,6 +131,24 @@ const PreviewView = new Lang.Class({
         return false;
     },
 
+    startSearch: function(str) {
+        if (!this._model)
+            return;
+
+        let evDoc = this._model.get_document();
+        let job = EvView.JobFind.new(evDoc, this._model.get_page(), evDoc.get_n_pages(),
+                                     str, false);
+        job.connect('updated', Lang.bind(this, this._onSearchJobUpdated));
+
+        job.scheduler_push_job(EvView.JobPriority.PRIORITY_NONE);
+    },
+
+    _onSearchJobUpdated: function(job, page) {
+        // FIXME: ev_job_find_get_results() returns a GList **
+        // and thus is not introspectable
+        Gd.ev_view_find_changed(this.view, job, page);
+    },
+
     setModel: function(model) {
         if (this._model == model)
             return;
@@ -128,11 +156,12 @@ const PreviewView = new Lang.Class({
         if (this.view)
             this.view.destroy();
 
-        this._createView();
         this._model = model;
 
-        if (this._model)
+        if (this._model) {
+            this._createView();
             this.view.set_model(this._model);
+        }
     },
 
     getModel: function() {
@@ -397,7 +426,10 @@ const PreviewSearchbar = new Lang.Class({
                                               spacing: 6 });
 
         this._searchEntry = new Gtk.SearchEntry({ hexpand: true });
-        this._searchEntry.connect('activate', Lang.bind(this, this._searchNext));
+        this._searchEntry.connect('activate', Lang.bind(this,
+            function() {
+                Global.application.activate_action('find-next', null);
+            }));
         this._searchContainer.add(this._searchEntry);
 
         let controlsBox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL });
@@ -405,16 +437,14 @@ const PreviewSearchbar = new Lang.Class({
         controlsBox.get_style_context().add_class('raised');
         this._searchContainer.add(controlsBox);
 
-        let prev = new Gtk.Button();
-        prev.connect('clicked', Lang.bind(this, this._searchPrev));
+        let prev = new Gtk.Button({ action_name: 'app.find-prev' });
         prev.set_image(new Gtk.Image({ icon_name: 'go-up-symbolic',
                                        icon_size: Gtk.IconSize.MENU,
                                        margin: 2 }));
         prev.set_tooltip_text(_("Find Previous"));
         controlsBox.add(prev);
 
-        let next = new Gtk.Button();
-        next.connect('clicked', Lang.bind(this, this._searchNext));
+        let next = new Gtk.Button({ action_name: 'app.find-next' });
         next.set_image(new Gtk.Image({ icon_name: 'go-down-symbolic',
                                        icon_size: Gtk.IconSize.MENU,
                                        margin: 2 }));
@@ -424,51 +454,20 @@ const PreviewSearchbar = new Lang.Class({
 
     entryChanged: function() {
         this._previewView.view.find_search_changed();
-        this._startSearch();
+        this._previewView.startSearch(this._searchEntry.get_text());
     },
 
     show: function() {
         this.parent();
 
         this._previewView.view.find_set_highlight_search(true);
-        this._startSearch();
+        this._previewView.startSearch(this._searchEntry.get_text());
     },
 
     hide: function() {
         this.parent();
 
         this._previewView.view.find_set_highlight_search(false);
-    },
-
-    _startSearch: function() {
-        let model = this._previewView.getModel();
-        if (!model)
-            return;
-
-        let str = this._searchEntry.get_text();
-        if (!str)
-            return;
-
-        let evDoc = model.get_document();
-        let job = EvView.JobFind.new(evDoc, model.get_page(), evDoc.get_n_pages(),
-                                     str, false);
-        job.connect('updated', Lang.bind(this, this._onSearchJobUpdated));
-
-        job.scheduler_push_job(EvView.JobPriority.PRIORITY_NONE);
-    },
-
-    _searchPrev: function() {
-        this._previewView.view.find_previous();
-    },
-
-    _searchNext: function() {
-        this._previewView.view.find_next();
-    },
-
-    _onSearchJobUpdated: function(job, page) {
-        // FIXME: ev_job_find_get_results() returns a GList **
-        // and thus is not introspectable
-        Gd.ev_view_find_changed(this._previewView.view, job, page);
     }
 });
 
