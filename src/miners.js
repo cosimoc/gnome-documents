@@ -15,27 +15,27 @@
  * with Gnome Documents; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Author: Debarshi Ray <debarshir@gnome.org>
- *
+ * Authors:
+ *    Cosimo Cecchi <cosimoc@redhat.com>
+ *    Debarshi Ray <debarshir@gnome.org>
  */
 
-const DBus = imports.dbus;
+const Gio = imports.gi.Gio;
 
-const ZpjMinerIface = {
-    name: 'org.gnome.Documents.ZpjMiner',
-    methods: [{ name: 'RefreshDB',
-                inSignature: '' }]
-};
+const MinerIface = <interface name="org.gnome.Documents.Miner">
+    <method name="RefreshDB" />
+</interface>;
 
-const ZpjMiner = function() {
-    this._init();
-};
+var MinerProxy = Gio.DBusProxy.makeProxyWrapper(MinerIface);
 
-ZpjMiner.prototype = {
-    _init: function() {
-        DBus.session.proxifyObject(this,
-                                   'org.gnome.Documents.ZpjMiner',
-                                   '/org/gnome/Documents/ZpjMiner');
-    }
-};
-DBus.proxifyPrototype(ZpjMiner.prototype, ZpjMinerIface);
+function GDataMiner(iface, path) {
+    return new MinerProxy(Gio.DBus.session,
+                          'org.gnome.Documents.GDataMiner',
+                          '/org/gnome/Documents/GDataMiner');
+}
+
+function ZpjMiner(iface, path) {
+    return new MinerProxy(Gio.DBus.session,
+                          'org.gnome.Documents.ZpjMiner',
+                          '/org/gnome/Documents/ZpjMiner');
+}

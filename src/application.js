@@ -19,7 +19,6 @@
  *
  */
 
-const DBus = imports.dbus;
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
 const Gettext = imports.gettext;
@@ -37,12 +36,12 @@ const Tracker = imports.gi.Tracker;
 const ChangeMonitor = imports.changeMonitor;
 const Documents = imports.documents;
 const Format = imports.format;
-const GDataMiner = imports.gDataMiner;
 const Global = imports.global;
 const Main = imports.main;
 const MainWindow = imports.mainWindow;
 const MainToolbar = imports.mainToolbar;
 const Manager = imports.manager;
+const Miners = imports.miners;
 const Notifications = imports.notifications;
 const Path = imports.path;
 const Query = imports.query;
@@ -52,7 +51,6 @@ const TrackerController = imports.trackerController;
 const Tweener = imports.util.tweener;
 const Utils = imports.utils;
 const WindowMode = imports.windowMode;
-const ZpjMiner = imports.zpjMiner;
 
 const MINER_REFRESH_TIMEOUT = 60; /* seconds */
 
@@ -164,7 +162,7 @@ const Application = new Lang.Class({
         if (env)
             return false;
 
-        miner.RefreshDBRemote(DBus.CALL_FLAG_START, Lang.bind(this,
+        miner.RefreshDBRemote(Lang.bind(this,
             function(res, error) {
                 if (error) {
                     log('Error updating the cache: ' + error.toString());
@@ -217,11 +215,11 @@ const Application = new Lang.Class({
         Global.notificationManager = new Notifications.NotificationManager();
 
         // startup a refresh of the gdocs cache
-        let gdataMiner = new GDataMiner.GDataMiner();
+        let gdataMiner = new Miners.GDataMiner();
         this._refreshMinerNow(gdataMiner);
 
         // startup a refresh of the skydrive cache
-        let zpjMiner = new ZpjMiner.ZpjMiner();
+        let zpjMiner = new Miners.ZpjMiner();
         this._refreshMinerNow(zpjMiner);
 
         this._initActions();

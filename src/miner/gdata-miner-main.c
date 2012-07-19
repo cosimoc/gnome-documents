@@ -29,7 +29,7 @@
 
 static const gchar introspection_xml[] =
   "<node>"
-  "  <interface name='org.gnome.Documents.GDataMiner'>"
+  "  <interface name='org.gnome.Documents.Miner'>"
   "    <method name='RefreshDB'>"
   "    </method>"
   "  </interface>"
