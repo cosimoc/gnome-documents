@@ -96,8 +96,8 @@ const Application = new Lang.Class({
         Global.modeController.toggleFullscreen();
     },
 
-    _onActionViewAs: function() {
-        Global.settings.set_value('view-as', variant);
+    _onActionViewAs: function(action, parameter) {
+        Global.settings.set_value('view-as', parameter);
     },
 
     _onActionOpenCurrent: function() {
