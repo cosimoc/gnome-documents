@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Gnome-Documents\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-10 23:48+0300\n"
-"PO-Revision-Date: 2012-07-10 23:49+0200\n"
+"POT-Creation-Date: 2012-07-24 22:47+0300\n"
+"PO-Revision-Date: 2012-07-24 22:48+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew <sh.yaron@gmail.com>\n"
 "Language: he\n"
@@ -22,7 +22,7 @@ msgstr ""
 
 #: ../data/gnome-documents.desktop.in.in.h:1
 #: ../src/mainWindow.js:51
-#: ../src/mainWindow.js:224
+#: ../src/mainWindow.js:205
 msgid "Documents"
 msgstr "מסמכים"
 
@@ -35,7 +35,7 @@ msgid "Docs;PDF;Document;"
 msgstr "מסמכים;PDF;מסמך;"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:1
-#: ../src/application.js:137
+#: ../src/resources/app-menu.ui.h:1
 msgid "View as"
 msgstr "צפייה בתור"
 
@@ -67,75 +67,51 @@ msgstr "Window maximized"
 msgid "Window maximized state"
 msgstr "Window maximized state"
 
-#: ../src/application.js:135
-msgid "Grid"
-msgstr "רשת"
-
-#: ../src/application.js:136
-msgid "List"
-msgstr "רשימה"
-
-#: ../src/application.js:140
-msgid "Fullscreen"
-msgstr "מסך מלא"
-
-#: ../src/application.js:143
-msgid "About Documents"
-msgstr "על אודות מסמכים"
-
-#: ../src/application.js:144
-msgid "Quit"
-msgstr "יציאה"
-
-#: ../src/documents.js:633
+#: ../src/documents.js:641
 #: ../src/sources.js:95
 msgid "Local"
 msgstr "מקומי"
 
 #. overridden
-#: ../src/documents.js:686
+#: ../src/documents.js:694
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:687
+#: ../src/documents.js:695
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:751
-#: ../src/documents.js:890
+#: ../src/documents.js:759
+#: ../src/documents.js:898
 msgid "Spreadsheet"
 msgstr "גיליון אלקטרוני"
 
-#: ../src/documents.js:753
-#: ../src/documents.js:892
+#: ../src/documents.js:761
+#: ../src/documents.js:900
 msgid "Presentation"
 msgstr "מצגת"
 
-#: ../src/documents.js:755
-#: ../src/documents.js:894
+#: ../src/documents.js:763
+#: ../src/documents.js:902
 msgid "Collection"
 msgstr "אוסף"
 
-#: ../src/documents.js:757
-#: ../src/documents.js:896
+#: ../src/documents.js:765
+#: ../src/documents.js:904
 msgid "Document"
 msgstr "מסמך"
 
 #. overridden
-#: ../src/documents.js:824
-#: ../src/documents.js:825
+#: ../src/documents.js:832
+#: ../src/documents.js:833
 msgid "Skydrive"
 msgstr "Skydrive"
 
 #. Translators: %s is the title of a document
-#: ../src/error.js:39
+#: ../src/documents.js:1016
 #, c-format
 msgid "Unable to load \"%s\" for preview"
 msgstr "לא ניתן לטעון את ”%s“ לתצוגה מקדימה"
-
-#: ../src/error.js:47
-msgid "Unable to fetch the list of documents"
-msgstr "לא ניתן לקבל את רשימת המסמכים"
 
 #: ../src/lib/gd-pdf-loader.c:226
 msgid "Unable to load the document"
@@ -145,28 +121,32 @@ msgstr "לא ניתן לטעון את המסמך"
 msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
 msgstr "לא ניתן למצוא את \"unoconv\", נא לבדוק את התקנת ה־LibreOffice שלך"
 
-#: ../src/mainToolbar.js:165
+#: ../src/mainToolbar.js:73
+msgid "Search"
+msgstr "חיפוש"
+
+#: ../src/mainToolbar.js:158
 msgid "New and Recent"
 msgstr "חדש ו"
 
-#: ../src/mainToolbar.js:172
+#: ../src/mainToolbar.js:165
 #, c-format
 msgid "Results for \"%s\""
 msgstr "תוצאות עבור „%s“"
 
-#: ../src/mainToolbar.js:174
+#: ../src/mainToolbar.js:167
 msgid "filtered by title"
 msgstr "מסונן לפי כותרת"
 
-#: ../src/mainToolbar.js:176
+#: ../src/mainToolbar.js:169
 msgid "filtered by author"
 msgstr "מסונן לפי יוצר"
 
-#: ../src/mainToolbar.js:183
+#: ../src/mainToolbar.js:176
 msgid "Click on items to select them"
 msgstr "יש ללחוץ על פריטים כדי לבחור אותם"
 
-#: ../src/mainToolbar.js:185
+#: ../src/mainToolbar.js:178
 #, c-format
 msgid "%d selected"
 msgid_plural "%d selected"
@@ -174,29 +154,23 @@ msgstr[0] "נבחר אחד"
 msgstr[1] "נבחרו %d"
 msgstr[2] "נבחרו 2"
 
-#: ../src/mainToolbar.js:206
-#, c-format
-msgid "%d of %d"
-msgstr "%d מתוך %d"
-
-#: ../src/mainToolbar.js:221
+#: ../src/mainToolbar.js:203
 msgid "Done"
 msgstr "בוצע"
 
-#: ../src/mainToolbar.js:239
-#: ../src/mainToolbar.js:266
+#: ../src/mainToolbar.js:220
 msgid "Back"
 msgstr "חזרה"
 
-#: ../src/mainToolbar.js:248
+#: ../src/mainToolbar.js:238
 msgid "Select Items"
 msgstr "בחירת פריטים"
 
-#: ../src/mainWindow.js:223
+#: ../src/mainWindow.js:204
 msgid "translator-credits"
 msgstr "ירון שהרבני <sh.yaron@gmail.com>"
 
-#: ../src/mainWindow.js:225
+#: ../src/mainWindow.js:206
 msgid "A document manager application"
 msgstr "יישום לניהול מסמכים"
 
@@ -205,60 +179,60 @@ msgstr "יישום לניהול מסמכים"
 msgid "Printing \"%s\": %s"
 msgstr "מתבצעת הדפסה של „%s“:‏ %s"
 
-#: ../src/searchbar.js:82
+#: ../src/searchbar.js:83
 msgid "Category"
 msgstr "קטגוריה"
 
-#: ../src/searchbar.js:87
-#: ../src/searchbar.js:137
-#: ../src/searchbar.js:222
+#: ../src/searchbar.js:88
+#: ../src/searchbar.js:138
+#: ../src/searchbar.js:223
 #: ../src/sources.js:89
 msgid "All"
 msgstr "הכול"
 
-#: ../src/searchbar.js:93
+#: ../src/searchbar.js:94
 msgid "Favorites"
 msgstr "מועדפים"
 
-#: ../src/searchbar.js:98
+#: ../src/searchbar.js:99
 msgid "Shared with you"
 msgstr "משותף אתך"
 
-#: ../src/searchbar.js:134
+#: ../src/searchbar.js:135
 msgid "Type"
 msgstr "סוג"
 
-#: ../src/searchbar.js:139
+#: ../src/searchbar.js:140
 msgid "Collections"
 msgstr "אוספים"
 
-#: ../src/searchbar.js:143
+#: ../src/searchbar.js:144
 msgid "PDF Documents"
 msgstr "מסמכי PDF"
 
-#: ../src/searchbar.js:147
+#: ../src/searchbar.js:148
 msgid "Presentations"
 msgstr "מצגות"
 
-#: ../src/searchbar.js:150
+#: ../src/searchbar.js:151
 msgid "Spreadsheets"
 msgstr "גיליונות אלקטרוניים"
 
-#: ../src/searchbar.js:153
+#: ../src/searchbar.js:154
 msgid "Text Documents"
 msgstr "מסמכי טקסט"
 
 #. Translators: this is a verb that refers to "All", "Title" and "Author",
 #. as in "Match All", "Match Title" and "Match Author"
-#: ../src/searchbar.js:219
+#: ../src/searchbar.js:220
 msgid "Match"
 msgstr "התאמה"
 
-#: ../src/searchbar.js:224
+#: ../src/searchbar.js:225
 msgid "Title"
 msgstr "כותרת"
 
-#: ../src/searchbar.js:226
+#: ../src/searchbar.js:227
 msgid "Author"
 msgstr "מאת"
 
@@ -276,24 +250,21 @@ msgstr "מחיקה"
 
 #. Translators: this is the Open action in a context menu
 #: ../src/selections.js:884
-#: ../src/view.js:120
 #, c-format
 msgid "Open with %s"
 msgstr "פתיחה באמצעות %s"
 
 #. Translators: this is the Open action in a context menu
 #: ../src/selections.js:887
-#: ../src/view.js:123
+#: ../src/resources/preview-menu.ui.h:1
 msgid "Open"
 msgstr "פתיחה"
 
 #: ../src/selections.js:896
-#: ../src/view.js:133
 msgid "Remove from favorites"
 msgstr "הסרה מהמועדפים"
 
 #: ../src/selections.js:900
-#: ../src/view.js:133
 msgid "Add to favorites"
 msgstr "הוספה למועדפים"
 
@@ -309,7 +280,7 @@ msgstr "מקורות"
 msgid "Loading..."
 msgstr "בטעינה..."
 
-#: ../src/view.js:76
+#: ../src/view.js:78
 #, c-format
 msgid "Load %d more document"
 msgid_plural "Load %d more documents"
@@ -317,11 +288,11 @@ msgstr[0] "טעינת מסמך נוסף"
 msgstr[1] "טעינת %d מסמכים נוספים"
 msgstr[2] "טעינת 2 מסמכים נוספים"
 
-#: ../src/view.js:261
+#: ../src/view.js:270
 msgid "Yesterday"
 msgstr "אתמול"
 
-#: ../src/view.js:263
+#: ../src/view.js:272
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
@@ -329,11 +300,11 @@ msgstr[0] "אתמול"
 msgstr[1] "לפני %d ימים"
 msgstr[2] "שלשום"
 
-#: ../src/view.js:267
+#: ../src/view.js:276
 msgid "Last week"
 msgstr "שבוע שעבר"
 
-#: ../src/view.js:269
+#: ../src/view.js:278
 #, c-format
 msgid "%d week ago"
 msgid_plural "%d weeks ago"
@@ -341,11 +312,11 @@ msgstr[0] "לפני שבוע"
 msgstr[1] "לפני %d שבועות"
 msgstr[2] "לפני שבועיים"
 
-#: ../src/view.js:273
+#: ../src/view.js:282
 msgid "Last month"
 msgstr "בחודש שעבר"
 
-#: ../src/view.js:275
+#: ../src/view.js:284
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
@@ -353,17 +324,63 @@ msgstr[0] "לפני חודש"
 msgstr[1] "לפני %d חודשים"
 msgstr[2] "לפני חודשיים"
 
-#: ../src/view.js:279
+#: ../src/view.js:288
 msgid "Last year"
 msgstr "שנה שעברה"
 
-#: ../src/view.js:281
+#: ../src/view.js:290
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
 msgstr[0] "לפני שנה"
 msgstr[1] "לפני %d שנים"
 msgstr[2] "לפני שנתיים"
+
+#: ../src/resources/app-menu.ui.h:2
+msgid "Grid"
+msgstr "רשת"
+
+#: ../src/resources/app-menu.ui.h:3
+msgid "List"
+msgstr "רשימה"
+
+#: ../src/resources/app-menu.ui.h:4
+msgid "Fullscreen"
+msgstr "מסך מלא"
+
+#: ../src/resources/app-menu.ui.h:5
+msgid "About Documents"
+msgstr "על אודות מסמכים"
+
+#: ../src/resources/app-menu.ui.h:6
+msgid "Quit"
+msgstr "יציאה"
+
+#: ../src/resources/preview-menu.ui.h:2
+msgid "Print..."
+msgstr "הדפסה..."
+
+#: ../src/resources/preview-menu.ui.h:3
+msgid "Zoom In"
+msgstr "התקרבות"
+
+#: ../src/resources/preview-menu.ui.h:4
+msgid "Zoom Out"
+msgstr "התרחקות"
+
+#: ../src/resources/preview-menu.ui.h:5
+msgid "Rotate Left"
+msgstr "הטיה לשמאל"
+
+#: ../src/resources/preview-menu.ui.h:6
+msgid "Rotate Right"
+msgstr "הטיה לימין"
+
+#~ msgid "Unable to fetch the list of documents"
+#~ msgstr "לא ניתן לקבל את רשימת המסמכים"
+
+#~ msgid "%d of %d"
+#~ msgstr "%d מתוך %d"
 
 #~ msgid "The active source filter"
 #~ msgstr "The active source filter"
