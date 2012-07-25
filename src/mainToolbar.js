@@ -235,7 +235,7 @@ const OverviewToolbar = new Lang.Class({
         this.addSearchButton();
 
         let selectionButton =
-            this.widget.add_button('emblem-default-symbolic', _("Select Items"), false);
+            this.widget.add_button('object-select-symbolic', _("Select Items"), false);
         selectionButton.connect('clicked', Lang.bind(this,
             function() {
                 Global.selectionController.setSelectionMode(true);
