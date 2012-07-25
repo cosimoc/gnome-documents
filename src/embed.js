@@ -228,7 +228,7 @@ const Embed = new Lang.Class({
             this._toolbar.actor.destroy();
 
         // pack the toolbar
-        this._toolbar = new MainToolbar.OverviewToolbar(this._overlayLayout);
+        this._toolbar = new MainToolbar.OverviewToolbar(this._viewLayout);
         this._contentsLayout.pack_start = true;
         this._contentsActor.add_actor(this._toolbar.actor);
         this._contentsLayout.set_fill(this._toolbar.actor, true, false);
