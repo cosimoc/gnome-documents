@@ -228,7 +228,7 @@ const OverviewToolbar = new Lang.Class({
         }
 
         this._setToolbarTitle();
-        this._searchbar.hide();
+        Global.application.change_action_state('search', GLib.Variant.new('b', false));
     },
 
     _populateForOverview: function() {
@@ -282,7 +282,7 @@ const OverviewToolbar = new Lang.Class({
         this.widget.show_all();
 
         if (Global.searchController.getString() != '')
-            this._searchbar.show();
+            Global.application.change_action_state('search', GLib.Variant.new('b', true));
     },
 
     createSearchbar: function() {
