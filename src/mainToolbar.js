@@ -295,7 +295,7 @@ const OverviewToolbar = new Lang.Class({
                                          coordinate: Clutter.BindCoordinate.Y }));
 
         this._searchbar = new Searchbar.OverviewSearchbar(dropdown);
-        this.layout.pack_start = true;
+        this.layout.pack_start = false;
         this.layout.pack(this._searchbar.actor, false, true, false,
                          Clutter.BoxAlignment.CENTER, Clutter.BoxAlignment.START);
     }
