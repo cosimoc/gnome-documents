@@ -245,7 +245,6 @@ const OverviewToolbar = new Lang.Class({
         this._collectionId =
             Global.collectionManager.connect('active-changed',
                                              Lang.bind(this, this._onActiveCollectionChanged));
-        this._onActiveCollectionChanged();
     },
 
     _clearStateData: function() {
