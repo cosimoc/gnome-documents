@@ -371,3 +371,9 @@ gd_margin_container_class_init (GdMarginContainerClass *klass)
 ;
   g_type_class_add_private (klass, sizeof (GdMarginContainerPrivate));
 }
+
+GdMarginContainer *
+gd_margin_container_new (void)
+{
+  return g_object_new (GD_TYPE_MARGIN_CONTAINER, NULL);
+}
