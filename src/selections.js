@@ -797,6 +797,7 @@ const SelectionToolbar = new Lang.Class({
         this._toolbarShare.set_tooltip_text(_("Share"));
         this._rightBox.add(this._toolbarShare);
         this._toolbarShare.connect('clicked', Lang.bind(this, this._onToolbarShare));
+	this._toolbarShare.show_all();
         
         this._toolbarTrash = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'user-trash-symbolic',
                                                                       pixel_size: 32 })});
