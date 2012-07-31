@@ -282,6 +282,7 @@ const DocCommon = new Lang.Class({
 
         this.mimeType = null;
         this.rdfType = null;
+        this.dateCreated = null;
         this.typeDescription = null;
         this.sourceName = null;
 
@@ -338,6 +339,14 @@ const DocCommon = new Lang.Class({
         this.mimeType = cursor.get_string(Query.QueryColumns.MIMETYPE)[0];
         this.rdfType = cursor.get_string(Query.QueryColumns.RDFTYPE)[0];
         this._updateInfoFromType();
+
+        let dateCreated = cursor.get_string(Query.QueryColumns.DATE_CREATED)[0];
+        if (dateCreated) {
+            let timeVal = GLib.time_val_from_iso8601(dateCreated)[1];
+            this.dateCreated = timeVal.tv_sec;
+        } else {
+            this.dateCreated = -1;
+        }
 
         // sanitize
         if (!this.uri)

@@ -22,6 +22,7 @@
 const GLib = imports.gi.GLib;
 
 const Global = imports.global;
+const Properties = imports.properties;
 
 function setFavorite(urn, isFavorite, callback) {
     let sparql = ('%s { <%s> nao:hasTag nao:predefined-tag-favorite }').format((isFavorite ? 'INSERT OR REPLACE' : 'DELETE'), urn);
@@ -38,3 +39,22 @@ function setFavorite(urn, isFavorite, callback) {
                 callback();
         });
 }
+
+function setEditedName( _newTitle, _docId, callback) {
+    let sparql = ('INSERT OR REPLACE { <%s> a nfo:TextDocument; nfo:fileName\"%s\" }'.format(_docId, _newTitle));
+
+    Global.connectionQueue.update(sparql, null,
+        function(object, res) {
+            try {
+                object.update_finish(res);
+            } catch (e) {
+                log('Unable to set the new title on ' + _docId + ' to : ' + e.toString());
+            }
+
+            if (callback)
+                callback();
+        });
+
+}
+
+
