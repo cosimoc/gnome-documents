@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-30 02:21+0200\n"
-"PO-Revision-Date: 2012-07-30 02:24+0200\n"
+"POT-Creation-Date: 2012-07-31 02:05+0200\n"
+"PO-Revision-Date: 2012-07-31 02:05+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
@@ -117,7 +117,7 @@ msgstr ""
 
 #: ../src/mainToolbar.js:73
 msgid "Search"
-msgstr ""
+msgstr "Buscar"
 
 #: ../src/mainToolbar.js:158
 msgid "New and Recent"
