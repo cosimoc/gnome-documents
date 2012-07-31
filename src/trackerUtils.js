@@ -38,3 +38,20 @@ function setFavorite(urn, isFavorite, callback) {
                 callback();
         });
 }
+
+function setEditedName(newTitle, docId, callback) {
+    let sparql = ('INSERT OR REPLACE { <%s> nfo:fileName\"%s\" }'.format(docId, newTitle));
+
+    Global.connectionQueue.update(sparql, null,
+        function(object, res) {
+            try {
+                object.update_finish(res);
+            } catch (e) {
+                log('Unable to set the new title on ' + docId + ' to : ' + e.toString());
+            }
+
+            if (callback)
+                callback();
+        });
+
+}
