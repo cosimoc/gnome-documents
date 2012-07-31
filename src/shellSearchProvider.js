@@ -427,8 +427,9 @@ const ShellSearchProvider = new Lang.Class({
 
             let gicon = this._cache[id].icon;
             let pixbuf = this._cache[id].pixbuf;
-            if (gicon)
-                meta['gicon'] = GLib.Variant.new('s', gicon.to_string());
+            let iconstr = gicon ? gicon.to_string() : null;
+            if (iconstr)
+                meta['gicon'] = GLib.Variant.new('s', iconstr);
             else if (pixbuf)
                 meta['icon-data'] = Gd.create_variant_from_pixbuf(pixbuf);
 
