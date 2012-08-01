@@ -22,8 +22,8 @@
 #ifndef __GD_GDATA_MINER_H__
 #define __GD_GDATA_MINER_H__
 
-#include <libtracker-miner/tracker-miner.h>
 #include <gio/gio.h>
+#include "gd-miner.h"
 
 G_BEGIN_DECLS
 
@@ -54,26 +54,16 @@ typedef struct _GdGDataMinerClass GdGDataMinerClass;
 typedef struct _GdGDataMinerPrivate GdGDataMinerPrivate;
 
 struct _GdGDataMiner {
-  GObject parent;
+  GdMiner parent;
 
   GdGDataMinerPrivate *priv;
 };
 
 struct _GdGDataMinerClass {
-  GObjectClass parent_class;
+  GdMinerClass parent_class;
 };
 
 GType gd_gdata_miner_get_type(void);
-
-GdGDataMiner * gd_gdata_miner_new (void);
-
-void           gd_gdata_miner_refresh_db_async (GdGDataMiner *self,
-                                                GCancellable *cancellable,
-                                                GAsyncReadyCallback callback,
-                                                gpointer user_data);
-gboolean       gd_gdata_miner_refresh_db_finish (GdGDataMiner *self,
-                                                 GAsyncResult *res,
-                                                 GError **error);
 
 G_END_DECLS
 

@@ -31,6 +31,8 @@ libexec_PROGRAMS += gd-tracker-gdata-miner
 
 gd_tracker_gdata_miner_SOURCES = \
     miner/gdata-miner-main.c \
+    miner/gd-miner.c \
+    miner/gd-miner.h \
     miner/gd-gdata-miner.c \
     miner/gd-gdata-miner.h \
     $(NULL)
@@ -53,6 +55,8 @@ libexec_PROGRAMS += gd-tracker-zpj-miner
 
 gd_tracker_zpj_miner_SOURCES = \
     miner/zpj-miner-main.c \
+    miner/gd-miner.c \
+    miner/gd-miner.h \
     miner/gd-zpj-miner.c \
     miner/gd-zpj-miner.h \
     $(NULL)

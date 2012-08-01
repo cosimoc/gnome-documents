@@ -22,8 +22,8 @@
 #ifndef __GD_ZPJ_MINER_H__
 #define __GD_ZPJ_MINER_H__
 
-#include <libtracker-miner/tracker-miner.h>
 #include <gio/gio.h>
+#include "gd-miner.h"
 
 G_BEGIN_DECLS
 
@@ -54,26 +54,16 @@ typedef struct _GdZpjMinerClass GdZpjMinerClass;
 typedef struct _GdZpjMinerPrivate GdZpjMinerPrivate;
 
 struct _GdZpjMiner {
-  GObject parent;
+  GdMiner parent;
 
   GdZpjMinerPrivate *priv;
 };
 
 struct _GdZpjMinerClass {
-  GObjectClass parent_class;
+  GdMinerClass parent_class;
 };
 
 GType gd_zpj_miner_get_type(void);
-
-GdZpjMiner * gd_zpj_miner_new (void);
-
-void           gd_zpj_miner_refresh_db_async (GdZpjMiner *self,
-                                              GCancellable *cancellable,
-                                              GAsyncReadyCallback callback,
-                                              gpointer user_data);
-gboolean       gd_zpj_miner_refresh_db_finish (GdZpjMiner *self,
-                                               GAsyncResult *res,
-                                               GError **error);
 
 G_END_DECLS
 
