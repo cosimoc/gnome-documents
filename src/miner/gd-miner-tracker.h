@@ -51,6 +51,18 @@ gboolean gd_miner_tracker_sparql_connection_set_triple (TrackerSparqlConnection 
                                                         const gchar *property_name,
                                                         const gchar *property_value);
 
+gboolean gd_miner_tracker_sparql_connection_toggle_favorite (TrackerSparqlConnection *connection,
+                                                             GCancellable *cancellable,
+                                                             GError **error,
+                                                             const gchar *resource,
+                                                             gboolean favorite);
+
+gchar* gd_miner_tracker_utils_ensure_contact_resource (TrackerSparqlConnection *connection,
+                                                       GCancellable *cancellable,
+                                                       GError **error,
+                                                       const gchar *email,
+                                                       const gchar *fullname);
+
 G_END_DECLS
 
 #endif /* __GD_MINER_TRACKER_H__ */
