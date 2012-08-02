@@ -87,7 +87,7 @@ msgstr "フルスクリーン"
 
 #: ../src/application.js:137
 msgid "About Documents"
-msgstr "Documents について"
+msgstr "このアプリーションについて"
 
 #: ../src/application.js:138
 msgid "Quit"
