@@ -859,7 +859,7 @@ const SelectionToolbar = new Lang.Class({
         let showFavorite = true;
         let showTrash = true;
         let showPrint = true;
-	let showProperties = true;
+	    let showProperties = true;
         let showOpen = true;
 
         this._insideRefresh = true;
@@ -978,7 +978,7 @@ const SelectionToolbar = new Lang.Class({
 
     _onToolbarProperties: function(widget) {
         let urn = Global.selectionController.getSelection();
-	let dialog = new Properties.PropertiesDialog(urn);
+	    let dialog = new Properties.PropertiesDialog(urn[0]);
         this._fadeOut();
 
         dialog.widget.connect('response', Lang.bind(this,
