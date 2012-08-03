@@ -52,7 +52,7 @@ const PropertiesDialog = new Lang.Class({
 
         if (doc instanceof Documents.LocalDocument ){
             this._sourceLink = Gio.file_new_for_uri(doc.uri).get_parent();
-        this._sourcePath = this._sourceLink.get_path();
+            this._sourcePath = this._sourceLink.get_path();
         } 
 
         let _dateModified = GLib.DateTime.new_from_unix_local(doc.mtime);
@@ -150,7 +150,7 @@ const PropertiesDialog = new Lang.Class({
             }));
         } else {
         this._titleEntry = new Gtk.Label({ label: doc.name,
-                                               halign: Gtk.Align.START });
+                                           halign: Gtk.Align.START });
         grid.attach_next_to (this._titleEntry, this._title, 1, 2, 1);
         }
 
