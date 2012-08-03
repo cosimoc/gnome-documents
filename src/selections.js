@@ -789,15 +789,15 @@ const SelectionToolbar = new Lang.Class({
         this._toolbarCollection.set_tooltip_text(_("Organize"));
         this._rightBox.add(this._toolbarCollection);
 
-	this._toolbarCollection.connect('clicked', Lang.bind(this, this._onToolbarCollection));
-	this._toolbarCollection.show_all();
+	    this._toolbarCollection.connect('clicked', Lang.bind(this, this._onToolbarCollection));
+	    this._toolbarCollection.show_all();
 	
-	this._toolbarShare = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'emblem-shared-symbolic',
+	    this._toolbarShare = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'emblem-shared-symbolic',
                                                                            pixel_size: 32 })});
         this._toolbarShare.set_tooltip_text(_("Share"));
         this._rightBox.add(this._toolbarShare);
         this._toolbarShare.connect('clicked', Lang.bind(this, this._onToolbarShare));
-	this._toolbarShare.show_all();
+	    this._toolbarShare.show_all();
         
         this._toolbarTrash = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'user-trash-symbolic',
                                                                       pixel_size: 32 })});
@@ -862,7 +862,7 @@ const SelectionToolbar = new Lang.Class({
         let showTrash = true;
         let showPrint = true;
         let showOpen = true;
-	let showShare = true;
+	    let showShare = true;
 
         this._insideRefresh = true;
 
@@ -930,7 +930,7 @@ const SelectionToolbar = new Lang.Class({
         this._toolbarTrash.set_visible(showTrash);
         this._toolbarOpen.set_visible(showOpen);
         this._toolbarFavorite.set_visible(showFavorite);
-	this._toolbarShare.set_visible(showShare);
+	    this._toolbarShare.set_visible(showShare);
 
         this._insideRefresh = false;
     },
@@ -976,8 +976,8 @@ const SelectionToolbar = new Lang.Class({
     },
 
     _onToolbarShare: function(widget) {
-        let urn = Global.selectionController.getSelection();
-	let dialog = new OrganizeCollectionDialog(toplevel);
+      //  let urn = Global.selectionController.getSelection();
+	    let dialog = new Sharing.SharingDialog();
         this._fadeOut();
 
         dialog.widget.connect('response', Lang.bind(this,
@@ -985,7 +985,7 @@ const SelectionToolbar = new Lang.Class({
                 if (response == Gtk.ResponseType.OK) {
                     dialog.widget.destroy();
                     this._fadeIn();
-              }
+                }
             }));
     },
 
