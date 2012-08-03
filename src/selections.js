@@ -794,7 +794,7 @@ const SelectionToolbar = new Lang.Class({
 
         // share button
 	this._toolbarShare = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'emblem-shared-symbolic',
-                                                                           pixel_size: 32 })});
+                                                                      pixel_size: 16 })});
         this._toolbarShare.set_tooltip_text(_("Share"));
         this._rightBox.add(this._toolbarShare);
         this._toolbarShare.connect('clicked', Lang.bind(this, this._onToolbarShare));
@@ -850,7 +850,7 @@ const SelectionToolbar = new Lang.Class({
         let showPrint = true;
         let showProperties = true;
         let showOpen = true;
-	let showShare = true;
+	    let showShare = true;
 
         this._insideRefresh = true;
 
@@ -953,8 +953,8 @@ const SelectionToolbar = new Lang.Class({
     },
 
     _onToolbarShare: function(widget) {
-        let urn = Global.selectionController.getSelection();
-	let dialog = new OrganizeCollectionDialog(toplevel);
+      //  let urn = Global.selectionController.getSelection();
+	    let dialog = new Sharing.SharingDialog();
         this._fadeOut();
 
         dialog.widget.connect('response', Lang.bind(this,
@@ -962,7 +962,7 @@ const SelectionToolbar = new Lang.Class({
                 if (response == Gtk.ResponseType.OK) {
                     dialog.widget.destroy();
                     this._fadeIn();
-              }
+                }
             }));
     },
 
