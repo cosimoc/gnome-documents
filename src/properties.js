@@ -64,6 +64,7 @@ const PropertiesDialog = new Lang.Class({
         } else {
             this._dateCreatedString = null;
         }
+
         this.docId = doc.id;
         this._titleEntryTimeout = 0;
 
@@ -78,11 +79,11 @@ const PropertiesDialog = new Lang.Class({
         let grid = new Gtk.Grid ({ orientation: Gtk.Orientation.VERTICAL, 
                                    column_homogeneous: true,
                                    halign: Gtk.Align.CENTER,
-                        	       row_spacing: 12,
+                                   row_spacing: 12,
                                    column_spacing: 24,
                                    margin_left: 24,
                                    margin_right: 24,
-				                   margin_bottom: 12 });
+                                   margin_bottom: 12 });
 
         let contentArea = this.widget.get_content_area();
 
@@ -90,18 +91,18 @@ const PropertiesDialog = new Lang.Class({
         this.widget.add_button('Done', Gtk.ResponseType.OK); 
 
         this._message = new Gtk.Label ({ label: '<span size="large"><b>' + _("Properties") + '</b></span>', //Label for Properties dialog
-                	                     halign: Gtk.Align.CENTER,
+                                         halign: Gtk.Align.CENTER,
                                          use_markup: true, 
                                          hexpand: false });
         grid.attach (this._message, 1, 0, 1, 1);
         
         this._title = new Gtk.Label({ label: _("Title"), //Label for Title item in Properties dialog
-       	                              halign: Gtk.Align.END });
+                                      halign: Gtk.Align.END });
         this._title.get_style_context ().add_class('dim-label')
         grid.add(this._title);
 
         this._author = new Gtk.Label({ label: _("Author"), //Label for Author item in Properties dialog
-       	                               halign: Gtk.Align.END });
+                                       halign: Gtk.Align.END });
         this._author.get_style_context ().add_class('dim-label')
         grid.add(this._author);
      
@@ -123,17 +124,17 @@ const PropertiesDialog = new Lang.Class({
         }
 
         this._docType = new Gtk.Label({ label: _("Type"), //Label for document Type in Properties dialog
- 				       halign: Gtk.Align.END });
+                                        halign: Gtk.Align.END });
         this._docType.get_style_context ().add_class('dim-label')
         grid.add (this._docType);
 
         if (doc instanceof Documents.LocalDocument) {
-	        this._titleEntry = new Gtk.Entry({ text: doc.name,
+            this._titleEntry = new Gtk.Entry({ text: doc.name,
                                                editable: true,
-					                           hexpand: true,
-					                           halign: Gtk.Align.START });
+                                               hexpand: true,
+                                               halign: Gtk.Align.START });
         grid.attach_next_to (this._titleEntry, this._title, 1, 2, 1);
-	    this._titleEntry.connect("changed", Lang.bind (this, 
+            this._titleEntry.connect("changed", Lang.bind (this, 
             function(newTitle, docId) { 
                 if (this._titleEntryTimeout != 0) {
                     Mainloop.source_remove(this._titleEntryTimeout);
@@ -144,50 +145,51 @@ const PropertiesDialog = new Lang.Class({
                     function() {
                         this._titleEntryTimeout = 0;
                         this.newTitle = this._titleEntry.get_text();
-                        TrackerUtils.setEditedName(this.newTitle, this.docId, null);}));
+                        TrackerUtils.setEditedName(this.newTitle, this.docId, null);
+                }));
             }));
         } else {
-	        this._titleEntry = new Gtk.Label({ label: doc.name,
-	         			                       halign: Gtk.Align.START });
-	    grid.attach_next_to (this._titleEntry, this._title, 1, 2, 1);
+        this._titleEntry = new Gtk.Label({ label: doc.name,
+                                           halign: Gtk.Align.START });
+        grid.attach_next_to (this._titleEntry, this._title, 1, 2, 1);
         }
 
         this._authorData = new Gtk.Label({ label: doc.author,
-					                       halign: Gtk.Align.START });
-	    grid.attach_next_to (this._authorData, this._author, 1, 2, 1);
+                                           halign: Gtk.Align.START });
+        grid.attach_next_to (this._authorData, this._author, 1, 2, 1);
 
-	    if (doc instanceof Documents.LocalDocument ){
-	        this._sourceData = new Gtk.LinkButton({ label: this._sourcePath,
-						                            uri: this._sourceLink.get_uri(),
-					                                halign: Gtk.Align.START });
-	    } else if (doc instanceof Documents.GoogleDocument) {
-	        this._sourceData = new Gtk.LinkButton({ label: doc.sourceName,
+        if (doc instanceof Documents.LocalDocument ){
+            this._sourceData = new Gtk.LinkButton({ label: this._sourcePath,
+                                                    uri: this._sourceLink.get_uri(),
+                                                    halign: Gtk.Align.START });
+        } else if (doc instanceof Documents.GoogleDocument) {
+            this._sourceData = new Gtk.LinkButton({ label: doc.sourceName,
                                                     uri: "http://docs.google.com/",
-					                                halign: Gtk.Align.START });
+                                                    halign: Gtk.Align.START });
         } else if (doc instanceof Documents.SkydriveDocument) {
-	        this._sourceData = new Gtk.LinkButton({ label: doc.sourceName,
+            this._sourceData = new Gtk.LinkButton({ label: doc.sourceName,
                                                     uri: "https://skydrive.live.com",
-					                                halign: Gtk.Align.START });
+                                                    halign: Gtk.Align.START });
         }
 
-	    grid.attach_next_to (this._sourceData, this._source, 1, 2, 1);
+        grid.attach_next_to (this._sourceData, this._source, 1, 2, 1);
 
-	    this._dateModifiedData = new Gtk.Label({ label: this._dateModifiedString,
-						                         halign: Gtk.Align.START });
-	    grid.attach_next_to (this._dateModifiedData, this._dateModified, 1, 2, 1);
+        this._dateModifiedData = new Gtk.Label({ label: this._dateModifiedString,
+                                                 halign: Gtk.Align.START });
+        grid.attach_next_to (this._dateModifiedData, this._dateModified, 1, 2, 1);
 
-	    if (this._dateCreated) {
+        if (this._dateCreated) {
             this._dateCreatedString = new Gtk.Label({ label: this._dateCreated,
-						                            halign: Gtk.Align.START });
-	    grid.attach_next_to (this._dateCreatedData, this._dateCreated, 1, 2, 1);
-	    }
+                                                      halign: Gtk.Align.START });
+        grid.attach_next_to (this._dateCreatedData, this._dateCreated, 1, 2, 1);
+        }
 
-	    this._documentTypeData = new Gtk.Label({ label: doc.typeDescription,
-	       					                     halign: Gtk.Align.START });
-	    grid.attach_next_to (this._documentTypeData, this._docType, 1, 2, 1);
+        this._documentTypeData = new Gtk.Label({ label: doc.typeDescription,
+                                                 halign: Gtk.Align.START });
+        grid.attach_next_to (this._documentTypeData, this._docType, 1, 2, 1);
 
         contentArea.pack_start(grid, true, true, 2);
-	    this.widget.show_all();
+        this.widget.show_all();
     },
 
 
