@@ -649,3 +649,13 @@ gd_create_variant_from_pixbuf (GdkPixbuf *pixbuf)
                                                     g_object_ref (pixbuf)));
   return g_variant_ref_sink (variant);
 }
+
+void
+gd_ev_view_find_changed (EvView *view,
+                         EvJobFind *job,
+                         gint page)
+{
+  ev_view_find_changed (view,
+                        ev_job_find_get_results (job),
+                        page);
+}

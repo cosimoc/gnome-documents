@@ -21,8 +21,10 @@
 
 const Gd = imports.gi.Gd;
 const Gdk = imports.gi.Gdk;
+const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gettext = imports.gettext;
 const GLib = imports.gi.GLib;
+const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const _ = imports.gettext.gettext;
 
@@ -35,85 +37,156 @@ const TrackerUtils = imports.trackerUtils;
 const WindowMode = imports.windowMode;
 const Utils = imports.utils;
 
-const ContextMenu = new Lang.Class({
-    Name: 'ContextMenu',
+const LoadMoreButton = new Lang.Class({
+    Name: 'LoadMoreButton',
 
-    _init: function(urns) {
-        let favCount = 0;
-        let apps = [];
-        let docs = [];
+    _init: function() {
+        this._block = false;
 
-        this.widget = new Gtk.Menu();
-        let showFavorite = (Global.modeController.getWindowMode() != WindowMode.WindowMode.PREVIEW);
+        this._controller = Global.offsetController;
+        this._controllerId =
+            this._controller.connect('item-count-changed',
+                                     Lang.bind(this, this._onItemCountChanged));
 
-        urns.forEach(Lang.bind(this,
-            function(urn) {
-                let doc = Global.documentManager.getItemById(urn);
-                if (doc.favorite)
-                    favCount++;
-
-                if (apps.indexOf(doc.defaultAppName) == -1) {
-                    apps.push(doc.defaultAppName);
-                }
-
-                docs.push(doc);
+        this.widget = new Gtk.Button({ no_show_all: true });
+        this.widget.get_style_context().add_class('documents-load-more');
+        this.widget.connect('clicked', Lang.bind(this,
+            function() {
+                this._controller.increaseOffset();
             }));
 
-        showFavorite &= ((favCount == 0) || (favCount == urns.length));
-
-        let openLabel = null;
-        if (apps.length == 1) {
-            // Translators: this is the Open action in a context menu
-            openLabel = _("Open with %s").format(apps[0]);
-        } else {
-            // Translators: this is the Open action in a context menu
-            openLabel = _("Open");
-        }
-
-        let openItem = new Gtk.MenuItem({ label: openLabel });
-        openItem.show();
-        this.widget.append(openItem);
-
-        let favoriteItem = null;
-        if (showFavorite) {
-            let isFavorite = (favCount == urns.length);
-            let favoriteLabel = (isFavorite) ? _("Remove from favorites") : _("Add to favorites");
-
-            favoriteItem = new Gtk.MenuItem({ label: favoriteLabel });
-            favoriteItem.show();
-            this.widget.append(favoriteItem);
-        }
-
-        docs.forEach(Lang.bind(this,
-            function(doc) {
-                openItem.connect('activate', Lang.bind(this,
-                    function(item) {
-                        doc.open(item.get_screen(), Gtk.get_current_event_time());
-                    }));
-
-                if (favoriteItem) {
-                    favoriteItem.connect('activate', Lang.bind(this,
-                        function() {
-                            doc.setFavorite(!doc.favorite);
-                        }));
-                }
+        this.widget.connect('destroy', Lang.bind(this,
+            function() {
+                this._controller.disconnect(this._controllerId);
             }));
 
-        this.widget.show_all();
+        this._onItemCountChanged();
+    },
+
+    _onItemCountChanged: function() {
+        let remainingDocs = this._controller.getRemainingDocs();
+        let offsetStep = this._controller.getOffsetStep();
+
+        if (remainingDocs <= 0 || this._block) {
+            this.widget.hide();
+            return;
+        }
+
+        if (remainingDocs > offsetStep)
+            remainingDocs = offsetStep;
+
+        this.widget.label = Gettext.ngettext("Load %d more document",
+                                             "Load %d more documents",
+                                             remainingDocs).format(remainingDocs);
+        this.widget.show();
+    },
+
+    setBlock: function(block) {
+        if (this._block == block)
+            return;
+
+        this._block = block;
+        this._onItemCountChanged();
     }
 });
 
-const View = new Lang.Class({
-    Name: 'View',
+const ViewModel = new Lang.Class({
+    Name: 'ViewModel',
 
     _init: function() {
-        this.widget = new Gd.MainView();
+        this.model = Gtk.ListStore.new(
+            [ GObject.TYPE_STRING,
+              GObject.TYPE_STRING,
+              GObject.TYPE_STRING,
+              GObject.TYPE_STRING,
+              GdkPixbuf.Pixbuf,
+              GObject.TYPE_LONG,
+              GObject.TYPE_BOOLEAN ]);
+        this.model.set_sort_column_id(Gd.MainColumns.MTIME,
+                                      Gtk.SortType.DESCENDING);
 
-        this.widget.connect('item-activated',
+        Global.documentManager.connect('item-added',
+            Lang.bind(this, this._onItemAdded));
+        Global.documentManager.connect('item-removed',
+            Lang.bind(this, this._onItemRemoved));
+        Global.documentManager.connect('clear',
+            Lang.bind(this, this._onClear));
+
+        // populate with the intial items
+        let items = Global.documentManager.getItems();
+        for (let idx in items) {
+            this._onItemAdded(null, items[idx]);
+        }
+    },
+
+    _onClear: function() {
+        this.model.clear();
+    },
+
+    _onItemAdded: function(source, doc) {
+        let iter = this.model.append();
+        this.model.set(iter,
+            [ 0, 1, 2, 3, 4, 5 ],
+            [ doc.id, doc.uri, doc.name,
+              doc.author, doc.pixbuf, doc.mtime ]);
+
+        let treePath = this.model.get_path(iter);
+        let treeRowRef = Gtk.TreeRowReference.new(this.model, treePath);
+
+        doc.connect('info-updated', Lang.bind(this,
+            function() {
+                let objectPath = treeRowRef.get_path();
+                if (!objectPath)
+                    return;
+
+                let objectIter = this.model.get_iter(objectPath)[1];
+                if (objectIter)
+                    this.model.set(objectIter,
+                        [ 0, 1, 2, 3, 4, 5 ],
+                        [ doc.id, doc.uri, doc.name,
+                          doc.author, doc.pixbuf, doc.mtime ]);
+            }));
+    },
+
+    _onItemRemoved: function(source, doc) {
+        this.model.foreach(Lang.bind(this,
+            function(model, path, iter) {
+                let id = model.get_value(iter, Gd.MainColumns.ID);
+
+                if (id == doc.id) {
+                    this.model.remove(iter);
+                    return true;
+                }
+
+                return false;
+            }));
+    }
+});
+
+const ViewContainer = new Lang.Class({
+    Name: 'ViewContainer',
+
+    _init: function() {
+        this._adjustmentValueId = 0;
+        this._adjustmentChangedId = 0;
+        this._scrollbarVisibleId = 0;
+
+        this._model = new ViewModel();
+
+        this.widget = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
+        this.view = new Gd.MainView();
+        this.widget.add(this.view);
+
+        this._loadMore = new LoadMoreButton();
+        this.widget.add(this._loadMore.widget);
+
+        this.widget.show_all();
+
+        this.view.connect('item-activated',
                             Lang.bind(this, this._onItemActivated));
-        this.widget.connect('selection-mode-request',
+        this.view.connect('selection-mode-request',
                             Lang.bind(this, this._onSelectionModeRequest));
-        this.widget.connect('view-selection-changed',
+        this.view.connect('view-selection-changed',
                             Lang.bind(this, this._onViewSelectionChanged));
 
         // connect to settings change for list/grid view
@@ -128,6 +201,10 @@ const View = new Lang.Class({
                                                Lang.bind(this, this._onSelectionModeChanged));
         this._onSelectionModeChanged();
 
+        Global.modeController.connect('window-mode-changed',
+                                      Lang.bind(this, this._onWindowModeChanged));
+        this._onWindowModeChanged();
+
         this._queryId =
             Global.trackerController.connect('query-status-changed',
                                              Lang.bind(this, this._onQueryStatusChanged));
@@ -136,19 +213,18 @@ const View = new Lang.Class({
 
         // this will create the model if we're done querying
         this._onQueryStatusChanged();
-        this.widget.show();
     },
 
     _updateTypeForSettings: function() {
         let viewType = Global.settings.get_enum('view-as');
-        this.widget.set_view_type(viewType);
+        this.view.set_view_type(viewType);
 
         if (viewType == Gd.MainViewType.LIST)
             this._addListRenderers();
     },
 
     _addListRenderers: function() {
-        let listWidget = this.widget.get_generic_view();
+        let listWidget = this.view.get_generic_view();
 
         let typeRenderer =
             new Gd.StyledTextRenderer({ xpad: 16 });
@@ -231,8 +307,7 @@ const View = new Lang.Class({
 
         if (!status) {
             // setup a model if we're not querying
-            this._treeModel = Global.documentManager.getModel().model;
-            this.widget.set_model(this._treeModel);
+            this.view.set_model(this._model.model);
 
             // unfreeze selection
             Global.selectionController.freezeSelection(false);
@@ -243,8 +318,7 @@ const View = new Lang.Class({
 
             // if we're querying, clear the model from the view,
             // so that we don't uselessly refresh the rows
-            this._treeModel = null;
-            this.widget.set_model(null);
+            this.view.set_model(null);
         }
     },
 
@@ -255,15 +329,15 @@ const View = new Lang.Class({
         if (!selected.length)
             return;
 
-        let generic = this.widget.get_generic_view();
+        let generic = this.view.get_generic_view();
         let first = true;
-        this._treeModel.foreach(Lang.bind(this,
+        this._model.model.foreach(Lang.bind(this,
             function(model, path, iter) {
-                let id = this._treeModel.get_value(iter, Gd.MainColumns.ID);
+                let id = this._model.model.get_value(iter, Gd.MainColumns.ID);
                 let idIndex = selected.indexOf(id);
 
                 if (idIndex != -1) {
-                    this._treeModel.set_value(iter, Gd.MainColumns.SELECTED, true);
+                    this._model.model.set_value(iter, Gd.MainColumns.SELECTED, true);
                     newSelection.push(id);
 
                     if (first) {
@@ -283,13 +357,76 @@ const View = new Lang.Class({
 
     _onSelectionModeChanged: function() {
         let selectionMode = Global.selectionController.getSelectionMode();
-        this.widget.set_selection_mode(selectionMode);
+        this.view.set_selection_mode(selectionMode);
     },
 
     _onViewSelectionChanged: function() {
         // update the selection on the controller when the view signals a change
-        let selectedURNs = Utils.getURNsFromPaths(this.widget.get_selection(),
-                                                  this._treeModel);
+        let selectedURNs = Utils.getURNsFromPaths(this.view.get_selection(),
+                                                  this._model.model);
         Global.selectionController.setSelection(selectedURNs);
+    },
+
+    _onWindowModeChanged: function() {
+        let mode = Global.modeController.getWindowMode();
+        if (mode == WindowMode.WindowMode.OVERVIEW)
+            this._connectView();
+        else
+            this._disconnectView();
+    },
+
+    _connectView: function() {
+        this._adjustmentValueId =
+            this.view.vadjustment.connect('value-changed',
+                                          Lang.bind(this, this._onScrolledWinChange));
+        this._adjustmentChangedId =
+            this.view.vadjustment.connect('changed',
+                                          Lang.bind(this, this._onScrolledWinChange));
+        this._scrollbarVisibleId =
+            this.view.get_vscrollbar().connect('notify::visible',
+                                               Lang.bind(this, this._onScrolledWinChange));
+        this._onScrolledWinChange();
+    },
+
+    _onScrolledWinChange: function() {
+        let vScrollbar = this.view.get_vscrollbar();
+        let adjustment = this.view.vadjustment;
+        let revealAreaHeight = 32;
+
+        // if there's no vscrollbar, or if it's not visible, hide the button
+        if (!vScrollbar ||
+            !vScrollbar.get_visible()) {
+            this._loadMore.setBlock(true);
+            return;
+        }
+
+        let value = adjustment.value;
+        let upper = adjustment.upper;
+        let page_size = adjustment.page_size;
+
+        let end = false;
+
+        // special case this values which happen at construction
+        if ((value == 0) && (upper == 1) && (page_size == 1))
+            end = false;
+        else
+            end = !(value < (upper - page_size - revealAreaHeight));
+
+        this._loadMore.setBlock(!end);
+    },
+
+    _disconnectView: function() {
+        if (this._adjustmentValueId != 0) {
+            this.view.vadjustment.disconnect(this._adjustmentValueId);
+            this._adjustmentValueId = 0;
+        }
+        if (this._adjustmentChangedId != 0) {
+            this.view.vadjustment.disconnect(this._adjustmentChangedId);
+            this._adjustmentChangedId = 0;
+        }
+        if (this._scrollbarVisibleId != 0) {
+            this.view.get_vscrollbar().disconnect(this._scrollbarVisibleId);
+            this._scrollbarVisibleId = 0;
+        }
     }
 });

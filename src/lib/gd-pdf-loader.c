@@ -187,7 +187,9 @@ pdf_load_job_complete_error (PdfLoadJob *job,
 static void
 pdf_load_job_complete_success (PdfLoadJob *job)
 {
-  g_simple_async_result_set_op_res_gpointer (job->result, g_object_ref (job->document), NULL);
+  EvDocumentModel *doc_model = ev_document_model_new_with_document (job->document);
+
+  g_simple_async_result_set_op_res_gpointer (job->result, doc_model, NULL);
   g_simple_async_result_complete_in_idle (job->result);
 
   pdf_load_job_free (job);
@@ -940,11 +942,11 @@ gd_pdf_loader_load_uri_async (const gchar *uri,
  *
  * Returns: (transfer full):
  */
-EvDocument *
+EvDocumentModel *
 gd_pdf_loader_load_uri_finish (GAsyncResult *res,
                                GError **error)
 {
-  EvDocument *retval;
+  EvDocumentModel *retval;
 
   if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (res), error))
     return NULL;
@@ -982,11 +984,11 @@ gd_pdf_loader_load_gdata_entry_async (GDataEntry *entry,
  *
  * Returns: (transfer full):
  */
-EvDocument *
+EvDocumentModel *
 gd_pdf_loader_load_gdata_entry_finish (GAsyncResult *res,
                                        GError **error)
 {
-  EvDocument *retval;
+  EvDocumentModel *retval;
 
   if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (res), error))
     return NULL;
@@ -1024,11 +1026,11 @@ gd_pdf_loader_load_zpj_entry_async (ZpjSkydriveEntry *entry,
  *
  * Returns: (transfer full):
  */
-EvDocument *
+EvDocumentModel *
 gd_pdf_loader_load_zpj_entry_finish (GAsyncResult *res,
                                      GError **error)
 {
-  EvDocument *retval;
+  EvDocumentModel *retval;
 
   if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (res), error))
     return NULL;

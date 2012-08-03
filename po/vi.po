@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: gnome-documents gnome-3-2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-03-05 22:21+0000\n"
-"PO-Revision-Date: 2012-03-08 19:27+0700\n"
+"POT-Creation-Date: 2012-06-04 19:21+0000\n"
+"PO-Revision-Date: 2012-07-01 10:58+0700\n"
 "Last-Translator: Nguyễn Thái Ngọc Duy <pclouds@gmail.com>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:54
+#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:51
+#: ../src/mainWindow.js:232
 msgid "Documents"
 msgstr "Tài liệu"
 
@@ -29,7 +30,7 @@ msgstr "Truy cập, quản lý và chia sẻ tài liệu"
 msgid "Docs;PDF;Document;"
 msgstr "Docs;Tài;liệu;PDF;Document;"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:128
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:137
 msgid "View as"
 msgstr "Xem kiểu"
 
@@ -38,300 +39,312 @@ msgid "View as type"
 msgstr "Xem kiểu"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:3
-msgid "The active source filter"
-msgstr "Bộ lọc nguồn tích cực"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:4
-msgid "The last active source filter"
-msgstr "Bộ lọc nguồn tích cực cuối cùng"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:5
 msgid "Window size"
 msgstr "Kích thước cửa sổ"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:6
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
 msgid "Window size (width and height)."
 msgstr "Kích thước cửa sổ (rộng và cao)."
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:7
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
 msgid "Window position"
 msgstr "Vị trí cửa sổ"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:8
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
 msgid "Window position (x and y)."
 msgstr "Vị trí cửa sổ (x và y)."
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:9
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
 msgid "Window maximized"
 msgstr "Cửa sổ đã phóng to"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:10
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
 msgid "Window maximized state"
 msgstr "Trạng thái phóng to cửa sổ"
 
-#: ../src/application.js:126
+#: ../src/application.js:135
 msgid "Grid"
 msgstr "Lưới"
 
-#: ../src/application.js:127
+#: ../src/application.js:136
 msgid "List"
 msgstr "Danh sách"
 
-#: ../src/application.js:131
+#: ../src/application.js:140
 msgid "Fullscreen"
 msgstr "Toàn màn hình"
 
-#: ../src/application.js:134
+#: ../src/application.js:143
 msgid "About Documents"
 msgstr "Giới thiệu Tài liệu"
 
-#: ../src/application.js:135
+#: ../src/application.js:144
 msgid "Quit"
 msgstr "Thoát"
 
-#: ../src/documents.js:618 ../src/sources.js:100
+#: ../src/documents.js:614 ../src/sources.js:95
 msgid "Local"
 msgstr "Cục bộ"
 
 #. overridden
-#: ../src/documents.js:681
+#: ../src/documents.js:667
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:682
+#: ../src/documents.js:668
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:751
+#: ../src/documents.js:737 ../src/documents.js:880
 msgid "Spreadsheet"
 msgstr "Bảng tính"
 
-#: ../src/documents.js:753
+#: ../src/documents.js:739 ../src/documents.js:882
 msgid "Presentation"
 msgstr "Trình diễn"
 
-#: ../src/documents.js:755
+#: ../src/documents.js:741 ../src/documents.js:884
 msgid "Collection"
 msgstr "Bộ sưu tập"
 
-#: ../src/documents.js:757
+#: ../src/documents.js:743 ../src/documents.js:886
 msgid "Document"
 msgstr "Tài liệu"
 
+#. overridden
+#: ../src/documents.js:813 ../src/documents.js:814
+msgid "Skydrive"
+msgstr "Skydrive"
+
 #. Translators: %s is the title of a document
-#: ../src/error.js:37
+#: ../src/error.js:35
 #, c-format
 msgid "Unable to load \"%s\" for preview"
 msgstr "Không thể nạp \"%s\" để xem trước"
 
-#: ../src/error.js:49
+#: ../src/error.js:47
 msgid "Unable to fetch the list of documents"
 msgstr "Không thể lấy danh sách tài liệu"
 
-#. right section
-#: ../src/lib/gd-main-toolbar.c:269
-msgid "Done"
-msgstr "Hoàn tất"
-
-#: ../src/lib/gd-pdf-loader.c:208
+#: ../src/lib/gd-pdf-loader.c:224
 msgid "Unable to load the document"
 msgstr "Không thể tải tài liệu"
 
-#: ../src/lib/gd-pdf-loader.c:489
+#: ../src/lib/gd-pdf-loader.c:675
 msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
 msgstr ""
 "Không thể tìm \"unoconv\", vui lòng kiểm tra lại bản cài đặt LibreOffice của "
 "bạn"
 
-#: ../src/loadMore.js:70
+#: ../src/loadMore.js:68
 #, c-format
 msgid "Load %d more document"
 msgid_plural "Load %d more documents"
 msgstr[0] "Nạp %d tài liệu nữa"
 
-#: ../src/mainToolbar.js:194
+#: ../src/mainToolbar.js:164
 msgid "New and Recent"
 msgstr "Mới và gần đây"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:171
 #, c-format
 msgid "Results for \"%s\""
 msgstr "Kết quả của \"%s\""
 
-#: ../src/mainToolbar.js:203
+#: ../src/mainToolbar.js:173
 msgid "filtered by title"
 msgstr "lọc theo tựa"
 
-#: ../src/mainToolbar.js:205
+#: ../src/mainToolbar.js:175
 msgid "filtered by author"
 msgstr "lọc theo tác giả"
 
-#: ../src/mainToolbar.js:218
-#, c-format
-#| msgid "(%d of %d)"
-msgid "%d of %d"
-msgstr "%d trên %d"
-
-#: ../src/mainToolbar.js:224
+#: ../src/mainToolbar.js:182
 msgid "Click on items to select them"
 msgstr "Nhấn để chọn"
 
-#: ../src/mainToolbar.js:226
+#: ../src/mainToolbar.js:184
 #, c-format
 msgid "%d selected"
 msgid_plural "%d selected"
 msgstr[0] "chọn %d"
 
-#: ../src/mainWindow.js:254
+#: ../src/mainToolbar.js:205
+#, c-format
+msgid "%d of %d"
+msgstr "%d trên %d"
+
+#: ../src/mainToolbar.js:220
+msgid "Done"
+msgstr "Hoàn tất"
+
+#: ../src/mainToolbar.js:238 ../src/mainToolbar.js:265
+msgid "Back"
+msgstr "Lùi"
+
+#: ../src/mainToolbar.js:247
+msgid "Select Items"
+msgstr "Chọn mục"
+
+#: ../src/mainWindow.js:231
 msgid "translator-credits"
 msgstr "Nhóm Việt hoá GNOME"
 
-#: ../src/mainWindow.js:255
-msgid "GNOME Documents"
-msgstr "Tài liệu GNOME"
-
-#: ../src/mainWindow.js:256
+#: ../src/mainWindow.js:233
 msgid "A document manager application"
 msgstr "Ứng dụng quản lý tài liệu"
 
-#: ../src/notifications.js:85
+#: ../src/notifications.js:84
 #, c-format
 msgid "Printing \"%s\": %s"
 msgstr "In \"%s\": %s"
 
-#: ../src/searchbar.js:86
+#: ../src/searchbar.js:82
 msgid "Category"
 msgstr "Phân loại"
 
-#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:210
-#: ../src/sources.js:94
+#: ../src/searchbar.js:87 ../src/searchbar.js:132 ../src/searchbar.js:196
+#: ../src/sources.js:89
 msgid "All"
 msgstr "Tất cả"
 
-#: ../src/searchbar.js:97
+#: ../src/searchbar.js:93
 msgid "Favorites"
 msgstr "Yêu thích"
 
-#: ../src/searchbar.js:102
+#: ../src/searchbar.js:98
 msgid "Shared with you"
 msgstr "Chia sẻ với bạn"
 
-#: ../src/searchbar.js:138
+#: ../src/searchbar.js:129
 msgid "Type"
 msgstr "Loại"
 
-#: ../src/searchbar.js:143
+#: ../src/searchbar.js:134
 msgid "Collections"
 msgstr "Bộ sưu tập"
 
-#: ../src/searchbar.js:147
+#: ../src/searchbar.js:138
 msgid "PDF Documents"
 msgstr "Tài liệu PDF"
 
-#: ../src/searchbar.js:150
+#: ../src/searchbar.js:141
 msgid "Presentations"
 msgstr "Trình diễn"
 
-#: ../src/searchbar.js:153
+#: ../src/searchbar.js:144
 msgid "Spreadsheets"
 msgstr "Bảng tính"
 
-#: ../src/searchbar.js:156
+#: ../src/searchbar.js:147
 msgid "Text Documents"
 msgstr "Văn bản"
 
 #. Translators: this is a verb that refers to "All", "Title" and "Author",
 #. as in "Match All", "Match Title" and "Match Author"
-#: ../src/searchbar.js:207
+#: ../src/searchbar.js:193
 msgid "Match"
 msgstr "Khớp"
 
-#: ../src/searchbar.js:212
+#: ../src/searchbar.js:198
 msgid "Title"
 msgstr "Tựa đề"
 
-#: ../src/searchbar.js:214
+#: ../src/searchbar.js:200
 msgid "Author"
 msgstr "Tác giả"
 
-#: ../src/selections.js:698
+#: ../src/selections.js:738
+msgid "Print"
+msgstr "In"
+
+#: ../src/selections.js:753
 msgid "Organize"
 msgstr "Tổ chức"
 
-#: ../src/selections.js:705
+#: ../src/selections.js:760
 msgid "Delete"
 msgstr "Xoá"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:808 ../src/view.js:69
+#: ../src/selections.js:849 ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "Mở với %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:811 ../src/view.js:72
+#: ../src/selections.js:852 ../src/view.js:70
 msgid "Open"
 msgstr "Mở"
 
-#: ../src/selections.js:824 ../src/view.js:82
+#: ../src/selections.js:861 ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "Bỏ đánh dấu yêu thích"
 
-#: ../src/selections.js:828 ../src/view.js:82
+#: ../src/selections.js:865 ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Đánh dấu yêu thích"
 
-#: ../src/shellSearchProvider.js:332
+#: ../src/shellSearchProvider.js:281
 msgid "Untitled Document"
 msgstr "Tài liệu không tên"
 
-#: ../src/sources.js:90
+#: ../src/sources.js:85
 msgid "Sources"
 msgstr "Nguồn"
 
-#: ../src/spinnerBox.js:58
+#: ../src/spinnerBox.js:56
 msgid "Loading..."
 msgstr "Đang nạp..."
 
-#: ../src/view.js:196
+#: ../src/view.js:194
 msgid "Yesterday"
 msgstr "Hôm qua"
 
-#: ../src/view.js:198
+#: ../src/view.js:196
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "%d ngày trước"
 
-#: ../src/view.js:202
+#: ../src/view.js:200
 msgid "Last week"
 msgstr "Tuần trước"
 
-#: ../src/view.js:204
+#: ../src/view.js:202
 #, c-format
 msgid "%d week ago"
 msgid_plural "%d weeks ago"
 msgstr[0] "%d tuần trước"
 
-#: ../src/view.js:208
+#: ../src/view.js:206
 msgid "Last month"
 msgstr "Tháng trước"
 
-#: ../src/view.js:210
+#: ../src/view.js:208
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
 msgstr[0] "%d tháng trước"
 
-#: ../src/view.js:214
+#: ../src/view.js:212
 msgid "Last year"
 msgstr "Năm trước"
 
-#: ../src/view.js:216
+#: ../src/view.js:214
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
 msgstr[0] "%d năm trước"
+
+#~ msgid "The active source filter"
+#~ msgstr "Bộ lọc nguồn tích cực"
+
+#~ msgid "The last active source filter"
+#~ msgstr "Bộ lọc nguồn tích cực cuối cùng"
+
+#~ msgid "GNOME Documents"
+#~ msgstr "Tài liệu GNOME"
 
 #~ msgid "Enable list view"
 #~ msgstr "Bật trình bày dạng danh sách"

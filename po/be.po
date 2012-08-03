@@ -5,8 +5,8 @@ msgstr ""
 "Project-Id-Version: gnome-documents.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-03-05 22:21+0000\n"
-"PO-Revision-Date: 2012-03-07 23:35+0300\n"
+"POT-Creation-Date: 2012-06-04 19:21+0000\n"
+"PO-Revision-Date: 2012-07-15 12:42+0300\n"
 "Last-Translator: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>\n"
 "Language-Team: Belarusian <i18n-bel-gnome@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,8 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:54
+#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:51
+#: ../src/mainWindow.js:232
 msgid "Documents"
 msgstr "Дакументы"
 
@@ -28,7 +29,7 @@ msgstr "Праца, кіраванне і супольны доступ да д�
 msgid "Docs;PDF;Document;"
 msgstr "Дакументы;PDF;"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:128
+#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:137
 msgid "View as"
 msgstr "Тып прагляду"
 
@@ -37,112 +38,104 @@ msgid "View as type"
 msgstr "Тып прагляду"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:3
-msgid "The active source filter"
-msgstr "Актыўны фільтр крыніц"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:4
-msgid "The last active source filter"
-msgstr "Апошні задзейнічаны фільтр крыніц"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:5
 msgid "Window size"
 msgstr "Памер акна"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:6
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
 msgid "Window size (width and height)."
 msgstr "Памер акна (шырыня і вышыня)."
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:7
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
 msgid "Window position"
 msgstr "Размяшчэнне акна"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:8
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
 msgid "Window position (x and y)."
 msgstr "Размяшчэнне акна (x, y)."
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:9
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
 msgid "Window maximized"
 msgstr "Максімалізацыя акна"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:10
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
 msgid "Window maximized state"
 msgstr "Стан максімалізацыі акна"
 
-#: ../src/application.js:126
+#: ../src/application.js:135
 msgid "Grid"
 msgstr "Сетка"
 
-#: ../src/application.js:127
+#: ../src/application.js:136
 msgid "List"
 msgstr "Спіс"
 
-#: ../src/application.js:131
+#: ../src/application.js:140
 msgid "Fullscreen"
 msgstr "На ўвесь экран"
 
-#: ../src/application.js:134
+#: ../src/application.js:143
 msgid "About Documents"
 msgstr "Аб Дакументах"
 
-#: ../src/application.js:135
+#: ../src/application.js:144
 msgid "Quit"
 msgstr "Выйсці"
 
-#: ../src/documents.js:618 ../src/sources.js:100
+#: ../src/documents.js:614 ../src/sources.js:95
 msgid "Local"
 msgstr "Мясцовыя"
 
 #. overridden
-#: ../src/documents.js:681
+#: ../src/documents.js:667
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:682
+#: ../src/documents.js:668
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:751
+#: ../src/documents.js:737 ../src/documents.js:880
 msgid "Spreadsheet"
 msgstr "Разліковы аркуш"
 
-#: ../src/documents.js:753
+#: ../src/documents.js:739 ../src/documents.js:882
 msgid "Presentation"
 msgstr "Прэзентацыя"
 
-#: ../src/documents.js:755
+#: ../src/documents.js:741 ../src/documents.js:884
 msgid "Collection"
 msgstr "Калекцыя"
 
-#: ../src/documents.js:757
+#: ../src/documents.js:743 ../src/documents.js:886
 msgid "Document"
 msgstr "Дакумент"
 
+#. overridden
+#: ../src/documents.js:813 ../src/documents.js:814
+msgid "Skydrive"
+msgstr "Skydrive"
+
 #. Translators: %s is the title of a document
-#: ../src/error.js:37
+#: ../src/error.js:35
 #, c-format
 msgid "Unable to load \"%s\" for preview"
 msgstr "Не ўдалося загрузіць \"%s\" для папярэдняга агляду"
 
-#: ../src/error.js:49
+#: ../src/error.js:47
 msgid "Unable to fetch the list of documents"
 msgstr "Не ўдалося сцягнуць спіс дакументаў"
 
-#. right section
-#: ../src/lib/gd-main-toolbar.c:269
-msgid "Done"
-msgstr "Зроблена"
-
-#: ../src/lib/gd-pdf-loader.c:208
+#: ../src/lib/gd-pdf-loader.c:224
 msgid "Unable to load the document"
 msgstr "Не ўдалося загрузіць дакумент"
 
-#: ../src/lib/gd-pdf-loader.c:489
+#: ../src/lib/gd-pdf-loader.c:675
 msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
 msgstr ""
 "Не ўдалося адшукаць \"unoconv\", праверце правільнасць усталявання "
 "LibreOffice"
 
-#: ../src/loadMore.js:70
+#: ../src/loadMore.js:68
 #, c-format
 msgid "Load %d more document"
 msgid_plural "Load %d more documents"
@@ -150,33 +143,28 @@ msgstr[0] "Загрузіць яшчэ %d дакумент"
 msgstr[1] "Загрузіць яшчэ %d дакументы"
 msgstr[2] "Загрузіць яшчэ %d дакументаў"
 
-#: ../src/mainToolbar.js:194
+#: ../src/mainToolbar.js:164
 msgid "New and Recent"
 msgstr "Новыя і нядаўнія"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:171
 #, c-format
 msgid "Results for \"%s\""
 msgstr "Вынікі для \"%s\""
 
-#: ../src/mainToolbar.js:203
+#: ../src/mainToolbar.js:173
 msgid "filtered by title"
 msgstr "адфільтравана паводле назвы"
 
-#: ../src/mainToolbar.js:205
+#: ../src/mainToolbar.js:175
 msgid "filtered by author"
 msgstr "адфільтравана паводле аўтара"
 
-#: ../src/mainToolbar.js:218
-#, c-format
-msgid "%d of %d"
-msgstr "%d з %d"
-
-#: ../src/mainToolbar.js:224
+#: ../src/mainToolbar.js:182
 msgid "Click on items to select them"
 msgstr "Пстрыкайце ў элементы спіса для іх вылучэння"
 
-#: ../src/mainToolbar.js:226
+#: ../src/mainToolbar.js:184
 #, c-format
 msgid "%d selected"
 msgid_plural "%d selected"
@@ -184,122 +172,139 @@ msgstr[0] "%d вылучаны дакумент"
 msgstr[1] "%d вылучаныя дакументы"
 msgstr[2] "%d вылучаных дакументаў"
 
-#: ../src/mainWindow.js:254
+#: ../src/mainToolbar.js:205
+#, c-format
+msgid "%d of %d"
+msgstr "%d з %d"
+
+#: ../src/mainToolbar.js:220
+msgid "Done"
+msgstr "Зроблена"
+
+#: ../src/mainToolbar.js:238 ../src/mainToolbar.js:265
+msgid "Back"
+msgstr "Назад"
+
+#: ../src/mainToolbar.js:247
+msgid "Select Items"
+msgstr "Вылучыць"
+
+#: ../src/mainWindow.js:231
 msgid "translator-credits"
-msgstr "Ihar Hrachyshka <ihar.hrachyshka@gmail.com>"
+msgstr "Ігар Грачышка <ihar.hrachyshka@gmail.com>"
 
-#: ../src/mainWindow.js:255
-msgid "GNOME Documents"
-msgstr "Дакументы GNOME"
-
-#: ../src/mainWindow.js:256
+#: ../src/mainWindow.js:233
 msgid "A document manager application"
 msgstr "Праграма кіравання дакументамі"
 
-#: ../src/notifications.js:85
+#: ../src/notifications.js:84
 #, c-format
 msgid "Printing \"%s\": %s"
 msgstr "Друк \"%s\": %s"
 
-#: ../src/searchbar.js:86
+#: ../src/searchbar.js:82
 msgid "Category"
 msgstr "Катэгорыя"
 
-#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:210
-#: ../src/sources.js:94
+#: ../src/searchbar.js:87 ../src/searchbar.js:132 ../src/searchbar.js:196
+#: ../src/sources.js:89
 msgid "All"
 msgstr "Усе"
 
-#: ../src/searchbar.js:97
+#: ../src/searchbar.js:93
 msgid "Favorites"
 msgstr "Упадабаныя"
 
-#: ../src/searchbar.js:102
+#: ../src/searchbar.js:98
 msgid "Shared with you"
 msgstr "Супольна даступныя вам"
 
-#: ../src/searchbar.js:138
+#: ../src/searchbar.js:129
 msgid "Type"
 msgstr "Тып"
 
-#: ../src/searchbar.js:143
+#: ../src/searchbar.js:134
 msgid "Collections"
 msgstr "Калекцыі"
 
-#: ../src/searchbar.js:147
+#: ../src/searchbar.js:138
 msgid "PDF Documents"
 msgstr "PDF-дакументы"
 
-#: ../src/searchbar.js:150
+#: ../src/searchbar.js:141
 msgid "Presentations"
 msgstr "Прэзентацыі"
 
-#: ../src/searchbar.js:153
+#: ../src/searchbar.js:144
 msgid "Spreadsheets"
 msgstr "Разліковыя аркушы"
 
-#: ../src/searchbar.js:156
+#: ../src/searchbar.js:147
 msgid "Text Documents"
 msgstr "Тэкставыя дакументы"
 
 #. Translators: this is a verb that refers to "All", "Title" and "Author",
 #. as in "Match All", "Match Title" and "Match Author"
-#: ../src/searchbar.js:207
+#: ../src/searchbar.js:193
 msgid "Match"
 msgstr "Крытэрый пошуку"
 
-#: ../src/searchbar.js:212
+#: ../src/searchbar.js:198
 msgid "Title"
 msgstr "Загаловак"
 
-#: ../src/searchbar.js:214
+#: ../src/searchbar.js:200
 msgid "Author"
 msgstr "Аўтар"
 
-#: ../src/selections.js:698
+#: ../src/selections.js:738
+msgid "Print"
+msgstr "Надрукаваць"
+
+#: ../src/selections.js:753
 msgid "Organize"
 msgstr "Працаваць"
 
-#: ../src/selections.js:705
+#: ../src/selections.js:760
 msgid "Delete"
 msgstr "Выдаліць"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:808 ../src/view.js:69
+#: ../src/selections.js:849 ../src/view.js:67
 #, c-format
 msgid "Open with %s"
 msgstr "Адкрыць у %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:811 ../src/view.js:72
+#: ../src/selections.js:852 ../src/view.js:70
 msgid "Open"
 msgstr "Адкрыць"
 
-#: ../src/selections.js:824 ../src/view.js:82
+#: ../src/selections.js:861 ../src/view.js:80
 msgid "Remove from favorites"
 msgstr "Выдаліць са спіса ўпадабаных"
 
-#: ../src/selections.js:828 ../src/view.js:82
+#: ../src/selections.js:865 ../src/view.js:80
 msgid "Add to favorites"
 msgstr "Дадаць у спіс упадабаных"
 
-#: ../src/shellSearchProvider.js:332
+#: ../src/shellSearchProvider.js:281
 msgid "Untitled Document"
 msgstr "Дакумент без назвы"
 
-#: ../src/sources.js:90
+#: ../src/sources.js:85
 msgid "Sources"
 msgstr "Крыніцы"
 
-#: ../src/spinnerBox.js:58
+#: ../src/spinnerBox.js:56
 msgid "Loading..."
 msgstr "Загрузка..."
 
-#: ../src/view.js:196
+#: ../src/view.js:194
 msgid "Yesterday"
 msgstr "Учора"
 
-#: ../src/view.js:198
+#: ../src/view.js:196
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
@@ -307,11 +312,11 @@ msgstr[0] "%d дзень таму"
 msgstr[1] "%d дні таму"
 msgstr[2] "%d дзён таму"
 
-#: ../src/view.js:202
+#: ../src/view.js:200
 msgid "Last week"
 msgstr "На мінулым тыдні"
 
-#: ../src/view.js:204
+#: ../src/view.js:202
 #, c-format
 msgid "%d week ago"
 msgid_plural "%d weeks ago"
@@ -319,11 +324,11 @@ msgstr[0] "%d тыдзень таму"
 msgstr[1] "%d тыдні таму"
 msgstr[2] "%d тыдняў таму"
 
-#: ../src/view.js:208
+#: ../src/view.js:206
 msgid "Last month"
 msgstr "У мінулым месяцы"
 
-#: ../src/view.js:210
+#: ../src/view.js:208
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
@@ -331,14 +336,15 @@ msgstr[0] "%d месяц таму"
 msgstr[1] "%d месяцы таму"
 msgstr[2] "%d месяцаў таму"
 
-#: ../src/view.js:214
+#: ../src/view.js:212
 msgid "Last year"
 msgstr "У мінулым годзе"
 
-#: ../src/view.js:216
+#: ../src/view.js:214
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
 msgstr[0] "%d год таму"
 msgstr[1] "%d гады таму"
 msgstr[2] "%d гадоў таму"
+

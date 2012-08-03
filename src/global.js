@@ -31,7 +31,6 @@ let collectionManager = null;
 let connection = null;
 let connectionQueue = null;
 let documentManager = null;
-let errorHandler = null;
 let goaClient = null;
 let modeController = null;
 let notificationManager = null;
@@ -58,4 +57,4 @@ function initSearch() {
     offsetController = new OffsetController.OffsetController();
     queryBuilder = new Query.QueryBuilder();
     connectionQueue = new TrackerController.TrackerConnectionQueue();
-}
+};

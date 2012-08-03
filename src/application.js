@@ -19,7 +19,6 @@
  *
  */
 
-const DBus = imports.dbus;
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
 const Gettext = imports.gettext;
@@ -36,13 +35,13 @@ const Tracker = imports.gi.Tracker;
 
 const ChangeMonitor = imports.changeMonitor;
 const Documents = imports.documents;
-const Error = imports.error;
 const Format = imports.format;
-const GDataMiner = imports.gDataMiner;
 const Global = imports.global;
 const Main = imports.main;
 const MainWindow = imports.mainWindow;
+const MainToolbar = imports.mainToolbar;
 const Manager = imports.manager;
+const Miners = imports.miners;
 const Notifications = imports.notifications;
 const Path = imports.path;
 const Query = imports.query;
@@ -52,12 +51,12 @@ const TrackerController = imports.trackerController;
 const Tweener = imports.util.tweener;
 const Utils = imports.utils;
 const WindowMode = imports.windowMode;
-const ZpjMiner = imports.zpjMiner;
 
 const MINER_REFRESH_TIMEOUT = 60; /* seconds */
 
 const Application = new Lang.Class({
     Name: 'Application',
+    Extends: Gtk.Application,
 
     _init: function() {
         Gettext.bindtextdomain('gnome-documents', Path.LOCALE_DIR);
@@ -66,84 +65,140 @@ const Application = new Lang.Class({
 
         Global.settings = new Gio.Settings({ schema: 'org.gnome.documents' });
 
-        // TODO: subclass Gtk.Application once we support GObject inheritance,
-        //       see https://bugzilla.gnome.org/show_bug.cgi?id=663492
-        this.application = new Gtk.Application({
-            application_id: 'org.gnome.Documents',
-            flags: Gio.ApplicationFlags.HANDLES_COMMAND_LINE
-        });
-
-        this.application.connect('startup', Lang.bind(this, this._onStartup));
-        this.application.connect('command-line', Lang.bind(this, this._commandLine));
-        this.application.connect('activate', Lang.bind(this,
-            function() {
-                this._mainWindow.window.present();
-            }));
+        this.parent({ application_id: 'org.gnome.Documents',
+                      flags: Gio.ApplicationFlags.HANDLES_COMMAND_LINE });
     },
 
-    _initMenus: function() {
-	let quitAction = new Gio.SimpleAction({ name: 'quit' });
-	quitAction.connect('activate', Lang.bind(this,
-            function() {
-                this._mainWindow.window.destroy();
-	    }));
-	this.application.add_action(quitAction);
-
-        let aboutAction = new Gio.SimpleAction({ name: 'about' });
-        aboutAction.connect('activate', Lang.bind(this,
-            function() {
-                this._mainWindow.showAbout();
-            }));
-        this.application.add_action(aboutAction);
-
-        let fsAction = new Gio.SimpleAction({ name: 'fullscreen' });
-        fsAction.connect('activate', Lang.bind(this,
-            function() {
-                Global.modeController.toggleFullscreen();
-            }));
+    _fullscreenCreateHook: function(action) {
         Global.modeController.connect('can-fullscreen-changed', Lang.bind(this,
             function() {
                 let canFullscreen = Global.modeController.getCanFullscreen();
-                fsAction.set_enabled(canFullscreen);
+                action.set_enabled(canFullscreen);
             }));
-        this.application.add_action(fsAction);
+    },
 
-        /* We can't use GSettings.create_action(), since we want to be able
-         * to control the enabled state of the action ourselves
-         */
-        let viewAsAction = Gio.SimpleAction.new_stateful('view-as',
-                                                         GLib.VariantType.new('s'),
-                                                         Global.settings.get_value('view-as'));
-        viewAsAction.connect('activate', Lang.bind(this,
-            function(action, variant) {
-                Global.settings.set_value('view-as', variant);
-            }));
+    _viewAsCreateHook: function(action) {
         Global.settings.connect('changed::view-as', Lang.bind(this,
             function() {
-                viewAsAction.state = Global.settings.get_value('view-as');
+                action.state = Global.settings.get_value('view-as');
             }));
-        Global.modeController.connect('window-mode-changed', Lang.bind(this,
-            function() {
-                let mode = Global.modeController.getWindowMode();
-                viewAsAction.set_enabled(mode == WindowMode.WindowMode.OVERVIEW);
+    },
+
+    _onActionQuit: function() {
+        this._mainWindow.window.destroy();
+    },
+
+    _onActionAbout: function() {
+        this._mainWindow.showAbout();
+    },
+
+    _onActionFullscreen: function() {
+        Global.modeController.toggleFullscreen();
+    },
+
+    _onActionViewAs: function(action, parameter) {
+        Global.settings.set_value('view-as', parameter);
+    },
+
+    _onActionOpenCurrent: function() {
+        let doc = Global.documentManager.getActiveItem();
+        if (doc)
+            doc.open(this._mainWindow.window.get_screen(), Gtk.get_current_event_time());
+    },
+
+    _onActionPrintCurrent: function() {
+        let doc = Global.documentManager.getActiveItem();;
+        if (doc)
+            doc.print(this._mainWindow.window);
+    },
+
+    _onActionSearch: function(action) {
+        let state = action.get_state();
+        action.change_state(GLib.Variant.new('b', !state.get_boolean()));
+    },
+
+    _initActions: function() {
+        let actionEntries = [
+            { name: 'quit',
+              callback: this._onActionQuit,
+              accel: '<Primary>q' },
+            { name: 'about',
+              callback: this._onActionAbout },
+            { name: 'fullscreen',
+              callback: this._onActionFullscreen,
+              create_hook: this._fullscreenCreateHook,
+              accel: 'F11',
+              window_mode: WindowMode.WindowMode.PREVIEW },
+            { name: 'view-as',
+              callback: this._onActionViewAs,
+              create_hook: this._viewAsCreateHook,
+              parameter_type: 's',
+              state: Global.settings.get_value('view-as'),
+              window_mode: WindowMode.WindowMode.OVERVIEW },
+            { name: 'open-current',
+              callback: this._onActionOpenCurrent,
+              window_mode: WindowMode.WindowMode.PREVIEW },
+            { name: 'print-current',
+              callback: this._onActionPrintCurrent,
+              window_mode: WindowMode.WindowMode.PREVIEW },
+            { name: 'search',
+              callback: this._onActionSearch,
+              state: GLib.Variant.new('b', false),
+              accel: '<Primary>f' },
+            { name: 'find-next', accel: '<Primary>g',
+              window_mode: WindowMode.WindowMode.PREVIEW },
+            { name: 'find-prev', accel: '<Shift><Primary>g',
+              window_mode: WindowMode.WindowMode.PREVIEW },
+            { name: 'zoom-in', accel: '<Primary>plus',
+              window_mode: WindowMode.WindowMode.PREVIEW },
+            { name: 'zoom-out', accel: '<Primary>minus',
+              window_mode: WindowMode.WindowMode.PREVIEW },
+            { name: 'rotate-left', accel: '<Primary>Left',
+              window_mode: WindowMode.WindowMode.PREVIEW },
+            { name: 'rotate-right', accel: '<Primary>Right',
+              window_mode: WindowMode.WindowMode.PREVIEW }
+        ];
+
+        actionEntries.forEach(Lang.bind(this,
+            function(actionEntry) {
+                let state = actionEntry.state;
+                let parameterType = actionEntry.parameter_type ?
+                    GLib.VariantType.new(actionEntry.parameter_type) : null;
+                let action;
+
+                if (state)
+                    action = Gio.SimpleAction.new_stateful(actionEntry.name,
+                        parameterType, actionEntry.state);
+                else
+                    action = new Gio.SimpleAction({ name: actionEntry.name });
+
+                if (actionEntry.create_hook)
+                    actionEntry.create_hook.apply(this, [action]);
+
+                if (actionEntry.callback)
+                    action.connect('activate', Lang.bind(this, actionEntry.callback));
+
+                if (actionEntry.accel)
+                    this.add_accelerator(actionEntry.accel, 'app.' + actionEntry.name, null);
+
+                if (actionEntry.window_mode) {
+                    Global.modeController.connect('window-mode-changed', Lang.bind(this,
+                        function() {
+                            let mode = Global.modeController.getWindowMode();
+                            action.set_enabled(mode == actionEntry.window_mode);
+                        }));
+                }
+
+                this.add_action(action);
             }));
-        this.application.add_action(viewAsAction);
+    },
 
-	let menu = new Gio.Menu();
+    _initAppMenu: function() {
+        let builder = new Gtk.Builder();
+        builder.add_from_resource('/org/gnome/documents/app-menu.ui');
 
-        let viewAs = new Gio.Menu();
-        viewAs.append(_("Grid"), 'app.view-as::icon');
-        viewAs.append(_("List"), 'app.view-as::list');
-        menu.append_section(_("View as"), viewAs);
-
-        let docActions = new Gio.Menu();
-        docActions.append(_("Fullscreen"), 'app.fullscreen');
-        menu.append_section(null, docActions);
-
-        menu.append(_("About Documents"), 'app.about');
-        menu.append(_("Quit"), 'app.quit');
-
-	this.application.set_app_menu(menu);
+        let menu = builder.get_object('app-menu');
+        this.set_app_menu(menu);
     },
 
     _refreshMinerNow: function(miner) {
@@ -151,7 +206,7 @@ const Application = new Lang.Class({
         if (env)
             return false;
 
-        miner.RefreshDBRemote(DBus.CALL_FLAG_START, Lang.bind(this,
+        miner.RefreshDBRemote(Lang.bind(this,
             function(res, error) {
                 if (error) {
                     log('Error updating the cache: ' + error.toString());
@@ -167,12 +222,16 @@ const Application = new Lang.Class({
         return false;
     },
 
-    _onStartup: function() {
+    vfunc_startup: function() {
+        this.parent();
         String.prototype.format = Format.format;
 
-        GtkClutter.init(null, null);
+        GtkClutter.init(null);
         EvDoc.init();
         Tweener.init();
+
+        let resource = Gio.Resource.load(Path.RESOURCE_DIR + '/gnome-documents.gresource');
+        resource._register();
 
         Global.application = this;
 
@@ -195,25 +254,32 @@ const Application = new Lang.Class({
 
         Global.changeMonitor = new ChangeMonitor.TrackerChangeMonitor();
         Global.documentManager = new Documents.DocumentManager();
-        Global.errorHandler = new Error.ErrorHandler();
         Global.trackerController = new TrackerController.TrackerController();
         Global.selectionController = new Selections.SelectionController();
         Global.modeController = new WindowMode.ModeController();
         Global.notificationManager = new Notifications.NotificationManager();
 
+	try {
         // startup a refresh of the gdocs cache
-        let gdataMiner = new GDataMiner.GDataMiner();
+        let gdataMiner = new Miners.GDataMiner();
         this._refreshMinerNow(gdataMiner);
 
         // startup a refresh of the skydrive cache
-        let zpjMiner = new ZpjMiner.ZpjMiner();
+        let zpjMiner = new Miners.ZpjMiner();
         this._refreshMinerNow(zpjMiner);
-
-        this._initMenus();
-        this._mainWindow = new MainWindow.MainWindow(this.application);
+	} catch(e){
+	    log('wtf: '+ e.message);
+	}
+        this._initActions();
+        this._initAppMenu();
+        this._mainWindow = new MainWindow.MainWindow(this);
     },
 
-    _commandLine: function(app, commandLine) {
+    vfunc_activate: function() {
+        this._mainWindow.window.present();
+    },
+
+    vfunc_command_line: function(commandLine) {
         let args = commandLine.get_arguments();
         if (args.length) {
             let urn = args[0]; // gjs eats argv[0]
@@ -235,7 +301,7 @@ const Application = new Lang.Class({
             Global.modeController.setWindowMode(WindowMode.WindowMode.OVERVIEW);
         }
 
-        app.activate();
+        this.activate();
 
         return 0;
     }

@@ -1,24 +1,26 @@
 # Telugu translation for gnome-documents.
 # Copyright (C) 2011 e-telugu Localization Team
+#  Copyright (C) 2012 Swecha Telugu Localisation Team <localization@swecha.net>
 # This file is distributed under the same license as the gnome-documents package.
 # Praveen Illa <mail2ipn@gmail.com>, 2011, 2012.
-#
+# Sasi Bhushan Boddepalli <sasi@swecha.net>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
-"documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-03-07 16:28+0000\n"
-"PO-Revision-Date: 2012-03-08 00:09+0530\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-documents&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2012-07-26 15:04+0000\n"
+"PO-Revision-Date: 2012-07-27 00:42+0530\n"
 "Last-Translator: Praveen Illa <mail2ipn@gmail.com>\n"
 "Language-Team: Telugu <indlinux-telugu@lists.sourceforge.net>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bits\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:54
+#: ../data/gnome-documents.desktop.in.in.h:1
+#: ../src/mainWindow.js:51
+#: ../src/mainWindow.js:205
 msgid "Documents"
 msgstr "పత్రాలు"
 
@@ -30,7 +32,8 @@ msgstr "పత్రాలను వాడుకోండి, నిర్వహ
 msgid "Docs;PDF;Document;"
 msgstr "పత్రాలు;పిడియఫ్;పత్రం;"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:128
+#: ../data/org.gnome.documents.gschema.xml.in.h:1
+#: ../src/resources/app-menu.ui.h:1
 msgid "View as"
 msgstr "ఇలా వీక్షించు"
 
@@ -39,303 +42,346 @@ msgid "View as type"
 msgstr "వీక్షణ రకం"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:3
-msgid "The active source filter"
-msgstr "క్రియాశీల మూల వడపోతకం"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:4
-msgid "The last active source filter"
-msgstr "చివరి క్రియాశీల మూల వడపోతకం"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:5
 msgid "Window size"
 msgstr "కిటికీ పరిమాణం"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:6
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
 msgid "Window size (width and height)."
 msgstr "కిటికీ పరిమాణం (వెడల్పు మరియు ఎత్తు)."
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:7
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
 msgid "Window position"
 msgstr "కిటికీ స్థానము"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:8
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
 msgid "Window position (x and y)."
 msgstr "కిటికీ స్థానము (x మరియు y)."
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:9
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
 msgid "Window maximized"
 msgstr "కిటికీ గరిష్ఠీకరణ"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:10
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
 msgid "Window maximized state"
 msgstr "కిటికీ గరిష్ఠీకరణ స్థితి"
 
-#: ../src/application.js:126
-msgid "Grid"
-msgstr "గ్రాది"
-
-#: ../src/application.js:127
-msgid "List"
-msgstr "జాబితా"
-
-#: ../src/application.js:131
-msgid "Fullscreen"
-msgstr "పూర్తితెర"
-
-#: ../src/application.js:134
-msgid "About Documents"
-msgstr "పత్రాలు గురించి"
-
-#: ../src/application.js:135
-msgid "Quit"
-msgstr "నిష్క్రమించు"
-
-#: ../src/documents.js:618 ../src/sources.js:100
+#: ../src/documents.js:641
+#: ../src/sources.js:95
 msgid "Local"
 msgstr "స్థానిక"
 
 #. overridden
-#: ../src/documents.js:681
+#: ../src/documents.js:694
 msgid "Google Docs"
 msgstr "గూగుల్ డాక్స్"
 
-#: ../src/documents.js:682
+#: ../src/documents.js:695
 msgid "Google"
 msgstr "గూగుల్"
 
-#: ../src/documents.js:751
+#: ../src/documents.js:759
+#: ../src/documents.js:898
 msgid "Spreadsheet"
 msgstr "స్ప్రెడ్‌షీట్"
 
-#: ../src/documents.js:753
+#: ../src/documents.js:761
+#: ../src/documents.js:900
 msgid "Presentation"
 msgstr "సమర్పణం"
 
-#: ../src/documents.js:755
+#: ../src/documents.js:763
+#: ../src/documents.js:902
 msgid "Collection"
 msgstr "సేకరణ"
 
-#: ../src/documents.js:757
+#: ../src/documents.js:765
+#: ../src/documents.js:904
 msgid "Document"
 msgstr "పత్రం"
 
+#. overridden
+#: ../src/documents.js:832
+#: ../src/documents.js:833
+msgid "Skydrive"
+msgstr "ఆకాశ పయనం "
+
 #. Translators: %s is the title of a document
-#: ../src/error.js:37
+#: ../src/documents.js:1016
 #, c-format
 msgid "Unable to load \"%s\" for preview"
 msgstr "మునుజూపుటకు \"%s\"ను నింపలేకపోతుంది"
 
-#: ../src/error.js:49
-msgid "Unable to fetch the list of documents"
-msgstr "పత్రాల యొక్క జాబితాను తీసుకురాలేకపోతున్నది"
-
-#. right section
-#: ../src/lib/gd-main-toolbar.c:269
-msgid "Done"
-msgstr "అయినది"
-
-#: ../src/lib/gd-pdf-loader.c:208
+#: ../src/lib/gd-pdf-loader.c:226
 msgid "Unable to load the document"
 msgstr "పత్రాన్ని లోడు చేయలేకపోతున్నాము"
 
-#: ../src/lib/gd-pdf-loader.c:489
+#: ../src/lib/gd-pdf-loader.c:675
 msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
 msgstr "\"unoconv\" కనుగొనలేకపోయాము, దయచేసి మీ లిబ్రేఆఫీసు స్థాపనను సరిచూడండి"
 
-#: ../src/loadMore.js:70
-#, c-format
-msgid "Load %d more document"
-msgid_plural "Load %d more documents"
-msgstr[0] "ఇంకా %d పత్రాన్ని నింపు"
-msgstr[1] "ఇంకా %d పత్రాలను నింపు"
+#: ../src/mainToolbar.js:73
+msgid "Search"
+msgstr "వెతుకు"
 
-#: ../src/mainToolbar.js:194
+#: ../src/mainToolbar.js:158
 msgid "New and Recent"
 msgstr "కొత్తవి మరియు ఇటీవలివి"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:165
 #, c-format
 msgid "Results for \"%s\""
 msgstr "\"%s\" కొరకు ఫలితాలు"
 
-#: ../src/mainToolbar.js:203
+#: ../src/mainToolbar.js:167
 msgid "filtered by title"
 msgstr "శీర్షిక ద్వారా వడబోయి"
 
-#: ../src/mainToolbar.js:205
+#: ../src/mainToolbar.js:169
 msgid "filtered by author"
 msgstr "రచయిత ద్వారా వడబోయి"
 
-#: ../src/mainToolbar.js:218
-#, c-format
-msgid "%d of %d"
-msgstr "%d వది %d లలో"
-
-#: ../src/mainToolbar.js:224
+#: ../src/mainToolbar.js:176
 msgid "Click on items to select them"
 msgstr "ఎంచుకోదలచుకున్న అంశాలపై నొక్కండి"
 
-#: ../src/mainToolbar.js:226
+#: ../src/mainToolbar.js:178
 #, c-format
 msgid "%d selected"
 msgid_plural "%d selected"
 msgstr[0] "%d ఎంపికచేయబడింది"
 msgstr[1] "%d ఎంపికచేయబడ్డాయి"
 
-#: ../src/mainWindow.js:254
+#: ../src/mainToolbar.js:203
+msgid "Done"
+msgstr "అయినది"
+
+#: ../src/mainToolbar.js:220
+msgid "Back"
+msgstr "వెనక్కు "
+
+#: ../src/mainToolbar.js:238
+msgid "Select Items"
+msgstr "అంశాల ఎంపిక "
+
+#: ../src/mainWindow.js:204
 msgid "translator-credits"
 msgstr "Praveen Illa <mail2ipn@gmail.com>, 2011-12"
 
-#: ../src/mainWindow.js:255
-msgid "GNOME Documents"
-msgstr "గ్నోమ్ పత్రాలు"
-
-#: ../src/mainWindow.js:256
+#: ../src/mainWindow.js:206
 msgid "A document manager application"
 msgstr "పత్ర నిర్వాహక అనువర్తనం"
 
-#: ../src/notifications.js:85
+#: ../src/notifications.js:84
 #, c-format
 msgid "Printing \"%s\": %s"
 msgstr "\"%s\" ముద్రిస్తున్నది: %s"
 
-#: ../src/searchbar.js:86
+#: ../src/searchbar.js:83
 msgid "Category"
 msgstr "వర్గము"
 
-#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:210
-#: ../src/sources.js:94
+#: ../src/searchbar.js:88
+#: ../src/searchbar.js:138
+#: ../src/searchbar.js:223
+#: ../src/sources.js:89
 msgid "All"
 msgstr "అన్ని"
 
-#: ../src/searchbar.js:97
+#: ../src/searchbar.js:94
 msgid "Favorites"
 msgstr "ఇష్టాంశాలు"
 
-#: ../src/searchbar.js:102
+#: ../src/searchbar.js:99
 msgid "Shared with you"
 msgstr "మీతో పంచుకొనబడినవి"
 
-#: ../src/searchbar.js:138
+#: ../src/searchbar.js:135
 msgid "Type"
 msgstr "రకం"
 
-#: ../src/searchbar.js:143
+#: ../src/searchbar.js:140
 msgid "Collections"
 msgstr "సేకరణలు"
 
-#: ../src/searchbar.js:147
+#: ../src/searchbar.js:144
 msgid "PDF Documents"
 msgstr "పిడియఫ్ పత్రాలు"
 
-#: ../src/searchbar.js:150
+#: ../src/searchbar.js:148
 msgid "Presentations"
 msgstr "సమర్పణలు"
 
-#: ../src/searchbar.js:153
+#: ../src/searchbar.js:151
 msgid "Spreadsheets"
 msgstr "స్ప్రెడ్‌షీట్లు"
 
-#: ../src/searchbar.js:156
+#: ../src/searchbar.js:154
 msgid "Text Documents"
 msgstr "పాఠ్య పత్రాలు"
 
 #. Translators: this is a verb that refers to "All", "Title" and "Author",
 #. as in "Match All", "Match Title" and "Match Author"
-#: ../src/searchbar.js:207
+#: ../src/searchbar.js:220
 msgid "Match"
 msgstr "సరిపోల్చు"
 
-#: ../src/searchbar.js:212
+#: ../src/searchbar.js:225
 msgid "Title"
 msgstr "శీర్షిక"
 
-#: ../src/searchbar.js:214
+#: ../src/searchbar.js:227
 msgid "Author"
 msgstr "రచయిత"
 
-#: ../src/selections.js:698
+#: ../src/selections.js:773
+msgid "Print"
+msgstr "ముద్రణ "
+
+#: ../src/selections.js:788
 msgid "Organize"
 msgstr "నిర్వహించు"
 
-#: ../src/selections.js:705
+#: ../src/selections.js:795
 msgid "Delete"
 msgstr "తొలగించండి"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:808 ../src/view.js:69
+#: ../src/selections.js:884
 #, c-format
 msgid "Open with %s"
 msgstr "%s‍తో తెరువు"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:811 ../src/view.js:72
+#: ../src/selections.js:887
+#: ../src/resources/preview-menu.ui.h:1
 msgid "Open"
 msgstr "తెరువు"
 
-#: ../src/selections.js:824 ../src/view.js:82
+#: ../src/selections.js:896
 msgid "Remove from favorites"
 msgstr "ఇష్టాంశాల నుండి తీసివేయి"
 
-#: ../src/selections.js:828 ../src/view.js:82
+#: ../src/selections.js:900
 msgid "Add to favorites"
 msgstr "ఇష్టాంశాలకి జతచేయి"
 
-#: ../src/shellSearchProvider.js:332
+#: ../src/shellSearchProvider.js:281
 msgid "Untitled Document"
 msgstr "శీర్షికలేని పత్రం"
 
-#: ../src/sources.js:90
+#: ../src/sources.js:85
 msgid "Sources"
 msgstr "వనరులు"
 
-#: ../src/spinnerBox.js:58
+#: ../src/spinnerBox.js:56
 msgid "Loading..."
 msgstr "నింపుతున్నది..."
 
-#: ../src/view.js:196
+#: ../src/view.js:78
+#, c-format
+msgid "Load %d more document"
+msgid_plural "Load %d more documents"
+msgstr[0] "ఇంకా %d పత్రాన్ని నింపు"
+msgstr[1] "ఇంకా %d పత్రాలను నింపు"
+
+#: ../src/view.js:270
 msgid "Yesterday"
 msgstr "నిన్న"
 
-#: ../src/view.js:198
+#: ../src/view.js:272
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "%d రోజు క్రితం"
 msgstr[1] "%d రోజుల క్రితం"
 
-#: ../src/view.js:202
+#: ../src/view.js:276
 msgid "Last week"
 msgstr "గత వారం"
 
-#: ../src/view.js:204
+#: ../src/view.js:278
 #, c-format
 msgid "%d week ago"
 msgid_plural "%d weeks ago"
 msgstr[0] "%d వారం క్రితం"
 msgstr[1] "%d వారాల క్రితం"
 
-#: ../src/view.js:208
+#: ../src/view.js:282
 msgid "Last month"
 msgstr "గత నెల"
 
-#: ../src/view.js:210
+#: ../src/view.js:284
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
 msgstr[0] "%d నెల క్రితం"
 msgstr[1] "%d నెలల క్రితం"
 
-#: ../src/view.js:214
+#: ../src/view.js:288
 msgid "Last year"
 msgstr "గత సంవత్సరం"
 
-#: ../src/view.js:216
+#: ../src/view.js:290
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
 msgstr[0] "%d సంవత్సరం క్రితం"
 msgstr[1] "%d సంవత్సరాల క్రితం"
+
+#: ../src/resources/app-menu.ui.h:2
+msgid "Grid"
+msgstr "గ్రాది"
+
+#: ../src/resources/app-menu.ui.h:3
+msgid "List"
+msgstr "జాబితా"
+
+#: ../src/resources/app-menu.ui.h:4
+msgid "Fullscreen"
+msgstr "పూర్తితెర"
+
+#: ../src/resources/app-menu.ui.h:5
+msgid "About Documents"
+msgstr "పత్రాలు గురించి"
+
+#: ../src/resources/app-menu.ui.h:6
+msgid "Quit"
+msgstr "నిష్క్రమించు"
+
+#: ../src/resources/preview-menu.ui.h:2
+msgid "Print..."
+msgstr "ముద్రించు..."
+
+#: ../src/resources/preview-menu.ui.h:3
+msgid "Zoom In"
+msgstr "అతిరూపించు"
+
+#: ../src/resources/preview-menu.ui.h:4
+msgid "Zoom Out"
+msgstr "అవరూపించు"
+
+#: ../src/resources/preview-menu.ui.h:5
+msgid "Rotate Left"
+msgstr "ఎడమవైపు తిప్పు"
+
+#: ../src/resources/preview-menu.ui.h:6
+msgid "Rotate Right"
+msgstr "కుడివైపు తిప్పు"
+
+#~ msgid "Unable to fetch the list of documents"
+#~ msgstr "పత్రాల యొక్క జాబితాను తీసుకురాలేకపోతున్నది"
+
+#~ msgid "%d of %d"
+#~ msgstr "%d వది %d లలో"
+
+#~ msgid "The active source filter"
+#~ msgstr "క్రియాశీల మూల వడపోతకం"
+
+#~ msgid "The last active source filter"
+#~ msgstr "చివరి క్రియాశీల మూల వడపోతకం"
+
+#~ msgid "GNOME Documents"
+#~ msgstr "గ్నోమ్ పత్రాలు"
 
 #~ msgid "Enable list view"
 #~ msgstr "జాబితా వీక్షణాన్ని చేతనపరుచు"

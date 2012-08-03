@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-documents 3.4.x\n"
+"Project-Id-Version: gnome-documents 3.5.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-11 22:19+0200\n"
-"PO-Revision-Date: 2012-06-11 22:19+0200\n"
+"POT-Creation-Date: 2012-07-24 21:52+0200\n"
+"PO-Revision-Date: 2012-07-24 21:53+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: \n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:51
-#: ../src/mainWindow.js:232
+#: ../src/mainWindow.js:205
 msgid "Documents"
 msgstr "Dokumenter"
 
@@ -30,7 +30,8 @@ msgstr "Aksesser, håndter og del dokumenter"
 msgid "Docs;PDF;Document;"
 msgstr "Dokumentasjon;PDF;Dokument;"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:137
+#: ../data/org.gnome.documents.gschema.xml.in.h:1
+#: ../src/resources/app-menu.ui.h:1
 msgid "View as"
 msgstr "Vis som"
 
@@ -62,135 +63,103 @@ msgstr "Vindu maksimert"
 msgid "Window maximized state"
 msgstr "Om vinduet er maksimert eller ikke"
 
-#: ../src/application.js:135
-msgid "Grid"
-msgstr "Rutenett"
-
-#: ../src/application.js:136
-msgid "List"
-msgstr "Liste"
-
-#: ../src/application.js:140
-msgid "Fullscreen"
-msgstr "Fullskjerm"
-
-#: ../src/application.js:143
-msgid "About Documents"
-msgstr "Om dokumenter"
-
-#: ../src/application.js:144
-msgid "Quit"
-msgstr "Avslutt"
-
-#: ../src/documents.js:621 ../src/sources.js:95
+#: ../src/documents.js:641 ../src/sources.js:95
 msgid "Local"
 msgstr "Lokalt"
 
 #. overridden
-#: ../src/documents.js:674
+#: ../src/documents.js:694
 msgid "Google Docs"
 msgstr "Google Docs"
 
-#: ../src/documents.js:675
+#: ../src/documents.js:695
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:744 ../src/documents.js:884
+#: ../src/documents.js:759 ../src/documents.js:898
 msgid "Spreadsheet"
 msgstr "Regneark"
 
-#: ../src/documents.js:746 ../src/documents.js:886
+#: ../src/documents.js:761 ../src/documents.js:900
 msgid "Presentation"
 msgstr "Presentasjon"
 
-#: ../src/documents.js:748 ../src/documents.js:888
+#: ../src/documents.js:763 ../src/documents.js:902
 msgid "Collection"
 msgstr "Samling"
 
-#: ../src/documents.js:750 ../src/documents.js:890
+#: ../src/documents.js:765 ../src/documents.js:904
 msgid "Document"
 msgstr "Dokument"
 
 #. overridden
-#: ../src/documents.js:817 ../src/documents.js:818
+#: ../src/documents.js:832 ../src/documents.js:833
 msgid "Skydrive"
 msgstr "Skydrive"
 
 #. Translators: %s is the title of a document
-#: ../src/error.js:39
+#: ../src/documents.js:1016
 #, c-format
 msgid "Unable to load \"%s\" for preview"
 msgstr "Kan ikke laste «%s» for forhåndsvisning"
 
-#: ../src/error.js:47
-msgid "Unable to fetch the list of documents"
-msgstr "Kan ikke hente listen med dokumenter"
-
-#: ../src/lib/gd-pdf-loader.c:224
+#: ../src/lib/gd-pdf-loader.c:226
 msgid "Unable to load the document"
 msgstr "Kan ikke laste dokumentet"
 
-#: ../src/lib/gd-pdf-loader.c:673
+#: ../src/lib/gd-pdf-loader.c:675
 msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
 msgstr "Kan ikke finne «unoconv». Vennligst sjekk din LibreOffice installasjon"
 
-#: ../src/loadMore.js:68
-#, c-format
-msgid "Load %d more document"
-msgid_plural "Load %d more documents"
-msgstr[0] "Last %d dokument til"
-msgstr[1] "Last %d dokumenter til"
+#: ../src/mainToolbar.js:73
+msgid "Search"
+msgstr "Søk"
 
-#: ../src/mainToolbar.js:164
+#: ../src/mainToolbar.js:158
 msgid "New and Recent"
 msgstr "Nye og nylige"
 
-#: ../src/mainToolbar.js:171
+#: ../src/mainToolbar.js:165
 #, c-format
 msgid "Results for \"%s\""
 msgstr "Resultater for «%s»"
 
-#: ../src/mainToolbar.js:173
+#: ../src/mainToolbar.js:167
 msgid "filtered by title"
 msgstr "filtrert etter tittel"
 
-#: ../src/mainToolbar.js:175
+#: ../src/mainToolbar.js:169
 msgid "filtered by author"
 msgstr "filtrert etter forfatter"
 
-#: ../src/mainToolbar.js:182
+#: ../src/mainToolbar.js:176
 msgid "Click on items to select them"
 msgstr "Klikk på oppføringer for å velge dem"
 
-#: ../src/mainToolbar.js:184
+#: ../src/mainToolbar.js:178
 #, c-format
 msgid "%d selected"
 msgid_plural "%d selected"
 msgstr[0] "%d valgt"
 msgstr[1] "%d valgt"
 
-#: ../src/mainToolbar.js:205
-#, c-format
-msgid "%d of %d"
-msgstr "%d av %d"
-
-#: ../src/mainToolbar.js:220
+#: ../src/mainToolbar.js:203
 msgid "Done"
 msgstr "Ferdig"
 
-#: ../src/mainToolbar.js:238 ../src/mainToolbar.js:265
+#: ../src/mainToolbar.js:220
 msgid "Back"
 msgstr "Tilbake"
 
-#: ../src/mainToolbar.js:247
+#: ../src/mainToolbar.js:238
 msgid "Select Items"
 msgstr "Velg oppføringer"
 
-#: ../src/mainWindow.js:231
+#: ../src/mainWindow.js:204
 msgid "translator-credits"
 msgstr "Kjartan Maraas <kmaraas@gnome.org>"
 
-#: ../src/mainWindow.js:233
+#: ../src/mainWindow.js:206
 msgid "A document manager application"
 msgstr "Et program for å håndtere dokumenter"
 
@@ -199,89 +168,89 @@ msgstr "Et program for å håndtere dokumenter"
 msgid "Printing \"%s\": %s"
 msgstr "Skriver ut «%s»: %s"
 
-#: ../src/searchbar.js:82
+#: ../src/searchbar.js:83
 msgid "Category"
 msgstr "Kategori"
 
-#: ../src/searchbar.js:87 ../src/searchbar.js:137 ../src/searchbar.js:222
+#: ../src/searchbar.js:88 ../src/searchbar.js:138 ../src/searchbar.js:223
 #: ../src/sources.js:89
 msgid "All"
 msgstr "Alle"
 
-#: ../src/searchbar.js:93
+#: ../src/searchbar.js:94
 msgid "Favorites"
 msgstr "Favoritter"
 
-#: ../src/searchbar.js:98
+#: ../src/searchbar.js:99
 msgid "Shared with you"
 msgstr "Delt med deg"
 
-#: ../src/searchbar.js:134
+#: ../src/searchbar.js:135
 msgid "Type"
 msgstr "Skriv"
 
-#: ../src/searchbar.js:139
+#: ../src/searchbar.js:140
 msgid "Collections"
 msgstr "Samlinger"
 
-#: ../src/searchbar.js:143
+#: ../src/searchbar.js:144
 msgid "PDF Documents"
 msgstr "PDF-dokumenter"
 
-#: ../src/searchbar.js:147
+#: ../src/searchbar.js:148
 msgid "Presentations"
 msgstr "Presentasjoner"
 
-#: ../src/searchbar.js:150
+#: ../src/searchbar.js:151
 msgid "Spreadsheets"
 msgstr "Regneark"
 
-#: ../src/searchbar.js:153
+#: ../src/searchbar.js:154
 msgid "Text Documents"
 msgstr "Tekstdokumenter"
 
 #. Translators: this is a verb that refers to "All", "Title" and "Author",
 #. as in "Match All", "Match Title" and "Match Author"
-#: ../src/searchbar.js:219
+#: ../src/searchbar.js:220
 msgid "Match"
 msgstr "Treff"
 
-#: ../src/searchbar.js:224
+#: ../src/searchbar.js:225
 msgid "Title"
 msgstr "Tittel"
 
-#: ../src/searchbar.js:226
+#: ../src/searchbar.js:227
 msgid "Author"
 msgstr "Forfatter"
 
-#: ../src/selections.js:744
+#: ../src/selections.js:773
 msgid "Print"
 msgstr "Skriv ut"
 
-#: ../src/selections.js:759
+#: ../src/selections.js:788
 msgid "Organize"
 msgstr "Organiser"
 
-#: ../src/selections.js:766
+#: ../src/selections.js:795
 msgid "Delete"
 msgstr "Slett"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:855 ../src/view.js:67
+#: ../src/selections.js:884
 #, c-format
 msgid "Open with %s"
 msgstr "Åpne med %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:858 ../src/view.js:70
+#: ../src/selections.js:887 ../src/resources/preview-menu.ui.h:1
 msgid "Open"
 msgstr "Åpne"
 
-#: ../src/selections.js:867 ../src/view.js:80
+#: ../src/selections.js:896
 msgid "Remove from favorites"
 msgstr "Fjern fra favoritter"
 
-#: ../src/selections.js:871 ../src/view.js:80
+#: ../src/selections.js:900
 msgid "Add to favorites"
 msgstr "Legg til i favoritter"
 
@@ -297,46 +266,93 @@ msgstr "Kilder"
 msgid "Loading..."
 msgstr "Laster …"
 
-#: ../src/view.js:194
+#: ../src/view.js:78
+#, c-format
+msgid "Load %d more document"
+msgid_plural "Load %d more documents"
+msgstr[0] "Last %d dokument til"
+msgstr[1] "Last %d dokumenter til"
+
+#: ../src/view.js:270
 msgid "Yesterday"
 msgstr "I går"
 
-#: ../src/view.js:196
+#: ../src/view.js:272
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "%d dag siden"
 msgstr[1] "%d dager siden"
 
-#: ../src/view.js:200
+#: ../src/view.js:276
 msgid "Last week"
 msgstr "Siste uke"
 
-#: ../src/view.js:202
+#: ../src/view.js:278
 #, c-format
 msgid "%d week ago"
 msgid_plural "%d weeks ago"
 msgstr[0] "%d uke siden"
 msgstr[1] "%d uker siden"
 
-#: ../src/view.js:206
+#: ../src/view.js:282
 msgid "Last month"
 msgstr "Siste måned"
 
-#: ../src/view.js:208
+#: ../src/view.js:284
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
 msgstr[0] "%d måned siden"
 msgstr[1] "%d måneder siden"
 
-#: ../src/view.js:212
+#: ../src/view.js:288
 msgid "Last year"
 msgstr "Siste år"
 
-#: ../src/view.js:214
+#: ../src/view.js:290
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
 msgstr[0] "%d år siden"
 msgstr[1] "%d år siden"
+
+#: ../src/resources/app-menu.ui.h:2
+msgid "Grid"
+msgstr "Rutenett"
+
+#: ../src/resources/app-menu.ui.h:3
+msgid "List"
+msgstr "Liste"
+
+#: ../src/resources/app-menu.ui.h:4
+msgid "Fullscreen"
+msgstr "Fullskjerm"
+
+#: ../src/resources/app-menu.ui.h:5
+msgid "About Documents"
+msgstr "Om dokumenter"
+
+#: ../src/resources/app-menu.ui.h:6
+msgid "Quit"
+msgstr "Avslutt"
+
+#: ../src/resources/preview-menu.ui.h:2
+msgid "Print..."
+msgstr "Skriv ut …"
+
+#: ../src/resources/preview-menu.ui.h:3
+msgid "Zoom In"
+msgstr "Zoom inn"
+
+#: ../src/resources/preview-menu.ui.h:4
+msgid "Zoom Out"
+msgstr "Zoom ut"
+
+#: ../src/resources/preview-menu.ui.h:5
+msgid "Rotate Left"
+msgstr "Roter til venstre"
+
+#: ../src/resources/preview-menu.ui.h:6
+msgid "Rotate Right"
+msgstr "Roter til høyre"

@@ -739,6 +739,8 @@ gd_sidebar_thumbnails_document_changed_cb (EvDocumentModel     *model,
 						     (GDestroyNotify)g_free,
 						     (GDestroyNotify)g_object_unref);
 
+	gtk_icon_view_set_columns (GTK_ICON_VIEW (self), priv->n_pages);
+
 	gd_sidebar_thumbnails_clear_model (self);
 	gd_sidebar_thumbnails_fill_model (self);
 	gtk_widget_queue_resize (GTK_WIDGET (self));

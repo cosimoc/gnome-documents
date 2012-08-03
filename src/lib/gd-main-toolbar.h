@@ -81,6 +81,16 @@ GtkWidget * gd_main_toolbar_add_button (GdMainToolbar *self,
                                         const gchar *label,
                                         gboolean pack_start);
 
+GtkWidget * gd_main_toolbar_add_toggle (GdMainToolbar *self,
+                                        const gchar *icon_name,
+                                        const gchar *label,
+                                        gboolean pack_start);
+
+GtkWidget * gd_main_toolbar_add_menu (GdMainToolbar *self,
+                                      const gchar *icon_name,
+                                      const gchar *label,
+                                      gboolean pack_start);
+
 G_END_DECLS
 
 #endif /* __GD_MAIN_TOOLBAR_H__ */

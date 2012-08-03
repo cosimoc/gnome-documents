@@ -102,6 +102,7 @@ const BaseManager = new Lang.Class({
     clear: function() {
         this._items = {};
         this._activeItem = null;
+        this.emit('clear');
     },
 
     getFilter: function() {
@@ -220,7 +221,8 @@ const BaseView = new Lang.Class({
         this._model = new BaseModel(manager);
         this._manager = manager;
 
-        this.widget = new Gtk.TreeView({ headers_visible: false });
+        this.widget = new Gtk.TreeView({ headers_visible: false,
+                                         enable_search: false });
         this._treeView = this.widget;
         Gd.gtk_tree_view_set_activate_on_single_click(this._treeView, true);
         this._treeView.set_model(this._model.model);

@@ -19,13 +19,13 @@
  *
  */
 
+const EvView = imports.gi.EvinceView;
 const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const Gd = imports.gi.Gd;
 const Gdk = imports.gi.Gdk;
 const GData = imports.gi.GData;
 const GLib = imports.gi.GLib;
-const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const Zpj = imports.gi.Zpj;
 const _ = imports.gettext.gettext;
@@ -36,6 +36,7 @@ const Signals = imports.signals;
 const ChangeMonitor = imports.changeMonitor;
 const Global = imports.global;
 const Manager = imports.manager;
+const Notifications = imports.notifications;
 const Path = imports.path;
 const Query = imports.query;
 const Searchbar = imports.searchbar;
@@ -281,6 +282,7 @@ const DocCommon = new Lang.Class({
 
         this.mimeType = null;
         this.rdfType = null;
+        this.dateCreated = null;
         this.typeDescription = null;
         this.sourceName = null;
 
@@ -337,6 +339,14 @@ const DocCommon = new Lang.Class({
         this.mimeType = cursor.get_string(Query.QueryColumns.MIMETYPE)[0];
         this.rdfType = cursor.get_string(Query.QueryColumns.RDFTYPE)[0];
         this._updateInfoFromType();
+
+        let dateCreated = cursor.get_string(Query.QueryColumns.DATE_CREATED)[0];
+        if (dateCreated) {
+            let timeVal = GLib.time_val_from_iso8601(dateCreated)[1];
+            this.dateCreated = timeVal.tv_sec;
+        } else {
+            this.dateCreated = -1;
+        }
 
         // sanitize
         if (!this.uri)
@@ -493,11 +503,15 @@ const DocCommon = new Lang.Class({
                             function(object, res) {
                                 try {
                                     this.pixbuf = GdkPixbuf.Pixbuf.new_from_stream_finish(res);
+
                                     this.thumbnailed = true;
                                     this.checkEffectsAndUpdateInfo();
                                 } catch (e) {
                                     this._failedThumbnailing = true;
                                 }
+
+                                // close the underlying stream immediately
+                                stream.close_async(0, null, null);
                             }));
                 } catch (e) {
                     this._failedThumbnailing = true;
@@ -593,6 +607,21 @@ const DocCommon = new Lang.Class({
         }
     },
 
+    print: function(toplevel) {
+        this.load(null, Lang.bind(this,
+            function(doc, docModel, error) {
+                if (error) {
+                    log('Unable to print document ' + this.uri + ': ' + error);
+                    return;
+                }
+
+                let printOp = EvView.PrintOperation.new(docModel.get_document());
+                let printNotification = new Notifications.PrintNotification(printOp, doc);
+
+                printOp.run(toplevel);
+            }));
+    },
+
     setFavorite: function(favorite) {
         TrackerUtils.setFavorite(this.id, favorite, null);
     },
@@ -637,8 +666,8 @@ const LocalDocument = new Lang.Class({
         Gd.pdf_loader_load_uri_async(this.uri, cancellable, Lang.bind(this,
             function(source, res) {
                 try {
-                    let document = Gd.pdf_loader_load_uri_finish(res);
-                    callback(this, document, null);
+                    let docModel = Gd.pdf_loader_load_uri_finish(res);
+                    callback(this, docModel, null);
                 } catch (e) {
                     callback(this, null, e);
                 }
@@ -681,14 +710,10 @@ const GoogleDocument = new Lang.Class({
         let authorizer = new Gd.GDataGoaAuthorizer({ goa_object: source.object });
         let service = new GData.DocumentsService({ authorizer: authorizer });
 
-        // HACK: GJS doesn't support introspecting GTypes, so we need to use
-        // GObject.type_from_name(); but for that to work, we need at least one
-        // instance of the GType in question to have ever been created. Ensure that
-        let temp = new GData.DocumentsText();
         service.query_single_entry_async
             (service.get_primary_authorization_domain(),
              this.identifier, null,
-             GObject.type_from_name('GDataDocumentsText'),
+             GData.DocumentsText,
              cancellable, Lang.bind(this,
                  function(object, res) {
                      let entry = null;
@@ -712,12 +737,11 @@ const GoogleDocument = new Lang.Class({
                     Gd.pdf_loader_load_uri_async(this.identifier, cancellable, Lang.bind(this,
                         function(source, res) {
                             try {
-                                let document = Gd.pdf_loader_load_uri_finish(res);
-                                callback(this, document, null);
+                                let docModel = Gd.pdf_loader_load_uri_finish(res);
+                                callback(this, docModel, null);
                             } catch (e) {
                                 // report the outmost error only
                                 callback(this, null, exception);
-                                return;
                             }
                         }));
 
@@ -728,8 +752,8 @@ const GoogleDocument = new Lang.Class({
                     (entry, service, cancellable, Lang.bind(this,
                         function(source, res) {
                             try {
-                                let document = Gd.pdf_loader_load_gdata_entry_finish(res);
-                                callback(this, document, null);
+                                let docModel = Gd.pdf_loader_load_uri_finish(res);
+                                callback(this, docModel, null);
                             } catch (e) {
                                 callback(this, null, e);
                             }
@@ -852,12 +876,11 @@ const SkydriveDocument = new Lang.Class({
                     Gd.pdf_loader_load_uri_async(this.identifier, cancellable, Lang.bind(this,
                         function(source, res) {
                             try {
-                                let document = Gd.pdf_loader_load_uri_finish(res);
-                                callback(this, document, null);
+                                let docModel = Gd.pdf_loader_load_uri_finish(res);
+                                callback(this, docModel, null);
                             } catch (e) {
                                 // report the outmost error only
                                 callback(this, null, exception);
-                                return;
                             }
                         }));
 
@@ -868,8 +891,8 @@ const SkydriveDocument = new Lang.Class({
                     (entry, service, cancellable, Lang.bind(this,
                         function(source, res) {
                             try {
-                                let document = Gd.pdf_loader_load_zpj_entry_finish(res);
-                                callback(this, document, null);
+                                let docModel = Gd.pdf_loader_load_zpj_entry_finish(res);
+                                callback(this, docModel, null);
                             } catch (e) {
                                 callback(this, null, e);
                             }
@@ -907,7 +930,9 @@ const DocumentManager = new Lang.Class({
     _init: function() {
         this.parent();
 
-        this._model = new DocumentModel();
+        this._activeDocModel = null;
+        this._activeDocModelIds = [];
+        this._loaderCancellable = null;
 
         Global.changeMonitor.connect('changes-pending',
                                      Lang.bind(this, this._onChangesPending));
@@ -928,8 +953,6 @@ const DocumentManager = new Lang.Class({
                 let doc = this.getItemById(changeEvent.urn);
 
                 if (doc) {
-                    this._model.documentRemoved(doc);
-
                     doc.destroy();
                     this.removeItemById(changeEvent.urn);
 
@@ -978,7 +1001,6 @@ const DocumentManager = new Lang.Class({
     addDocumentFromCursor: function(cursor) {
         let doc = this.createDocumentFromCursor(cursor);
         this.addItem(doc);
-        this._model.documentAdded(doc);
 
         if (doc.collection)
             Global.collectionManager.addItem(doc);
@@ -993,80 +1015,91 @@ const DocumentManager = new Lang.Class({
         };
 
         this.parent();
-        this._model.clear();
+    },
+
+    _onDocumentLoadError: function(doc, error) {
+        if (error.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
+            return;
+
+        // Translators: %s is the title of a document
+        let message = _("Unable to load \"%s\" for preview").format(doc.name);
+        this.emit('load-error', doc, message, error);
+    },
+
+    _onDocumentLoaded: function(doc, docModel, error) {
+        if (error) {
+            this._onDocumentLoadError(doc, error);
+            return;
+        }
+
+        // save loaded model and signal
+        this._activeDocModel = docModel;
+        this.emit('load-finished', doc, docModel);
+
+        // load metadata
+        this._connectMetadata(docModel);
     },
 
     setActiveItem: function(doc) {
-        if (this.parent(doc)) {
+        if (!this.parent(doc))
+            return;
 
-            if (doc && !doc.collection) {
-                let recentManager = Gtk.RecentManager.get_default();
-                recentManager.add_item(doc.uri);
-            }
+        // cleanup any state we have for previously loaded model
+        this._clearActiveDocModel();
+
+        if (!doc)
+            return;
+
+        if (doc.collection) {
+            Global.collectionManager.setActiveItem(doc);
+            return;
+        }
+
+        let recentManager = Gtk.RecentManager.get_default();
+        recentManager.add_item(doc.uri);
+
+        this._loaderCancellable = new Gio.Cancellable();
+        doc.load(this._loaderCancellable, Lang.bind(this, this._onDocumentLoaded));
+        this.emit('load-started', doc);
+    },
+
+    _clearActiveDocModel: function() {
+        // cancel any pending load operation
+        if (this._loaderCancellable) {
+            this._loaderCancellable.cancel();
+            this._loaderCancellable = null;
+        }
+
+        // clear any previously loaded document model
+        if (this._activeDocModel) {
+            this._activeDocModelIds.forEach(Lang.bind(this,
+                function(id) {
+                    this._activeDocModel.disconnect(id);
+                }));
+
+            this._activeDocModel = null;
+            this._activeDocModelIds = [];
         }
     },
 
-    getModel: function() {
-        return this._model;
-    }
-});
+    _connectMetadata: function(docModel) {
+        let evDoc = docModel.get_document();
+        let file = Gio.File.new_for_uri(evDoc.get_uri());
 
-const DocumentModel = new Lang.Class({
-    Name: 'DocumentModel',
+        if (!Gd.is_metadata_supported_for_file(file))
+            return;
 
-    _init: function() {
-        this.model = Gtk.ListStore.new(
-            [ GObject.TYPE_STRING,
-              GObject.TYPE_STRING,
-              GObject.TYPE_STRING,
-              GObject.TYPE_STRING,
-              GdkPixbuf.Pixbuf,
-              GObject.TYPE_LONG,
-              GObject.TYPE_BOOLEAN ]);
-        this.model.set_sort_column_id(Gd.MainColumns.MTIME,
-                                      Gtk.SortType.DESCENDING);
-    },
+        let metadata = new Gd.Metadata({ file: file });
 
-    clear: function() {
-        this.model.clear();
-    },
-
-    documentAdded: function(doc) {
-        let iter = this.model.append();
-        this.model.set(iter,
-            [ 0, 1, 2, 3, 4, 5 ],
-            [ doc.id, doc.uri, doc.name,
-              doc.author, doc.pixbuf, doc.mtime ]);
-
-        let treePath = this.model.get_path(iter);
-        let treeRowRef = Gtk.TreeRowReference.new(this.model, treePath);
-
-        doc.connect('info-updated', Lang.bind(this,
-            function() {
-                let objectPath = treeRowRef.get_path();
-                if (!objectPath)
-                    return;
-
-                let objectIter = this.model.get_iter(objectPath)[1];
-                if (objectIter)
-                    this.model.set(objectIter,
-                        [ 0, 1, 2, 3, 4, 5 ],
-                        [ doc.id, doc.uri, doc.name,
-                          doc.author, doc.pixbuf, doc.mtime ]);
-            }));
-    },
-
-    documentRemoved: function(doc) {
-        this.model.foreach(Lang.bind(this,
-            function(model, path, iter) {
-                let id = model.get_value(iter, Gd.MainColumns.ID);
-
-                if (id == doc.id) {
-                    this.model.remove(iter);
-                    return true;
-                }
-
-                return false;
-            }));
+        // save current page in metadata
+        let [res, val] = metadata.get_int('page');
+        if (res)
+            docModel.set_page(val);
+        this._activeDocModelIds.push(
+            docModel.connect('page-changed', Lang.bind(this,
+                function(source, oldPage, newPage) {
+                    metadata.set_int('page', newPage);
+                }))
+        );
     }
 });

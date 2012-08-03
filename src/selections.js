@@ -19,6 +19,7 @@
  *
  */
 
+const Clutter = imports.gi.Clutter;
 const EvView = imports.gi.EvinceView;
 const Gd = imports.gi.Gd;
 const Gdk = imports.gi.Gdk;
@@ -33,6 +34,7 @@ const Documents = imports.documents;
 const Global = imports.global;
 const Manager = imports.manager;
 const Notifications = imports.notifications;
+const Properties = imports.properties;
 const Query = imports.query;
 const Tweener = imports.util.tweener;
 const Utils = imports.utils;
@@ -717,9 +719,10 @@ Signals.addSignalMethods(SelectionController.prototype);
 const SelectionToolbar = new Lang.Class({
     Name: 'SelectionToolbar',
 
-    _init: function() {
+    _init: function(parentActor) {
         this._itemListeners = {};
         this._insideRefresh = false;
+        this._parentActor = parentActor;
 
         this.widget = new Gtk.Toolbar({ show_arrow: false,
                                         icon_size: Gtk.IconSize.LARGE_TOOLBAR });
@@ -730,6 +733,33 @@ const SelectionToolbar = new Lang.Class({
                                             opacity: 0 });
         Utils.alphaGtkWidget(this.actor.get_widget());
 
+        let widthConstraint =
+            new Clutter.BindConstraint({ source: this._parentActor,
+                                         coordinate: Clutter.BindCoordinate.WIDTH,
+                                         offset: - 300 });
+        this.actor.add_constraint(widthConstraint);
+        this.actor.connect('notify::width', Lang.bind(this,
+            function() {
+                let width = this._parentActor.width;
+                let offset = 300;
+
+                if (width > 1000)
+                    offset += (width - 1000);
+                else if (width < 600)
+                    offset -= (600 - width);
+
+                widthConstraint.offset = - offset;
+            }));
+
+        this.actor.add_constraint(
+            new Clutter.AlignConstraint({ align_axis: Clutter.AlignAxis.X_AXIS,
+                                          source: this._parentActor,
+                                          factor: 0.50 }));
+        this.actor.add_constraint(
+            new Clutter.AlignConstraint({ align_axis: Clutter.AlignAxis.Y_AXIS,
+                                          source: this._parentActor,
+                                          factor: 0.95 }));
+
         this._leftBox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL });
         this._leftGroup = new Gtk.ToolItem({ child: this._leftBox });
         this.widget.insert(this._leftGroup, -1);
@@ -738,6 +768,12 @@ const SelectionToolbar = new Lang.Class({
                                                                                pixel_size: 32 })});
         this._leftBox.add(this._toolbarFavorite);
         this._toolbarFavorite.connect('clicked', Lang.bind(this, this._onToolbarFavorite));
+
+        this._toolbarProperties = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'document-properties-symbolic',
+                                                                      pixel_size: 32 })});
+        this._toolbarProperties.set_tooltip_text(_("Properties"));
+        this._leftBox.add(this._toolbarProperties);
+        this._toolbarProperties.connect('clicked', Lang.bind(this, this._onToolbarProperties));
 
         this._toolbarPrint = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'printer-symbolic',
                                                                       pixel_size: 32 })});
@@ -823,6 +859,7 @@ const SelectionToolbar = new Lang.Class({
         let showFavorite = true;
         let showTrash = true;
         let showPrint = true;
+        let showProperties = true;
         let showOpen = true;
 
         this._insideRefresh = true;
@@ -848,6 +885,9 @@ const SelectionToolbar = new Lang.Class({
 
         if (selection.length > 1)
             showPrint = false;
+
+	if (selection.length > 1)
+	    showProperties = false;
 
         let openLabel = null;
         if (apps.length == 1) {
@@ -878,6 +918,7 @@ const SelectionToolbar = new Lang.Class({
         }
 
         this._toolbarPrint.set_visible(showPrint);
+        this._toolbarProperties.set_visible(showProperties);
         this._toolbarTrash.set_visible(showTrash);
         this._toolbarOpen.set_visible(showOpen);
         this._toolbarFavorite.set_visible(showFavorite);
@@ -935,6 +976,18 @@ const SelectionToolbar = new Lang.Class({
             }));
     },
 
+    _onToolbarProperties: function(widget) {
+        let urn = Global.selectionController.getSelection();
+        let dialog = new Properties.PropertiesDialog(urn[0]);
+        this._fadeOut();
+
+        dialog.widget.connect('response', Lang.bind(this,
+            function(widget, response) {
+                    dialog.widget.destroy();
+                    this._fadeIn();
+            }));
+    },
+
     _onToolbarPrint: function(widget) {
         let selection = Global.selectionController.getSelection();
 
@@ -942,19 +995,7 @@ const SelectionToolbar = new Lang.Class({
             return;
 
         let doc = Global.documentManager.getItemById(selection[0]);
-        doc.load(null, Lang.bind(this,
-            function(doc, evDoc, error) {
-                if (!evDoc) {
-                    // TODO: handle error here!
-                    return;
-                }
-
-                let printOp = EvView.PrintOperation.new(evDoc);
-                let printNotification = new Notifications.PrintNotification(printOp, doc);
-
-                let toplevel = this.widget.get_toplevel();
-                printOp.run(toplevel);
-            }));
+        doc.print(this.widget.get_toplevel());
     },
 
     _fadeIn: function() {

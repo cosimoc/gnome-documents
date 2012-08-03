@@ -1,3 +1,19 @@
+0.5.4
+=====
+
+- Avoid leaking file descriptors when reading document thumbnails
+- Set new use_layout flag_size on the GtkClutterEmbed
+- Don't hardcode /bin/bash in the launcher scripts (Antoine Jacoutot)
+
+0.5.3
+=====
+
+- Fix thumbnails not showing in fullscreen preview with recent GTK
+- Use new GJS API to detect cancellations
+- Use GtkSearchEntry
+- Initial work on overview performance improvements
+- Lot of code refactoring
+
 0.5.2.1
 =======
 

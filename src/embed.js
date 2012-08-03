@@ -24,7 +24,6 @@ const Mainloop = imports.mainloop;
 
 const ErrorBox = imports.errorBox;
 const Global = imports.global;
-const LoadMore = imports.loadMore;
 const MainToolbar = imports.mainToolbar;
 const Preview = imports.preview;
 const Searchbar = imports.searchbar;
@@ -43,32 +42,28 @@ const GtkClutter = imports.gi.GtkClutter;
 
 const _PDF_LOADER_TIMEOUT = 400;
 
-const ViewEmbed = new Lang.Class({
-    Name: 'ViewEmbed',
+const Embed = new Lang.Class({
+    Name: 'Embed',
 
     _init: function() {
-        this._adjustmentValueId = 0;
-        this._adjustmentChangedId = 0;
-        this._loaderCancellable = null;
         this._queryErrorId = 0;
-        this._scrollbarVisibleId = 0;
 
-        this._scrolledWinView = null;
-        this._scrolledWinPreview = null;
+        this.widget = new GtkClutter.Embed({ use_layout_size: true });
+        this.widget.show();
 
         // the embed is a vertical ClutterBox
+        let stage = this.widget.get_stage();
         this._overlayLayout = new Clutter.BinLayout();
         this.actor = new Clutter.Box({ layout_manager: this._overlayLayout });
+        this.actor.add_constraint(
+            new Clutter.BindConstraint({ coordinate: Clutter.BindCoordinate.SIZE,
+                                         source: stage }));
+        stage.add_actor(this.actor);
 
         this._contentsLayout = new Clutter.BoxLayout({ vertical: true });
         this._contentsActor = new Clutter.Box({ layout_manager: this._contentsLayout });
         this._overlayLayout.add(this._contentsActor,
             Clutter.BinAlignment.FILL, Clutter.BinAlignment.FILL);
-
-        // pack the toolbar
-        this._toolbar = new MainToolbar.OverviewToolbar();
-        this._contentsActor.add_actor(this._toolbar.actor);
-        this._contentsLayout.set_fill(this._toolbar.actor, true, false);
 
         // pack the main GtkNotebook and a spinnerbox in a BinLayout, so that
         // we can easily bring them front/back
@@ -88,6 +83,10 @@ const ViewEmbed = new Lang.Class({
         this._viewLayout.add(this._spinnerBox.actor, Clutter.BinAlignment.FILL, Clutter.BinAlignment.FILL);
         this._spinnerBox.actor.lower_bottom();
 
+        this._errorBox = new ErrorBox.ErrorBox();
+        this._viewLayout.add(this._errorBox.actor, Clutter.BinAlignment.FILL, Clutter.BinAlignment.FILL);
+        this._errorBox.actor.lower_bottom();
+
         // also pack a white background to use for spotlights between window modes
         this._background =
             new Clutter.Rectangle({ color: new Clutter.Color ({ red: 255,
@@ -98,41 +97,8 @@ const ViewEmbed = new Lang.Class({
             Clutter.BinAlignment.FILL, Clutter.BinAlignment.FILL);
         this._background.lower_bottom();
 
-        // create the dropdown for the search bar, it's hidden by default
-        this._dropdownBox = new Searchbar.Dropdown();
-        this._overlayLayout.add(this._dropdownBox.actor,
-            Clutter.BinAlignment.CENTER, Clutter.BinAlignment.FIXED);
-        this._dropdownBox.actor.add_constraint(new Clutter.BindConstraint({ source: this._toolbar.toolbarActor,
-                                                                            coordinate: Clutter.BindCoordinate.Y }));
-
         // create the OSD toolbar for selected items, it's hidden by default
-        this._selectionToolbar = new Selections.SelectionToolbar();
-        let widthConstraint =
-            new Clutter.BindConstraint({ source: this._contentsActor,
-                                         coordinate: Clutter.BindCoordinate.WIDTH,
-                                         offset: - 300 });
-        this._selectionToolbar.actor.add_constraint(widthConstraint);
-        this._selectionToolbar.actor.connect('notify::width', Lang.bind(this,
-            function() {
-                let width = this._contentsActor.width;
-                let offset = 300;
-
-                if (width > 1000)
-                    offset += (width - 1000);
-                else if (width < 600)
-                    offset -= (600 - width);
-
-                widthConstraint.offset = - offset;
-            }));
-
-        this._selectionToolbar.actor.add_constraint(
-            new Clutter.AlignConstraint({ align_axis: Clutter.AlignAxis.X_AXIS,
-                                          source: this._contentsActor,
-                                          factor: 0.50 }));
-        this._selectionToolbar.actor.add_constraint(
-            new Clutter.AlignConstraint({ align_axis: Clutter.AlignAxis.Y_AXIS,
-                                          source: this._contentsActor,
-                                          factor: 0.95 }));
+        this._selectionToolbar = new Selections.SelectionToolbar(this._contentsActor);
         this._overlayLayout.add(this._selectionToolbar.actor,
             Clutter.BinAlignment.FIXED, Clutter.BinAlignment.FIXED);
 
@@ -140,8 +106,12 @@ const ViewEmbed = new Lang.Class({
         this._viewLayout.add(Global.notificationManager.actor,
             Clutter.BinAlignment.CENTER, Clutter.BinAlignment.START);
 
-        Global.errorHandler.connect('load-error',
-                                    Lang.bind(this, this._onLoadError));
+        // now create the actual content widgets
+        this._view = new View.ViewContainer();
+        this._viewPage = this._notebook.append_page(this._view.widget, null);
+
+        this._preview = new Preview.PreviewView();
+        this._previewPage = this._notebook.append_page(this._preview.widget, null);
 
         Global.modeController.connect('window-mode-changed',
                                       Lang.bind(this, this._onWindowModeChanged));
@@ -149,8 +119,17 @@ const ViewEmbed = new Lang.Class({
                                       Lang.bind(this, this._onFullscreenChanged));
         Global.trackerController.connect('query-status-changed',
                                          Lang.bind(this, this._onQueryStatusChanged));
+        Global.trackerController.connect('query-error',
+                                         Lang.bind(this, this._onQueryError));
+
         Global.documentManager.connect('active-changed',
                                        Lang.bind(this, this._onActiveItemChanged));
+        Global.documentManager.connect('load-started',
+                                       Lang.bind(this, this._onLoadStarted));
+        Global.documentManager.connect('load-finished',
+                                       Lang.bind(this, this._onLoadFinished));
+        Global.documentManager.connect('load-error',
+                                       Lang.bind(this, this._onLoadError));
 
         this._onQueryStatusChanged();
     },
@@ -158,19 +137,24 @@ const ViewEmbed = new Lang.Class({
     _onQueryStatusChanged: function() {
         let queryStatus = Global.trackerController.getQueryStatus();
 
-        if (queryStatus)
+        if (queryStatus) {
+            this._errorBox.moveOut();
             this._spinnerBox.moveIn();
-        else
+        } else {
             this._spinnerBox.moveOut();
+        }
+    },
+
+    _onQueryError: function(manager, message, exception) {
+        this._setError(message, exception.message);
     },
 
     _onFullscreenChanged: function(controller, fullscreen) {
         if (fullscreen) {
-            this._previewEmbed = new Preview.PreviewEmbed(this._docModel,
-                this._overlayLayout, this._contentsActor, this._scrolledWinPreview);
+            this._previewFullscreen = new Preview.PreviewFullscreen(this._preview, this._overlayLayout, this._contentsActor);
         } else {
-            this._previewEmbed.destroy();
-            this._previewEmbed = null;
+            this._previewFullscreen.destroy();
+            this._previewFullscreen = null;
         }
 
         Gtk.Settings.get_default().gtk_application_prefer_dark_theme = fullscreen;
@@ -204,179 +188,76 @@ const ViewEmbed = new Lang.Class({
             this._windowModeChangeFlash();
     },
 
-    _destroyScrollPreviewChild: function() {
-        let child = this._scrolledWinPreview.get_child();
-        if (child)
-            child.destroy();
+    _onActiveItemChanged: function(manager, doc) {
+        let newMode = WindowMode.WindowMode.OVERVIEW;
+
+        if (doc) {
+            let collection = Global.collectionManager.getItemById(doc.id);
+            if (!collection)
+                newMode = WindowMode.WindowMode.PREVIEW;
+        }
+
+        Global.modeController.setWindowMode(newMode);
     },
 
-    _destroyPreview: function() {
-        if (this._loaderCancellable) {
-            this._loaderCancellable.cancel();
-            this._loaderCancellable = null;
-        }
-
-        if (this._preview) {
-            this._preview.destroy();
-            this._preview = null;
-        }
-
-        this._spinnerBox.moveOut();
-        this._docModel = null;
-    },
-
-    _onActiveItemChanged: function() {
-        let doc = Global.documentManager.getActiveItem();
-
-        if (!doc)
-            return;
-
-        this._destroyPreview();
-
-        let collection = Global.collectionManager.getItemById(doc.id);
-
-        if (collection) {
-            Global.collectionManager.setActiveItem(collection);
-            Global.modeController.setWindowMode(WindowMode.WindowMode.OVERVIEW);
-            return;
-        }
-
+    _onLoadStarted: function() {
         // switch to preview mode, and schedule the spinnerbox to
         // move in if the document is not loaded by the timeout
-        Global.modeController.setWindowMode(WindowMode.WindowMode.PREVIEW);
         this._spinnerBox.moveInDelayed(_PDF_LOADER_TIMEOUT);
-
-        this._loaderCancellable = new Gio.Cancellable();
-        doc.load(this._loaderCancellable, Lang.bind(this, this._onDocumentLoaded));
     },
 
-    _onDocumentLoaded: function(doc, evDoc, error) {
-        this._loaderCancellable = null;
-
-        if (!evDoc) {
-            Global.errorHandler.addLoadError(doc, error);
-            return;
-        }
-
-        this._docModel = EvView.DocumentModel.new_with_document(evDoc);
-        this._toolbar.setModel(this._docModel);
+    _onLoadFinished: function(manager, doc, docModel) {
+        this._toolbar.setModel(docModel);
+        this._preview.setModel(docModel);
+        this._preview.widget.grab_focus();
 
         this._spinnerBox.moveOut();
         Global.modeController.setCanFullscreen(true);
-        this._preview = new Preview.PreviewView(this._docModel);
+    },
 
-        this._scrolledWinPreview.add(this._preview.widget);
-        this._preview.widget.grab_focus();
+    _onLoadError: function(manager, doc, message, exception) {
+        this._spinnerBox.moveOut();
+        this._setError(message, exception.message);
     },
 
     _prepareForOverview: function() {
-        this._destroyPreview();
+        if (this._preview)
+            this._preview.setModel(null);
 
-        Global.documentManager.setActiveItem(null);
+        if (this._toolbar)
+            this._toolbar.actor.destroy();
 
-        this._queryErrorId =
-            Global.errorHandler.connect('query-error',
-                                        Lang.bind(this, this._onQueryError));
+        // pack the toolbar
+        this._toolbar = new MainToolbar.OverviewToolbar(this._viewLayout);
+        this._contentsLayout.pack_start = true;
+        this._contentsActor.add_actor(this._toolbar.actor);
+        this._contentsLayout.set_fill(this._toolbar.actor, true, false);
 
-        if (!this._scrolledWinView) {
-            let grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL });
-            this._view = new View.View();
-            this._scrolledWinView = this._view.widget;
-            grid.add(this._scrolledWinView);
-
-            this._loadMore = new LoadMore.LoadMoreButton();
-            grid.add(this._loadMore.widget);
-
-            grid.show_all();
-            this._viewPage = this._notebook.append_page(grid, null);
-        }
-
-        this._adjustmentValueId =
-            this._scrolledWinView.vadjustment.connect('value-changed',
-                                                      Lang.bind(this, this._onScrolledWinChange));
-        this._adjustmentChangedId =
-            this._scrolledWinView.vadjustment.connect('changed',
-                                                      Lang.bind(this, this._onScrolledWinChange));
-        this._scrollbarVisibleId =
-            this._scrolledWinView.get_vscrollbar().connect('notify::visible',
-                                                           Lang.bind(this, this._onScrolledWinChange));
-        this._onScrolledWinChange();
+        this._spinnerBox.moveOut();
+        this._errorBox.moveOut();
 
         this._notebook.set_current_page(this._viewPage);
     },
 
-    _onScrolledWinChange: function() {
-        let vScrollbar = this._scrolledWinView.get_vscrollbar();
-        let adjustment = this._scrolledWinView.vadjustment;
-        let revealAreaHeight = 32;
-
-        // if there's no vscrollbar, or if it's not visible, hide the button
-        if (!vScrollbar ||
-            !vScrollbar.get_visible()) {
-            this._loadMore.setBlock(true);
-            return;
-        }
-
-        let value = adjustment.value;
-        let upper = adjustment.upper;
-        let page_size = adjustment.page_size;
-
-        let end = false;
-
-        // special case this values which happen at construction
-        if ((value == 0) && (upper == 1) && (page_size == 1))
-            end = false;
-        else
-            end = !(value < (upper - page_size - revealAreaHeight));
-
-        this._loadMore.setBlock(!end);
-    },
-
-    _onQueryError: function(manager, message, exception) {
-        this._prepareForPreview();
-
-        let errorBox = new ErrorBox.ErrorBox(message, exception.message);
-        this._scrolledWinPreview.add_with_viewport(errorBox.widget);
-    },
-
     _prepareForPreview: function() {
-        if (this._queryErrorId != 0) {
-            Global.errorHandler.disconnect(this._queryErrorId);
-            this._queryErrorId = 0;
-        }
+        if (this._toolbar)
+            this._toolbar.actor.destroy();
 
-        if (this._adjustmentValueId != 0) {
-            this._scrolledWinView.vadjustment.disconnect(this._adjustmentValueId);
-            this._adjustmentValueId = 0;
-        }
-        if (this._adjustmentChangedId != 0) {
-            this._scrolledWinView.vadjustment.disconnect(this._adjustmentChangedId);
-            this._adjustmentChangedId = 0;
-        }
-        if (this._scrollbarVisibleId != 0) {
-            this._scrolledWinView.get_vscrollbar().disconnect(this._scrollbarVisibleId);
-            this._scrollbarVisibleId = 0;
-        }
-
-        if (!this._scrolledWinPreview) {
-            this._scrolledWinPreview = new Gtk.ScrolledWindow({ hexpand: true,
-                                                                vexpand: true,
-                                                                shadow_type: Gtk.ShadowType.IN });
-            this._scrolledWinPreview.get_style_context().add_class('documents-scrolledwin');
-            this._scrolledWinPreview.show();
-            this._previewPage = this._notebook.append_page(this._scrolledWinPreview, null);
-        } else {
-            this._destroyScrollPreviewChild();
-        }
+        // pack the toolbar
+        this._toolbar = new Preview.PreviewToolbar(this._preview);
+        this._contentsLayout.pack_start = true;
+        this._contentsActor.add_actor(this._toolbar.actor);
+        this._contentsLayout.set_fill(this._toolbar.actor, true, false);
 
         this._notebook.set_current_page(this._previewPage);
     },
 
-    _onLoadError: function(manager, message, exception) {
-        this._loaderCancellable = null;
-        this._spinnerBox.moveOut();
+    _setError: function(primary, secondary) {
+        this._errorBox.update(primary, secondary);
+        this._errorBox.moveIn();
+    },
 
-        let errorBox = new ErrorBox.ErrorBox(message, exception.message);
-        this._scrolledWinPreview.add_with_viewport(errorBox.widget);
+    getMainToolbar: function(event) {
+        return this._toolbar;
     }
 });

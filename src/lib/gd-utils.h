@@ -23,6 +23,7 @@
 #define __GD_UTILS_H__
 
 #include <gtk/gtk.h>
+#include <evince-view.h>
 
 void gd_queue_thumbnail_job_for_file_async (GFile *file,
                                             GAsyncReadyCallback callback,
@@ -56,6 +57,10 @@ void   gd_entry_focus_hack (GtkWidget *entry,
                             GdkDevice *device);
 
 GVariant *gd_create_variant_from_pixbuf (GdkPixbuf *pixbuf);
+
+void gd_ev_view_find_changed (EvView *view,
+                              EvJobFind *job,
+                              gint page);
 
 #endif /* __GD_UTILS_H__ */
                                   

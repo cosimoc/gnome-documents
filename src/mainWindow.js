@@ -49,11 +49,6 @@ const MainWindow = new Lang.Class({
 						  window_position: Gtk.WindowPosition.CENTER,
                                                   hide_titlebar_when_maximized: true,
 						  title: _("Documents") });
-        this._clutterEmbed = new GtkClutter.Embed();
-        this.window.add(this._clutterEmbed);
-        this._clutterEmbed.show();
-
-        let stage = this._clutterEmbed.get_stage();
 
         // apply the last saved window size and position
         let size = Global.settings.get_value('window-size');
@@ -89,11 +84,8 @@ const MainWindow = new Lang.Class({
         Global.modeController.connect('fullscreen-changed',
                                       Lang.bind(this, this._onFullscreenChanged));
 
-        this._embed = new Embed.ViewEmbed();
-        this._embed.actor.add_constraint(
-            new Clutter.BindConstraint({ coordinate: Clutter.BindCoordinate.SIZE,
-                                         source: stage }));
-        stage.add_actor(this._embed.actor);
+        this._embed = new Embed.Embed();
+        this.window.add(this._embed.widget);
     },
 
     _saveWindowGeometry: function() {
@@ -148,14 +140,10 @@ const MainWindow = new Lang.Class({
     },
 
     _onKeyPressEvent: function(widget, event) {
-        let keyval = event.get_keyval()[1];
-        let state = event.get_state()[1];
+        let toolbar = this._embed.getMainToolbar();
 
-        if ((keyval == Gdk.KEY_q) &&
-            ((state & Gdk.ModifierType.CONTROL_MASK) != 0)) {
-            this.window.destroy();
+        if (toolbar.handleEvent(event))
             return true;
-        }
 
         if (Global.modeController.getWindowMode() == WindowMode.WindowMode.PREVIEW)
             return this._handleKeyPreview(event);
@@ -169,19 +157,12 @@ const MainWindow = new Lang.Class({
         let fullscreen = Global.modeController.getFullscreen();
         let direction = this.window.get_direction();
 
-        if ((keyval == Gdk.KEY_f || keyval == Gdk.KEY_F11) &&
-            ((state & Gdk.ModifierType.CONTROL_MASK) == 0)) {
-            Global.modeController.toggleFullscreen();
-            return true;
-        }
-
         if ((fullscreen && keyval == Gdk.KEY_Escape) ||
             ((state & Gdk.ModifierType.MOD1_MASK) != 0 &&
              (direction == Gtk.TextDirection.LTR && keyval == Gdk.KEY_Left) ||
              (direction == Gtk.TextDirection.RTL && keyval == Gdk.KEY_Right)) ||
-            keyval == Gdk.KEY_BackSpace ||
             keyval == Gdk.KEY_Back) {
-            Global.modeController.setWindowMode(WindowMode.WindowMode.OVERVIEW);
+            Global.documentManager.setActiveItem(null);
             return true;
         }
 
@@ -190,14 +171,6 @@ const MainWindow = new Lang.Class({
 
     _handleKeyOverview: function(event) {
         let keyval = event.get_keyval()[1];
-
-        if (Utils.isSearchEvent(event)) {
-            this._embed._toolbar.searchbar.toggle();
-            return true;
-        }
-
-        if (this._embed._toolbar.searchbar.deliverEvent(event))
-            return true;
 
         if (Global.selectionController.getSelectionMode() &&
             keyval == Gdk.KEY_Escape) {

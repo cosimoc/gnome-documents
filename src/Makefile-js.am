@@ -4,18 +4,17 @@ dist_js_DATA = \
     changeMonitor.js \
     documents.js \
     embed.js \
-    error.js \
     errorBox.js \
-    gDataMiner.js \
     global.js \
-    loadMore.js \
     main.js \
     mainToolbar.js \
     mainWindow.js \
     manager.js \
+    miners.js \
     notifications.js \
     offsetController.js \
     preview.js \
+    properties.js\
     query.js \
     searchbar.js \
     selections.js \
@@ -27,7 +26,6 @@ dist_js_DATA = \
     utils.js \
     view.js \
     windowMode.js \
-    zpjMiner.js \
     path.js
 
 jsutildir = $(pkgdatadir)/js/util/

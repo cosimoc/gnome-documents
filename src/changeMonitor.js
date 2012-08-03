@@ -19,28 +19,26 @@
  *
  */
 
-const DBus = imports.dbus;
+const Gio = imports.gi.Gio;
 const Lang = imports.lang;
 const Signals = imports.signals;
 
 const Global = imports.global;
 
-const TrackerResourcesServiceIface = {
-    name: 'org.freedesktop.Tracker1.Resources',
-    signals: [{ name: 'GraphUpdated',
-                inSignature: 'sa(iiii)a(iiii)' }]
-};
+const TrackerResourcesServiceIface = <interface name='org.freedesktop.Tracker1.Resources'>
+    <signal name="GraphUpdated">
+        <arg name="className" type="s" />
+        <arg name="deleteEvents" type="a(iiii)" />
+        <arg name="insertEvents" type="a(iiii)" />
+    </signal>
+</interface>;
 
-const TrackerResourcesService = new Lang.Class({
-    Name: 'TrackerResourcesService',
-
-    _init: function() {
-        DBus.session.proxifyObject(this,
-                                   'org.freedesktop.Tracker1',
-                                   '/org/freedesktop/Tracker1/Resources');
-    }
-});
-DBus.proxifyPrototype(TrackerResourcesService.prototype, TrackerResourcesServiceIface);
+var TrackerResourcesServiceProxy = Gio.DBusProxy.makeProxyWrapper(TrackerResourcesServiceIface);
+function TrackerResourcesService() {
+    return new TrackerResourcesServiceProxy(Gio.DBus.session,
+                                            'org.freedesktop.Tracker1',
+                                            '/org/freedesktop/Tracker1/Resources');
+}
 
 const ChangeEventType = {
     CHANGED: 0,
@@ -84,10 +82,10 @@ const TrackerChangeMonitor = new Lang.Class({
         this._pendingChanges = [];
 
         this._resourceService = new TrackerResourcesService();
-        this._resourceService.connect('GraphUpdated', Lang.bind(this, this._onGraphUpdated));
+        this._resourceService.connectSignal('GraphUpdated', Lang.bind(this, this._onGraphUpdated));
     },
 
-    _onGraphUpdated: function(proxy, className, deleteEvents, insertEvents) {
+    _onGraphUpdated: function(proxy, senderName, [className, deleteEvents, insertEvents]) {
         deleteEvents.forEach(Lang.bind(this,
             function(event) {
                 this._outstandingOps++;
