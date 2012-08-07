@@ -74,3 +74,5 @@ gd_tracker_zpj_miner_LDADD = \
     $(MINER_LIBS) \
     $(DOCUMENTS_LIBS) \
     $(NULL)
+
+EXTRA_DIST += miner/miner-main.c
