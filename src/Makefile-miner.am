@@ -11,7 +11,6 @@ gdminer_source_c = \
 libgdminer_1_0_la_CPPFLAGS = \
     -DG_LOG_DOMAIN=\"Gdminer\" \
     -DG_DISABLE_DEPRECATED \
-    -DGOA_API_IS_SUBJECT_TO_CHANGE \
     $(DOCUMENTS_CFLAGS) \
     $(NULL)
 
@@ -38,7 +37,6 @@ gd_tracker_gdata_miner_SOURCES = \
 
 gd_tracker_gdata_miner_CFLAGS = \
     -DG_DISABLE_DEPRECATED \
-    -DGOA_API_IS_SUBJECT_TO_CHANGE \
     -I$(top_srcdir)/src/lib \
     $(MINER_CFLAGS) \
     $(DOCUMENTS_CFLAGS) \
@@ -61,7 +59,6 @@ gd_tracker_zpj_miner_SOURCES = \
 
 gd_tracker_zpj_miner_CFLAGS = \
     -DG_DISABLE_DEPRECATED \
-    -DGOA_API_IS_SUBJECT_TO_CHANGE \
     -I$(top_srcdir)/src/lib \
     $(MINER_CFLAGS) \
     $(DOCUMENTS_CFLAGS) \

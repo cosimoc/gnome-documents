@@ -19,11 +19,11 @@
  *
  */
 
+#define GOA_API_IS_SUBJECT_TO_CHANGE
 #include <gdata/gdata.h>
 #include <goa/goa.h>
 #include <unistd.h>
 
-#include "gd-gdata-goa-authorizer.h"
 #include "gd-gdata-miner.h"
 #include "gd-miner-tracker.h"
 #include "gd-utils.h"
@@ -216,7 +216,7 @@ account_miner_job_new (GdGDataMiner *self,
                        GoaObject *object)
 {
   AccountMinerJob *retval;
-  GdGDataGoaAuthorizer *authorizer;
+  GDataGoaAuthorizer *authorizer;
   GoaAccount *account;
 
   account = goa_object_get_account (object);
@@ -237,7 +237,7 @@ account_miner_job_new (GdGDataMiner *self,
                                G_CALLBACK (miner_cancellable_cancelled_cb),
                                retval, NULL);
 
-  authorizer = gd_gdata_goa_authorizer_new (object);
+  authorizer = gdata_goa_authorizer_new (object);
   retval->service = gdata_documents_service_new (GDATA_AUTHORIZER (authorizer));
 
   /* the service takes ownership of the authorizer */

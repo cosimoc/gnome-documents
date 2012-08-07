@@ -19,6 +19,7 @@
  *
  */
 
+#define GOA_API_IS_SUBJECT_TO_CHANGE
 #include <goa/goa.h>
 #include <zpj/zpj.h>
 #include <unistd.h>

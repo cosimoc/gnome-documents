@@ -25,6 +25,8 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 #include <evince-view.h>
+
+#define GOA_API_IS_SUBJECT_TO_CHANGE
 #include <gdata/gdata.h>
 #include <zpj/zpj.h>
 

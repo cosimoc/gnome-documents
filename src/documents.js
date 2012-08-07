@@ -698,7 +698,7 @@ const GoogleDocument = new Lang.Class({
     _createGDataEntry: function(cancellable, callback) {
         let source = Global.sourceManager.getItemById(this.resourceUrn);
 
-        let authorizer = new Gd.GDataGoaAuthorizer({ goa_object: source.object });
+        let authorizer = new GData.GoaAuthorizer({ goa_object: source.object });
         let service = new GData.DocumentsService({ authorizer: authorizer });
 
         service.query_single_entry_async

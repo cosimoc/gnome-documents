@@ -22,8 +22,6 @@
 #include "gd-pdf-loader.h"
 #include "gd-utils.h"
 
-#include "gd-gdata-goa-authorizer.h"
-
 #include <string.h>
 #include <gdata/gdata.h>
 #include <evince-document.h>
