@@ -1,3 +1,19 @@
+0.5.5 - "All the Leaves Are Gone"
+=================================
+
+- Add a find as you type implementation for Preview mode
+- Add a menu button with common actions in Preview mode (Anna Zacchi)
+- Add a Search button on the toolbar
+- Add Rotate and Zoom options in Preview
+- Move the search entry below the toolbar
+- Support Google Drawings
+- Remember documents' last page viewed
+- Fix thumbnails for non-serializable GIcons (Florian Muellner)
+- Use GDataGoaAuthorizer from libgdata
+- Port some JS classes to GDBus (Jasper St. Pierre)
+- Split a GdMiner base class and share code between miners (Jasper St. Pierre)
+- Use GResource
+
 0.5.4
 =====
 
