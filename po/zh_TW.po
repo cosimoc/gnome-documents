@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents 0.3.91\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-18 09:43+0800\n"
-"PO-Revision-Date: 2012-07-17 22:14+0800\n"
+"POT-Creation-Date: 2012-08-07 15:15+0800\n"
+"PO-Revision-Date: 2012-08-07 14:35+0800\n"
 "Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
 "Language-Team: Chinese (Taiwan) <chinese-l10n@googlegroups.com>\n"
 "Language: \n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:51
-#: ../src/mainWindow.js:209
+#: ../src/mainWindow.js:205
 msgid "Documents"
 msgstr "文件"
 
@@ -63,42 +63,42 @@ msgstr "視窗已最大化"
 msgid "Window maximized state"
 msgstr "視窗為最大化狀態"
 
-#: ../src/documents.js:624 ../src/sources.js:95
+#: ../src/documents.js:641 ../src/sources.js:95
 msgid "Local"
 msgstr "本地端"
 
 #. overridden
-#: ../src/documents.js:677
+#: ../src/documents.js:694
 msgid "Google Docs"
 msgstr "Google 文件"
 
-#: ../src/documents.js:678
+#: ../src/documents.js:695
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:742 ../src/documents.js:881
+#: ../src/documents.js:759 ../src/documents.js:898
 msgid "Spreadsheet"
 msgstr "試算表"
 
-#: ../src/documents.js:744 ../src/documents.js:883
+#: ../src/documents.js:761 ../src/documents.js:900
 msgid "Presentation"
 msgstr "簡報"
 
-#: ../src/documents.js:746 ../src/documents.js:885
+#: ../src/documents.js:763 ../src/documents.js:902
 msgid "Collection"
 msgstr "收藏"
 
-#: ../src/documents.js:748 ../src/documents.js:887
+#: ../src/documents.js:765 ../src/documents.js:904
 msgid "Document"
 msgstr "文件"
 
 #. overridden
-#: ../src/documents.js:815 ../src/documents.js:816
+#: ../src/documents.js:832 ../src/documents.js:833
 msgid "Skydrive"
 msgstr "Skydrive"
 
 #. Translators: %s is the title of a document
-#: ../src/documents.js:999
+#: ../src/documents.js:1016
 #, c-format
 msgid "Unable to load \"%s\" for preview"
 msgstr "無法載入「%s」以預覽"
@@ -111,57 +111,56 @@ msgstr "無法載入文件"
 msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
 msgstr "找不到「unoconv」，請檢查您的 LibreOffice 安裝"
 
-#: ../src/mainToolbar.js:165
+#: ../src/mainToolbar.js:73
+msgid "Search"
+msgstr "搜尋"
+
+#: ../src/mainToolbar.js:158
 msgid "New and Recent"
 msgstr "新增與最近使用"
 
-#: ../src/mainToolbar.js:172
+#: ../src/mainToolbar.js:165
 #, c-format
 msgid "Results for \"%s\""
 msgstr "「%s」的結果"
 
-#: ../src/mainToolbar.js:174
+#: ../src/mainToolbar.js:167
 msgid "filtered by title"
 msgstr "依標題過濾"
 
-#: ../src/mainToolbar.js:176
+#: ../src/mainToolbar.js:169
 msgid "filtered by author"
 msgstr "依作者過濾"
 
-#: ../src/mainToolbar.js:183
+#: ../src/mainToolbar.js:176
 msgid "Click on items to select them"
 msgstr "點擊項目來選取它們"
 
-#: ../src/mainToolbar.js:185
+#: ../src/mainToolbar.js:178
 #, c-format
 msgid "%d selected"
 msgid_plural "%d selected"
 msgstr[0] "已選取 %d 個"
 
-#: ../src/mainToolbar.js:206
-#, c-format
-msgid "%d of %d"
-msgstr "%d / %d"
-
-#: ../src/mainToolbar.js:221
+#: ../src/mainToolbar.js:203
 msgid "Done"
 msgstr "完成"
 
-#: ../src/mainToolbar.js:239 ../src/mainToolbar.js:266
+#: ../src/mainToolbar.js:220
 msgid "Back"
 msgstr "返回"
 
-#: ../src/mainToolbar.js:248
+#: ../src/mainToolbar.js:238
 msgid "Select Items"
 msgstr "選擇項目"
 
-#: ../src/mainWindow.js:208
+#: ../src/mainWindow.js:204
 msgid "translator-credits"
 msgstr ""
 "Cheng-Chia Tseng <pswo10680@gmail.com>, 2011. \n"
 "Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>, 2011"
 
-#: ../src/mainWindow.js:210
+#: ../src/mainWindow.js:206
 msgid "A document manager application"
 msgstr "文件管理員應用程式"
 
@@ -170,58 +169,58 @@ msgstr "文件管理員應用程式"
 msgid "Printing \"%s\": %s"
 msgstr "正在列印「%s」：%s"
 
-#: ../src/searchbar.js:82
+#: ../src/searchbar.js:83
 msgid "Category"
 msgstr "分類"
 
-#: ../src/searchbar.js:87 ../src/searchbar.js:137 ../src/searchbar.js:222
+#: ../src/searchbar.js:88 ../src/searchbar.js:138 ../src/searchbar.js:223
 #: ../src/sources.js:89
 msgid "All"
 msgstr "全部"
 
-#: ../src/searchbar.js:93
+#: ../src/searchbar.js:94
 msgid "Favorites"
 msgstr "喜好"
 
-#: ../src/searchbar.js:98
+#: ../src/searchbar.js:99
 msgid "Shared with you"
 msgstr "與您分享"
 
-#: ../src/searchbar.js:134
+#: ../src/searchbar.js:135
 msgid "Type"
 msgstr "類型"
 
-#: ../src/searchbar.js:139
+#: ../src/searchbar.js:140
 msgid "Collections"
 msgstr "收藏"
 
-#: ../src/searchbar.js:143
+#: ../src/searchbar.js:144
 msgid "PDF Documents"
 msgstr "PDF 文件"
 
-#: ../src/searchbar.js:147
+#: ../src/searchbar.js:148
 msgid "Presentations"
 msgstr "簡報"
 
-#: ../src/searchbar.js:150
+#: ../src/searchbar.js:151
 msgid "Spreadsheets"
 msgstr "試算表"
 
-#: ../src/searchbar.js:153
+#: ../src/searchbar.js:154
 msgid "Text Documents"
 msgstr "文字文件"
 
 #. Translators: this is a verb that refers to "All", "Title" and "Author",
 #. as in "Match All", "Match Title" and "Match Author"
-#: ../src/searchbar.js:219
+#: ../src/searchbar.js:220
 msgid "Match"
 msgstr "符合"
 
-#: ../src/searchbar.js:224
+#: ../src/searchbar.js:225
 msgid "Title"
 msgstr "標題"
 
-#: ../src/searchbar.js:226
+#: ../src/searchbar.js:227
 msgid "Author"
 msgstr "作者"
 
@@ -238,21 +237,21 @@ msgid "Delete"
 msgstr "刪除"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:884 ../src/view.js:122
+#: ../src/selections.js:884
 #, c-format
 msgid "Open with %s"
 msgstr "以 %s 開啟"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:887 ../src/view.js:125
+#: ../src/selections.js:887 ../src/resources/preview-menu.ui.h:1
 msgid "Open"
 msgstr "開啟"
 
-#: ../src/selections.js:896 ../src/view.js:135
+#: ../src/selections.js:896
 msgid "Remove from favorites"
 msgstr "自喜好移除"
 
-#: ../src/selections.js:900 ../src/view.js:135
+#: ../src/selections.js:900
 msgid "Add to favorites"
 msgstr "加入喜好"
 
@@ -274,41 +273,41 @@ msgid "Load %d more document"
 msgid_plural "Load %d more documents"
 msgstr[0] "載入其他 %d 份文件"
 
-#: ../src/view.js:338
+#: ../src/view.js:270
 msgid "Yesterday"
 msgstr "昨天"
 
-#: ../src/view.js:340
+#: ../src/view.js:272
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "%d 天以前"
 
-#: ../src/view.js:344
+#: ../src/view.js:276
 msgid "Last week"
 msgstr "上週"
 
-#: ../src/view.js:346
+#: ../src/view.js:278
 #, c-format
 msgid "%d week ago"
 msgid_plural "%d weeks ago"
 msgstr[0] "%d 週前"
 
-#: ../src/view.js:350
+#: ../src/view.js:282
 msgid "Last month"
 msgstr "上個月"
 
-#: ../src/view.js:352
+#: ../src/view.js:284
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
 msgstr[0] "%d 個月以前"
 
-#: ../src/view.js:356
+#: ../src/view.js:288
 msgid "Last year"
 msgstr "去年"
 
-#: ../src/view.js:358
+#: ../src/view.js:290
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
@@ -333,6 +332,29 @@ msgstr "關於文件"
 #: ../src/resources/app-menu.ui.h:6
 msgid "Quit"
 msgstr "結束"
+
+#: ../src/resources/preview-menu.ui.h:2
+msgid "Print..."
+msgstr "列印…"
+
+#: ../src/resources/preview-menu.ui.h:3
+msgid "Zoom In"
+msgstr "拉近"
+
+#: ../src/resources/preview-menu.ui.h:4
+msgid "Zoom Out"
+msgstr "拉遠"
+
+#: ../src/resources/preview-menu.ui.h:5
+msgid "Rotate Left"
+msgstr "向左旋轉"
+
+#: ../src/resources/preview-menu.ui.h:6
+msgid "Rotate Right"
+msgstr "向右旋轉"
+
+#~ msgid "%d of %d"
+#~ msgstr "%d / %d"
 
 #~ msgid "Unable to fetch the list of documents"
 #~ msgstr "無法擷取文件清單"
