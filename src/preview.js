@@ -44,6 +44,7 @@ const PreviewView = new Lang.Class({
 
     _init: function() {
         this._model = null;
+        this._jobFind = null;
 
         this.widget = new Gtk.ScrolledWindow({ hexpand: true,
                                                vexpand: true,
@@ -152,12 +153,23 @@ const PreviewView = new Lang.Class({
         if (!this._model)
             return;
 
-        let evDoc = this._model.get_document();
-        let job = EvView.JobFind.new(evDoc, this._model.get_page(), evDoc.get_n_pages(),
-                                     str, false);
-        job.connect('updated', Lang.bind(this, this._onSearchJobUpdated));
+        if (this._jobFind) {
+            if (!this._jobFind.is_finished())
+                this._jobFind.cancel();
+            this._jobFind = null;
+        }
 
-        job.scheduler_push_job(EvView.JobPriority.PRIORITY_NONE);
+        if (!str) {
+            this.view.queue_draw();
+            return;
+        }
+
+        let evDoc = this._model.get_document();
+        this._jobFind = EvView.JobFind.new(evDoc, this._model.get_page(), evDoc.get_n_pages(),
+                                           str, false);
+        this._jobFind.connect('updated', Lang.bind(this, this._onSearchJobUpdated));
+
+        this._jobFind.scheduler_push_job(EvView.JobPriority.PRIORITY_NONE);
     },
 
     _onSearchJobUpdated: function(job, page) {
