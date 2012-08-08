@@ -2,227 +2,373 @@
 # Copyright (C) 2011 gnome-documents's COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-documents package.
 #
-# Muhammet Kara <muhammet.k@gmail.com>, 2011.
+# Muhammet Kara <muhammetk@acikkaynak.name.tr>, 2011, 2012.
+# Osman Karagöz <osmank3@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2011-12-21 17:35+0000\n"
-"PO-Revision-Date: 2011-12-29 20:36+0200\n"
-"Last-Translator: Muhammet Kara <muhammet.k@gmail.com>\n"
+"POT-Creation-Date: 2012-08-07 10:12+0000\n"
+"PO-Revision-Date: 2012-08-08 19:40+0000\n"
+"Last-Translator: Muhammet Kara <muhammetk@acikkaynak.name.tr>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
+"Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"Language: tr\n"
-"X-Generator: Lokalize 1.2\n"
+"X-Generator: Lokalize 1.4\n"
 
-#: ../data/gnome-documents.desktop.in.in.h:1
-msgid "Access, manage and share documents"
-msgstr "Belgelerinize erişin, yönetin ve paylaşın"
-
-#: ../data/gnome-documents.desktop.in.in.h:2 ../src/mainWindow.js:53
+#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:51
+#: ../src/mainWindow.js:205
 msgid "Documents"
 msgstr "Belgeler"
 
+#: ../data/gnome-documents.desktop.in.in.h:2
+msgid "Access, manage and share documents"
+msgstr "Belgelerinize erişin, yönetin ve paylaşın"
+
+#: ../data/gnome-documents.desktop.in.in.h:3
+#| msgid "PDF Documents"
+msgid "Docs;PDF;Document;"
+msgstr "Dokümanlar;PDF;Belgeler;"
+
 #: ../data/org.gnome.documents.gschema.xml.in.h:1
-msgid "Enable list view"
-msgstr "Liste görünümünü etkinleştir"
+#: ../src/resources/app-menu.ui.h:1
+msgid "View as"
+msgstr "Görünüm:"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:2
-msgid "List view"
-msgstr "Liste görünümü"
+msgid "View as type"
+msgstr "Türe göre görüntüle"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:3
-msgid "The active source filter"
-msgstr "Aktif kaynak filtresi"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:4
-msgid "The last active source filter"
-msgstr "Son aktif kaynak filtresi"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:5
-msgid "Window maximized"
-msgstr "Pencere ekranı kapladı"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:6
-msgid "Window maximized state"
-msgstr "Pencerenin büyütülmüş durumu"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:7
-msgid "Window position"
-msgstr "Pencere konumu"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:8
-msgid "Window position (x and y)."
-msgstr "Pencere konumu (x ve y)."
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:9
 msgid "Window size"
 msgstr "Pencere boyutu"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:10
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
 msgid "Window size (width and height)."
 msgstr "Pencere boyutu (genişlik ve yükseklik)."
 
-#: ../src/documents.js:618 ../src/sources.js:100
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
+msgid "Window position"
+msgstr "Pencere konumu"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
+msgid "Window position (x and y)."
+msgstr "Pencere konumu (x ve y)."
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
+msgid "Window maximized"
+msgstr "Pencere ekranı kapladı"
+
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
+msgid "Window maximized state"
+msgstr "Pencerenin büyütülmüş durumu"
+
+#: ../src/documents.js:641 ../src/sources.js:95
 msgid "Local"
 msgstr "Yerel"
 
 #. overridden
-#: ../src/documents.js:681
+#: ../src/documents.js:694
 msgid "Google Docs"
 msgstr "Google Belgeleri"
 
-#: ../src/documents.js:682
+#: ../src/documents.js:695
 msgid "Google"
 msgstr "Google"
 
-#: ../src/documents.js:751
+#: ../src/documents.js:759 ../src/documents.js:898
 msgid "Spreadsheet"
 msgstr "Hesap Tablosu"
 
-#: ../src/documents.js:753
+#: ../src/documents.js:761 ../src/documents.js:900
 msgid "Presentation"
 msgstr "Sunum"
 
-#: ../src/documents.js:755
+#: ../src/documents.js:763 ../src/documents.js:902
 msgid "Collection"
 msgstr "Koleksiyon"
 
-#: ../src/documents.js:757
+#: ../src/documents.js:765 ../src/documents.js:904
 msgid "Document"
 msgstr "Belge"
 
+#. overridden
+#: ../src/documents.js:832 ../src/documents.js:833
+msgid "Skydrive"
+msgstr "Skydrive"
+
 #. Translators: %s is the title of a document
-#: ../src/error.js:37
+#: ../src/documents.js:1016
 #, c-format
 msgid "Unable to load \"%s\" for preview"
 msgstr "\"%s\" önizleme için yüklenemedi"
 
-#: ../src/error.js:49
-msgid "Unable to fetch the list of documents"
-msgstr "Belgelerin listesi alınamadı"
-
-#. right section
-#: ../src/lib/gd-main-toolbar.c:210
-msgid "Done"
-msgstr "Yapıldı"
-
-#: ../src/lib/gd-pdf-loader.c:207
+#: ../src/lib/gd-pdf-loader.c:224
 msgid "Unable to load the document"
 msgstr "Belge yüklenemedi"
 
-#: ../src/loadMore.js:70
-#, c-format
-msgid "Load %d more document"
-msgid_plural "Load %d more documents"
-msgstr[0] "%d belge daha yükle"
+#: ../src/lib/gd-pdf-loader.c:673
+msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
+msgstr "\"unoconv\" bulunamıyor, lütfen LibreOffice kurulumunuzu kontrol edin"
 
-#: ../src/mainToolbar.js:150
-msgid "Click on items to select them"
-msgstr "Seçmek için ögelerin üzerine tıklayın"
+#: ../src/mainToolbar.js:73
+msgid "Search"
+msgstr "Ara"
 
-#: ../src/mainToolbar.js:152
-#, c-format
-msgid "%d selected"
-msgstr "%d seçildi"
-
-#: ../src/mainToolbar.js:197
+#: ../src/mainToolbar.js:158
 msgid "New and Recent"
 msgstr "Yeni ve Güncel"
 
-#: ../src/mainToolbar.js:219
+#: ../src/mainToolbar.js:165
 #, c-format
-msgid "(%d of %d)"
-msgstr "(%d / %d)"
+msgid "Results for \"%s\""
+msgstr "\"%s\" için sonuçlar"
 
-#: ../src/searchbar.js:86
+#: ../src/mainToolbar.js:167
+msgid "filtered by title"
+msgstr "başlığa göre süzüldü"
+
+#: ../src/mainToolbar.js:169
+msgid "filtered by author"
+msgstr "yazara göre süzüldü"
+
+#: ../src/mainToolbar.js:176
+msgid "Click on items to select them"
+msgstr "Seçmek için ögelerin üzerine tıklayın"
+
+#: ../src/mainToolbar.js:178
+#, c-format
+msgid "%d selected"
+msgid_plural "%d selected"
+msgstr[0] "%d seçildi"
+
+#: ../src/mainToolbar.js:203
+msgid "Done"
+msgstr "Yapıldı"
+
+#: ../src/mainToolbar.js:220
+msgid "Back"
+msgstr "Geri"
+
+#: ../src/mainToolbar.js:238
+msgid "Select Items"
+msgstr "Ögeleri Seç"
+
+#: ../src/mainWindow.js:204
+msgid "translator-credits"
+msgstr "GNOME Türkiye Çeviri Takımı <gnome-turk@gnome.org>"
+
+#: ../src/mainWindow.js:206
+msgid "A document manager application"
+msgstr "Belge yönetimi uygulaması"
+
+#: ../src/notifications.js:84
+#, c-format
+msgid "Printing \"%s\": %s"
+msgstr "\"%s\" yazdırılıyor: %s"
+
+#: ../src/searchbar.js:83
 msgid "Category"
 msgstr "Kategori"
 
-#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:208
-#: ../src/sources.js:94
+#: ../src/searchbar.js:88 ../src/searchbar.js:138 ../src/searchbar.js:223
+#: ../src/sources.js:89
 msgid "All"
 msgstr "Tümü"
 
-#: ../src/searchbar.js:97
+#: ../src/searchbar.js:94
 msgid "Favorites"
 msgstr "Sık Kullanılanlar"
 
-#: ../src/searchbar.js:102
+#: ../src/searchbar.js:99
 msgid "Shared with you"
 msgstr "Seninle Paylaşılan"
 
-#: ../src/searchbar.js:138
+#: ../src/searchbar.js:135
 msgid "Type"
 msgstr "Tür"
 
-#: ../src/searchbar.js:143
+#: ../src/searchbar.js:140
 msgid "Collections"
 msgstr "Koleksiyonlar"
 
-#: ../src/searchbar.js:147
+#: ../src/searchbar.js:144
 msgid "PDF Documents"
 msgstr "PDF Belgeleri"
 
-#: ../src/searchbar.js:150
+#: ../src/searchbar.js:148
 msgid "Presentations"
 msgstr "Sunumlar"
 
-#: ../src/searchbar.js:153
+#: ../src/searchbar.js:151
 msgid "Spreadsheets"
 msgstr "Hesap Tabloları"
 
-#: ../src/searchbar.js:156
+#: ../src/searchbar.js:154
 msgid "Text Documents"
 msgstr "Metin Belgeleri"
 
-#: ../src/searchbar.js:205
+#. Translators: this is a verb that refers to "All", "Title" and "Author",
+#. as in "Match All", "Match Title" and "Match Author"
+#: ../src/searchbar.js:220
 msgid "Match"
 msgstr "Eşleştir"
 
-#: ../src/searchbar.js:210
+#: ../src/searchbar.js:225
 msgid "Title"
 msgstr "Başlık"
 
-#: ../src/searchbar.js:212
+#: ../src/searchbar.js:227
 msgid "Author"
 msgstr "Yazar"
 
-#: ../src/selections.js:663
+#: ../src/selections.js:773
+msgid "Print"
+msgstr "Yazdır"
+
+#: ../src/selections.js:788
 msgid "Organize"
 msgstr "Düzenle"
 
-#: ../src/selections.js:670
+#: ../src/selections.js:795
 msgid "Delete"
 msgstr "Sil"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:761 ../src/view.js:67
+#: ../src/selections.js:884
 #, c-format
 msgid "Open with %s"
 msgstr "%s ile Aç"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:764 ../src/view.js:70
+#: ../src/selections.js:887 ../src/resources/preview-menu.ui.h:1
 msgid "Open"
 msgstr "Aç"
 
-#: ../src/selections.js:777 ../src/view.js:80
+#: ../src/selections.js:896
 msgid "Remove from favorites"
 msgstr "Sık Kullanılanlardan Çıkart"
 
-#: ../src/selections.js:781 ../src/view.js:80
+#: ../src/selections.js:900
 msgid "Add to favorites"
 msgstr "Sık Kullanılanlara Ekle"
 
-#: ../src/sources.js:90
+#: ../src/shellSearchProvider.js:281
+msgid "Untitled Document"
+msgstr "Adsız Belge"
+
+#: ../src/sources.js:85
 msgid "Sources"
 msgstr "Kaynaklar"
 
-#: ../src/spinnerBox.js:58
+#: ../src/spinnerBox.js:56
 msgid "Loading..."
 msgstr "Yükleniyor..."
+
+#: ../src/view.js:78
+#, c-format
+msgid "Load %d more document"
+msgid_plural "Load %d more documents"
+msgstr[0] "%d belge daha yükle"
+
+#: ../src/view.js:270
+msgid "Yesterday"
+msgstr "Dün"
+
+#: ../src/view.js:272
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%d gün önce"
+
+#: ../src/view.js:276
+msgid "Last week"
+msgstr "Geçen hafta"
+
+#: ../src/view.js:278
+#, c-format
+msgid "%d week ago"
+msgid_plural "%d weeks ago"
+msgstr[0] "%d hafta önce"
+
+#: ../src/view.js:282
+msgid "Last month"
+msgstr "Geçen ay"
+
+#: ../src/view.js:284
+#, c-format
+msgid "%d month ago"
+msgid_plural "%d months ago"
+msgstr[0] "%d ay önce"
+
+#: ../src/view.js:288
+msgid "Last year"
+msgstr "Geçen sene"
+
+#: ../src/view.js:290
+#, c-format
+msgid "%d year ago"
+msgid_plural "%d years ago"
+msgstr[0] "%d yıl önce"
+
+#: ../src/resources/app-menu.ui.h:2
+msgid "Grid"
+msgstr "Izgara"
+
+#: ../src/resources/app-menu.ui.h:3
+msgid "List"
+msgstr "Liste"
+
+#: ../src/resources/app-menu.ui.h:4
+msgid "Fullscreen"
+msgstr "Tam ekran"
+
+#: ../src/resources/app-menu.ui.h:5
+msgid "About Documents"
+msgstr "Belgeler Hakkında"
+
+#: ../src/resources/app-menu.ui.h:6
+msgid "Quit"
+msgstr "Çıkış"
+
+#: ../src/resources/preview-menu.ui.h:2
+#| msgid "Print"
+msgid "Print..."
+msgstr "Yazdır..."
+
+#: ../src/resources/preview-menu.ui.h:3
+msgid "Zoom In"
+msgstr "Yakınlaştır"
+
+#: ../src/resources/preview-menu.ui.h:4
+msgid "Zoom Out"
+msgstr "Uzaklaştır"
+
+#: ../src/resources/preview-menu.ui.h:5
+msgid "Rotate Left"
+msgstr "Sola Döndür"
+
+#: ../src/resources/preview-menu.ui.h:6
+msgid "Rotate Right"
+msgstr "Sağa Döndür"
+
+#~ msgid "Unable to fetch the list of documents"
+#~ msgstr "Belgelerin listesi alınamadı"
+
+#, fuzzy
+#~| msgid "(%d of %d)"
+#~ msgid "%d of %d"
+#~ msgstr "(%d / %d)"
+
+#~ msgid "Enable list view"
+#~ msgstr "Liste görünümünü etkinleştir"
+
+#~ msgid "The active source filter"
+#~ msgstr "Aktif kaynak filtresi"
+
+#~ msgid "The last active source filter"
+#~ msgstr "Son aktif kaynak filtresi"
