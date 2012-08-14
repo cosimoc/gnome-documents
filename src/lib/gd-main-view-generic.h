@@ -67,9 +67,6 @@ struct _GdMainViewGenericIface
 {
   GTypeInterface base_iface;
 
-  /* signals */
-  void          (* selection_changed)    (GdMainViewGeneric  *self);
-
   /* vtable */
   void          (* set_model)            (GdMainViewGeneric  *self,
                                           GtkTreeModel       *model);
