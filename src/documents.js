@@ -287,7 +287,6 @@ const DocCommon = new Lang.Class({
         this.sourceName = null;
 
         this.shared = false;
-
         this.collection = false;
         this._collectionIconWatcher = null;
 

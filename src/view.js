@@ -27,6 +27,7 @@ const Gettext = imports.gettext;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
+const Pango = imports.gi.Pango;
 const _ = imports.gettext.gettext;
 
 const Lang = imports.lang;
@@ -248,6 +249,19 @@ const ViewContainer = new Lang.Class({
 
                 whereRenderer.text = doc.sourceName;
             }));
+
+      /*  let shareRenderer =
+            new Gd.StyledTextRenderer({ xpad: 16 });
+        shareRenderer.add_class('dim-label');
+        shareRenderer.max_width_chars = 16;
+        shareRenderer.ellipsize = Pango.EllipsizeMode.END;
+        listWidget.add_renderer(shareRenderer, Lang.bind(this,
+            function(col, cell, model, iter) {
+                let id = model.get_value(iter, Gd.MainColumns.ID);
+                let doc = Global.documentManager.getItemById(id);
+ 
+                shareRenderer.text = doc.contributor;
+             }));*/
 
         let dateRenderer =
             new Gtk.CellRendererText({ xpad: 32 });

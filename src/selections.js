@@ -237,7 +237,7 @@ const SetCollectionForSelectionJob = new Lang.Class({
         let urns = Global.selectionController.getSelection();
         urns.forEach(Lang.bind(this,
             function(urn) {
-                // never add a collection to itself!!
+                // never add a collection to itself!!#FIXME this code doesn't work, I can add a collection to itself
                 if (urn == this._collectionUrn)
                     return;
 
@@ -953,7 +953,6 @@ const SelectionToolbar = new Lang.Class({
     },
 
     _onToolbarShare: function(widget) {
-      //  let urn = Global.selectionController.getSelection();
 	    let dialog = new Sharing.SharingDialog();
         this._fadeOut();
 
