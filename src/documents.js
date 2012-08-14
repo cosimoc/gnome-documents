@@ -287,6 +287,7 @@ const DocCommon = new Lang.Class({
 
         this.favorite = false;
         this.shared = false;
+        
 
         this.collection = false;
         this._collectionIconWatcher = null;
@@ -326,7 +327,8 @@ const DocCommon = new Lang.Class({
         this.author = cursor.get_string(Query.QueryColumns.AUTHOR)[0];
         this.resourceUrn = cursor.get_string(Query.QueryColumns.RESOURCE_URN)[0];
         this.favorite = cursor.get_boolean(Query.QueryColumns.FAVORITE);
-
+   
+  
         let mtime = cursor.get_string(Query.QueryColumns.MTIME)[0];
         if (mtime) {
             let timeVal = GLib.time_val_from_iso8601(mtime)[1];

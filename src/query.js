@@ -221,6 +221,16 @@ const QueryBuilder = new Lang.Class({
         return new Query(sparql);
     },
 
+    //query for all the contributors for 
+    buildFetchContactsQuery: function(resource) {
+        let sparql =
+            ('SELECT ' +
+             'nco:contributor' +
+             'WHERE { ?urn nco:contributor ?contributor FILTER ( ?contributor != ?creator )}');
+
+        return new Query(sparql);
+    },
+
     // queries for all the items which are part of the given collection
     buildCollectionIconQuery: function(resource) {
         let sparql =
