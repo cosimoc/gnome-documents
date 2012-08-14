@@ -19,7 +19,6 @@
  *
  */
 
-#include "gd-main-view.h"
 #include "gd-main-view-generic.h"
 
 typedef GdMainViewGenericIface GdMainViewGenericInterface;

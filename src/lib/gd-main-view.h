@@ -55,16 +55,6 @@ typedef struct _GdMainViewClass GdMainViewClass;
 typedef struct _GdMainViewPrivate GdMainViewPrivate;
 
 typedef enum {
-  GD_MAIN_COLUMN_ID,
-  GD_MAIN_COLUMN_URI,
-  GD_MAIN_COLUMN_TITLE,
-  GD_MAIN_COLUMN_AUTHOR,
-  GD_MAIN_COLUMN_ICON,
-  GD_MAIN_COLUMN_MTIME,
-  GD_MAIN_COLUMN_SELECTED
-} GdMainColumns;
-
-typedef enum {
   GD_MAIN_VIEW_ICON,
   GD_MAIN_VIEW_LIST
 } GdMainViewType;

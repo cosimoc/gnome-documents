@@ -20,7 +20,6 @@
  */
 
 #include "gd-main-icon-view.h"
-#include "gd-main-view.h"
 #include "gd-main-view-generic.h"
 #include "gd-toggle-pixbuf-renderer.h"
 #include "gd-two-lines-renderer.h"

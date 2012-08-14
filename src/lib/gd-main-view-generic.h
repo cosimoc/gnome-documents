@@ -28,6 +28,16 @@
 
 G_BEGIN_DECLS
 
+typedef enum {
+  GD_MAIN_COLUMN_ID,
+  GD_MAIN_COLUMN_URI,
+  GD_MAIN_COLUMN_TITLE,
+  GD_MAIN_COLUMN_AUTHOR,
+  GD_MAIN_COLUMN_ICON,
+  GD_MAIN_COLUMN_MTIME,
+  GD_MAIN_COLUMN_SELECTED
+} GdMainColumns;
+
 #define GD_TYPE_MAIN_VIEW_GENERIC gd_main_view_generic_get_type()
 
 #define GD_MAIN_VIEW_GENERIC(obj) \
