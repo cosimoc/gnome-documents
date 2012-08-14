@@ -8,6 +8,7 @@ src/lib/gd-pdf-loader.c
 src/mainToolbar.js
 src/mainWindow.js
 src/notifications.js
+src/properties.js
 src/searchbar.js
 src/selections.js
 src/shellSearchProvider.js
