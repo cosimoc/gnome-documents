@@ -1,3 +1,0 @@
-[D-BUS Service]
-Name=org.gnome.Documents.ZpjMiner
-Exec=/opt/gnome/libexec/gd-tracker-zpj-miner
