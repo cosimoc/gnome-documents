@@ -56,7 +56,7 @@ const SharingDialog = new Lang.Class({
         this._resourceUrn = doc.resourceUrn;
         this._identifier = doc.identifier;
         
-	    
+	    this._getEntry();
         let toplevel = Global.application.application.get_windows()[0];
 
         this.widget = new Gtk.Dialog({ resizable: false, 
