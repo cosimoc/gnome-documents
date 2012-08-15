@@ -863,15 +863,10 @@ const SelectionToolbar = new Lang.Class({
                     (apps.indexOf(doc.defaultAppName) == -1))
                     apps.push(doc.defaultAppName);
 
-		if ((doc instanceof Documents.LocalDocument)||
-		    (doc.collection != false))
-		    showShare = false;
-
-
-		if ((doc instanceof Documents.LocalDocument)||
-		    (doc.collection != false))
-		    showShare = false;
-
+		if ((doc instanceof Documents.LocalDocument) ||
+                    (doc.collection != false) ||
+                    (selection.length > 1))
+                    showShare = false;
 
                 showTrash &= doc.canTrash();
                 showPrint &= !doc.collection;

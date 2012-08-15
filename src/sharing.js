@@ -99,8 +99,8 @@ const SharingDialog = new Lang.Class({
                         	            use_markup: true, 
                              	        hexpand: false });
         grid.add(this._setting);
-	 
-	    this._changePermission = new Gtk.Button({ label: _("Change"), //Label for permission change in Sharing dialog
+	
+        this._changePermission = new Gtk.Button({ label: _("Change"), //Label for permission change in Sharing dialog
 						                          halign: Gtk.Align.START });
         this._changePermission.connect("clicked", Lang.bind(this, this._permissionPopUp));
         grid.attach_next_to (this._changePermission, this._setting, 1, 1, 1);  
@@ -118,14 +118,14 @@ const SharingDialog = new Lang.Class({
         sw.add_with_viewport(grid);
       	let contentArea = this.widget.get_content_area();
       
-	    this._done = new Gtk.Button(); 
+        this._done = new Gtk.Button(); 
         this.widget.add_button('Done', Gtk.ResponseType.OK); //Label for Done button in Sharing dialog 
         
         this._label = new Gtk.Label ({ label: '<b>' + _("Sharing Settings") + '</b>', //Label for Sharing dialog
        					               halign: Gtk.Align.END,
 					                   use_markup: true });
         this._label.get_style_context ().add_class('dim-label');
-	    largeGrid.add(this._label);
+        largeGrid.add(this._label);
         largeGrid.add(sw);
         
         
@@ -164,7 +164,7 @@ const SharingDialog = new Lang.Class({
 
         largeGrid.add(buttonBox);  
         
-		contentArea.pack_start(largeGrid, true, true, 1);
+        contentArea.pack_start(largeGrid, true, true, 1);
 	    this.widget.show_all();
     },
 
@@ -220,14 +220,14 @@ const SharingDialog = new Lang.Class({
          },
 
     _createGDataEntry: function() {
-                let source = Global.sourceManager.getItemById(this.resourceUrn);
+        let source = Global.sourceManager.getItemById(this.resourceUrn);
 
-                let authorizer = new Gd.GDataGoaAuthorizer({ goa_object: source.object });
-                let service = new GData.DocumentsService({ authorizer: authorizer }); 
+        let authorizer = new Gd.GDataGoaAuthorizer({ goa_object: source.object });
+        let service = new GData.DocumentsService({ authorizer: authorizer }); 
 
-                service.query_single_entry_async
-                 (service.get_primary_authorization_domain(),
-                    this.identifier, null,
+        service.query_single_entry_async
+            (service.get_primary_authorization_domain(),
+                this.identifier, null,
                     GData.DocumentsText,
                     null, Lang.bind(this,
                         function(object, res) {
@@ -243,7 +243,7 @@ const SharingDialog = new Lang.Class({
                                 log("Error getting GData Entry");   
                             }         
                                 
-                    }));
+                     }));
     },
  
     _getGDataEntryRules: function(entry, service) {  
@@ -257,31 +257,31 @@ const SharingDialog = new Lang.Class({
     _onGetRulesComplete: function(entry, result, service) {
          let feed = null;
          let exception = null;
-        try {
-		       let feed = service.query_finish(result);
-                log(feed);
-		        this._getRulesEntry(feed, service); 
-		        } catch(e) {
-		         exception = e;
-                log("Error getting GDataEntry Rules");  
-		     }
+         try {
+		      let feed = service.query_finish(result);
+              log(feed);
+		      this._getRulesEntry(feed, service); 
+		 } catch(e) {
+		      exception = e;
+              log("Error getting GDataEntry Rules");  
+		 }
 	  },
      
      _getRulesEntry: function(feed, service) {
+        this._scope = [scopeType, scopeValue];
         let exception = null;
         try {
-	        for (var i = feed.get_entries(); i != null; i++) {
-	   
-      [scopeType, scopeValue] = feed.get_scope();
-       
-      log([scopeType, scopeValue]);   }
-         }catch(e) {
-		         exception = e;
-              log("Error getting ACL Scope");  }
+            this._scope.push(feed.get_scope(result));
+            log(this._scope);
+        }catch(e) {
+		    exception = e;
+            log("Error getting ACL Scope");  
+        }
         
     },
 
     _setContact: function() {
+        entry.rule_new
         
     },
 
