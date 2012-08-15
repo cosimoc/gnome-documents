@@ -127,9 +127,9 @@ gd_main_list_view_constructed (GObject *obj)
                 NULL);
   gtk_tree_view_column_pack_start (self->priv->tree_col, cell, TRUE);
   gtk_tree_view_column_add_attribute (self->priv->tree_col, cell,
-                                      "text", GD_MAIN_COLUMN_TITLE);
+                                      "text", GD_MAIN_COLUMN_PRIMARY_TEXT);
   gtk_tree_view_column_add_attribute (self->priv->tree_col, cell,
-                                      "line-two", GD_MAIN_COLUMN_AUTHOR);
+                                      "line-two", GD_MAIN_COLUMN_SECONDARY_TEXT);
 
   gtk_tree_view_enable_model_drag_source (GTK_TREE_VIEW (self),
                                           GDK_BUTTON1_MASK,
