@@ -53,10 +53,11 @@ const SharingDialog = new Lang.Class({
 
         this._docId = doc.id;
         this._contributor = doc.contributor;
-        this._resourceUrn = doc.resourceUrn;
-        this._identifier = doc.identifier;
+        this.resourceUrn = doc.resourceUrn;
+        this.identifier = doc.identifier;
         
-	    this._getEntry();
+	    this._createGDataEntry();
+
         let toplevel = Global.application.application.get_windows()[0];
 
         this.widget = new Gtk.Dialog({ resizable: false, 
@@ -218,38 +219,39 @@ const SharingDialog = new Lang.Class({
 	        this.popUpWindow.show_all();
          },
 
-    _getEntry: function() {
-                let source = Global.sourceManager.getItemById(this._resourceUrn);
+    _createGDataEntry: function() {
+                let source = Global.sourceManager.getItemById(this.resourceUrn);
+
                 let authorizer = new Gd.GDataGoaAuthorizer({ goa_object: source.object });
                 let service = new GData.DocumentsService({ authorizer: authorizer }); 
 
                 service.query_single_entry_async
                  (service.get_primary_authorization_domain(),
-                    this._identifier, null,
+                    this.identifier, null,
                     GData.DocumentsText,
                     null, Lang.bind(this,
                         function(object, res) {
                             let entry = null;
                             let exception = null;
 
-                     try {
-                         entry = object.query_single_entry_finish(res);
-                         log(entry);
-                         this._getRules(entry, service);
-                     } catch (e) {
-                         exception = e;
-                         log("error");   
-                     }    
-                    
-                 }));
+                            try {
+                                entry = object.query_single_entry_finish(res);
+                                log(entry);
+                                this._getGDataEntryRules(entry, service);
+                            } catch (e) {
+                                exception = e;
+                                log("Error getting GData Entry");   
+                            }         
+                                
+                    }));
     },
  
-    _getRules: function(entry, service) {  
+    _getGDataEntryRules: function(entry, service) {  
          entry.get_rules_async
-                        (service,
-                            null,
-                            null,
-                Lang.bind(this, this._onGetRulesComplete, service));
+            (service,
+             null,
+             null,
+             Lang.bind(this, this._onGetRulesComplete, service));
     }, 
 
     _onGetRulesComplete: function(entry, result, service) {
@@ -258,25 +260,24 @@ const SharingDialog = new Lang.Class({
         try {
 		       let feed = service.query_finish(result);
                 log(feed);
-		        this._getRulesEntry(); 
+		        this._getRulesEntry(feed, service); 
 		        } catch(e) {
 		         exception = e;
-                log("D:");  
+                log("Error getting GDataEntry Rules");  
 		     }
 	  },
      
-     _getRulesEntry: function() {
-       
-         let exception = null;
+     _getRulesEntry: function(feed, service) {
+        let exception = null;
         try {
-	    for (var i = feed.get_entries(); i != null; i++) {
+	        for (var i = feed.get_entries(); i != null; i++) {
 	   
-      [scope_type, scope_value] = feed.get_scope();
+      [scopeType, scopeValue] = feed.get_scope();
        
-      log("333!");   }
+      log([scopeType, scopeValue]);   }
          }catch(e) {
 		         exception = e;
-              log(":(");  }
+              log("Error getting ACL Scope");  }
         
     },
 
