@@ -88,6 +88,7 @@ const SharingDialog = new Lang.Class({
         	                       column_homogeneous: false,
                 	               halign: Gtk.Align.CENTER,
                         	       row_spacing: 12,
+                                   column_spacing: 6,
                                    margin_top: 12,
 				                   margin_bottom: 12});
         if(doc.shared)
@@ -101,7 +102,7 @@ const SharingDialog = new Lang.Class({
         grid.add(this._setting);
 	
         this._changePermission = new Gtk.Button({ label: _("Change"), //Label for permission change in Sharing dialog
-						                          halign: Gtk.Align.START });
+						                          halign: Gtk.Align.END });
         this._changePermission.connect("clicked", Lang.bind(this, this._permissionPopUp));
         grid.attach_next_to (this._changePermission, this._setting, 1, 1, 1);  
 
@@ -145,7 +146,7 @@ const SharingDialog = new Lang.Class({
         //but I don't see a method for this in GTK unless I put them in a toolbar, yuck.
 
         this._comboBoxText = new Gtk.ComboBoxText({ halign: Gtk.Align.START });
-        let combo = ["Can edit", "Can comment", "Can view"]; // Three permission setting labels in combobox
+        let combo = ["Set permission", "Can edit", "Can view" ]; // Three permission setting labels in combobox
         for (let i = 0; i < combo.length; i++)
             this._comboBoxText.append_text(combo[i]);
 
@@ -259,19 +260,22 @@ const SharingDialog = new Lang.Class({
          let exception = null;
          try {
 		      let feed = service.query_finish(result);
-              log(feed);
-		      this._getRulesEntry(feed, service); 
+              log(feed); 
 		 } catch(e) {
 		      exception = e;
-              log("Error getting GDataEntry Rules");  
+              log("Error getting ACL Rules");  
 		 }
+         this._getRulesEntry(feed, service);
 	  },
      
      _getRulesEntry: function(feed, service) {
-        this._scope = [scopeType, scopeValue];
+        this._scope = [GObject.TYPE_STRING,
+                       GObject.TYPE_STRING];
         let exception = null;
         try {
-            this._scope.push(feed.get_scope(result));
+             for(i = feed.get_entries; i != null; i++)
+                
+            this._scope.push(feed.get_scope);
             log(this._scope);
         }catch(e) {
 		    exception = e;
@@ -280,17 +284,22 @@ const SharingDialog = new Lang.Class({
         
     },
 
+
     _setContact: function() {
         entry.rule_new
         
     },
 
-    _setNewContactPermission: function() {
+    _setDocumentPermission: function() {
 
     },
     
-    _setDocumentPermission: function() {
-
+    _setNewContactPermission: function() {
+        let activeItem = this._comboBoxText.get_active();
+        if(activeItem == 1)
+           scopeType.set_role(GData.DocumentsEntry{( access_role: writer )});
+        if(activeItem == 2)
+           scopeType.set_role(GData.DocumentsEntry{( access_role: reader )};
     },
 
     _prepareEmail: function() {
