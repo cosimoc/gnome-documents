@@ -66,12 +66,12 @@ const SharingDialog = new Lang.Class({
 
         this.widget = new Gtk.Dialog({ resizable: false, 
                 	                   transient_for: toplevel,
-                        	            modal: true,
-                                	    destroy_with_parent: true,
-                                        default_width: 100, 
-					                    default_height: 200,
-                                        margin_top: 5, 
-                                        hexpand: true });
+                        	           modal: true,
+                                	   destroy_with_parent: true,
+                                       default_width: 100, 
+					                   default_height: 200,
+                                       margin_top: 5, 
+                                       hexpand: true });
 
         let largeGrid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL, 
         	                           column_homogeneous: false,
@@ -89,12 +89,12 @@ const SharingDialog = new Lang.Class({
         let collView = new OrganizeContactView();
 
         let grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL, 
-        	                       column_homogeneous: false,
-                	               halign: Gtk.Align.CENTER,
-                        	       row_spacing: 12,
-                                   column_spacing: 6,
-                                   margin_top: 12,
-				                   margin_bottom: 12});
+        	                      column_homogeneous: false,
+                	              halign: Gtk.Align.CENTER,
+                        	      row_spacing: 12,
+                                  column_spacing: 6,
+                                  margin_top: 12,
+				                  margin_bottom: 12});
         if(doc.shared)
             this._permissionLabel = "Shared"; //label for shared permission setting 
         else 
@@ -176,23 +176,23 @@ const SharingDialog = new Lang.Class({
         this.popUpWindow  = new Gtk.Dialog({ resizable: false, 
                 			                 transient_for: this.widget,
                         			         modal: true,
-                                		     destroy_with_parent: true,
-						                     default_width: 400,
-						                     default_height: 600,
-                                       		 hexpand: false });
+                                             destroy_with_parent: true,
+                                             default_width: 400,
+                                             default_height: 600,
+                                             hexpand: false });
        
          let popUpGrid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL, 
-        				                column_homogeneous: true,
-                			            halign: Gtk.Align.CENTER,
-                        		        row_spacing: 12,
-					                    column_spacing: 24,
-					                    margin_left: 24,
-					                    margin_right: 24,
+                                        column_homogeneous: true,
+                                        halign: Gtk.Align.CENTER,
+                                        row_spacing: 12,
+                                        column_spacing: 24,
+                                        margin_left: 24,
+                                        margin_right: 24,
 					                    margin_bottom: 12 });
 
 	      this._label = new Gtk.Label({ label: '<b>'+_("Sharing Settings")+'</b>', //Label for permissions dialog
-       					                halign: Gtk.Align.END,
-					                    use_markup: true });
+                                        halign: Gtk.Align.END,
+                                        use_markup: true });
           this._label.get_style_context().add_class('dim-label');
 	      popUpGrid.add(this._label);
 
