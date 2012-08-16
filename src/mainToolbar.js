@@ -194,13 +194,14 @@ const OverviewToolbar = new Lang.Class({
     },
 
     _populateForSelectionMode: function() {
-        this.widget.get_style_context().add_class('documents-selection-mode');
+        this.widget.get_style_context().add_class('selection-mode');
         this.widget.reset_style();
 
         this.addSearchButton();
 
         let selectionButton =
             this.widget.add_button(null, _("Done"), false);
+        selectionButton.get_style_context().add_class('suggested-action');
         selectionButton.connect('clicked', Lang.bind(this,
             function() {
                 Global.selectionController.setSelectionMode(false);
@@ -264,7 +265,7 @@ const OverviewToolbar = new Lang.Class({
     _clearToolbar: function() {
         this._clearStateData();
 
-        this.widget.get_style_context().remove_class('documents-selection-mode');
+        this.widget.get_style_context().remove_class('selection-mode');
         this.widget.reset_style();
         this.widget.clear();
     },
