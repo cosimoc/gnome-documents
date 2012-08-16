@@ -8,18 +8,19 @@ msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-04-05 14:59+0000\n"
-"PO-Revision-Date: 2012-04-09 12:17+0530\n"
+"POT-Creation-Date: 2012-08-14 22:20+0000\n"
+"PO-Revision-Date: 2012-08-16 11:00+0530\n"
 "Last-Translator: Sandeep Shedmake <sshedmak@redhat.com>\n"
 "Language-Team: Marathi <mr@li.org>\n"
+"Language: mr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: mr\n"
-"X-Generator: Lokalize 1.2\n"
+"X-Generator: Lokalize 1.4\n"
 
-#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:54
+#: ../data/gnome-documents.desktop.in.in.h:1 ../src/mainWindow.js:51
+#: ../src/mainWindow.js:205
 msgid "Documents"
 msgstr "दस्तऐवज"
 
@@ -31,7 +32,8 @@ msgstr "दस्तऐवजकरीता प्रवेश, व्यवस
 msgid "Docs;PDF;Document;"
 msgstr "डॉक्स;PDF;दस्तऐवज;"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:1 ../src/application.js:131
+#: ../data/org.gnome.documents.gschema.xml.in.h:1
+#: ../src/resources/app-menu.ui.h:1
 msgid "View as"
 msgstr "असे अवलोकन"
 
@@ -40,301 +42,356 @@ msgid "View as type"
 msgstr "प्रकार अवलोकन"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:3
-msgid "The active source filter"
-msgstr "सक्रीय सोअर्स फिल्टर"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:4
-msgid "The last active source filter"
-msgstr "शेटवचे सक्रिय सोअर्स फिल्टर"
-
-#: ../data/org.gnome.documents.gschema.xml.in.h:5
 msgid "Window size"
 msgstr "पटल आकार"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:6
+#: ../data/org.gnome.documents.gschema.xml.in.h:4
 msgid "Window size (width and height)."
 msgstr "पटल आकार (रूंदी व ऊंची)."
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:7
+#: ../data/org.gnome.documents.gschema.xml.in.h:5
 msgid "Window position"
 msgstr "पटलाचे ठिकाण"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:8
+#: ../data/org.gnome.documents.gschema.xml.in.h:6
 msgid "Window position (x and y)."
 msgstr "पटलाचे ठिकाण (x व y)."
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:9
+#: ../data/org.gnome.documents.gschema.xml.in.h:7
 msgid "Window maximized"
 msgstr "पटल मोठे करा"
 
-#: ../data/org.gnome.documents.gschema.xml.in.h:10
+#: ../data/org.gnome.documents.gschema.xml.in.h:8
 msgid "Window maximized state"
 msgstr "पटल मोठे केल्याचे स्तर"
 
-#: ../src/application.js:129
-msgid "Grid"
-msgstr "ग्रिड"
-
-#: ../src/application.js:130
-msgid "List"
-msgstr "सूची"
-
-#: ../src/application.js:134
-msgid "Fullscreen"
-msgstr "पडदाभर"
-
-#: ../src/application.js:137
-msgid "About Documents"
-msgstr "दस्तऐवज विषयी"
-
-#: ../src/application.js:138
-msgid "Quit"
-msgstr "बाहेर पडा"
-
-#: ../src/documents.js:619 ../src/sources.js:100
+#: ../src/documents.js:650 ../src/sources.js:95
 msgid "Local"
 msgstr "स्थानीय"
 
 #. overridden
-#: ../src/documents.js:675
+#: ../src/documents.js:703
 msgid "Google Docs"
 msgstr "गूगल डॉक्स"
 
-#: ../src/documents.js:676
+#: ../src/documents.js:704
 msgid "Google"
 msgstr "गूगल"
 
-#: ../src/documents.js:745
+#: ../src/documents.js:768 ../src/documents.js:907
 msgid "Spreadsheet"
 msgstr "स्प्रेडशीट"
 
-#: ../src/documents.js:747
+#: ../src/documents.js:770 ../src/documents.js:909
 msgid "Presentation"
 msgstr "प्रस्तुतीकरण"
 
-#: ../src/documents.js:749
+#: ../src/documents.js:772 ../src/documents.js:911
 msgid "Collection"
 msgstr "गोलाकार"
 
-#: ../src/documents.js:751
+#: ../src/documents.js:774 ../src/documents.js:913
 msgid "Document"
 msgstr "दस्तऐवज"
 
+#. overridden
+#: ../src/documents.js:841 ../src/documents.js:842
+msgid "Skydrive"
+msgstr "स्कायड्राइव्ह"
+
 #. Translators: %s is the title of a document
-#: ../src/error.js:37
+#: ../src/documents.js:1025
 #, c-format
 msgid "Unable to load \"%s\" for preview"
 msgstr "पूर्वावलोकनकरीता \"%s\" लोड करणे अशक्य"
 
-#: ../src/error.js:49
-msgid "Unable to fetch the list of documents"
-msgstr "दस्तऐवजांची सूची प्राप्त करणे अशक्य"
-
-#. right section
-#: ../src/lib/gd-main-toolbar.c:269
-msgid "Done"
-msgstr "पूर्ण झाले"
-
-#: ../src/lib/gd-pdf-loader.c:208
+#: ../src/lib/gd-pdf-loader.c:224
 msgid "Unable to load the document"
 msgstr "दस्तऐज लोड करणे अशक्य"
 
-#: ../src/lib/gd-pdf-loader.c:489
+#: ../src/lib/gd-pdf-loader.c:673
 msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
 msgstr "\"unoconv\" शोधणे अशक्य, कृपया LibreOffice प्रतिष्ठापनची तपासणी करा"
 
-#: ../src/loadMore.js:70
-#, c-format
-msgid "Load %d more document"
-msgid_plural "Load %d more documents"
-msgstr[0] "%d दस्तऐवज लोड करा"
-msgstr[1] "%d दस्तऐवज लोड करा"
+#: ../src/mainToolbar.js:73
+msgid "Search"
+msgstr "शोधा"
 
-#: ../src/mainToolbar.js:194
+#: ../src/mainToolbar.js:158
 msgid "New and Recent"
 msgstr "नविन व नुकतेच"
 
-#: ../src/mainToolbar.js:201
+#: ../src/mainToolbar.js:165
 #, c-format
 msgid "Results for \"%s\""
 msgstr "\"%s\" करीता परिणाम"
 
-#: ../src/mainToolbar.js:203
+#: ../src/mainToolbar.js:167
 msgid "filtered by title"
 msgstr "शीर्षकतर्फे फिल्टर केले"
 
-#: ../src/mainToolbar.js:205
+#: ../src/mainToolbar.js:169
 msgid "filtered by author"
 msgstr "ऑथरतर्फे फिल्टर केले"
 
-#: ../src/mainToolbar.js:218
-#, c-format
-msgid "%d of %d"
-msgstr "%d, %d पैकी"
-
-#: ../src/mainToolbar.js:224
+#: ../src/mainToolbar.js:176
 msgid "Click on items to select them"
 msgstr "निवडण्याकरीता घटकांवर क्लिक करा"
 
-#: ../src/mainToolbar.js:226
+#: ../src/mainToolbar.js:178
 #, c-format
 msgid "%d selected"
 msgid_plural "%d selected"
 msgstr[0] "%d निवडले"
 msgstr[1] "%d निवडले"
 
-#: ../src/mainWindow.js:252
+#: ../src/mainToolbar.js:203 ../src/properties.js:58
+msgid "Done"
+msgstr "पूर्ण झाले"
+
+#: ../src/mainToolbar.js:220
+msgid "Back"
+msgstr "मागे"
+
+#: ../src/mainToolbar.js:238
+msgid "Select Items"
+msgstr "घटके नीवडा"
+
+#: ../src/mainWindow.js:204
 msgid "translator-credits"
 msgstr "संदिप शेडमाके <sshedmak@redhat.com>, 2012"
 
-#: ../src/mainWindow.js:253
-msgid "GNOME Documents"
-msgstr "GNOME दस्तऐवज"
-
-#: ../src/mainWindow.js:254
+#: ../src/mainWindow.js:206
 msgid "A document manager application"
 msgstr "दस्तऐवज व्यवस्थापक ॲप्लिकेशन"
 
-#: ../src/notifications.js:85
+#: ../src/notifications.js:84
 #, c-format
 msgid "Printing \"%s\": %s"
 msgstr "\"%s\": %s ची छपाई करत आहे"
 
-#: ../src/searchbar.js:86
-msgid "Category"
-msgstr "विभाग"
+#. Properties dialog heading
+#: ../src/properties.js:73 ../src/selections.js:774
+msgid "Properties"
+msgstr " गुणधर्म"
 
-#: ../src/searchbar.js:91 ../src/searchbar.js:141 ../src/searchbar.js:210
-#: ../src/sources.js:94
-msgid "All"
-msgstr "सर्व"
+#. Title item
+#: ../src/properties.js:81 ../src/searchbar.js:225
+msgid "Title"
+msgstr "शीर्षक"
 
-#: ../src/searchbar.js:97
-msgid "Favorites"
-msgstr "पसंतीचे"
+#: ../src/properties.js:88 ../src/searchbar.js:227
+msgid "Author"
+msgstr "लेखक"
 
-#: ../src/searchbar.js:102
-msgid "Shared with you"
-msgstr "तुमच्यासह शेअर केले"
+#. Source item
+#: ../src/properties.js:95
+#| msgid "Sources"
+msgid "Source"
+msgstr "स्रोत"
 
-#: ../src/searchbar.js:138
+#. Date Modified item
+#: ../src/properties.js:101
+msgid "Date Modified"
+msgstr "संपादित केलेले दिनांक"
+
+#: ../src/properties.js:108
+msgid "Date Created"
+msgstr "निर्माण केल्याचे दिनांक"
+
+#. Document type item
+#: ../src/properties.js:115 ../src/searchbar.js:135
 msgid "Type"
 msgstr "प्रकार"
 
-#: ../src/searchbar.js:143
+#: ../src/searchbar.js:83
+msgid "Category"
+msgstr "विभाग"
+
+#: ../src/searchbar.js:88 ../src/searchbar.js:138 ../src/searchbar.js:223
+#: ../src/sources.js:89
+msgid "All"
+msgstr "सर्व"
+
+#: ../src/searchbar.js:94
+msgid "Favorites"
+msgstr "पसंतीचे"
+
+#: ../src/searchbar.js:99
+msgid "Shared with you"
+msgstr "तुमच्यासह शेअर केले"
+
+#: ../src/searchbar.js:140
 msgid "Collections"
 msgstr "कलेक्शन्स्"
 
-#: ../src/searchbar.js:147
+#: ../src/searchbar.js:144
 msgid "PDF Documents"
 msgstr "PDF दस्तऐवज"
 
-#: ../src/searchbar.js:150
+#: ../src/searchbar.js:148
 msgid "Presentations"
 msgstr "प्रस्तुतिकरण"
 
-#: ../src/searchbar.js:153
+#: ../src/searchbar.js:151
 msgid "Spreadsheets"
 msgstr "स्प्रेडशीटस्"
 
-#: ../src/searchbar.js:156
+#: ../src/searchbar.js:154
 msgid "Text Documents"
 msgstr "मजकूर दस्तऐवज"
 
 #. Translators: this is a verb that refers to "All", "Title" and "Author",
 #. as in "Match All", "Match Title" and "Match Author"
-#: ../src/searchbar.js:207
+#: ../src/searchbar.js:220
 msgid "Match"
 msgstr "मॅच"
 
-#: ../src/searchbar.js:212
-msgid "Title"
-msgstr "शीर्षक"
+#: ../src/selections.js:780
+msgid "Print"
+msgstr "छपाई"
 
-#: ../src/searchbar.js:214
-msgid "Author"
-msgstr "लेखक"
-
-#: ../src/selections.js:735
+#: ../src/selections.js:795
 msgid "Organize"
 msgstr "व्यवस्थापित करा"
 
-#: ../src/selections.js:742
+#: ../src/selections.js:802
 msgid "Delete"
 msgstr "नष्ट करा"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:842 ../src/view.js:69
+#: ../src/selections.js:894
 #, c-format
 msgid "Open with %s"
 msgstr "%s सह उघडा"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:845 ../src/view.js:72
+#: ../src/selections.js:897 ../src/resources/preview-menu.ui.h:1
 msgid "Open"
 msgstr "उघडा"
 
-#: ../src/selections.js:858 ../src/view.js:82
+#: ../src/selections.js:906
 msgid "Remove from favorites"
 msgstr "पसंतीतून काढून टाकतो"
 
-#: ../src/selections.js:862 ../src/view.js:82
+#: ../src/selections.js:910
 msgid "Add to favorites"
 msgstr "पंसतीमध्ये समाविष्ट करा"
 
-#: ../src/shellSearchProvider.js:285
+#: ../src/shellSearchProvider.js:281
 msgid "Untitled Document"
 msgstr "विनाशीर्षक दस्तऐवज"
 
-#: ../src/sources.js:90
+#: ../src/sources.js:85
 msgid "Sources"
 msgstr "सोअर्सेस्"
 
-#: ../src/spinnerBox.js:58
+#: ../src/spinnerBox.js:56
 msgid "Loading..."
 msgstr "लोड करत आहे..."
 
-#: ../src/view.js:198
+#: ../src/view.js:78
+#, c-format
+msgid "Load %d more document"
+msgid_plural "Load %d more documents"
+msgstr[0] "%d दस्तऐवज लोड करा"
+msgstr[1] "%d दस्तऐवज लोड करा"
+
+#: ../src/view.js:270
 msgid "Yesterday"
 msgstr "काल"
 
-#: ../src/view.js:200
+#: ../src/view.js:272
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "%d दिवस अगोदर"
 msgstr[1] "%d दिवस अगोदर"
 
-#: ../src/view.js:204
+#: ../src/view.js:276
 msgid "Last week"
 msgstr "शेवटचा सप्ताह"
 
-#: ../src/view.js:206
+#: ../src/view.js:278
 #, c-format
 msgid "%d week ago"
 msgid_plural "%d weeks ago"
 msgstr[0] "%d सप्ताह अगोदर"
 msgstr[1] "%d सप्ताह अगोदर"
 
-#: ../src/view.js:210
+#: ../src/view.js:282
 msgid "Last month"
 msgstr "शेटवचा महिना"
 
-#: ../src/view.js:212
+#: ../src/view.js:284
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
 msgstr[0] "%d महिना अगोदर"
 msgstr[1] "%d महिना अगोदर"
 
-#: ../src/view.js:216
+#: ../src/view.js:288
 msgid "Last year"
 msgstr "शेवटचा वर्ष"
 
-#: ../src/view.js:218
+#: ../src/view.js:290
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"
 msgstr[0] "%d वर्ष अगोदर"
 msgstr[1] "%d वर्ष अगोदर"
 
+#: ../src/resources/app-menu.ui.h:2
+msgid "Grid"
+msgstr "ग्रिड"
+
+#: ../src/resources/app-menu.ui.h:3
+msgid "List"
+msgstr "सूची"
+
+#: ../src/resources/app-menu.ui.h:4
+msgid "Fullscreen"
+msgstr "पडदाभर"
+
+#: ../src/resources/app-menu.ui.h:5
+msgid "About Documents"
+msgstr "दस्तऐवज विषयी"
+
+#: ../src/resources/app-menu.ui.h:6
+msgid "Quit"
+msgstr "बाहेर पडा"
+
+#: ../src/resources/preview-menu.ui.h:2
+msgid "Print..."
+msgstr "छपाई..."
+
+#: ../src/resources/preview-menu.ui.h:3
+msgid "Zoom In"
+msgstr "मोठे करा"
+
+#: ../src/resources/preview-menu.ui.h:4
+msgid "Zoom Out"
+msgstr "लहान करा"
+
+#: ../src/resources/preview-menu.ui.h:5
+msgid "Rotate Left"
+msgstr "डावीकडे फिरवा"
+
+#: ../src/resources/preview-menu.ui.h:6
+msgid "Rotate Right"
+msgstr "उजवीकडे फिरवा"
+
+#~ msgid "The active source filter"
+#~ msgstr "सक्रीय सोअर्स फिल्टर"
+
+#~ msgid "The last active source filter"
+#~ msgstr "शेटवचे सक्रिय सोअर्स फिल्टर"
+
+#~ msgid "Unable to fetch the list of documents"
+#~ msgstr "दस्तऐवजांची सूची प्राप्त करणे अशक्य"
+
+#~ msgid "%d of %d"
+#~ msgstr "%d, %d पैकी"
+
+#~ msgid "GNOME Documents"
+#~ msgstr "GNOME दस्तऐवज"
