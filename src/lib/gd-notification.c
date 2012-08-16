@@ -111,7 +111,7 @@ gd_notification_init (GdNotification *notification)
   GdNotificationPrivate *priv;
 
   context = gtk_widget_get_style_context (GTK_WIDGET (notification));
-  gtk_style_context_add_class (context, "documents-notification");
+  gtk_style_context_add_class (context, "app-notification");
 
   gtk_widget_set_halign (GTK_WIDGET (notification), GTK_ALIGN_CENTER);
   gtk_widget_set_valign (GTK_WIDGET (notification), GTK_ALIGN_START);
