@@ -55,7 +55,11 @@ const SharingDialog = new Lang.Class({
         this._contributor = doc.contributor;
         this.resourceUrn = doc.resourceUrn;
         this.identifier = doc.identifier;
-        
+       
+        this.writer = false;
+        this.reader = false;
+        this.newContact = null;
+
 	    this._createGDataEntry();
 
         let toplevel = Global.application.application.get_windows()[0];
@@ -141,29 +145,28 @@ const SharingDialog = new Lang.Class({
 					                       hexpand: true,
 					                       halign: Gtk.Align.START });
         largeGrid.add(this._addContact);
-	    this._addContact.connect("activate", Lang.bind (this, this._setContact));//replace with add contact code
+	    this._addContact.connect("changed", Lang.bind (this, this._setContact));//replace with add contact code
         //I would like to set these so that they are invisible until they receive a "changed" signal from _addContact, 
         //but I don't see a method for this in GTK unless I put them in a toolbar, yuck.
 
         this._comboBoxText = new Gtk.ComboBoxText({ halign: Gtk.Align.START });
-        let combo = ["Set permission", "Can edit", "Can view" ]; // Three permission setting labels in combobox
+        let combo = ["Set permission", "Can edit", "Can view" ]; //Permission setting labels in combobox
         for (let i = 0; i < combo.length; i++)
             this._comboBoxText.append_text(combo[i]);
 
-        this._comboBoxText.set_active (0);
+        this._comboBoxText.set_active(0);
         this._comboBoxText.connect('changed', Lang.bind(this, this._setNewContactPermission));
         largeGrid.attach_next_to(this._comboBoxText, this._addContact, 1, 1, 1);
 
-        this._notify = new Gtk.CheckButton({ label: _("Notify people via email") }); //Label for checkbutton
+        this._notify = new Gtk.CheckButton({ label: _("Notify contact via gmail") }); //Label for checkbutton
         largeGrid.add(this._notify);
-        this._notify.set_active(true); 
+        this._notify.set_active(false); 
         this._notify.connect("toggled", Lang.bind(this, this._prepareEmail));//replace with don't send command? read this part of the api
 
         let buttonBox = new Gtk.ButtonBox({ orientation: Gtk.Orientation.HORIZONTAL });
         this._saveShare = new Gtk.Button({ label: "Add" }); 
-        largeGrid.attach_next_to(this._saveShare, this._comboBoxText, 1, 1, 1);
-
-        largeGrid.add(buttonBox);  
+        this._saveShare.connect ("clicked", Lang.bind(this, this._onAdd));
+        largeGrid.attach_next_to(this._saveShare, this._comboBoxText, 1, 1, 1);  
         
         contentArea.pack_start(largeGrid, true, true, 1);
 	    this.widget.show_all();
@@ -200,7 +203,7 @@ const SharingDialog = new Lang.Class({
 	        popUpGrid.attach(this.button1, 0, 2, 1, 1);
 
 	        this.button2 =  new Gtk.RadioButton({ label: "Private",  //Label for radiobutton that sets document permission to private
-                                                   group: this.button1 });   
+                                                  group: this.button1 });   
 	        this.button2.connect("toggled", Lang.bind(this, this._setDocumentPermission));
             this.button2.set_active (true);
 	        popUpGrid.attach(this.button2, 0, 3, 1, 1);
@@ -283,29 +286,51 @@ const SharingDialog = new Lang.Class({
         }
         
     },
+   
+    _setDocumentPermission: function() {
 
+    },   
 
     _setContact: function() {
-        entry.rule_new
+       
         
     },
 
-    _setDocumentPermission: function() {
-
+    _getContact: function() {
+        return this.newContact;
     },
-    
+  
     _setNewContactPermission: function() {
         let activeItem = this._comboBoxText.get_active();
         if(activeItem == 1)
-           scopeType.set_role(GData.DocumentsEntry{( access_role: writer )});
+            log("1");
+            this.writer = true;
         if(activeItem == 2)
-           scopeType.set_role(GData.DocumentsEntry{( access_role: reader )};
+           log("2");
+            this.reader = true;
     },
 
     _prepareEmail: function() {
-
+        if (this._notify.get_active()) 
+            log("share");//send email
+        else
+            log("don't share");//don't send email
+            this.email = true;  
     },
-       
+
+   _onAdd: function(){
+        if(this.newContact)
+            
+        //add new  _getContact();
+        if(this.writer)
+            //scopeType.set_role(GData.DocumentsEntry{( access_role: reader )};//pseduocode
+            log("writer");
+        if(this.reader)
+            log("reader");
+            //scopeType.set_role(GData.DocumentsEntry{( access_role: reader )};//pseudocode
+    
+   },
+     
     _destroyPopUpWindow : function() {
         this.popUpWindow.destroy();
 	  }
