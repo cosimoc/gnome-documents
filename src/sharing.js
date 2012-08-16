@@ -181,7 +181,7 @@ const SharingDialog = new Lang.Class({
                                              default_height: 600,
                                              hexpand: false });
        
-         let popUpGrid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL, 
+        let popUpGrid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL, 
                                         column_homogeneous: true,
                                         halign: Gtk.Align.CENTER,
                                         row_spacing: 12,
@@ -190,36 +190,36 @@ const SharingDialog = new Lang.Class({
                                         margin_right: 24,
                                         margin_bottom: 12 });
 
-	      this._label = new Gtk.Label({ label: '<b>'+_("Sharing Settings")+'</b>', //Label for permissions dialog
-                                        halign: Gtk.Align.END,
-                                        use_markup: true });
-          this._label.get_style_context().add_class('dim-label');
-	      popUpGrid.add(this._label);
+        this._label = new Gtk.Label({ label: '<b>'+_("Sharing Settings")+'</b>', //Label for permissions dialog
+                                      halign: Gtk.Align.END,
+                                      use_markup: true });
+        this._label.get_style_context().add_class('dim-label');
+        popUpGrid.add(this._label);
 
-	      this.button1 = new Gtk.RadioButton ({ label: "Shared" }); //Label for radiobutton that sets document permission to shared
-	      this.button1.connect("toggled", Lang.bind (this, this._setDocumentPermission)); 
-	      this.button1.set_active (false);
-	      popUpGrid.attach(this.button1, 0, 2, 1, 1);
+        this.button1 = new Gtk.RadioButton ({ label: "Shared" }); //Label for radiobutton that sets document permission to shared
+        this.button1.connect("toggled", Lang.bind (this, this._setDocumentPermission)); 
+        this.button1.set_active (false);
+        popUpGrid.attach(this.button1, 0, 2, 1, 1);
 
-	      this.button2 =  new Gtk.RadioButton({ label: "Private",  //Label for radiobutton that sets document permission to private
+        this.button2 =  new Gtk.RadioButton({ label: "Private",  //Label for radiobutton that sets document permission to private
                                                 group: this.button1 });   
-	      this.button2.connect("toggled", Lang.bind(this, this._setDocumentPermission));
-          this.button2.set_active (true);
-	      popUpGrid.attach(this.button2, 0, 3, 1, 1);
+        this.button2.connect("toggled", Lang.bind(this, this._setDocumentPermission));
+        this.button2.set_active (true);
+        popUpGrid.attach(this.button2, 0, 3, 1, 1);
            
-	      this.button3 = new Gtk.RadioButton({ label: "Public", //Label for radiobutton that sets document permission to public
+        this.button3 = new Gtk.RadioButton({ label: "Public", //Label for radiobutton that sets document permission to public
                                                group: this.button1 });
-	      this.button3.connect("toggled", Lang.bind(this, this._setDocumentPermission));
-		  popUpGrid.attach(this.button3, 0, 4, 1, 1);
+        this.button3.connect("toggled", Lang.bind(this, this._setDocumentPermission));
+        popUpGrid.attach(this.button3, 0, 4, 1, 1);
 
-	      this._close = new Gtk.Button({ label: "Done" });
-	      this._close.connect("clicked", Lang.bind(this, this._destroyPopUpWindow));
-	      popUpGrid.add(this._close);
+        this._close = new Gtk.Button({ label: "Done" });
+        this._close.connect("clicked", Lang.bind(this, this._destroyPopUpWindow));
+        popUpGrid.add(this._close);
 	     	   
 
-          let popUpContentArea = this.popUpWindow.get_content_area();
-	      popUpContentArea.pack_start(popUpGrid, true, true, 2);
-	      this.popUpWindow.show_all();
+        let popUpContentArea = this.popUpWindow.get_content_area();
+        popUpContentArea.pack_start(popUpGrid, true, true, 2);
+        this.popUpWindow.show_all();
     },
 
     _createGDataEntry: function() {
