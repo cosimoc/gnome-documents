@@ -145,7 +145,7 @@ const SharingDialog = new Lang.Class({
                                            hexpand: true,
                                            halign: Gtk.Align.START });
         largeGrid.add(this._addContact);
-        this._addContact.connect("changed", Lang.bind (this, this._setContact));//replace with add contact code
+        this._addContact.connect("changed", Lang.bind (this, this._setNewContact));//replace with add contact code
         //I would like to set these so that they are invisible until they receive a "changed" signal from _addContact, 
         //but I don't see a method for this in GTK unless I put them in a toolbar, yuck.
 
@@ -289,44 +289,49 @@ const SharingDialog = new Lang.Class({
 
     },   
 
-    _setContact: function() {
-       
+    _setNewContact: function() {
+      this.newContact = this._addContact.get_text();     
         
     },
 
-    _getContact: function() {
+    _getNewContact: function() {
         return this.newContact;
     },
   
     _setNewContactPermission: function() {
         let activeItem = this._comboBoxText.get_active();
-        if(activeItem == 1)
+        if(activeItem == 1) {
             log("1");
             this.writer = true;
-        if(activeItem == 2)
+        }
+        if(activeItem == 2) {
            log("2");
             this.reader = true;
+        }
     },
 
     _prepareEmail: function() {
-        if (this._notify.get_active()) 
+        if (this._notify.get_active()){
+           this.email = true;
             log("share");//send email
+        }
         else
             log("don't share");//don't send email
-            this.email = true;  
+              
     },
 
    _onAdd: function(){
-        if(this.newContact)
-            
-        //add new  _getContact();
-        if(this.writer)
+       this._getNewContact();
+           log(this.newContact); 
+        //insert new rule using gadata_access_rule_new 
+       if(this.writer)
             //scopeType.set_role(GData.DocumentsEntry{( access_role: reader )};//pseduocode
-            log("writer");
-        if(this.reader)
-            log("reader");
+           log("writer");
+       if(this.reader)
+           log("reader");
             //scopeType.set_role(GData.DocumentsEntry{( access_role: reader )};//pseudocode
-    
+       if(this.email)
+           log("send email");  
    },
      
     _destroyPopUpWindow : function() {
