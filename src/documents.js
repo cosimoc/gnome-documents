@@ -276,6 +276,7 @@ const DocCommon = new Lang.Class({
         this.author = null;
         this.mtime = null;
         this.resourceUrn = null;
+        this.contributor = null;
         this.pixbuf = null;
         this.pristinePixbuf = null;
         this.defaultAppName = null;
@@ -324,6 +325,9 @@ const DocCommon = new Lang.Class({
         this.identifier = cursor.get_string(Query.QueryColumns.IDENTIFIER)[0];
         this.author = cursor.get_string(Query.QueryColumns.AUTHOR)[0];
         this.resourceUrn = cursor.get_string(Query.QueryColumns.RESOURCE_URN)[0];
+
+        this.contributor = cursor.get_string(Query.QueryColumns.CONTRIBUTOR)[0];
+        log(this.contributor);
 
         let mtime = cursor.get_string(Query.QueryColumns.MTIME)[0];
         if (mtime) {

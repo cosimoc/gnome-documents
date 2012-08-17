@@ -30,7 +30,6 @@ let application = null;
 let collectionManager = null;
 let connection = null;
 let connectionQueue = null;
-let contactManager = null;
 let documentManager = null;
 let goaClient = null;
 let modeController = null;
@@ -49,7 +48,6 @@ let trackerController = null;
 function initSearch() {
     sourceManager = new Sources.SourceManager();
     collectionManager = new Manager.BaseManager();
-    contactManager = new Manager.BaseManager();
 
     searchCategoryManager = new Searchbar.SearchCategoryManager();
     searchMatchManager = new Searchbar.SearchMatchManager();

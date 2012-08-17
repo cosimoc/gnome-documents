@@ -38,7 +38,8 @@ const QueryColumns = {
     RDFTYPE: 8,
     RESOURCE_URN: 9,
     SHARED: 10,
-    DATE_CREATED: 11
+    DATE_CREATED: 11,
+    CONTRIBUTOR: 12
 };
 
 const QueryFlags = {
@@ -198,6 +199,7 @@ const QueryBuilder = new Lang.Class({
             'nie:dataSource(?urn) ' + // resource URN
             '( EXISTS { ?urn nco:contributor ?contributor FILTER ( ?contributor != ?creator ) } ) ' + // shared
             'tracker:coalesce(nfo:fileCreated(?urn), nie:contentCreated(?urn)) ' + // date created
+            '(SELECT nco:fullname(?contributor) WHERE { ?urn nco:contributor ?contributor FILTER ( ?contributor != ?creator ) }) ' +  //contributor
             whereSparql + tailSparql;
 
         return sparql;
@@ -217,16 +219,6 @@ const QueryBuilder = new Lang.Class({
     buildCountQuery: function() {
         let sparql = 'SELECT DISTINCT COUNT(?urn) ' +
             this._buildWhere(true, QueryFlags.NONE);
-
-        return new Query(sparql);
-    },
-
-    //query for all the contributors for 
-    buildFetchContactsQuery: function(resource) {
-        let sparql =
-            ('SELECT ' +
-             'nco:contributor' +
-             'WHERE { ?urn nco:contributor ?contributor FILTER ( ?contributor != ?creator )}');
 
         return new Query(sparql);
     },
