@@ -51,10 +51,11 @@ const SharingDialog = new Lang.Class({
         let urn = Global.selectionController.getSelection(); 
         let doc = Global.documentManager.getItemById(urn);
 
-        this._docId = doc.id;
         this._contributor = doc.contributor;
-        this.resourceUrn = doc.resourceUrn;
+        this._docId = doc.id;
         this.identifier = doc.identifier;
+        this.resourceUrn = doc.resourceUrn;
+       
        
         this.writer = false;
         this.reader = false;
@@ -258,31 +259,35 @@ const SharingDialog = new Lang.Class({
     }, 
 
     _onGetRulesComplete: function(entry, result, service) {
-         let feed = null;
+       
          let exception = null;
          try {
 		      let feed = service.query_finish(result);
               log(feed); 
+               if(feed)
+              this._getRulesEntry(feed);  
 		 } catch(e) {
 		      exception = e;
-              log("Error getting ACL Rules");  
+              log("Error getting ACL Rules"+e.message);  
 		 }
-         this._getRulesEntry(feed, service);
+            
 	  },
      
-     _getRulesEntry: function(feed, service) {
-        this._scope = [GObject.TYPE_STRING,
-                       GObject.TYPE_STRING];
+     _getRulesEntry: function(feed) {
+        let _scope = [];
         let exception = null;
-        try {
-             for(i = feed.get_entries; i != null; i++){
-                this._scope.push(feed.get_scope);
-                log(this._scope);
-             }
-        }catch(e) {
-            exception = e;
-            log("Error getting ACL Scope");  
-        }      
+         try {
+        let entries = feed.get_entries();
+               entries.forEach(Lang.bind(this, function(entry) {
+               let [type, value] = entry.get_scope();
+               _scope.push({ type: type, value: value });
+                log(_scope);
+             _setDocumentPermission: function(_scope)
+         }));
+     } catch(e) {
+		      exception = e;
+              log("Error getting ACL feed"+e.message);  
+		 }
     },
    
     _setDocumentPermission: function() {
@@ -336,134 +341,29 @@ const SharingDialog = new Lang.Class({
      
     _destroyPopUpWindow : function() {
         this.popUpWindow.destroy();
-	  }
+   }    
+});    
 
-    
-  });    
-
-
-const OrganizeModelColumns = {
-    ID: 0,
-    NAME: 1 };
-
-const OrganizeContactModel = new Lang.Class({
+/*const OrganizeContactModel = new Lang.Class({
     Name: 'OrganizeContactModel',
 
     _init: function() {
         this.model = Gtk.ListStore.new(
             [ GObject.TYPE_STRING,
               GObject.TYPE_STRING ]);
-        this._placeholderRef = null;
-
-        this._collAddedId =
-            Global.collectionManager.connect('item-added',
-                                             Lang.bind(this, this._onContactAdded));
-        this._collRemovedId =
-            Global.contactManager.connect('item-removed',
-                                             Lang.bind(this, this._onContactRemoved));
-
-        // populate the model
-      //  let job = new Fetch();
-       // job.run(Lang.bind(this, this._onFetchCollectionStateForSelection));
-    },
-
-    _onFetchCollectionStateForSelection: function(collectionState) {
-        this.removePlaceholder();
-
-        for (idx in collectionState) {
-            let item = Global.collectionManager.getItemById(idx);
-
-            if ((collectionState[item.id] & OrganizeCollectionState.HIDDEN) != 0)
-                continue;
-
-            let iter = this._findCollectionIter(item);
-
-            if (!iter)
-                iter = this.model.append();
-
-            this.model.set(iter,
-                [ 0, 1 ],
-                [ item.id, item.name ]);
-        }
-    },
-  
-    _refreshState: function() {
-        let job = new _getEntry();
-        job.run(Lang.bind(this, this._getEntry));
-    },
-
-    _onContactAdded: function(manager, itemAdded) {
-        this._refreshState();
-    },
-
-    _onContactRemoved: function(manager, itemRemoved) {
-        let iter = this._findCollectionIter(itemRemoved);
-
-        if (iter)
-            this.model.remove(iter);
-    },
-
-    refreshContactState: function() {
-        this._refreshState();
-    },
-
-    addPlaceholder: function() {
-        this.removePlaceholder();
 
         let iter = this.model.append();
         this.model.set(iter,
             [ 0, 1 ],
-            [ _CONTACT_PLACEHOLDER_ID, '']);
+            [ "author", "this.author" ]);
 
-        let placeholderPath = this.model.get_path(iter);
-        if (placeholderPath != null)
-            this._placeholderRef = Gtk.TreeRowReference.new(this.model, placeholderPath);
-
-        return placeholderPath;
-    },
-
-    removePlaceholder: function() {
-        // remove the placeholder if it's here
-        if (this._placeholderRef) {
-            let placeholderPath = this._placeholderRef.get_path();
-            let placeholderIter = this.model.get_iter(placeholderPath)[1];
-
-            if (placeholderIter)
-                this.model.remove(placeholderIter);
-
-            this._placeholderRef = null;
-        }
-    },
-
-    getPlaceholder: function(forget) {
-        let ret = null;
-
-        if (this._placeholderRef)
-            ret = this._placeholderRef.get_path();
-        if (forget)
-            this._placeholderRef = null;
-
-        return ret;
-    },
-
-    destroy: function() {
-        if (this._collAddedId != 0) {
-            Global.contactManager.disconnect(this._collAddedId);
-            this._collAddedId = 0;
-        }
-
-        if (this._collRemovedId != 0) {
-            Global.contactManager.disconnect(this._collRemovedId);
-            this._collRemovedId = 0;
-        }
+     //   let treePath = this.model.get_path(iter);
+       // let treeRowRef = Gtk.TreeView.new(this.model, treePath);
     }
 });
 
 const OrganizeContactView = new Lang.Class({
     Name: 'OrganizeContactView',
-
-    _init: function() {
-        this._choiceConfirmed = false;
 
         this._model = new OrganizeContactModel();
         this.tree = new Gtk.TreeView({ headers_visible: false,
@@ -493,28 +393,18 @@ const OrganizeContactView = new Lang.Class({
         
 
         this.tree.show();
-    },
-
-
-    _onTextEdited: function(cell, pathStr, newText) {
-        this._onTextEditedReal(cell, Gtk.TreePath.new_from_string(pathStr), newText);
-    },
-
-  
-
-    _detailCellFunc: function(col, cell, model, iter) {
-        let id = model.get_value(iter, OrganizeModelColumns.ID);
-        
-
-            cell.text = "permission"; //replace with permission text
-            cell.visible = true;
-    },
-
-
-    confirmedChoice: function() {
-        this._choiceConfirmed = true;
     }
-});
+
+
+ //   _onTextEdited: function(cell, pathStr) {
+ //       this._onTextEditedReal(cell, Gtk.TreePath.new_from_string(this._contributor));
+ //   },
+
+
+
+
+   // }
+});*/
 
 
 

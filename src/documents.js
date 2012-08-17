@@ -276,10 +276,11 @@ const DocCommon = new Lang.Class({
         this.mtime = null;
         this.resourceUrn = null;
         this.favorite = null;
+        this.contributor = null;
         this.pixbuf = null;
         this.pristinePixbuf = null;
         this.defaultAppName = null;
-
+        
         this.mimeType = null;
         this.rdfType = null;
         this.typeDescription = null;
@@ -287,6 +288,7 @@ const DocCommon = new Lang.Class({
 
         this.favorite = false;
         this.shared = false;
+        
         
 
         this.collection = false;
@@ -327,8 +329,10 @@ const DocCommon = new Lang.Class({
         this.author = cursor.get_string(Query.QueryColumns.AUTHOR)[0];
         this.resourceUrn = cursor.get_string(Query.QueryColumns.RESOURCE_URN)[0];
         this.favorite = cursor.get_boolean(Query.QueryColumns.FAVORITE);
-   
-  
+
+        this.contributor = cursor.get_string(Query.QueryColumns.CONTRIBUTOR)[0];
+        log(this.contributor);
+ 
         let mtime = cursor.get_string(Query.QueryColumns.MTIME)[0];
         if (mtime) {
             let timeVal = GLib.time_val_from_iso8601(mtime)[1];
