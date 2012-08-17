@@ -33,7 +33,7 @@ msgstr "Upravljanje, dostop in souporaba dokumentov"
 
 #: ../data/gnome-documents.desktop.in.in.h:3
 msgid "Docs;PDF;Document;"
-msgstr "Doc;PDF;Dokumenti;Word"
+msgstr "Doc;PDF;Dokumenti;Word;"
 
 #: ../data/org.gnome.documents.gschema.xml.in.h:1
 #: ../src/resources/app-menu.ui.h:1
