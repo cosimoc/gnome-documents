@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-"
 "documents&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-07-19 22:20+0000\n"
-"PO-Revision-Date: 2012-08-04 04:32+0200\n"
+"POT-Creation-Date: 2012-08-14 22:20+0000\n"
+"PO-Revision-Date: 2012-08-17 14:09+0200\n"
 "Last-Translator: Мирослав Николић <miroslavnikolic@rocketmail.com>\n"
 "Language-Team: Serbian <gnom@prevod.org>\n"
 "Language: sr\n"
@@ -65,51 +65,51 @@ msgstr "Увећан прозор"
 msgid "Window maximized state"
 msgstr "Стање увећања прозора"
 
-#: ../src/documents.js:641 ../src/sources.js:95
+#: ../src/documents.js:650 ../src/sources.js:95
 msgid "Local"
 msgstr "На рачунару"
 
 #. overridden
-#: ../src/documents.js:694
+#: ../src/documents.js:703
 msgid "Google Docs"
 msgstr "Документи Гугла"
 
-#: ../src/documents.js:695
+#: ../src/documents.js:704
 msgid "Google"
 msgstr "Гугл"
 
-#: ../src/documents.js:759 ../src/documents.js:898
+#: ../src/documents.js:768 ../src/documents.js:907
 msgid "Spreadsheet"
 msgstr "Таблица"
 
-#: ../src/documents.js:761 ../src/documents.js:900
+#: ../src/documents.js:770 ../src/documents.js:909
 msgid "Presentation"
 msgstr "Презентација"
 
-#: ../src/documents.js:763 ../src/documents.js:902
+#: ../src/documents.js:772 ../src/documents.js:911
 msgid "Collection"
 msgstr "Збирка"
 
-#: ../src/documents.js:765 ../src/documents.js:904
+#: ../src/documents.js:774 ../src/documents.js:913
 msgid "Document"
 msgstr "Документ"
 
 #. overridden
-#: ../src/documents.js:832 ../src/documents.js:833
+#: ../src/documents.js:841 ../src/documents.js:842
 msgid "Skydrive"
 msgstr "Скајдрајв"
 
 #. Translators: %s is the title of a document
-#: ../src/documents.js:1016
+#: ../src/documents.js:1025
 #, c-format
 msgid "Unable to load \"%s\" for preview"
 msgstr "Не могу да учитам „%s“ за преглед"
 
-#: ../src/lib/gd-pdf-loader.c:226
+#: ../src/lib/gd-pdf-loader.c:224
 msgid "Unable to load the document"
 msgstr "Не могу да учитам документ"
 
-#: ../src/lib/gd-pdf-loader.c:675
+#: ../src/lib/gd-pdf-loader.c:673
 msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
 msgstr "Не могу да пронађем „unoconv“, проверите вашу инсталацију Либре офиса"
 
@@ -147,7 +147,7 @@ msgstr[1] "%d изабрана"
 msgstr[2] "%d изабраних"
 msgstr[3] "Један изабран"
 
-#: ../src/mainToolbar.js:203
+#: ../src/mainToolbar.js:203 ../src/properties.js:58
 msgid "Done"
 msgstr "Обављено"
 
@@ -172,6 +172,40 @@ msgstr "Програм за управљање документима"
 msgid "Printing \"%s\": %s"
 msgstr "Штампам „%s“: %s"
 
+#. Properties dialog heading
+#: ../src/properties.js:73 ../src/selections.js:774
+msgid "Properties"
+msgstr "Својства"
+
+#. Title item
+#: ../src/properties.js:81 ../src/searchbar.js:225
+msgid "Title"
+msgstr "Наслов"
+
+#: ../src/properties.js:88 ../src/searchbar.js:227
+msgid "Author"
+msgstr "Аутор"
+
+#. Source item
+#: ../src/properties.js:95
+#| msgid "Sources"
+msgid "Source"
+msgstr "Извор"
+
+#. Date Modified item
+#: ../src/properties.js:101
+msgid "Date Modified"
+msgstr "Датум измене"
+
+#: ../src/properties.js:108
+msgid "Date Created"
+msgstr "Датум стварања"
+
+#. Document type item
+#: ../src/properties.js:115 ../src/searchbar.js:135
+msgid "Type"
+msgstr "Врста"
+
 #: ../src/searchbar.js:83
 msgid "Category"
 msgstr "Категорија"
@@ -188,10 +222,6 @@ msgstr "Омиљени"
 #: ../src/searchbar.js:99
 msgid "Shared with you"
 msgstr "Дељени с вама"
-
-#: ../src/searchbar.js:135
-msgid "Type"
-msgstr "Врста"
 
 #: ../src/searchbar.js:140
 msgid "Collections"
@@ -219,42 +249,34 @@ msgstr "Документи текста"
 msgid "Match"
 msgstr "Поклопи"
 
-#: ../src/searchbar.js:225
-msgid "Title"
-msgstr "Наслов"
-
-#: ../src/searchbar.js:227
-msgid "Author"
-msgstr "Аутор"
-
-#: ../src/selections.js:773
+#: ../src/selections.js:780
 msgid "Print"
 msgstr "Штампајте"
 
-#: ../src/selections.js:788
+#: ../src/selections.js:795
 msgid "Organize"
 msgstr "Организујте"
 
-#: ../src/selections.js:795
+#: ../src/selections.js:802
 msgid "Delete"
 msgstr "Обриши"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:884
+#: ../src/selections.js:894
 #, c-format
 msgid "Open with %s"
 msgstr "Отвори програмом %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:887 ../src/resources/preview-menu.ui.h:1
+#: ../src/selections.js:897 ../src/resources/preview-menu.ui.h:1
 msgid "Open"
 msgstr "Отвори"
 
-#: ../src/selections.js:896
+#: ../src/selections.js:906
 msgid "Remove from favorites"
 msgstr "Уклоните из омиљених"
 
-#: ../src/selections.js:900
+#: ../src/selections.js:910
 msgid "Add to favorites"
 msgstr "Додајте у омиљене"
 
