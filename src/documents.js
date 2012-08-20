@@ -331,7 +331,7 @@ const DocCommon = new Lang.Class({
         this.favorite = cursor.get_boolean(Query.QueryColumns.FAVORITE);
 
         this.contributor = cursor.get_string(Query.QueryColumns.CONTRIBUTOR)[0];
-        log(this.contributor);
+       
  
         let mtime = cursor.get_string(Query.QueryColumns.MTIME)[0];
         if (mtime) {
