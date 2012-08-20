@@ -290,13 +290,13 @@ const SharingDialog = new Lang.Class({
     _onGetRulesComplete: function(entry, result, service) {
          let exception = null;
          try {
-		      let feed = service.query_finish(result);
+              let feed = service.query_finish(result);
               log(feed); 
-               if(feed)
+              if(feed)
               this._getRulesEntry(feed);  
 		 } catch(e) {
-		      exception = e;
-              log("Error getting ACL Feed"+e.message);  
+              exception = e;
+              log("Error getting ACL Feed "+e.message);  
 		 }        
 	 },
      
@@ -306,34 +306,34 @@ const SharingDialog = new Lang.Class({
          try {
              let entries = feed.get_entries();
              entries.forEach(Lang.bind(this, function(entry) {
-                let [type, value] = entry.get_scope();
-                _scope.push({ type: type, value: value });
+             let [type, value] = entry.get_scope();
+             _scope.push({ type: type, value: value });
              }));
-        } catch(e) {
+         } catch(e) {
 		    exception = e;
-            log("Error getting ACL feed Entries"+e.message);  
-	    }
-        log(_scope);
-        this._getUserPermission(_scope);         
+            log("Error getting ACL Feed Entries "+e.message);  
+	     }
+         log(_scope);
+         this._getUserPermission(_scope);         
     },
    
     _getUserPermission: function(_scope) {
         let rule = [];            
         try {
             _scope.forEach(Lang.bind(this, function(_scope) {
-            rule = _scope;
-            this.type = rule[0];
-            this.value = rule[1];
-           
-            log(this.value);
+                rule = _scope;
+                this.type = rule[0];
+                this.value = rule[1];           
+                log(this.value);
             })); 
          } catch(e) {
 		    exception = e; 
-            log(e.message);}           
+            log(e.message);
+         }           
     },   
 
     _setNewContact: function() {
-      this.newContact = this._addContact.get_text();             
+       this.newContact = this._addContact.get_text();             
     },
 
     _getNewContact: function() {
@@ -353,13 +353,10 @@ const SharingDialog = new Lang.Class({
     },
 
     _prepareEmail: function() {
-        if (this._notify.get_active()){
+        if(this._notify.get_active()){
            this.email = true;
             log("share");//send email
-        }
-        else
-            log("don't share");//don't send email
-              
+        }             
     },
 
    _onAdd: function(){
@@ -367,7 +364,7 @@ const SharingDialog = new Lang.Class({
            log(this.newContact); 
         //insert new rule using gadata_access_rule_new 
        if(this.writer)
-            //scopeType.set_role(GData.DocumentsEntry{( access_role: reader )};//pseduocode
+            //scopeType.set_role(GData.DocumentsEntry{( access_role: writer)};//pseduocode
            log("writer");
        if(this.reader)
            log("reader");
@@ -377,22 +374,17 @@ const SharingDialog = new Lang.Class({
    },
      
     _destroyPopUpWindow : function() {
-        this.popUpWindow.destroy();
+       this.popUpWindow.destroy();
    },    
 
     _detailCellFunc: function(col, cell, model, iter) {       
-        let urn = Global.selectionController.getSelection(); 
-        let doc = Global.documentManager.getItemById(urn);
+       let urn = Global.selectionController.getSelection(); 
+       let doc = Global.documentManager.getItemById(urn);
            if(doc.contributor){
-            cell.text = doc.contributor;
-            cell.visible = true;
+               cell.text = doc.contributor;//replace with scope value
+               cell.visible = true;
            }
-    }
+     }
 
 });
-
-
-
-     
-
 
