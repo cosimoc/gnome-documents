@@ -293,14 +293,15 @@ const SharingDialog = new Lang.Class({
              let feed = service.query_finish(result);
              log(feed); 
              if(feed)
-                this._getRulesEntry(feed);  
+                this._getScopeRulesEntry(feed);
+                this._getRoleRulesEntry(feed); 
 		 } catch(e) {
              exception = e;
              log("Error getting ACL Feed " + e.message);  
 		 }        
 	 },
      
-     _getRulesEntry: function(feed) {
+     _getScopeRulesEntry: function(feed) {
          let _scope = [];
          let exception = null;
          try {
@@ -319,7 +320,6 @@ const SharingDialog = new Lang.Class({
    
     _getUserPermission: function(_scope) {
         let rule = [];            
-        try {
             _scope.forEach(Lang.bind(this, function(_scope) {
                 rule = _scope;
                 this.type = rule.type;
@@ -327,12 +327,34 @@ const SharingDialog = new Lang.Class({
                 log(this.value);
                 log(this.type);
             })); 
-         } catch(e) {
-		    exception = e; 
-            log(e.message);
-         }          
+                
     },   
 
+    _getRoleRulesEntry: function(feed) {
+        let _role = [];
+        let exception = null;
+            try {
+                let entries = feed.get_entries();
+                entries.forEach(Lang.bind(this, function(entry) {
+                let [role] = entry.get_role();
+             _role.push({ role: role });
+             }));
+         } catch(e) {
+		     exception = e;
+             log("Error getting ACL Role Rules " + e.message);  
+	     }
+         log(_role);
+         
+         this._getUserRole(_role); 
+    },
+
+   _getUserRole: function(_role) {            
+       _role.forEach(Lang.bind(this, function(_role) {
+           this.userRole = _role.role;         
+           log(this.userRole);
+       }));                 
+    },
+        
     _setNewContact: function() {
        this.newContact = this._addContact.get_text();             
     },
