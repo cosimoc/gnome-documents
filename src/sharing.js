@@ -62,9 +62,12 @@ const SharingDialog = new Lang.Class({
         this.writer = false;
         this.reader = false;
         this.newContact = null;
-
+        this.ownerVal = "Owner";
+        this.writerVal = "Writer";
+        this.readerVal = "Reader";        
+        this.roleArr = [];
         this._createGDataEntry();
-
+        
 
         let toplevel = Global.application.application.get_windows()[0];
 
@@ -112,11 +115,10 @@ const SharingDialog = new Lang.Class({
             [ GObject.TYPE_STRING,
               GObject.TYPE_STRING ]);
 
-        //this.model.forEach(
         let iter = this.model.append();
         this.model.set(iter,
             [ 0 , 1 ],
-            [ "author" , "this.author" ]);
+            [ "author" , "this.roleEntry = roleArr(pop)" ]);
 
         this.tree = new Gtk.TreeView({ headers_visible: false,
                                        vexpand: true,
@@ -192,7 +194,8 @@ const SharingDialog = new Lang.Class({
         this._notify = new Gtk.CheckButton({ label: _("Notify contact via gmail") }); //Label for checkbutton
         largeGrid.add(this._notify);
         this._notify.set_active(false); 
-        this._notify.connect("toggled", Lang.bind(this, this._prepareEmail));//replace with don't send command? read this part of the api
+        //send an email with link to document via Google
+        this._notify.connect("toggled", Lang.bind(this, this._prepareEmail));
 
         let buttonBox = new Gtk.ButtonBox({ orientation: Gtk.Orientation.HORIZONTAL });
         this._saveShare = new Gtk.Button({ label: "Add" }); 
@@ -227,23 +230,23 @@ const SharingDialog = new Lang.Class({
         this._label.get_style_context().add_class('dim-label');
         popUpGrid.add(this._label);
 
-        this.button1 = new Gtk.RadioButton ({ label: "Shared with link" }); //Label for radiobutton that sets document permission to shared
+        this.button1 = new Gtk.RadioButton ({ label: "Shared with link" }); //Label for radiobutton that sets doc permission to shared
         this.button1.connect("toggled", Lang.bind (this, this._setDocumentPermission)); 
         this.button1.set_active (false);
         popUpGrid.attach(this.button1, 0, 2, 1, 1);
 
-        this.button2 =  new Gtk.RadioButton({ label: "Private",  //Label for radiobutton that sets document permission to private
+        this.button2 =  new Gtk.RadioButton({ label: "Private",  //Label for radiobutton that sets doc permission to private
                                               group: this.button1 });   
         this.button2.connect("toggled", Lang.bind(this, this._setDocumentPermission));
         this.button2.set_active (true);
         popUpGrid.attach(this.button2, 0, 3, 1, 1);
            
-        this.button3 = new Gtk.RadioButton({ label: "Public", //Label for radiobutton that sets document permission to public
+        this.button3 = new Gtk.RadioButton({ label: "Public", //Label for radiobutton that sets doc permission to public
                                              group: this.button1 });
         this.button3.connect("toggled", Lang.bind(this, this._setDocumentPermission));
         popUpGrid.attach(this.button3, 0, 4, 1, 1);
 
-        this._close = new Gtk.Button({ label: "Done" });
+        this._close = new Gtk.Button({ label: "Done" });//Label for Done button permissions popup window
         this._close.connect("clicked", Lang.bind(this, this._destroyPopUpWindow));
         popUpGrid.add(this._close);
 	     	   
@@ -322,12 +325,9 @@ const SharingDialog = new Lang.Class({
         let rule = [];            
             _scope.forEach(Lang.bind(this, function(_scope) {
                 rule = _scope;
-                this.type = rule.type;
                 this.value = rule.value;           
                 log(this.value);
-                log(this.type);
-            })); 
-                
+            }));                 
     },   
 
     _getRoleRulesEntry: function(feed) {
@@ -339,20 +339,29 @@ const SharingDialog = new Lang.Class({
                 let [role] = entry.get_role();
              _role.push({ role: role });
              }));
-         } catch(e) {
-		     exception = e;
-             log("Error getting ACL Role Rules " + e.message);  
+            } catch(e) {
+		        exception = e;
+                log("Error getting ACL Role Rules " + e.message);  
 	     }
-         log(_role);
-         
+         log(_role);         
          this._getUserRole(_role); 
     },
 
    _getUserRole: function(_role) {            
        _role.forEach(Lang.bind(this, function(_role) {
-           this.userRole = _role.role;         
-           log(this.userRole);
-       }));                 
+           this.userRole = _role.role;
+         
+           if(this.userRole.charAt(0) == 'o')
+               this.roleArr.push(this.ownerVal);
+
+           if(this.userRole.charAt(0) == 'w')
+               this.roleArr.push(this.writerVal);
+            
+           if(this.userRole.charAt(0) =='r')
+               this.roleArr.push(this.readerVal);
+           log(this.roleArr);  
+       })); 
+                           
     },
         
     _setNewContact: function() {
@@ -384,10 +393,12 @@ const SharingDialog = new Lang.Class({
 
    _onAdd: function(){
        this._getNewContact();
-           log(this.newContact); 
-        //insert new rule using gadata_access_rule_new 
+           log(this.newContact);
+          // if(this.newContact != '')
+                   
+         
        if(this.writer)
-            //scopeType.set_role(GData.DocumentsEntry{( access_role: writer)};//pseduocode
+           // .set_role(GData.DocumentsEntry{( access_role: writer)};//pseduocode
            log("writer");
        if(this.reader)
            log("reader");
