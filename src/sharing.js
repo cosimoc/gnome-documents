@@ -273,7 +273,7 @@ const SharingDialog = new Lang.Class({
                                 this._getGDataEntryRules(entry, service);
                             } catch (e) {
                                 exception = e;
-                                log("Error getting GData Entry");   
+                                log("Error getting GData Entry" + e.message);   
                             }         
                                 
                      }));
@@ -290,13 +290,13 @@ const SharingDialog = new Lang.Class({
     _onGetRulesComplete: function(entry, result, service) {
          let exception = null;
          try {
-              let feed = service.query_finish(result);
-              log(feed); 
-              if(feed)
-              this._getRulesEntry(feed);  
+             let feed = service.query_finish(result);
+             log(feed); 
+             if(feed)
+                this._getRulesEntry(feed);  
 		 } catch(e) {
-              exception = e;
-              log("Error getting ACL Feed "+e.message);  
+             exception = e;
+             log("Error getting ACL Feed " + e.message);  
 		 }        
 	 },
      
@@ -310,8 +310,8 @@ const SharingDialog = new Lang.Class({
              _scope.push({ type: type, value: value });
              }));
          } catch(e) {
-		    exception = e;
-            log("Error getting ACL Feed Entries "+e.message);  
+		     exception = e;
+             log("Error getting ACL Feed Entries " + e.message);  
 	     }
          log(_scope);
          this._getUserPermission(_scope);         
@@ -322,14 +322,15 @@ const SharingDialog = new Lang.Class({
         try {
             _scope.forEach(Lang.bind(this, function(_scope) {
                 rule = _scope;
-                this.type = rule[0];
-                this.value = rule[1];           
+                this.type = rule.type;
+                this.value = rule.value;           
                 log(this.value);
+                log(this.type);
             })); 
          } catch(e) {
 		    exception = e; 
             log(e.message);
-         }           
+         }          
     },   
 
     _setNewContact: function() {
