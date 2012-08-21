@@ -765,13 +765,13 @@ const SelectionToolbar = new Lang.Class({
         this.widget.insert(this._leftGroup, -1);
 
         this._toolbarProperties = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'document-properties-symbolic',
-                                                                           pixel_size: 32 })});
+                                                                           pixel_size: 16 })});
         this._toolbarProperties.set_tooltip_text(_("Properties"));
         this._leftBox.add(this._toolbarProperties);
         this._toolbarProperties.connect('clicked', Lang.bind(this, this._onToolbarProperties));
 
         this._toolbarPrint = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'printer-symbolic',
-                                                                      pixel_size: 32 })});
+                                                                      pixel_size: 16 })});
         this._toolbarPrint.set_tooltip_text(_("Print"));
         this._leftBox.add(this._toolbarPrint);
         this._toolbarPrint.connect('clicked', Lang.bind(this, this._onToolbarPrint));
@@ -786,20 +786,20 @@ const SelectionToolbar = new Lang.Class({
         this.widget.insert(this._rightGroup, -1);
 
         this._toolbarCollection = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'list-add-symbolic',
-                                                                           pixel_size: 32 })});
+                                                                           pixel_size: 16 })});
         this._toolbarCollection.set_tooltip_text(_("Organize"));
         this._rightBox.add(this._toolbarCollection);
         this._toolbarCollection.connect('clicked', Lang.bind(this, this._onToolbarCollection));
         this._toolbarCollection.show_all();
 
         this._toolbarTrash = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'user-trash-symbolic',
-                                                                      pixel_size: 32 })});
+                                                                      pixel_size: 16 })});
         this._toolbarTrash.set_tooltip_text(_("Delete"));
         this._rightBox.add(this._toolbarTrash);
         this._toolbarTrash.connect('clicked', Lang.bind(this, this._onToolbarTrash));
 
         this._toolbarOpen = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'document-open-symbolic',
-                                                                     pixel_size: 32 })});
+                                                                     pixel_size: 16 })});
         this._rightBox.add(this._toolbarOpen);
         this._toolbarOpen.connect('clicked', Lang.bind(this, this._onToolbarOpen));
 
