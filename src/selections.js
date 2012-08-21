@@ -798,7 +798,7 @@ const SelectionToolbar = new Lang.Class({
         this._rightBox.add(this._toolbarTrash);
         this._toolbarTrash.connect('clicked', Lang.bind(this, this._onToolbarTrash));
 
-        this._toolbarOpen = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'document-open-symbolic',
+        this._toolbarOpen = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'folder-symbolic',
                                                                      pixel_size: 16 })});
         this._rightBox.add(this._toolbarOpen);
         this._toolbarOpen.connect('clicked', Lang.bind(this, this._onToolbarOpen));
