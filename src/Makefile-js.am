@@ -4,7 +4,6 @@ dist_js_DATA = \
     changeMonitor.js \
     documents.js \
     embed.js \
-    errorBox.js \
     global.js \
     main.js \
     mainToolbar.js \
@@ -20,7 +19,6 @@ dist_js_DATA = \
     selections.js \
     shellSearchProvider.js \
     sources.js \
-    spinnerBox.js \
     trackerController.js \
     trackerUtils.js \
     utils.js \

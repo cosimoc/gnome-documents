@@ -21,25 +21,165 @@
 
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
+const Tweener = imports.util.tweener;
 
-const ErrorBox = imports.errorBox;
 const Global = imports.global;
 const MainToolbar = imports.mainToolbar;
 const Preview = imports.preview;
 const Searchbar = imports.searchbar;
 const Selections = imports.selections;
-const SpinnerBox = imports.spinnerBox;
-const Tweener = imports.util.tweener;
 const View = imports.view;
 const WindowMode = imports.windowMode;
 
 const Clutter = imports.gi.Clutter;
 const EvView = imports.gi.EvinceView;
 const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
 const GtkClutter = imports.gi.GtkClutter;
+const _ = imports.gettext.gettext;
 
+const _ICON_SIZE = 128;
 const _PDF_LOADER_TIMEOUT = 400;
+
+const SpinnerBox = new Lang.Class({
+    Name: 'SpinnerBox',
+
+    _init: function() {
+        this._delayedMoveId = 0;
+
+        this.widget = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,
+                                     row_spacing: 24,
+                                     hexpand: true,
+                                     vexpand: true,
+                                     halign: Gtk.Align.CENTER,
+                                     valign: Gtk.Align.CENTER });
+
+        this.actor = new GtkClutter.Actor({ contents: this.widget,
+                                            opacity: 255 });
+
+        this._spinner = new Gtk.Spinner({ width_request: _ICON_SIZE,
+                                          height_request: _ICON_SIZE,
+                                          halign: Gtk.Align.CENTER,
+                                          valign: Gtk.Align.CENTER });
+        this._spinner.start();
+        this.widget.add(this._spinner);
+
+        this._label = new Gtk.Label({ label: '<big><b>' + _("Loading...") + '</b></big>',
+                                      use_markup: true,
+                                      halign: Gtk.Align.CENTER,
+                                      valign: Gtk.Align.CENTER });
+        this.widget.add(this._label);
+
+        this.widget.connect('destroy', Lang.bind(this, this._clearDelayId));
+        this.widget.show_all();
+    },
+
+    _clearDelayId: function() {
+        if (this._delayedMoveId != 0) {
+            Mainloop.source_remove(this._delayedMoveId);
+            this._delayedMoveId = 0;
+        }
+    },
+
+    moveIn: function() {
+        this._clearDelayId();
+        this.actor.raise_top();
+
+        Tweener.addTween(this.actor, { opacity: 255,
+                                       time: 0.30,
+                                       transition: 'easeOutQuad' });
+    },
+
+    moveOut: function() {
+        this._clearDelayId();
+
+        Tweener.addTween(this.actor, { opacity: 0,
+                                       time: 0.30,
+                                       transition: 'easeOutQuad',
+                                       onComplete: function () {
+                                           this.actor.lower_bottom();
+                                       },
+                                       onCompleteScope: this });
+    },
+
+    moveInDelayed: function(delay) {
+        this._clearDelayId();
+
+        this._delayedMoveId = Mainloop.timeout_add(delay, Lang.bind(this,
+            function() {
+                this._delayedMoveId = 0;
+
+                this.moveIn();
+                return false;
+            }));
+    }
+});
+
+const ErrorBox = new Lang.Class({
+    Name: 'ErrorBox',
+
+    _init: function(primary, secondary) {
+        this.widget = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,
+                                     row_spacing: 12,
+                                     hexpand: true,
+                                     vexpand: true,
+                                     halign: Gtk.Align.CENTER,
+                                     valign: Gtk.Align.CENTER });
+
+        this._image = new Gtk.Image({ pixel_size: _ICON_SIZE,
+                                      icon_name: 'dialog-error',
+                                      halign: Gtk.Align.CENTER,
+                                      valign: Gtk.Align.CENTER });
+
+        this.widget.add(this._image);
+
+        this._primaryLabel =
+            new Gtk.Label({ label: '',
+                            use_markup: true,
+                            halign: Gtk.Align.CENTER,
+                            valign: Gtk.Align.CENTER });
+        this.widget.add(this._primaryLabel);
+
+        this._secondaryLabel =
+            new Gtk.Label({ label: '',
+                            use_markup: true,
+                            halign: Gtk.Align.CENTER,
+                            valign: Gtk.Align.CENTER });
+        this.widget.add(this._secondaryLabel);
+
+        this.widget.show_all();
+
+        this.actor = new GtkClutter.Actor({ contents: this.widget,
+                                            opacity: 255 });
+    },
+
+    update: function(primary, secondary) {
+        let primaryMarkup = '<big><b>' + GLib.markup_escape_text(primary, -1) + '</b></big>';
+        let secondaryMarkup = GLib.markup_escape_text(secondary, -1);
+
+        this._primaryLabel.label = primaryMarkup;
+        this._secondaryLabel.label = secondaryMarkup;
+    },
+
+    moveIn: function() {
+        this.actor.raise_top();
+
+        Tweener.addTween(this.actor, { opacity: 255,
+                                       time: 0.30,
+                                       transition: 'easeOutQuad' });
+    },
+
+    moveOut: function() {
+        Tweener.addTween(this.actor, { opacity: 0,
+                                       time: 0.30,
+                                       transition: 'easeOutQuad',
+                                       onComplete: function () {
+                                           this.actor.lower_bottom();
+                                       },
+                                       onCompleteScope: this });
+    }
+});
 
 const Embed = new Lang.Class({
     Name: 'Embed',
@@ -78,11 +218,11 @@ const Embed = new Lang.Class({
         this._notebookActor = new GtkClutter.Actor({ contents: this._notebook });
         this._viewLayout.add(this._notebookActor, Clutter.BinAlignment.FILL, Clutter.BinAlignment.FILL);
 
-        this._spinnerBox = new SpinnerBox.SpinnerBox();
+        this._spinnerBox = new SpinnerBox();
         this._viewLayout.add(this._spinnerBox.actor, Clutter.BinAlignment.FILL, Clutter.BinAlignment.FILL);
         this._spinnerBox.actor.lower_bottom();
 
-        this._errorBox = new ErrorBox.ErrorBox();
+        this._errorBox = new ErrorBox();
         this._viewLayout.add(this._errorBox.actor, Clutter.BinAlignment.FILL, Clutter.BinAlignment.FILL);
         this._errorBox.actor.lower_bottom();
 
