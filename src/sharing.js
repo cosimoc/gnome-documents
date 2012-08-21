@@ -64,10 +64,13 @@ const SharingDialog = new Lang.Class({
         this.newContact = null;
         this.ownerVal = "Owner";
         this.writerVal = "Writer";
-        this.readerVal = "Reader";        
+        this.readerVal = "Reader"; 
+        this.rule = [];       
         this.roleArr = [];
+        this.scopeValArr = [];
+        this._scope = [];
+        this.entry = null;
         this._createGDataEntry();
-        
 
         let toplevel = Global.application.application.get_windows()[0];
 
@@ -109,16 +112,9 @@ const SharingDialog = new Lang.Class({
         this._label.get_style_context ().add_class('dim-label');
         largeGrid.add(this._label);
 
-
-
         this.model = Gtk.ListStore.new(
             [ GObject.TYPE_STRING,
               GObject.TYPE_STRING ]);
-
-        let iter = this.model.append();
-        this.model.set(iter,
-            [ 0 , 1 ],
-            [ "author" , "this.roleEntry = roleArr(pop)" ]);
 
         this.tree = new Gtk.TreeView({ headers_visible: false,
                                        vexpand: true,
@@ -255,25 +251,27 @@ const SharingDialog = new Lang.Class({
         this.popUpWindow.show_all();
     },
 
+    //Get the id of the selected doc from the sourceManager, give auth info to Google, and start the service
     _createGDataEntry: function() {
         let source = Global.sourceManager.getItemById(this.resourceUrn);
 
         let authorizer = new Gd.GDataGoaAuthorizer({ goa_object: source.object });
         let service = new GData.DocumentsService({ authorizer: authorizer }); 
 
+        //query the service for the entry related to the doc 
         service.query_single_entry_async
             (service.get_primary_authorization_domain(),
                 this.identifier, null,
                     GData.DocumentsText,
                     null, Lang.bind(this,
                         function(object, res) {
-                            let entry = null;
+                           // let entry = null;
                             let exception = null;
 
                             try {
-                                entry = object.query_single_entry_finish(res);
-                                log(entry);
-                                this._getGDataEntryRules(entry, service);
+                                this.entry = object.query_single_entry_finish(res);
+                                log(this.entry);
+                                this._getGDataEntryRules(this.entry, service);
                             } catch (e) {
                                 exception = e;
                                 log("Error getting GData Entry" + e.message);   
@@ -282,14 +280,16 @@ const SharingDialog = new Lang.Class({
                      }));
     },
  
+   //return a feed containing the acl related to the entry
     _getGDataEntryRules: function(entry, service) {  
-         entry.get_rules_async
+         this.entry.get_rules_async
             (service,
              null,
              null,
              Lang.bind(this, this._onGetRulesComplete, service));
     }, 
 
+    //send the feed to the functs that return the scope values (email addresses) and roles (permissions) of people listed in the acl
     _onGetRulesComplete: function(entry, result, service) {
          let exception = null;
          try {
@@ -297,39 +297,66 @@ const SharingDialog = new Lang.Class({
              log(feed); 
              if(feed)
                 this._getScopeRulesEntry(feed);
-                this._getRoleRulesEntry(feed); 
+                this._getRoleRulesEntry(feed);
+                this._sendNewPermission(feed);   
 		 } catch(e) {
              exception = e;
              log("Error getting ACL Feed " + e.message);  
 		 }        
 	 },
      
+     //get each entry (person) from the feed, and get the scope for each person, store them in an array
      _getScopeRulesEntry: function(feed) {
-         let _scope = [];
          let exception = null;
          try {
              let entries = feed.get_entries();
              entries.forEach(Lang.bind(this, function(entry) {
              let [type, value] = entry.get_scope();
-             _scope.push({ type: type, value: value });
+             this._scope.push({ type: type, value: value });
              }));
          } catch(e) {
 		     exception = e;
              log("Error getting ACL Feed Entries " + e.message);  
 	     }
-         log(_scope);
-         this._getUserPermission(_scope);         
+         log(this._scope);
+         this._getUserPermission(this._scope); 
+               
     },
-   
-    _getUserPermission: function(_scope) {
-        let rule = [];            
-            _scope.forEach(Lang.bind(this, function(_scope) {
-                rule = _scope;
-                this.value = rule.value;           
-                log(this.value);
-            }));                 
+    
+    //this isn't finished
+     _sendNewPermission: function(feed) {
+        this._getNewContact();
+        let newRule = null;
+        let newRole = null;
+        let aclLink = null;
+        let completeRule = null;
+        if(this.newContact != '')
+            newRule = feed.rule_new(null);             
+        if(this.writer) {
+           newRole = newRule.set_role(GDATA_DOCUMENTS_ACCESS_ROLE_WRITER);
+            log("writer");
+         }
+        if(this.reader) {
+            log("reader");
+            newRole = newRule.set_role(GDATA_DOCUMENTS_ACCESS_ROLE_WRITER );
+        }
+            newRule.set_scope(GDATA_ACCESS_SCOPE_USER, this.newContact)
+            aclLink = feed.look_up_link(document,  GDATA_LINK_ACCESS_CONTROL_LIST);
+        completeRule = feed.insert_entry(service, aclLink.get_uri(aclLink), entry, null);
+    },
+
+    //get the value (email address) from each scope    
+    _getUserPermission: function(_scope) {            
+        _scope.forEach(Lang.bind(this, function(_scope) {
+            this.rule = _scope;
+            this.value = this.rule.value;
+            this.scopeValArr.push(this.value);          
+                log(this.value);               
+        })); 
+        this._cellTextFunction(this.scopeValArr);                  
     },   
 
+    //get the entries (people) from the feed, then get the role (owner, reader, or writer) from each entry
     _getRoleRulesEntry: function(feed) {
         let _role = [];
         let exception = null;
@@ -337,7 +364,7 @@ const SharingDialog = new Lang.Class({
                 let entries = feed.get_entries();
                 entries.forEach(Lang.bind(this, function(entry) {
                 let [role] = entry.get_role();
-             _role.push({ role: role });
+                _role.push({ role: role });
              }));
             } catch(e) {
 		        exception = e;
@@ -347,21 +374,21 @@ const SharingDialog = new Lang.Class({
          this._getUserRole(_role); 
     },
 
-   _getUserRole: function(_role) {            
-       _role.forEach(Lang.bind(this, function(_role) {
-           this.userRole = _role.role;
+    //get the roles, and make a new array containing strings
+    _getUserRole: function(_role) {            
+        _role.forEach(Lang.bind(this, function(_role) {
+            this.userRole = _role.role;
          
-           if(this.userRole.charAt(0) == 'o')
-               this.roleArr.push(this.ownerVal);
+            if(this.userRole.charAt(0) == 'o')
+                this.roleArr.push(this.ownerVal);
 
-           if(this.userRole.charAt(0) == 'w')
-               this.roleArr.push(this.writerVal);
+            if(this.userRole.charAt(0) == 'w')
+                this.roleArr.push(this.writerVal);
             
-           if(this.userRole.charAt(0) =='r')
-               this.roleArr.push(this.readerVal);
-           log(this.roleArr);  
-       })); 
-                           
+            if(this.userRole.charAt(0) =='r')
+                this.roleArr.push(this.readerVal);
+            log(this.roleArr);  
+       }));                   
     },
         
     _setNewContact: function() {
@@ -387,38 +414,35 @@ const SharingDialog = new Lang.Class({
     _prepareEmail: function() {
         if(this._notify.get_active()){
            this.email = true;
-            log("share");//send email
+            log("share");
         }             
     },
 
-   _onAdd: function(){
-       this._getNewContact();
-           log(this.newContact);
-          // if(this.newContact != '')
-                   
-         
-       if(this.writer)
-           // .set_role(GData.DocumentsEntry{( access_role: writer)};//pseduocode
-           log("writer");
-       if(this.reader)
-           log("reader");
-            //scopeType.set_role(GData.DocumentsEntry{( access_role: reader )};//pseudocode
-       if(this.email)
-           log("send email");  
+    _onAdd: function(){
+        this._sendNewPermission();
+        
    },
      
     _destroyPopUpWindow : function() {
        this.popUpWindow.destroy();
-   },    
+   },  
+
+    _cellTextFunction: function(scopeValArr) {
+       this.scopeValArr.forEach(Lang.bind (this, function(scopeValArr) {
+                this.emailAddress = (scopeValArr)
+                log(this.emailAddress);
+                    let iter = this.model.append();
+                    this.model.set(iter,
+                    [ 0 , 1 ],
+                    [ "author" , this.emailAddress ]); 
+         }));
+    },
 
     _detailCellFunc: function(col, cell, model, iter) {       
-       let urn = Global.selectionController.getSelection(); 
-       let doc = Global.documentManager.getItemById(urn);
-           if(doc.contributor){
-               cell.text = doc.contributor;//replace with scope value
-               cell.visible = true;
-           }
+        this.roleArr.forEach(Lang.bind(this, function(roleArr) { //this has a bug
+            cell.text = (roleArr);
+            cell.visible = true;
+        }));
      }
-
 });
 
