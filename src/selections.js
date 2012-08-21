@@ -21,7 +21,7 @@
 
 const Clutter = imports.gi.Clutter;
 const EvView = imports.gi.EvinceView;
-const Gd = imports.gi.Gd;
+const GdPrivate = imports.gi.GdPrivate;
 const Gdk = imports.gi.Gdk;
 const GLib = imports.gi.GLib;
 const GObject = imports.gi.GObject;
@@ -484,7 +484,7 @@ const OrganizeCollectionView = new Lang.Class({
         this._viewCol.add_attribute(this._rendererText,
                                     'text', OrganizeModelColumns.NAME);
 
-        this._rendererDetail = new Gd.StyledTextRenderer({ xpad: 16 });
+        this._rendererDetail = new GdPrivate.StyledTextRenderer({ xpad: 16 });
         this._rendererDetail.add_class('dim-label');
         this._viewCol.pack_start(this._rendererDetail, false);
         this._viewCol.set_cell_data_func(this._rendererDetail,

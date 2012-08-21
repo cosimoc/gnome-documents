@@ -9,41 +9,21 @@ gdprivate_cflags = \
 gdprivate_source_h = \
     lib/gd-utils.h \
     lib/gd-fullscreen-filter.h \
-    lib/gd-main-toolbar.h \
-    lib/gd-main-view-generic.h \
-    lib/gd-main-icon-view.h \
-    lib/gd-main-list-view.h \
-    lib/gd-main-view.h \
-    lib/gd-margin-container.h \
     lib/gd-metadata.h \
-    lib/gd-notification.h \
     lib/gd-pdf-loader.h \
     lib/gd-sidebar-thumbnails.h \
     lib/gd-styled-text-renderer.h \
-    lib/gd-tagged-entry.h \
     lib/gd-thumb-nav.h \
-    lib/gd-toggle-pixbuf-renderer.h \
-    lib/gd-two-lines-renderer.h \
     $(NULL)
 
 gdprivate_source_c = \
     lib/gd-utils.c \
     lib/gd-fullscreen-filter.c \
-    lib/gd-main-toolbar.c \
-    lib/gd-main-view-generic.c \
-    lib/gd-main-icon-view.c \
-    lib/gd-main-list-view.c \
-    lib/gd-main-view.c \
-    lib/gd-margin-container.c \
     lib/gd-metadata.c \
-    lib/gd-notification.c \
     lib/gd-pdf-loader.c \
     lib/gd-sidebar-thumbnails.c \
     lib/gd-styled-text-renderer.c \
-    lib/gd-tagged-entry.c \
     lib/gd-thumb-nav.c \
-    lib/gd-toggle-pixbuf-renderer.c \
-    lib/gd-two-lines-renderer.c \
     $(NULL)
 
 pkglib_LTLIBRARIES += libgdprivate-1.0.la
@@ -62,15 +42,15 @@ libgdprivate_1_0_la_SOURCES = \
     $(gdprivate_source_h) \
     $(gdprivate_source_c)
 
-INTROSPECTION_GIRS += Gd-1.0.gir
+INTROSPECTION_GIRS += GdPrivate-1.0.gir
 
-Gd-1.0.gir: libgdprivate-1.0.la Makefile
-Gd_1_0_gir_NAMESPACE = Gd
-Gd_1_0_gir_VERSION = 1.0
-Gd_1_0_gir_LIBS = libgdprivate-1.0.la
-Gd_1_0_gir_CFLAGS = $(AM_CPPFLAGS) $(gdprivate_cflags)
-Gd_1_0_gir_SCANNERFLAGS = --warn-all --symbol-prefix=gd --identifier-prefix=Gd
-Gd_1_0_gir_INCLUDES = \
+GdPrivate-1.0.gir: libgdprivate-1.0.la Makefile
+GdPrivate_1_0_gir_NAMESPACE = GdPrivate
+GdPrivate_1_0_gir_VERSION = 1.0
+GdPrivate_1_0_gir_LIBS = libgdprivate-1.0.la
+GdPrivate_1_0_gir_CFLAGS = $(AM_CPPFLAGS) $(gdprivate_cflags)
+GdPrivate_1_0_gir_SCANNERFLAGS = --warn-all --symbol-prefix=gd --identifier-prefix=Gd
+GdPrivate_1_0_gir_INCLUDES = \
    GData-0.0 \
    Goa-1.0 \
    Gtk-3.0 \
@@ -78,6 +58,6 @@ Gd_1_0_gir_INCLUDES = \
    EvinceView-3.0 \
    Zpj-0.0
 
-Gd_1_0_gir_FILES = \
+GdPrivate_1_0_gir_FILES = \
     $(addprefix $(srcdir)/,$(gdprivate_source_h)) \
     $(addprefix $(srcdir)/,$(gdprivate_source_c))

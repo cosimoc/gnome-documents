@@ -21,7 +21,7 @@
 
 const Clutter = imports.gi.Clutter;
 const EvView = imports.gi.EvinceView;
-const Gd = imports.gi.Gd;
+const GdPrivate = imports.gi.GdPrivate;
 const Gdk = imports.gi.Gdk;
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
@@ -175,7 +175,7 @@ const PreviewView = new Lang.Class({
     _onSearchJobUpdated: function(job, page) {
         // FIXME: ev_job_find_get_results() returns a GList **
         // and thus is not introspectable
-        Gd.ev_view_find_changed(this.view, job, page);
+        GdPrivate.ev_view_find_changed(this.view, job, page);
     },
 
     setModel: function(model) {
@@ -202,8 +202,8 @@ const PreviewThumbnails = new Lang.Class({
     Name: 'PreviewThumbnails',
 
     _init: function(model) {
-        this.view = new Gd.SidebarThumbnails({ model: model });
-        this.widget = new Gd.ThumbNav({ thumbview: this.view });
+        this.view = new GdPrivate.SidebarThumbnails({ model: model });
+        this.widget = new GdPrivate.ThumbNav({ thumbview: this.view });
         this.actor = new GtkClutter.Actor({ contents: this.widget,
                                             opacity: 0 });
 
@@ -239,7 +239,7 @@ const PreviewFullscreen = new Lang.Class({
 
         let model = previewView.getModel();
 
-        this._filter = new Gd.FullscreenFilter();
+        this._filter = new GdPrivate.FullscreenFilter();
         this._filter.connect('motion-event', Lang.bind(this, this._fullscreenMotionHandler));
         this._filter.start();
 

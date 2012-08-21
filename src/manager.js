@@ -19,7 +19,7 @@
  *
  */
 
-const Gd = imports.gi.Gd;
+const GdPrivate = imports.gi.GdPrivate;
 const Gdk = imports.gi.Gdk;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
@@ -224,7 +224,7 @@ const BaseView = new Lang.Class({
         this.widget = new Gtk.TreeView({ headers_visible: false,
                                          enable_search: false });
         this._treeView = this.widget;
-        Gd.gtk_tree_view_set_activate_on_single_click(this._treeView, true);
+        GdPrivate.gtk_tree_view_set_activate_on_single_click(this._treeView, true);
         this._treeView.set_model(this._model.model);
 
         let selection = this._treeView.get_selection();

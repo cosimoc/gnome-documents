@@ -5,6 +5,7 @@ srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
 
 PKG_NAME="gnome-documents"
+ACLOCAL_FLAGS="-I libgd"
 
 (test -f $srcdir/src/main.js) || {
     echo -n "**Error**: Directory "\`$srcdir\'" does not look like the"

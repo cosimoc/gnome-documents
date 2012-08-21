@@ -1,6 +1,6 @@
-ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
+ACLOCAL_AMFLAGS = -I m4 -I libgd ${ACLOCAL_FLAGS}
 
-SUBDIRS = src data po
+SUBDIRS = libgd src data po
 
 EXTRA_DIST = \
     autogen.sh \

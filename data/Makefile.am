@@ -28,7 +28,7 @@ service_in_files = \
 
 gsettings_ENUM_NAMESPACE = org.gnome.Documents
 gsettings_ENUM_FILES = \
-    $(top_srcdir)/src/lib/gd-main-view.h
+    $(top_srcdir)/libgd/libgd/gd-main-view.h
 
 gsettingsschema_in_files = org.gnome.documents.gschema.xml.in
 gsettings_SCHEMAS = $(gsettingsschema_in_files:.xml.in=.xml)

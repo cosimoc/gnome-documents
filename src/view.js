@@ -20,6 +20,7 @@
  */
 
 const Gd = imports.gi.Gd;
+const GdPrivate = imports.gi.GdPrivate;
 const Gdk = imports.gi.Gdk;
 const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gettext = imports.gettext;
@@ -227,7 +228,7 @@ const ViewContainer = new Lang.Class({
         let listWidget = this.view.get_generic_view();
 
         let typeRenderer =
-            new Gd.StyledTextRenderer({ xpad: 16 });
+            new GdPrivate.StyledTextRenderer({ xpad: 16 });
         typeRenderer.add_class('dim-label');
         listWidget.add_renderer(typeRenderer, Lang.bind(this,
             function(col, cell, model, iter) {
@@ -238,7 +239,7 @@ const ViewContainer = new Lang.Class({
             }));
 
         let whereRenderer =
-            new Gd.StyledTextRenderer({ xpad: 16 });
+            new GdPrivate.StyledTextRenderer({ xpad: 16 });
         whereRenderer.add_class('dim-label');
         listWidget.add_renderer(whereRenderer, Lang.bind(this,
             function(col, cell, model, iter) {

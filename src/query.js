@@ -21,7 +21,7 @@
 
 const Global = imports.global;
 
-const Gd = imports.gi.Gd;
+const GdPrivate = imports.gi.GdPrivate;
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Lang = imports.lang;
@@ -256,7 +256,7 @@ const QueryBuilder = new Lang.Class({
 
     // bumps the mtime to current time for the given resource
     buildUpdateMtimeQuery: function(resource) {
-        let time = Gd.iso8601_from_timestamp(GLib.get_real_time() / GLib.USEC_PER_SEC);
+        let time = GdPrivate.iso8601_from_timestamp(GLib.get_real_time() / GLib.USEC_PER_SEC);
         let sparql = ('INSERT OR REPLACE { <%s> nie:contentLastModified \"%s\" }'
                      ).format(resource, time);
 
@@ -264,7 +264,7 @@ const QueryBuilder = new Lang.Class({
     },
 
     buildCreateCollectionQuery: function(name) {
-        let time = Gd.iso8601_from_timestamp(GLib.get_real_time() / GLib.USEC_PER_SEC);
+        let time = GdPrivate.iso8601_from_timestamp(GLib.get_real_time() / GLib.USEC_PER_SEC);
         let sparql = ('INSERT { _:res a nfo:DataContainer ; a nie:DataObject ; ' +
                       'nie:contentLastModified \"' + time + '\" ; ' +
                       'nie:title \"' + name + '\" ; ' +

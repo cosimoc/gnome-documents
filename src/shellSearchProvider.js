@@ -23,7 +23,7 @@ const Lang = imports.lang;
 const Mainloop = imports.mainloop;
 const Gettext = imports.gettext;
 
-const Gd = imports.gi.Gd;
+const GdPrivate = imports.gi.GdPrivate;
 const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const Goa = imports.gi.Goa;
@@ -221,7 +221,7 @@ const CreateCollectionIconJob = new Lang.Class({
     },
 
     _returnPixbuf: function() {
-        this._callback(Gd.create_collection_icon(_SHELL_SEARCH_ICON_SIZE, this._itemIcons));
+        this._callback(GdPrivate.create_collection_icon(_SHELL_SEARCH_ICON_SIZE, this._itemIcons));
     }
 });
 
@@ -275,7 +275,7 @@ const FetchMetasJob = new Lang.Class({
                             gicon = _createGIcon(cursor);
 
                         if (!title || title == '')
-                            title = Gd.filename_strip_extension(filename);
+                            title = GdPrivate.filename_strip_extension(filename);
 
                         if (!title || title == '')
                             title = _("Untitled Document");
@@ -431,7 +431,7 @@ const ShellSearchProvider = new Lang.Class({
             if (iconstr)
                 meta['gicon'] = GLib.Variant.new('s', iconstr);
             else if (pixbuf)
-                meta['icon-data'] = Gd.create_variant_from_pixbuf(pixbuf);
+                meta['icon-data'] = GdPrivate.create_variant_from_pixbuf(pixbuf);
 
             metas.push(meta);
         }

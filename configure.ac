@@ -81,6 +81,16 @@ PKG_CHECK_MODULES(MINER,
                   libgdata >= $GDATA_MIN_VERSION
                   zapojit-0.0 >= $ZAPOJIT_MIN_VERSION)
 
+LIBGD_INIT([
+  gtk-hacks
+  main-view
+  main-toolbar
+  margin-container
+  notification
+  tagged-entry
+  gir
+])
+
 GJS_CONSOLE=`$PKG_CONFIG --variable=gjs_console gjs-1.0`
 AC_SUBST(GJS_CONSOLE)
 
@@ -89,6 +99,7 @@ AC_SUBST(GLIB_COMPILE_RESOURCES)
 
 AC_CONFIG_FILES([
 Makefile
+libgd/Makefile
 src/Makefile
 data/Makefile
 data/icons/Makefile

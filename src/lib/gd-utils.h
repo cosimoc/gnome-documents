@@ -51,10 +51,6 @@ gchar *gd_iso8601_from_timestamp (gint64 timestamp);
 
 GIcon *gd_create_collection_icon (gint base_size,
                                   GList *pixbufs);
-GIcon *gd_create_symbolic_icon (const gchar *name,
-                                gint base_size);
-void   gd_entry_focus_hack (GtkWidget *entry,
-                            GdkDevice *device);
 
 GVariant *gd_create_variant_from_pixbuf (GdkPixbuf *pixbuf);
 

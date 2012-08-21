@@ -23,6 +23,7 @@ const EvView = imports.gi.EvinceView;
 const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const Gd = imports.gi.Gd;
+const GdPrivate = imports.gi.GdPrivate;
 const Gdk = imports.gi.Gdk;
 const GData = imports.gi.GData;
 const GLib = imports.gi.GLib;
@@ -243,7 +244,7 @@ const CollectionIconWatcher = new Lang.Class({
                 pixbufs.push(doc.pristinePixbuf);
             });
 
-        this._pixbuf = Gd.create_collection_icon(Utils.getIconSize(), pixbufs);
+        this._pixbuf = GdPrivate.create_collection_icon(Utils.getIconSize(), pixbufs);
         this._emitRefresh();
     },
 
@@ -358,7 +359,7 @@ const DocCommon = new Lang.Class({
         if (title && title != '')
             this.name = title;
         else if (filename)
-            this.name = Gd.filename_strip_extension(filename);
+            this.name = GdPrivate.filename_strip_extension(filename);
         else
             this.name = '';
 
@@ -453,13 +454,13 @@ const DocCommon = new Lang.Class({
             this.thumbnailed = false;
 
             // try to create the thumbnail
-            Gd.queue_thumbnail_job_for_file_async(this._file,
-                                                  Lang.bind(this, this._onQueueThumbnailJob));
+            GdPrivate.queue_thumbnail_job_for_file_async(this._file,
+                                                         Lang.bind(this, this._onQueueThumbnailJob));
         }
     },
 
     _onQueueThumbnailJob: function(object, res) {
-        let thumbnailed = Gd.queue_thumbnail_job_for_file_finish(res);
+        let thumbnailed = GdPrivate.queue_thumbnail_job_for_file_finish(res);
 
         if (!thumbnailed) {
             this._failedThumbnailing = true;
@@ -579,7 +580,7 @@ const DocCommon = new Lang.Class({
 
         if (this.thumbnailed) {
             let [ slice, border ] = Utils.getThumbnailFrameBorder();
-            this.pixbuf = Gd.embed_image_in_frame(pixbuf,
+            this.pixbuf = GdPrivate.embed_image_in_frame(pixbuf,
                 Path.ICONS_DIR + 'thumbnail-frame.png',
                 slice, border);
         } else {
@@ -663,10 +664,10 @@ const LocalDocument = new Lang.Class({
     },
 
     load: function(cancellable, callback) {
-        Gd.pdf_loader_load_uri_async(this.uri, cancellable, Lang.bind(this,
+        GdPrivate.pdf_loader_load_uri_async(this.uri, cancellable, Lang.bind(this,
             function(source, res) {
                 try {
-                    let docModel = Gd.pdf_loader_load_uri_finish(res);
+                    let docModel = GdPrivate.pdf_loader_load_uri_finish(res);
                     callback(this, docModel, null);
                 } catch (e) {
                     callback(this, null, e);
@@ -734,10 +735,10 @@ const GoogleDocument = new Lang.Class({
             function(entry, service, exception) {
                 if (exception) {
                     // try loading from the most recent cache, if any
-                    Gd.pdf_loader_load_uri_async(this.identifier, cancellable, Lang.bind(this,
+                    GdPrivate.pdf_loader_load_uri_async(this.identifier, cancellable, Lang.bind(this,
                         function(source, res) {
                             try {
-                                let docModel = Gd.pdf_loader_load_uri_finish(res);
+                                let docModel = GdPrivate.pdf_loader_load_uri_finish(res);
                                 callback(this, docModel, null);
                             } catch (e) {
                                 // report the outmost error only
@@ -748,11 +749,11 @@ const GoogleDocument = new Lang.Class({
                     return;
                 }
 
-                Gd.pdf_loader_load_gdata_entry_async
+                GdPrivate.pdf_loader_load_gdata_entry_async
                     (entry, service, cancellable, Lang.bind(this,
                         function(source, res) {
                             try {
-                                let docModel = Gd.pdf_loader_load_uri_finish(res);
+                                let docModel = GdPrivate.pdf_loader_load_uri_finish(res);
                                 callback(this, docModel, null);
                             } catch (e) {
                                 callback(this, null, e);
@@ -873,10 +874,10 @@ const SkydriveDocument = new Lang.Class({
             function(entry, service, exception) {
                 if (exception) {
                     // try loading from the most recent cache, if any
-                    Gd.pdf_loader_load_uri_async(this.identifier, cancellable, Lang.bind(this,
+                    GdPrivate.pdf_loader_load_uri_async(this.identifier, cancellable, Lang.bind(this,
                         function(source, res) {
                             try {
-                                let docModel = Gd.pdf_loader_load_uri_finish(res);
+                                let docModel = GdPrivate.pdf_loader_load_uri_finish(res);
                                 callback(this, docModel, null);
                             } catch (e) {
                                 // report the outmost error only
@@ -887,11 +888,11 @@ const SkydriveDocument = new Lang.Class({
                     return;
                 }
 
-                Gd.pdf_loader_load_zpj_entry_async
+                GdPrivate.pdf_loader_load_zpj_entry_async
                     (entry, service, cancellable, Lang.bind(this,
                         function(source, res) {
                             try {
-                                let docModel = Gd.pdf_loader_load_zpj_entry_finish(res);
+                                let docModel = GdPrivate.pdf_loader_load_zpj_entry_finish(res);
                                 callback(this, docModel, null);
                             } catch (e) {
                                 callback(this, null, e);
@@ -1086,10 +1087,10 @@ const DocumentManager = new Lang.Class({
         let evDoc = docModel.get_document();
         let file = Gio.File.new_for_uri(evDoc.get_uri());
 
-        if (!Gd.is_metadata_supported_for_file(file))
+        if (!GdPrivate.is_metadata_supported_for_file(file))
             return;
 
-        let metadata = new Gd.Metadata({ file: file });
+        let metadata = new GdPrivate.Metadata({ file: file });
 
         // save current page in metadata
         let [res, val] = metadata.get_int('page');
