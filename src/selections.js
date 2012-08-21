@@ -716,6 +716,8 @@ const SelectionController = new Lang.Class({
 });
 Signals.addSignalMethods(SelectionController.prototype);
 
+const _SELECTION_TOOLBAR_DEFAULT_WIDTH = 500;
+
 const SelectionToolbar = new Lang.Class({
     Name: 'SelectionToolbar',
 
@@ -727,29 +729,12 @@ const SelectionToolbar = new Lang.Class({
         this.widget = new Gtk.Toolbar({ show_arrow: false,
                                         icon_size: Gtk.IconSize.LARGE_TOOLBAR });
         this.widget.get_style_context().add_class('osd');
+        this.widget.set_size_request(_SELECTION_TOOLBAR_DEFAULT_WIDTH, -1);
 
         this.actor = new GtkClutter.Actor({ contents: this.widget,
                                             show_on_set_parent: false,
                                             opacity: 0 });
         Utils.alphaGtkWidget(this.actor.get_widget());
-
-        let widthConstraint =
-            new Clutter.BindConstraint({ source: this._parentActor,
-                                         coordinate: Clutter.BindCoordinate.WIDTH,
-                                         offset: - 300 });
-        this.actor.add_constraint(widthConstraint);
-        this.actor.connect('notify::width', Lang.bind(this,
-            function() {
-                let width = this._parentActor.width;
-                let offset = 300;
-
-                if (width > 1000)
-                    offset += (width - 1000);
-                else if (width < 600)
-                    offset -= (600 - width);
-
-                widthConstraint.offset = - offset;
-            }));
 
         this.actor.add_constraint(
             new Clutter.AlignConstraint({ align_axis: Clutter.AlignAxis.X_AXIS,
