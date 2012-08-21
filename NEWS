@@ -1,3 +1,12 @@
+3.5.90 - "From My Dreams"
+=========================
+
+- Add a Properties dialog for documents (Meg Ford)
+- Clear searches when the entry becomes hidden
+- Improve the selection toolbar appearance
+- Improve searchbar appearance
+- Port to use the libgd git submodule
+
 0.5.5 - "All the Leaves Are Gone"
 =================================
 
