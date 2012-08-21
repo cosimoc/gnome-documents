@@ -601,6 +601,14 @@ const OverviewSearchbar = new Lang.Class({
 
     hide: function() {
         this._dropdownButton.set_active(false);
+
+        // clear all the search properties when hiding the entry
+        this._searchEntry.set_text('');
+
+        Global.searchTypeManager.setActiveItemById('all');
+        Global.searchMatchManager.setActiveItemById('all');
+        Global.sourceManager.setActiveItemById('all');
+
         this.parent();
     }
 });
