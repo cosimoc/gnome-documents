@@ -491,8 +491,8 @@ const OverviewSearchbar = new Lang.Class({
     },
 
     createSearchWidgets: function() {
-        this._searchContainer = new Gd.MarginContainer({ min_margin: 6,
-                                                         max_margin: 64 });
+        this._searchContainer = new Gd.MarginContainer({ min_margin: 64,
+                                                         max_margin: 128 });
         this._box = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL });
         this._searchContainer.add(this._box);
 
