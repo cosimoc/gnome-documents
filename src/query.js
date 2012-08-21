@@ -37,9 +37,8 @@ const QueryColumns = {
     IDENTIFIER: 7,
     RDFTYPE: 8,
     RESOURCE_URN: 9,
-    FAVORITE: 10,
-    SHARED: 11,
-    DATE_CREATED: 12
+    SHARED: 10,
+    DATE_CREATED: 11
 };
 
 const QueryFlags = {
@@ -197,7 +196,6 @@ const QueryBuilder = new Lang.Class({
             'nao:identifier(?urn) ' + // identifier
             'rdf:type(?urn) ' + // type
             'nie:dataSource(?urn) ' + // resource URN
-            '( EXISTS { ?urn nao:hasTag nao:predefined-tag-favorite } ) ' + // favorite
             '( EXISTS { ?urn nco:contributor ?contributor FILTER ( ?contributor != ?creator ) } ) ' + // shared
             'tracker:coalesce(nfo:fileCreated(?urn), nie:contentCreated(?urn)) ' + // date created
             whereSparql + tailSparql;

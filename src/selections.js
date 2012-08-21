@@ -764,11 +764,6 @@ const SelectionToolbar = new Lang.Class({
         this._leftGroup = new Gtk.ToolItem({ child: this._leftBox });
         this.widget.insert(this._leftGroup, -1);
 
-        this._toolbarFavorite = new Gtk.ToggleButton({ child: new Gtk.Image ({ icon_name: 'emblem-favorite-symbolic',
-                                                                               pixel_size: 32 })});
-        this._leftBox.add(this._toolbarFavorite);
-        this._toolbarFavorite.connect('clicked', Lang.bind(this, this._onToolbarFavorite));
-
         this._toolbarProperties = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'document-properties-symbolic',
                                                                            pixel_size: 32 })});
         this._toolbarProperties.set_tooltip_text(_("Properties"));
@@ -855,8 +850,6 @@ const SelectionToolbar = new Lang.Class({
 
     _setItemVisibility: function() {
         let apps = [];
-        let favCount = 0;
-        let showFavorite = true;
         let showTrash = true;
         let showPrint = true;
         let showProperties = true;
@@ -869,9 +862,6 @@ const SelectionToolbar = new Lang.Class({
             function(urn) {
                 let doc = Global.documentManager.getItemById(urn);
 
-                if (doc.favorite)
-                    favCount++;
-
                 if ((doc.defaultAppName) &&
                     (apps.indexOf(doc.defaultAppName) == -1))
                     apps.push(doc.defaultAppName);
@@ -880,7 +870,6 @@ const SelectionToolbar = new Lang.Class({
                 showPrint &= !doc.collection;
             }));
 
-        showFavorite &= ((favCount == 0) || (favCount == selection.length));
         showOpen = (apps.length > 0);
 
         if (selection.length > 1) {
@@ -898,29 +887,10 @@ const SelectionToolbar = new Lang.Class({
         }
         this._toolbarOpen.set_tooltip_text(openLabel);
 
-        if (showFavorite) {
-            let isFavorite = (favCount == selection.length);
-            let favoriteLabel = '';
-
-            if (isFavorite) {
-                favoriteLabel = _("Remove from favorites");
-                this._toolbarFavorite.set_active(true);
-                this._toolbarFavorite.get_style_context().add_class('documents-favorite');
-            } else {
-                favoriteLabel = _("Add to favorites");
-                this._toolbarFavorite.set_active(false);
-                this._toolbarFavorite.get_style_context().remove_class('documents-favorite');
-            }
-
-            this._toolbarFavorite.reset_style();
-            this._toolbarFavorite.set_tooltip_text(favoriteLabel);
-        }
-
         this._toolbarPrint.set_visible(showPrint);
         this._toolbarProperties.set_visible(showProperties);
         this._toolbarTrash.set_visible(showTrash);
         this._toolbarOpen.set_visible(showOpen);
-        this._toolbarFavorite.set_visible(showFavorite);
 
         this._insideRefresh = false;
     },
@@ -949,19 +919,6 @@ const SelectionToolbar = new Lang.Class({
             function(urn) {
                 let doc = Global.documentManager.getItemById(urn);
                 doc.open(widget.get_screen(), Gtk.get_current_event_time());
-            }));
-    },
-
-    _onToolbarFavorite: function(widget) {
-        if (this._insideRefresh)
-            return;
-
-        let selection = Global.selectionController.getSelection();
-
-        selection.forEach(Lang.bind(this,
-            function(urn) {
-                let doc = Global.documentManager.getItemById(urn);
-                doc.setFavorite(!doc.favorite);
             }));
     },
 

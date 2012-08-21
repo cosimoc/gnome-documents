@@ -276,7 +276,6 @@ const DocCommon = new Lang.Class({
         this.author = null;
         this.mtime = null;
         this.resourceUrn = null;
-        this.favorite = null;
         this.pixbuf = null;
         this.pristinePixbuf = null;
         this.defaultAppName = null;
@@ -287,7 +286,6 @@ const DocCommon = new Lang.Class({
         this.typeDescription = null;
         this.sourceName = null;
 
-        this.favorite = false;
         this.shared = false;
 
         this.collection = false;
@@ -327,7 +325,6 @@ const DocCommon = new Lang.Class({
         this.identifier = cursor.get_string(Query.QueryColumns.IDENTIFIER)[0];
         this.author = cursor.get_string(Query.QueryColumns.AUTHOR)[0];
         this.resourceUrn = cursor.get_string(Query.QueryColumns.RESOURCE_URN)[0];
-        this.favorite = cursor.get_boolean(Query.QueryColumns.FAVORITE);
 
         let mtime = cursor.get_string(Query.QueryColumns.MTIME)[0];
         if (mtime) {
@@ -546,10 +543,6 @@ const DocCommon = new Lang.Class({
 
         activeItem = Global.searchCategoryManager.getActiveItem();
 
-        if (this.favorite &&
-            (!activeItem ||
-             (activeItem.id != Searchbar.SearchCategoryStock.FAVORITES)))
-            emblemIcons.push(this._createSymbolicEmblem('emblem-favorite'));
         if (this.shared &&
             (!activeItem ||
              (activeItem.id != Searchbar.SearchCategoryStock.SHARED)))
@@ -621,10 +614,6 @@ const DocCommon = new Lang.Class({
 
                 printOp.run(toplevel);
             }));
-    },
-
-    setFavorite: function(favorite) {
-        TrackerUtils.setFavorite(this.id, favorite, null);
     },
 
     getWhere: function() {
@@ -783,46 +772,6 @@ const GoogleDocument = new Lang.Class({
         this.parent(cursor);
     },
 
-    setFavorite: function(favorite) {
-        this.parent(favorite);
-
-        this._createGDataEntry(null, Lang.bind(this,
-            function(entry, service, exception) {
-                if (!entry) {
-                    log('Unable to call setFavorite on ' + this.name + ': ' + exception.toString());
-                    return;
-                }
-
-                let starred = null;
-                let categories = entry.get_categories();
-                categories.forEach(
-                    function(category) {
-                        if (category.scheme == _GOOGLE_DOCS_SCHEME_LABELS &&
-                            category.term == _GOOGLE_DOCS_TERM_STARRED)
-                            starred = category;
-                    });
-
-                if (!starred) {
-                    starred = new GData.Category({ scheme: _GOOGLE_DOCS_SCHEME_LABELS,
-                                                   term: _GOOGLE_DOCS_TERM_STARRED });
-                    entry.add_category(starred);
-                }
-
-                starred.set_label(favorite ? 'starred' : '');
-
-                service.update_entry_async
-                    (service.get_primary_authorization_domain(),
-                     entry, null, Lang.bind(this,
-                         function(service, res) {
-                             try {
-                                 service.update_entry_finish(res);
-                             } catch (e) {
-                                 log('Unable to call setFavorite on ' + this.name + ': ' + e.toString());
-                             }
-                         }));
-            }));
-    },
-
     canTrash: function() {
         return false;
     }
@@ -914,9 +863,6 @@ const SkydriveDocument = new Lang.Class({
             description = _("Document");
 
         this.typeDescription = description;
-    },
-
-    setFavorite: function(favorite) {
     },
 
     canTrash: function() {

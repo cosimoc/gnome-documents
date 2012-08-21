@@ -23,22 +23,6 @@ const GLib = imports.gi.GLib;
 
 const Global = imports.global;
 
-function setFavorite(urn, isFavorite, callback) {
-    let sparql = ('%s { <%s> nao:hasTag nao:predefined-tag-favorite }').format((isFavorite ? 'INSERT OR REPLACE' : 'DELETE'), urn);
-
-    Global.connectionQueue.update(sparql, null,
-        function(object, res) {
-            try {
-                object.update_finish(res);
-            } catch (e) {
-                log('Unable to set the favorite property on ' + urn + ' to ' + isFavorite + ': ' + e.toString());
-            }
-
-            if (callback)
-                callback();
-        });
-}
-
 function setEditedName(newTitle, docId, callback) {
     let sparql = ('INSERT OR REPLACE { <%s> nfo:fileName\"%s\" }'.format(docId, newTitle));
 
