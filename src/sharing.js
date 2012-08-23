@@ -43,8 +43,8 @@ const Lang = imports.lang;
 const Signals = imports.signals;
 
 const OrganizeModelColumns = {
-    ID: 0,
-    NAME:1
+    NAME: 0,
+    ROLE: 1
 };
 
 const SharingDialog = new Lang.Class({
@@ -128,12 +128,11 @@ const SharingDialog = new Lang.Class({
         this._viewCol.pack_start(this._rendererText, true);
         this._viewCol.add_attribute(this._rendererText,
                                     'text', OrganizeModelColumns.NAME);
-
         this._rendererDetail = new Gd.StyledTextRenderer({ xpad: 16 });
         this._rendererDetail.add_class('dim-label');
         this._viewCol.pack_start(this._rendererDetail, false);
         this._viewCol.set_cell_data_func(this._rendererDetail,
-                                         Lang.bind(this, this._detailCellFunc));
+                                         Lang.bind(this, OrganizeModelColumns.ROLE));
 
         this.tree.show();
         grid.add(this.tree);
@@ -144,10 +143,11 @@ const SharingDialog = new Lang.Class({
 
         largeGrid.add(sw);
 
-        this._docSharing = new Gtk.Label ({ label: _("Document permissions"), //Label for widget group used for adding new contacts
+        this._docSharing = new Gtk.Label ({ label: '<b>' + _("Document permissions") + '</b>', //Label for widget group used for adding new contacts
                                             halign: Gtk.Align.START,
-                                            // use_markup: true, 
+                                            use_markup: true,
                                             hexpand: false });
+        this._docSharing.get_style_context().add_class('dim-label');
         largeGrid.add(this._docSharing);
 
         if(doc.shared)
@@ -165,10 +165,11 @@ const SharingDialog = new Lang.Class({
         this._changePermission.connect("clicked", Lang.bind(this, this._permissionPopUp));
         largeGrid.attach_next_to (this._changePermission, this._setting, 1, 1, 1); 
                
-        this._add = new Gtk.Label ({ label: _("Add people"), //Label for widget group used for adding new contacts
+        this._add = new Gtk.Label ({ label: '<b>' +  _("Add people") + '</b>', //Label for widget group used for adding new contacts
                                      halign: Gtk.Align.START,
                                      use_markup: true, 
                                      hexpand: false });
+        this._add.get_style_context().add_class('dim-label');
         largeGrid.add(this._add);
 
         this._addContact = new Gtk.Entry({ text: _("Enter an email address"), //Editable text in entry field
@@ -187,11 +188,13 @@ const SharingDialog = new Lang.Class({
         this._comboBoxText.connect('changed', Lang.bind(this, this._setNewContactPermission));
         largeGrid.attach_next_to(this._comboBoxText, this._addContact, 1, 1, 1);
 
+      /* There is no API for this
         this._notify = new Gtk.CheckButton({ label: _("Notify contact via gmail") }); //Label for checkbutton
         largeGrid.add(this._notify);
         this._notify.set_active(false); 
         //send an email with link to document via Google
         this._notify.connect("toggled", Lang.bind(this, this._prepareEmail));
+                                                                            */
 
         let buttonBox = new Gtk.ButtonBox({ orientation: Gtk.Orientation.HORIZONTAL });
         this._saveShare = new Gtk.Button({ label: "Add" }); 
@@ -220,7 +223,7 @@ const SharingDialog = new Lang.Class({
                                        margin_right: 24,
                                        margin_bottom: 12 });
 
-        this._label = new Gtk.Label({ label: '<b>'+_("Sharing Settings")+'</b>', //Label for permissions dialog
+        this._label = new Gtk.Label({ label: '<b>' + _("Sharing Settings") + '</b>', //Label for permissions dialog
                                       halign: Gtk.Align.END,
                                       use_markup: true });
         this._label.get_style_context().add_class('dim-label');
@@ -274,14 +277,15 @@ const SharingDialog = new Lang.Class({
                                 this._getGDataEntryRules(this.entry, service);
                             } catch (e) {
                                 exception = e;
-                                log("Error getting GData Entry" + e.message);   
+                                log("Error getting GData Entry " + e.message);   
                             }         
                                 
                      }));
     },
  
    //return a feed containing the acl related to the entry
-    _getGDataEntryRules: function(entry, service) {  
+    _getGDataEntryRules: function(entry, service) { 
+        // this._sendNewPermission(entry);  
          this.entry.get_rules_async
             (service,
              null,
@@ -298,14 +302,14 @@ const SharingDialog = new Lang.Class({
              if(feed)
                 this._getScopeRulesEntry(feed);
                 this._getRoleRulesEntry(feed);
-                this._sendNewPermission(feed);   
+                this._sendNewPermission(feed, entry, result, service);   
 		 } catch(e) {
              exception = e;
              log("Error getting ACL Feed " + e.message);  
 		 }        
 	 },
      
-     //get each entry (person) from the feed, and get the scope for each person, store them in an array
+     //get each entry (person) from the feed, and get the scope for each person, and then store the emails and values in an array
      _getScopeRulesEntry: function(feed) {
          let exception = null;
          try {
@@ -319,30 +323,30 @@ const SharingDialog = new Lang.Class({
              log("Error getting ACL Feed Entries " + e.message);  
 	     }
          log(this._scope);
-         this._getUserPermission(this._scope); 
-               
+         this._getUserPermission(this._scope);               
     },
     
     //this isn't finished
-     _sendNewPermission: function(feed) {
-        this._getNewContact();
-        let newRule = null;
-        let newRole = null;
+     _sendNewPermission: function(feed, entry, result, service) {
+       // this._getNewContact();
+      
+        let newRole = [];
         let aclLink = null;
-        let completeRule = null;
-        if(this.newContact != '')
-            newRule = feed.rule_new(null);             
-        if(this.writer) {
-           newRole = newRule.set_role(GDATA_DOCUMENTS_ACCESS_ROLE_WRITER);
-            log("writer");
-         }
+       //let completeRule = null;
+       // if(this.newContact != '')
+        let newRule = entry.new(null);
+          //let  newRule = feed.new(feed, null);      
+        //if(this.writer) {
+           newRule.set_role("writer");
+          //  log("writer");
+      /*   }
         if(this.reader) {
             log("reader");
-            newRole = newRule.set_role(GDATA_DOCUMENTS_ACCESS_ROLE_WRITER );
-        }
-            newRule.set_scope(GDATA_ACCESS_SCOPE_USER, this.newContact)
+            newRole = newRule.set_role(reader);
+        }*/
+            newRule.set_scope("megford387@gmail.com", "user")
             aclLink = feed.look_up_link(document,  GDATA_LINK_ACCESS_CONTROL_LIST);
-        completeRule = feed.insert_entry(service, aclLink.get_uri(aclLink), entry, null);
+            let completeRule = feed(service.insert_entry(service, aclLink.get_uri(aclLink), entry, null)); //}));*/
     },
 
     //get the value (email address) from each scope    
@@ -387,8 +391,9 @@ const SharingDialog = new Lang.Class({
             
             if(this.userRole.charAt(0) =='r')
                 this.roleArr.push(this.readerVal);
-            log(this.roleArr);  
-       }));                   
+            
+       })); 
+       log(this.roleArr);                 
     },
         
     _setNewContact: function() {
@@ -411,15 +416,17 @@ const SharingDialog = new Lang.Class({
         }
     },
 
-    _prepareEmail: function() {
+ /* There is no API for this
+      _prepareEmail: function() {
         if(this._notify.get_active()){
            this.email = true;
             log("share");
         }             
     },
+                                    */
 
     _onAdd: function(){
-        this._sendNewPermission();
+        //this._sendNewPermission();
         
    },
      
@@ -429,17 +436,18 @@ const SharingDialog = new Lang.Class({
 
     _cellTextFunction: function(scopeValArr) {
        this.scopeValArr.forEach(Lang.bind (this, function(scopeValArr) {
-                this.emailAddress = (scopeValArr)
+                this.emailAddress = (scopeValArr);
                 log(this.emailAddress);
                     let iter = this.model.append();
                     this.model.set(iter,
                     [ 0 , 1 ],
-                    [ "author" , this.emailAddress ]); 
+                    [ this.emailAddress , "hatred"]); 
          }));
     },
-
+  
+    //this has a bug, re-write as cellrenderer combo using roleArr to set active text for each entry 
     _detailCellFunc: function(col, cell, model, iter) {       
-        this.roleArr.forEach(Lang.bind(this, function(roleArr) { //this has a bug
+           this.roleArr.forEach(Lang.bind(this, function(roleArr) { 
             cell.text = (roleArr);
             cell.visible = true;
         }));
