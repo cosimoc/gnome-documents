@@ -54,6 +54,7 @@ const SharingDialog = new Lang.Class({
     _init: function() {
         let urn = Global.selectionController.getSelection();
         let doc = Global.documentManager.getItemById(urn);
+        let rows = 0;
 
         this.identifier = doc.identifier;
         this.resourceUrn = doc.resourceUrn;
@@ -74,21 +75,21 @@ const SharingDialog = new Lang.Class({
                                        hexpand: true });
         this.widget.add_button(_("Done"), Gtk.ResponseType.OK);  //Label for Done button in Sharing dialog
 
-        let largeGrid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,
-                                       column_homogeneous: false,
-                                       column_spacing: 6,
-                                       row_spacing: 6,
-                                       margin_left: 12,
-                                       margin_right: 12,
-                                       margin_bottom: 12});
+        let grid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,
+                                  column_spacing: 6,
+                                  row_spacing: 6,
+                                  margin_left: 12,
+                                  margin_right: 12,
+                                  margin_bottom: 12 });
       	let contentArea = this.widget.get_content_area();
-        contentArea.pack_start(largeGrid, true, true, 1);
+        contentArea.pack_start(grid, true, true, 0);
 
         let sw = new Gtk.ScrolledWindow({ shadow_type: Gtk.ShadowType.IN,
                                           margin_bottom: 3,
                                           hexpand: true });
         sw.set_size_request(-1, 250);
-        largeGrid.attach(sw, 0, 0, 3, 1);
+        grid.attach(sw, 0, 0, 3, 1);
+        rows++;
 
         this.model = Gtk.ListStore.new(
             [ GObject.TYPE_STRING,
@@ -123,7 +124,8 @@ const SharingDialog = new Lang.Class({
                                             use_markup: true,
                                             hexpand: false });
         this._docSharing.get_style_context().add_class('dim-label');
-        largeGrid.add(this._docSharing);
+        grid.add(this._docSharing);
+        rows++;
 
         if(doc.shared)
             this._permissionLabel = _("Shared"); //label for shared permission setting
@@ -132,19 +134,21 @@ const SharingDialog = new Lang.Class({
         this._setting = new Gtk.Label({ label: _(this._permissionLabel),
                                         halign: Gtk.Align.START,
                                         hexpand: false });
-        largeGrid.add(this._setting);
+        grid.add(this._setting);
 
         this._changePermission = new Gtk.Button({ label: _("Change"), //Label for permission change in Sharing dialog
                                                   halign: Gtk.Align.START });
         this._changePermission.connect("clicked", Lang.bind(this, this._permissionPopUp));
-        largeGrid.attach_next_to (this._changePermission, this._setting, 1, 1, 1);
+        grid.attach(this._changePermission, 2, rows, 1, 1);
+        rows++;
 
         this._add = new Gtk.Label ({ label: '<b>' +  _("Add people") + '</b>', //Label for widget group used for adding new contacts
                                      halign: Gtk.Align.START,
                                      use_markup: true,
                                      hexpand: false });
         this._add.get_style_context().add_class('dim-label');
-        largeGrid.add(this._add);
+        grid.add(this._add);
+        rows++;
 
         this._addContact = new Gtk.Entry({ placeholder_text: _("Enter an email address"), //Editable text in entry field
                                            editable: true,
@@ -156,7 +160,7 @@ const SharingDialog = new Lang.Class({
                 this._saveShare.sensitive = hasText;
                 this._comboBoxText.sensitive = hasText;
             }));
-        largeGrid.add(this._addContact);
+        grid.add(this._addContact);
 
         this._comboBoxText = new Gtk.ComboBoxText({ sensitive: false });
         let combo = [_("Can edit"), _("Can view") ]; //Permission setting labels in combobox
@@ -164,11 +168,11 @@ const SharingDialog = new Lang.Class({
             this._comboBoxText.append_text(combo[i]);
 
         this._comboBoxText.set_active(0);
-        largeGrid.attach_next_to(this._comboBoxText, this._addContact, 1, 1, 1);
+        grid.attach_next_to(this._comboBoxText, this._addContact, 1, 1, 1);
 
       /* There is no API for this
         this._notify = new Gtk.CheckButton({ label: _("Notify contact via gmail") }); //Label for checkbutton
-        largeGrid.add(this._notify);
+        grid.add(this._notify);
         this._notify.set_active(false);
         //send an email with link to document via Google
         this._notify.connect("toggled", Lang.bind(this, this._prepareEmail));
@@ -177,7 +181,7 @@ const SharingDialog = new Lang.Class({
         this._saveShare = new Gtk.Button({ label: _("Add"),
                                            sensitive: false });
         this._saveShare.connect ('clicked', Lang.bind(this, this._onAddClicked));
-        largeGrid.attach_next_to(this._saveShare, this._comboBoxText, 1, 1, 1);
+        grid.attach_next_to(this._saveShare, this._comboBoxText, 1, 1, 1);
 
         this.widget.show_all();
     },
@@ -189,7 +193,8 @@ const SharingDialog = new Lang.Class({
                                              destroy_with_parent: true,
                                              default_width: 400,
                                              default_height: 600,
-                                             hexpand: false });
+                                             hexpand: false,
+                                             title: _("Document Permissions") });
 
         let popUpGrid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,
                                        column_homogeneous: true,
@@ -200,30 +205,26 @@ const SharingDialog = new Lang.Class({
                                        margin_right: 24,
                                        margin_bottom: 12 });
 
-        this._label = new Gtk.Label({ label: '<b>' + _("Sharing Settings") + '</b>', //Label for permissions dialog
-                                      halign: Gtk.Align.END,
-                                      use_markup: true });
-        this._label.get_style_context().add_class('dim-label');
-        popUpGrid.add(this._label);
-
-        this.button1 = new Gtk.RadioButton ({ label: "Shared with link" }); //Label for radiobutton that sets doc permission to shared
-        this.button1.connect("toggled", Lang.bind (this, this._setDocumentPermission));
+        this.button1 = new Gtk.RadioButton ({ label: _("Shared with link") }); //Label for radiobutton that sets doc permission to shared
         this.button1.set_active (false);
         popUpGrid.attach(this.button1, 0, 2, 1, 1);
 
-        this.button2 =  new Gtk.RadioButton({ label: "Private",  //Label for radiobutton that sets doc permission to private
+        this.button2 =  new Gtk.RadioButton({ label: _("Private"),  //Label for radiobutton that sets doc permission to private
                                               group: this.button1 });
-        this.button2.connect("toggled", Lang.bind(this, this._setDocumentPermission));
         this.button2.set_active (true);
         popUpGrid.attach(this.button2, 0, 3, 1, 1);
 
-        this.button3 = new Gtk.RadioButton({ label: "Public", //Label for radiobutton that sets doc permission to public
+        this.button3 = new Gtk.RadioButton({ label: _("Public"), //Label for radiobutton that sets doc permission to public
                                              group: this.button1 });
-        this.button3.connect("toggled", Lang.bind(this, this._setDocumentPermission));
         popUpGrid.attach(this.button3, 0, 4, 1, 1);
 
-        this._close = new Gtk.Button({ label: "Done" });//Label for Done button permissions popup window
-        this._close.connect("clicked", Lang.bind(this, this._destroyPopUpWindow));
+        this._close = new Gtk.Button({ label: _("Done") });//Label for Done button permissions popup window
+        this._close.connect('clicked', Lang.bind(this,
+            function() {
+                this._setDocumentPermission();
+                this.popUpWindow.destroy();
+            }));
+
         popUpGrid.add(this._close);
 
         let popUpContentArea = this.popUpWindow.get_content_area();
@@ -353,8 +354,4 @@ const SharingDialog = new Lang.Class({
         }
     },
                                     */
-
-    _destroyPopUpWindow : function() {
-       this.popUpWindow.destroy();
-   }
 });
