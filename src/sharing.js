@@ -70,6 +70,7 @@ const SharingDialog = new Lang.Class({
         this.scopeValArr = [];
         this._scope = [];
         this.entry = null;
+        this.feed = null;
         this._createGDataEntry();
 
         let toplevel = Global.application.application.get_windows()[0];
@@ -132,7 +133,7 @@ const SharingDialog = new Lang.Class({
         this._rendererDetail.add_class('dim-label');
         this._viewCol.pack_start(this._rendererDetail, false);
         this._viewCol.set_cell_data_func(this._rendererDetail,
-                                         Lang.bind(this, OrganizeModelColumns.ROLE));
+                                         Lang.bind(this, this._detailCellFunc));
 
         this.tree.show();
         grid.add(this.tree);
@@ -155,8 +156,7 @@ const SharingDialog = new Lang.Class({
         else 
             this._permissionLabel = "Private"; //label for private permission setting      
         this._setting = new Gtk.Label({ label: _(this._permissionLabel), 
-                                        halign: Gtk.Align.START,
-                                        //use_markup: true, 
+                                        halign: Gtk.Align.START, 
                                         hexpand: false });
         largeGrid.add(this._setting);
 
@@ -268,7 +268,6 @@ const SharingDialog = new Lang.Class({
                     GData.DocumentsText,
                     null, Lang.bind(this,
                         function(object, res) {
-                           // let entry = null;
                             let exception = null;
 
                             try {
@@ -284,8 +283,7 @@ const SharingDialog = new Lang.Class({
     },
  
    //return a feed containing the acl related to the entry
-    _getGDataEntryRules: function(entry, service) { 
-        // this._sendNewPermission(entry);  
+    _getGDataEntryRules: function(entry, service) {   
          this.entry.get_rules_async
             (service,
              null,
@@ -297,12 +295,12 @@ const SharingDialog = new Lang.Class({
     _onGetRulesComplete: function(entry, result, service) {
          let exception = null;
          try {
-             let feed = service.query_finish(result);
-             log(feed); 
-             if(feed)
-                this._getScopeRulesEntry(feed);
-                this._getRoleRulesEntry(feed);
-                this._sendNewPermission(feed, entry, result, service);   
+             this.feed = service.query_finish(result);
+             log(this.feed); 
+             if(this.feed)
+                this._getScopeRulesEntry(this.feed);
+                this._getRoleRulesEntry(this.feed);
+               // this._sendNewPermission(feed, entry, result, service);   
 		 } catch(e) {
              exception = e;
              log("Error getting ACL Feed " + e.message);  
@@ -313,7 +311,7 @@ const SharingDialog = new Lang.Class({
      _getScopeRulesEntry: function(feed) {
          let exception = null;
          try {
-             let entries = feed.get_entries();
+             let entries = this.feed.get_entries();
              entries.forEach(Lang.bind(this, function(entry) {
              let [type, value] = entry.get_scope();
              this._scope.push({ type: type, value: value });
@@ -325,29 +323,6 @@ const SharingDialog = new Lang.Class({
          log(this._scope);
          this._getUserPermission(this._scope);               
     },
-    
-    //this isn't finished
-     _sendNewPermission: function(feed, entry, result, service) {
-       // this._getNewContact();
-      
-        let newRole = [];
-        let aclLink = null;
-       //let completeRule = null;
-       // if(this.newContact != '')
-        let newRule = entry.new(null);
-          //let  newRule = feed.new(feed, null);      
-        //if(this.writer) {
-           newRule.set_role("writer");
-          //  log("writer");
-      /*   }
-        if(this.reader) {
-            log("reader");
-            newRole = newRule.set_role(reader);
-        }*/
-            newRule.set_scope("megford387@gmail.com", "user")
-            aclLink = feed.look_up_link(document,  GDATA_LINK_ACCESS_CONTROL_LIST);
-            let completeRule = feed(service.insert_entry(service, aclLink.get_uri(aclLink), entry, null)); //}));*/
-    },
 
     //get the value (email address) from each scope    
     _getUserPermission: function(_scope) {            
@@ -358,14 +333,41 @@ const SharingDialog = new Lang.Class({
                 log(this.value);               
         })); 
         this._cellTextFunction(this.scopeValArr);                  
-    },   
+    }, 
+
+    
+    //this isn't finished
+     _sendNewPermission: function() {
+
+         let source = Global.sourceManager.getItemById(this.resourceUrn);
+         
+         let authorizer = new Gd.GDataGoaAuthorizer({ goa_object: source.object });
+         let service = new GData.DocumentsService({ authorizer: authorizer });
+         
+         let exception = null;
+         this._getNewContact();
+         let accessRule = new GData.AccessRule(); 
+         try {
+             if(this.reader)
+             accessRule.set_role(GData.DOCUMENTS_ACCESS_ROLE_READER);
+             else if(this.writer)
+             accessRule.set_role(GData.DOCUMENTS_ACCESS_ROLE_WRITER);
+             accessRule.set_scope(GData.ACCESS_SCOPE_USER, this.newContact);
+             let aclLink = this.entry.look_up_link(GData.LINK_ACCESS_CONTROL_LIST);
+             let insertedAccessRule = service.insert_entry(service.get_primary_authorization_domain(), 
+                                                           aclLink.get_uri(), accessRule, null);
+         } catch(e) {
+             exception = e;
+             log("Error inserting New Rule " + e.message);  
+		 } 
+    },  
 
     //get the entries (people) from the feed, then get the role (owner, reader, or writer) from each entry
     _getRoleRulesEntry: function(feed) {
         let _role = [];
         let exception = null;
             try {
-                let entries = feed.get_entries();
+                let entries = this.feed.get_entries();
                 entries.forEach(Lang.bind(this, function(entry) {
                 let [role] = entry.get_role();
                 _role.push({ role: role });
@@ -426,7 +428,7 @@ const SharingDialog = new Lang.Class({
                                     */
 
     _onAdd: function(){
-        //this._sendNewPermission();
+        this._sendNewPermission();
         
    },
      
