@@ -76,7 +76,8 @@ const SharingDialog = new Lang.Class({
 
         let largeGrid = new Gtk.Grid({ orientation: Gtk.Orientation.VERTICAL,
                                        column_homogeneous: false,
-                                       row_spacing: 3,
+                                       column_spacing: 6,
+                                       row_spacing: 6,
                                        margin_left: 12,
                                        margin_right: 12,
                                        margin_bottom: 12});
@@ -145,14 +146,20 @@ const SharingDialog = new Lang.Class({
         this._add.get_style_context().add_class('dim-label');
         largeGrid.add(this._add);
 
-        this._addContact = new Gtk.Entry({ text: _("Enter an email address"), //Editable text in entry field
+        this._addContact = new Gtk.Entry({ placeholder_text: _("Enter an email address"), //Editable text in entry field
                                            editable: true,
                                            hexpand: true,
                                            halign: Gtk.Align.START });
+        this._addContact.connect('changed', Lang.bind(this,
+            function() {
+                let hasText = !!this._addContact.get_text();
+                this._saveShare.sensitive = hasText;
+                this._comboBoxText.sensitive = hasText;
+            }));
         largeGrid.add(this._addContact);
 
-        this._comboBoxText = new Gtk.ComboBoxText({ halign: Gtk.Align.START });
-        let combo = [_("Set permission"), _("Can edit"), _("Can view") ]; //Permission setting labels in combobox
+        this._comboBoxText = new Gtk.ComboBoxText({ sensitive: false });
+        let combo = [_("Can edit"), _("Can view") ]; //Permission setting labels in combobox
         for (let i = 0; i < combo.length; i++)
             this._comboBoxText.append_text(combo[i]);
 
@@ -167,8 +174,9 @@ const SharingDialog = new Lang.Class({
         this._notify.connect("toggled", Lang.bind(this, this._prepareEmail));
                                                                             */
 
-        this._saveShare = new Gtk.Button({ label: _("Add") });
-        this._saveShare.connect ("clicked", Lang.bind(this, this._onAdd));
+        this._saveShare = new Gtk.Button({ label: _("Add"),
+                                           sensitive: false });
+        this._saveShare.connect ('clicked', Lang.bind(this, this._onAddClicked));
         largeGrid.attach_next_to(this._saveShare, this._comboBoxText, 1, 1, 1);
 
         this.widget.show_all();
@@ -252,7 +260,6 @@ const SharingDialog = new Lang.Class({
                  try {
                      let feed = service.query_finish(result);
                      this._getScopeRulesEntry(feed);
-                     // this._sendNewPermission(feed, entry, result, service);
 	         } catch(e) {
                      log("Error getting ACL Feed " + e.message);
 	         }
@@ -298,7 +305,7 @@ const SharingDialog = new Lang.Class({
     },
 
     //this isn't finished
-     _sendNewPermission: function() {
+     _onAddClicked: function() {
          let source = Global.sourceManager.getItemById(this.resourceUrn);
 
          let authorizer = new GData.GoaAuthorizer({ goa_object: source.object });
@@ -326,9 +333,9 @@ const SharingDialog = new Lang.Class({
         let activeItem = this._comboBoxText.get_active();
         let newContact = { name: this._addContact.get_text() };
 
-        if (activeItem == 1)
+        if (activeItem == 0)
             newContact.role = GData.DOCUMENTS_ACCESS_ROLE_WRITER;
-        else if (activeItem == 2)
+        else if (activeItem == 1)
             newContact.role = GData.DOCUMENTS_ACCESS_ROLE_READER;
 
         return newContact;
@@ -346,11 +353,6 @@ const SharingDialog = new Lang.Class({
         }
     },
                                     */
-
-    _onAdd: function(){
-        this._sendNewPermission();
-
-   },
 
     _destroyPopUpWindow : function() {
        this.popUpWindow.destroy();
