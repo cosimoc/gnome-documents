@@ -43,8 +43,7 @@ const Lang = imports.lang;
 const Signals = imports.signals;
 
 const OrganizeModelColumns = {
-    NAME: 0,
-    ROLE: 1
+    NAME: 0
 };
 
 const SharingDialog = new Lang.Class({
@@ -442,8 +441,8 @@ const SharingDialog = new Lang.Class({
                 log(this.emailAddress);
                     let iter = this.model.append();
                     this.model.set(iter,
-                    [ 0 , 1 ],
-                    [ this.emailAddress , "hatred"]); 
+                    [ 0 ],
+                    [ this.emailAddress ]); 
          }));
     },
   
