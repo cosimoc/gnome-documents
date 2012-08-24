@@ -24,7 +24,7 @@
 
 #include <glib-object.h>
 #include <gio/gio.h>
-#include <evince-document.h>
+#include <evince-view.h>
 #include <gdata/gdata.h>
 #include <zpj/zpj.h>
 
@@ -34,24 +34,24 @@ void gd_pdf_loader_load_uri_async (const gchar *uri,
                                    GCancellable *cancellable,
                                    GAsyncReadyCallback callback,
                                    gpointer user_data);
-EvDocument *gd_pdf_loader_load_uri_finish (GAsyncResult *res,
-                                           GError **error);
+EvDocumentModel *gd_pdf_loader_load_uri_finish (GAsyncResult *res,
+                                                GError **error);
 
 void gd_pdf_loader_load_gdata_entry_async (GDataEntry *entry,
                                            GDataDocumentsService *service,
                                            GCancellable *cancellable,
                                            GAsyncReadyCallback callback,
                                            gpointer user_data);
-EvDocument *gd_pdf_loader_load_gdata_entry_finish (GAsyncResult *res,
-                                                   GError **error);
+EvDocumentModel *gd_pdf_loader_load_gdata_entry_finish (GAsyncResult *res,
+                                                        GError **error);
 
 void gd_pdf_loader_load_zpj_entry_async (ZpjSkydriveEntry *entry,
                                          ZpjSkydrive *service,
                                          GCancellable *cancellable,
                                          GAsyncReadyCallback callback,
                                          gpointer user_data);
-EvDocument *gd_pdf_loader_load_zpj_entry_finish (GAsyncResult *res,
-                                                 GError **error);
+EvDocumentModel *gd_pdf_loader_load_zpj_entry_finish (GAsyncResult *res,
+                                                      GError **error);
 
 G_END_DECLS
 

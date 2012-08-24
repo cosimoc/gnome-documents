@@ -120,6 +120,7 @@ const MainToolbar = new Lang.Class({
 
     _clearStateData: function() {
         this._model = null;
+        this._collBackButton = null;
 
         if (this._collectionId != 0) {
             Global.collectionManager.disconnect(this._collectionId);

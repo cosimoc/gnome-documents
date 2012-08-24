@@ -19,6 +19,7 @@
  *
  */
 
+const EvView = imports.gi.EvinceView;
 const GdkPixbuf = imports.gi.GdkPixbuf;
 const Gio = imports.gi.Gio;
 const Gd = imports.gi.Gd;
@@ -275,10 +276,11 @@ const DocCommon = new Lang.Class({
         this.mtime = null;
         this.resourceUrn = null;
         this.favorite = null;
+        this.contributor = null;
         this.pixbuf = null;
         this.pristinePixbuf = null;
         this.defaultAppName = null;
-
+        
         this.mimeType = null;
         this.rdfType = null;
         this.typeDescription = null;
@@ -286,6 +288,8 @@ const DocCommon = new Lang.Class({
 
         this.favorite = false;
         this.shared = false;
+        
+        
 
         this.collection = false;
         this._collectionIconWatcher = null;
@@ -326,6 +330,9 @@ const DocCommon = new Lang.Class({
         this.resourceUrn = cursor.get_string(Query.QueryColumns.RESOURCE_URN)[0];
         this.favorite = cursor.get_boolean(Query.QueryColumns.FAVORITE);
 
+        this.contributor = cursor.get_string(Query.QueryColumns.CONTRIBUTOR)[0];
+       
+ 
         let mtime = cursor.get_string(Query.QueryColumns.MTIME)[0];
         if (mtime) {
             let timeVal = GLib.time_val_from_iso8601(mtime)[1];
@@ -493,11 +500,15 @@ const DocCommon = new Lang.Class({
                             function(object, res) {
                                 try {
                                     this.pixbuf = GdkPixbuf.Pixbuf.new_from_stream_finish(res);
+
                                     this.thumbnailed = true;
                                     this.checkEffectsAndUpdateInfo();
                                 } catch (e) {
                                     this._failedThumbnailing = true;
                                 }
+
+                                // close the underlying stream immediately
+                                stream.close_async(0, null, null);
                             }));
                 } catch (e) {
                     this._failedThumbnailing = true;
@@ -604,6 +615,13 @@ const DocCommon = new Lang.Class({
             retval = '{ ?urn nie:isPartOf <' + this.id + '> }';
 
         return retval;
+    },
+
+    _finishLoad: function(docModel, callback, exception) {
+        if (exception)
+            Global.errorHandler.addLoadError(this, exception);
+
+        callback(this, docModel, exception);
     }
 });
 Signals.addSignalMethods(DocCommon.prototype);
@@ -637,10 +655,10 @@ const LocalDocument = new Lang.Class({
         Gd.pdf_loader_load_uri_async(this.uri, cancellable, Lang.bind(this,
             function(source, res) {
                 try {
-                    let document = Gd.pdf_loader_load_uri_finish(res);
-                    callback(this, document, null);
+                    let docModel = Gd.pdf_loader_load_uri_finish(res);
+                    this._finishLoad(docModel, callback, null);
                 } catch (e) {
-                    callback(this, null, e);
+                    this._finishLoad(null, callback, e);
                 }
             }));
     },
@@ -681,14 +699,10 @@ const GoogleDocument = new Lang.Class({
         let authorizer = new Gd.GDataGoaAuthorizer({ goa_object: source.object });
         let service = new GData.DocumentsService({ authorizer: authorizer });
 
-        // HACK: GJS doesn't support introspecting GTypes, so we need to use
-        // GObject.type_from_name(); but for that to work, we need at least one
-        // instance of the GType in question to have ever been created. Ensure that
-        let temp = new GData.DocumentsText();
         service.query_single_entry_async
             (service.get_primary_authorization_domain(),
              this.identifier, null,
-             GObject.type_from_name('GDataDocumentsText'),
+             GData.DocumentsText,
              cancellable, Lang.bind(this,
                  function(object, res) {
                      let entry = null;
@@ -712,12 +726,11 @@ const GoogleDocument = new Lang.Class({
                     Gd.pdf_loader_load_uri_async(this.identifier, cancellable, Lang.bind(this,
                         function(source, res) {
                             try {
-                                let document = Gd.pdf_loader_load_uri_finish(res);
-                                callback(this, document, null);
+                                let docModel = Gd.pdf_loader_load_uri_finish(res);
+                                this._finishLoad(docModel, callback, null);
                             } catch (e) {
                                 // report the outmost error only
-                                callback(this, null, exception);
-                                return;
+                                this._finishLoad(null, callback, exception);
                             }
                         }));
 
@@ -728,10 +741,10 @@ const GoogleDocument = new Lang.Class({
                     (entry, service, cancellable, Lang.bind(this,
                         function(source, res) {
                             try {
-                                let document = Gd.pdf_loader_load_gdata_entry_finish(res);
-                                callback(this, document, null);
+                                let docModel = Gd.pdf_loader_load_uri_finish(res);
+                                this._finishLoad(docModel, callback, null);
                             } catch (e) {
-                                callback(this, null, e);
+                                this._finishLoad(null, callback, e);
                             }
                         }));
             }));
@@ -852,12 +865,11 @@ const SkydriveDocument = new Lang.Class({
                     Gd.pdf_loader_load_uri_async(this.identifier, cancellable, Lang.bind(this,
                         function(source, res) {
                             try {
-                                let document = Gd.pdf_loader_load_uri_finish(res);
-                                callback(this, document, null);
+                                let docModel = Gd.pdf_loader_load_uri_finish(res);
+                                this._finishLoad(docModel, callback, null);
                             } catch (e) {
                                 // report the outmost error only
-                                callback(this, null, exception);
-                                return;
+                                this._finishLoad(null, callback, exception);
                             }
                         }));
 
@@ -868,10 +880,10 @@ const SkydriveDocument = new Lang.Class({
                     (entry, service, cancellable, Lang.bind(this,
                         function(source, res) {
                             try {
-                                let document = Gd.pdf_loader_load_zpj_entry_finish(res);
-                                callback(this, document, null);
+                                let docModel = Gd.pdf_loader_load_zpj_entry_finish(res);
+                                this._finishLoad(docModel, callback, null);
                             } catch (e) {
-                                callback(this, null, e);
+                                this._finishLoad(null, callback, e);
                             }
                         }));
             }));
@@ -997,13 +1009,19 @@ const DocumentManager = new Lang.Class({
     },
 
     setActiveItem: function(doc) {
-        if (this.parent(doc)) {
+        if (!this.parent(doc))
+            return;
 
-            if (doc && !doc.collection) {
-                let recentManager = Gtk.RecentManager.get_default();
-                recentManager.add_item(doc.uri);
-            }
+        if (!doc)
+            return;
+
+        if (doc.collection) {
+            Global.collectionManager.setActiveItem(doc);
+            return;
         }
+
+        let recentManager = Gtk.RecentManager.get_default();
+        recentManager.add_item(doc.uri);
     },
 
     getModel: function() {

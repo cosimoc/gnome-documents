@@ -286,11 +286,6 @@ gd_thumb_nav_constructed (GObject *object)
 	if (priv->thumbview != NULL) {
 		gtk_container_add (GTK_CONTAINER (priv->sw), priv->thumbview);
 		gtk_widget_show_all (priv->sw);
-
-		gtk_icon_view_set_columns (GTK_ICON_VIEW (priv->thumbview),
-					   G_MAXINT);
-
-		gtk_widget_set_size_request (priv->thumbview, -1, -1);
 		gd_sidebar_thumbnails_set_item_height (GD_SIDEBAR_THUMBNAILS (priv->thumbview),
 						       115);
 

@@ -1,3 +1,12 @@
+0.5.3
+=====
+
+- Fix thumbnails not showing in fullscreen preview with recent GTK
+- Use new GJS API to detect cancellations
+- Use GtkSearchEntry
+- Initial work on overview performance improvements
+- Lot of code refactoring
+
 0.5.2.1
 =======
 

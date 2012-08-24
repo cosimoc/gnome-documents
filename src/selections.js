@@ -19,6 +19,7 @@
  *
  */
 
+const Clutter = imports.gi.Clutter;
 const EvView = imports.gi.EvinceView;
 const Gd = imports.gi.Gd;
 const Gdk = imports.gi.Gdk;
@@ -34,6 +35,7 @@ const Global = imports.global;
 const Manager = imports.manager;
 const Notifications = imports.notifications;
 const Query = imports.query;
+const Sharing = imports.sharing;
 const Tweener = imports.util.tweener;
 const Utils = imports.utils;
 
@@ -234,7 +236,7 @@ const SetCollectionForSelectionJob = new Lang.Class({
         let urns = Global.selectionController.getSelection();
         urns.forEach(Lang.bind(this,
             function(urn) {
-                // never add a collection to itself!!
+                // never add a collection to itself!!#FIXME this code doesn't work, I can add a collection to itself
                 if (urn == this._collectionUrn)
                     return;
 
@@ -717,9 +719,10 @@ Signals.addSignalMethods(SelectionController.prototype);
 const SelectionToolbar = new Lang.Class({
     Name: 'SelectionToolbar',
 
-    _init: function() {
+    _init: function(parentActor) {
         this._itemListeners = {};
         this._insideRefresh = false;
+        this._parentActor = parentActor;
 
         this.widget = new Gtk.Toolbar({ show_arrow: false,
                                         icon_size: Gtk.IconSize.LARGE_TOOLBAR });
@@ -729,6 +732,33 @@ const SelectionToolbar = new Lang.Class({
                                             show_on_set_parent: false,
                                             opacity: 0 });
         Utils.alphaGtkWidget(this.actor.get_widget());
+
+        let widthConstraint =
+            new Clutter.BindConstraint({ source: this._parentActor,
+                                         coordinate: Clutter.BindCoordinate.WIDTH,
+                                         offset: - 300 });
+        this.actor.add_constraint(widthConstraint);
+        this.actor.connect('notify::width', Lang.bind(this,
+            function() {
+                let width = this._parentActor.width;
+                let offset = 300;
+
+                if (width > 1000)
+                    offset += (width - 1000);
+                else if (width < 600)
+                    offset -= (600 - width);
+
+                widthConstraint.offset = - offset;
+            }));
+
+        this.actor.add_constraint(
+            new Clutter.AlignConstraint({ align_axis: Clutter.AlignAxis.X_AXIS,
+                                          source: this._parentActor,
+                                          factor: 0.50 }));
+        this.actor.add_constraint(
+            new Clutter.AlignConstraint({ align_axis: Clutter.AlignAxis.Y_AXIS,
+                                          source: this._parentActor,
+                                          factor: 0.95 }));
 
         this._leftBox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL });
         this._leftGroup = new Gtk.ToolItem({ child: this._leftBox });
@@ -758,9 +788,17 @@ const SelectionToolbar = new Lang.Class({
                                                                            pixel_size: 32 })});
         this._toolbarCollection.set_tooltip_text(_("Organize"));
         this._rightBox.add(this._toolbarCollection);
-        this._toolbarCollection.connect('clicked', Lang.bind(this, this._onToolbarCollection));
-        this._toolbarCollection.show_all();
 
+	    this._toolbarCollection.connect('clicked', Lang.bind(this, this._onToolbarCollection));
+	    this._toolbarCollection.show_all();
+	
+	    this._toolbarShare = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'emblem-shared-symbolic',
+                                                                           pixel_size: 32 })});
+        this._toolbarShare.set_tooltip_text(_("Share"));
+        this._rightBox.add(this._toolbarShare);
+        this._toolbarShare.connect('clicked', Lang.bind(this, this._onToolbarShare));
+	    this._toolbarShare.show_all();
+        
         this._toolbarTrash = new Gtk.Button({ child: new Gtk.Image ({ icon_name: 'user-trash-symbolic',
                                                                       pixel_size: 32 })});
         this._toolbarTrash.set_tooltip_text(_("Delete"));
@@ -824,6 +862,7 @@ const SelectionToolbar = new Lang.Class({
         let showTrash = true;
         let showPrint = true;
         let showOpen = true;
+	    let showShare = true;
 
         this._insideRefresh = true;
 
@@ -839,6 +878,9 @@ const SelectionToolbar = new Lang.Class({
                     (apps.indexOf(doc.defaultAppName) == -1))
                     apps.push(doc.defaultAppName);
 
+		        if ((doc instanceof Documents.LocalDocument) ||(doc.collection != false) || (selection.length > 1))
+		        showShare = false;
+		
                 showTrash &= doc.canTrash();
                 showPrint &= !doc.collection;
             }));
@@ -881,6 +923,7 @@ const SelectionToolbar = new Lang.Class({
         this._toolbarTrash.set_visible(showTrash);
         this._toolbarOpen.set_visible(showOpen);
         this._toolbarFavorite.set_visible(showFavorite);
+	    this._toolbarShare.set_visible(showShare);
 
         this._insideRefresh = false;
     },
@@ -922,6 +965,19 @@ const SelectionToolbar = new Lang.Class({
             function(urn) {
                 let doc = Global.documentManager.getItemById(urn);
                 doc.setFavorite(!doc.favorite);
+            }));
+    },
+
+    _onToolbarShare: function(widget) {
+	    let dialog = new Sharing.SharingDialog();
+        this._fadeOut();
+
+        dialog.widget.connect('response', Lang.bind(this,
+            function(widget, response) {
+                if (response == Gtk.ResponseType.OK) {
+                    dialog.widget.destroy();
+                    this._fadeIn();
+                }
             }));
     },
 
@@ -981,3 +1037,10 @@ const SelectionToolbar = new Lang.Class({
               onCompleteScope: this });
     }
 });
+
+
+
+
+
+
+

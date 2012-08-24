@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnome-documents master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-13 19:52+0200\n"
+"POT-Creation-Date: 2012-06-27 16:22+0200\n"
 "PO-Revision-Date: 2012-06-13 19:52+0200\n"
 "Last-Translator: Khaled Hosny <khaledhosny@eglug.org>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
@@ -86,37 +86,37 @@ msgstr "عَنْ المستندات"
 msgid "Quit"
 msgstr "أنهِ"
 
-#: ../src/documents.js:621 ../src/sources.js:95
+#: ../src/documents.js:633 ../src/sources.js:95
 msgid "Local"
 msgstr "محلّي"
 
 #. overridden
-#: ../src/documents.js:674
+#: ../src/documents.js:686
 msgid "Google Docs"
 msgstr "مستندات جوجل"
 
-#: ../src/documents.js:675
+#: ../src/documents.js:687
 msgid "Google"
 msgstr "جوجل"
 
-#: ../src/documents.js:744 ../src/documents.js:884
+#: ../src/documents.js:751 ../src/documents.js:890
 msgid "Spreadsheet"
 msgstr "جدول ممتد"
 
-#: ../src/documents.js:746 ../src/documents.js:886
+#: ../src/documents.js:753 ../src/documents.js:892
 msgid "Presentation"
 msgstr "عرض تقديمي"
 
-#: ../src/documents.js:748 ../src/documents.js:888
+#: ../src/documents.js:755 ../src/documents.js:894
 msgid "Collection"
 msgstr "تجميع"
 
-#: ../src/documents.js:750 ../src/documents.js:890
+#: ../src/documents.js:757 ../src/documents.js:896
 msgid "Document"
 msgstr "مستندات"
 
 #. overridden
-#: ../src/documents.js:817 ../src/documents.js:818
+#: ../src/documents.js:824 ../src/documents.js:825
 msgid "Skydrive"
 msgstr "Skydrive"
 
@@ -138,39 +138,28 @@ msgstr "تعذّر تحميل المُستند"
 msgid "Cannot find \"unoconv\", please check your LibreOffice installation"
 msgstr "تعذّر العثور على \"unoconv\"، رجاءً تأكد من تثبيت ليبر أوفيس"
 
-#: ../src/loadMore.js:68
-#, c-format
-msgid "Load %d more document"
-msgid_plural "Load %d more documents"
-msgstr[0] "حمّل %d مستندات إضافيّة"
-msgstr[1] "حمّل مستند واحد إضافي"
-msgstr[2] "حمّل مستندين إضافيين"
-msgstr[3] "حمّل %d مستندات إضافيّة"
-msgstr[4] "حمّل %d مستندا إضافيّا"
-msgstr[5] "حمّل %d مستند إضافي"
-
-#: ../src/mainToolbar.js:164
+#: ../src/mainToolbar.js:165
 msgid "New and Recent"
 msgstr "جديد وحديث"
 
-#: ../src/mainToolbar.js:171
+#: ../src/mainToolbar.js:172
 #, c-format
 msgid "Results for \"%s\""
 msgstr "نتائج \"%s\""
 
-#: ../src/mainToolbar.js:173
+#: ../src/mainToolbar.js:174
 msgid "filtered by title"
 msgstr "مُرشّحة حسب العنوان"
 
-#: ../src/mainToolbar.js:175
+#: ../src/mainToolbar.js:176
 msgid "filtered by author"
 msgstr "مُرشّحة حسب المؤلف"
 
-#: ../src/mainToolbar.js:182
+#: ../src/mainToolbar.js:183
 msgid "Click on items to select them"
 msgstr "انقر على عناصر لاختيارها"
 
-#: ../src/mainToolbar.js:184
+#: ../src/mainToolbar.js:185
 #, c-format
 msgid "%d selected"
 msgid_plural "%d selected"
@@ -181,20 +170,20 @@ msgstr[3] "%d عناصر مُختارة"
 msgstr[4] "%d عنصرا مُختارة"
 msgstr[5] "%d عنصر مُختارة"
 
-#: ../src/mainToolbar.js:205
+#: ../src/mainToolbar.js:206
 #, c-format
 msgid "%d of %d"
 msgstr "%d من %d"
 
-#: ../src/mainToolbar.js:220
+#: ../src/mainToolbar.js:221
 msgid "Done"
 msgstr "تم"
 
-#: ../src/mainToolbar.js:238 ../src/mainToolbar.js:265
+#: ../src/mainToolbar.js:239 ../src/mainToolbar.js:266
 msgid "Back"
 msgstr "السابق"
 
-#: ../src/mainToolbar.js:247
+#: ../src/mainToolbar.js:248
 msgid "Select Items"
 msgstr "اختر العناصر"
 
@@ -269,34 +258,34 @@ msgstr "العنوان"
 msgid "Author"
 msgstr "المؤلف"
 
-#: ../src/selections.js:744
+#: ../src/selections.js:773
 msgid "Print"
 msgstr "اطبع"
 
-#: ../src/selections.js:759
+#: ../src/selections.js:788
 msgid "Organize"
 msgstr "نظّم"
 
-#: ../src/selections.js:766
+#: ../src/selections.js:795
 msgid "Delete"
 msgstr "احذف"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:855 ../src/view.js:67
+#: ../src/selections.js:884 ../src/view.js:120
 #, c-format
 msgid "Open with %s"
 msgstr "افتح باستخدام %s"
 
 #. Translators: this is the Open action in a context menu
-#: ../src/selections.js:858 ../src/view.js:70
+#: ../src/selections.js:887 ../src/view.js:123
 msgid "Open"
 msgstr "افتح"
 
-#: ../src/selections.js:867 ../src/view.js:80
+#: ../src/selections.js:896 ../src/view.js:133
 msgid "Remove from favorites"
 msgstr "أزل من المفضّلة"
 
-#: ../src/selections.js:871 ../src/view.js:80
+#: ../src/selections.js:900 ../src/view.js:133
 msgid "Add to favorites"
 msgstr "أضف للمفضّلة"
 
@@ -312,11 +301,22 @@ msgstr "المصادر"
 msgid "Loading..."
 msgstr "يُحمّل..."
 
-#: ../src/view.js:194
+#: ../src/view.js:76
+#, c-format
+msgid "Load %d more document"
+msgid_plural "Load %d more documents"
+msgstr[0] "حمّل %d مستندات إضافيّة"
+msgstr[1] "حمّل مستند واحد إضافي"
+msgstr[2] "حمّل مستندين إضافيين"
+msgstr[3] "حمّل %d مستندات إضافيّة"
+msgstr[4] "حمّل %d مستندا إضافيّا"
+msgstr[5] "حمّل %d مستند إضافي"
+
+#: ../src/view.js:261
 msgid "Yesterday"
 msgstr "بالأمس"
 
-#: ../src/view.js:196
+#: ../src/view.js:263
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
@@ -327,11 +327,11 @@ msgstr[3] "منذ %d أيام"
 msgstr[4] "منذ %d يوما"
 msgstr[5] "منذ %d يوم"
 
-#: ../src/view.js:200
+#: ../src/view.js:267
 msgid "Last week"
 msgstr "الأسبوع الماضي"
 
-#: ../src/view.js:202
+#: ../src/view.js:269
 #, c-format
 msgid "%d week ago"
 msgid_plural "%d weeks ago"
@@ -342,11 +342,11 @@ msgstr[3] "منذ %d أسابيع"
 msgstr[4] "منذ %d أسبوعا"
 msgstr[5] "منذ %d أسبوع"
 
-#: ../src/view.js:206
+#: ../src/view.js:273
 msgid "Last month"
 msgstr "الشهر الماضي"
 
-#: ../src/view.js:208
+#: ../src/view.js:275
 #, c-format
 msgid "%d month ago"
 msgid_plural "%d months ago"
@@ -357,11 +357,11 @@ msgstr[3] "منذ %d أشهر"
 msgstr[4] "منذ %d شهرا"
 msgstr[5] "منذ %d شهر"
 
-#: ../src/view.js:212
+#: ../src/view.js:279
 msgid "Last year"
 msgstr "السنة الماضية"
 
-#: ../src/view.js:214
+#: ../src/view.js:281
 #, c-format
 msgid "%d year ago"
 msgid_plural "%d years ago"

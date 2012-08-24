@@ -70,6 +70,10 @@ GType gd_tagged_entry_get_type (void) G_GNUC_CONST;
 
 GdTaggedEntry *gd_tagged_entry_new (void);
 
+void     gd_tagged_entry_set_tag_button_visible (GdTaggedEntry *self,
+                                                 gboolean       visible);
+gboolean gd_tagged_entry_get_tag_button_visible (GdTaggedEntry *self);
+
 gboolean gd_tagged_entry_add_tag (GdTaggedEntry *entry,
                                   const gchar *id,
                                   const gchar *label);

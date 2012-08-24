@@ -38,7 +38,8 @@ const QueryColumns = {
     RDFTYPE: 8,
     RESOURCE_URN: 9,
     FAVORITE: 10,
-    SHARED: 11
+    SHARED: 11,
+    CONTRIBUTOR: 12
 };
 
 const QueryFlags = {
@@ -198,6 +199,7 @@ const QueryBuilder = new Lang.Class({
             'nie:dataSource(?urn) ' + // resource URN
             '( EXISTS { ?urn nao:hasTag nao:predefined-tag-favorite } ) ' + // favorite
             '( EXISTS { ?urn nco:contributor ?contributor FILTER ( ?contributor != ?creator ) } ) ' + // shared
+            '(SELECT nco:fullname(?contributor) WHERE { ?urn nco:contributor ?contributor FILTER ( ?contributor != ?creator ) }) '     +  //contributor
             whereSparql + tailSparql;
 
         return sparql;

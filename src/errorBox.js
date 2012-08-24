@@ -21,7 +21,10 @@
 
 const GLib = imports.gi.GLib;
 const Gtk = imports.gi.Gtk;
+const GtkClutter = imports.gi.GtkClutter;
+
 const Lang = imports.lang;
+const Tweener = imports.util.tweener;
 
 const _ICON_SIZE = 128;
 
@@ -44,19 +47,48 @@ const ErrorBox = new Lang.Class({
         this.widget.add(this._image);
 
         this._primaryLabel =
-            new Gtk.Label({ label: '<big><b>' + GLib.markup_escape_text(primary, -1) + '</b></big>',
+            new Gtk.Label({ label: '',
                             use_markup: true,
                             halign: Gtk.Align.CENTER,
                             valign: Gtk.Align.CENTER });
         this.widget.add(this._primaryLabel);
 
         this._secondaryLabel =
-            new Gtk.Label({ label: GLib.markup_escape_text(secondary, -1),
+            new Gtk.Label({ label: '',
                             use_markup: true,
                             halign: Gtk.Align.CENTER,
                             valign: Gtk.Align.CENTER });
         this.widget.add(this._secondaryLabel);
 
         this.widget.show_all();
+
+        this.actor = new GtkClutter.Actor({ contents: this.widget,
+                                            opacity: 255 });
+    },
+
+    update: function(primary, secondary) {
+        let primaryMarkup = '<big><b>' + GLib.markup_escape_text(primary, -1) + '</b></big>';
+        let secondaryMarkup = GLib.markup_escape_text(secondary, -1);
+
+        this._primaryLabel.label = primaryMarkup;
+        this._secondaryLabel.label = secondaryMarkup;
+    },
+
+    moveIn: function() {
+        this.actor.raise_top();
+
+        Tweener.addTween(this.actor, { opacity: 255,
+                                       time: 0.30,
+                                       transition: 'easeOutQuad' });
+    },
+
+    moveOut: function() {
+        Tweener.addTween(this.actor, { opacity: 0,
+                                       time: 0.30,
+                                       transition: 'easeOutQuad',
+                                       onComplete: function () {
+                                           this.actor.lower_bottom();
+                                       },
+                                       onCompleteScope: this });
     }
 });

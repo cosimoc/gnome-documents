@@ -1,6 +1,6 @@
 dnl -*- mode: m4 -*-
 AC_PREREQ(2.63)
-AC_INIT([gnome-documents],[0.5.2.1],[],[gnome-documents])
+AC_INIT([gnome-documents],[0.5.3],[],[gnome-documents])
 
 AM_CONFIG_HEADER(config/config.h)
 AC_CONFIG_SRCDIR([src/main.js])
@@ -55,7 +55,7 @@ GTK_MIN_VERSION=3.5.5
 GOBJECT_INTROSPECTION_MIN_VERSION=1.31.6
 GDATA_MIN_VERSION=0.11.0
 GOA_MIN_VERSION=3.2.0
-CLUTTER_GTK_MIN_VERSION=1.0.2
+CLUTTER_GTK_MIN_VERSION=1.3.2
 TRACKER_MIN_VERSION=0.13.1
 ZAPOJIT_MIN_VERSION=0.0.2
 

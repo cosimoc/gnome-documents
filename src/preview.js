@@ -39,18 +39,28 @@ const _FULLSCREEN_TOOLBAR_TIMEOUT = 2; // seconds
 const PreviewView = new Lang.Class({
     Name: 'PreviewView',
 
-    _init: function(model) {
-        this._model = model;
+    _init: function() {
+        this._model = null;
 
-        this.widget = EvView.View.new();
-        this.widget.set_model(this._model);
-        this.widget.show();
+        this.widget = new Gtk.ScrolledWindow({ hexpand: true,
+                                               vexpand: true,
+                                               shadow_type: Gtk.ShadowType.IN });
+        this.widget.get_style_context().add_class('documents-scrolledwin');
 
-        this.widget.connect('button-press-event',
+        this._createView();
+        this.widget.show_all();
+    },
+
+    _createView: function() {
+        this.view = EvView.View.new();
+        this.widget.add(this.view);
+        this.view.show();
+
+        this.view.connect('button-press-event',
                             Lang.bind(this, this._onButtonPressEvent));
-        this.widget.connect('button-release-event',
+        this.view.connect('button-release-event',
                             Lang.bind(this, this._onButtonReleaseEvent));
-        this.widget.connect('key-press-event',
+        this.view.connect('key-press-event',
                             Lang.bind(this, this._onKeyPressEvent));
     },
 
@@ -60,24 +70,24 @@ const PreviewView = new Lang.Class({
 
         if ((keyval == Gdk.KEY_Page_Up) &&
             ((state & Gdk.ModifierType.CONTROL_MASK) != 0)) {
-            this.widget.previous_page();
+            this.view.previous_page();
             return true;
         }
 
         if ((keyval == Gdk.KEY_Page_Down) &&
             ((state & Gdk.ModifierType.CONTROL_MASK) != 0)) {
-            this.widget.next_page();
+            this.view.next_page();
             return true;
         }
 
         if (keyval == Gdk.KEY_Page_Up) {
-            this.widget.scroll(Gtk.ScrollType.PAGE_BACKWARD, false);
+            this.view.scroll(Gtk.ScrollType.PAGE_BACKWARD, false);
             return true;
         }
 
         if (keyval == Gdk.KEY_space ||
             keyval == Gdk.KEY_Page_Down) {
-            this.widget.scroll(Gtk.ScrollType.PAGE_FORWARD, false);
+            this.view.scroll(Gtk.ScrollType.PAGE_FORWARD, false);
             return true;
         }
 
@@ -111,8 +121,22 @@ const PreviewView = new Lang.Class({
         return false;
     },
 
-    destroy: function() {
-        this.widget.destroy();
+    setModel: function(model) {
+        if (this._model == model)
+            return;
+
+        if (this.view)
+            this.view.destroy();
+
+        this._createView();
+        this._model = model;
+
+        if (this._model)
+            this.view.set_model(this._model);
+    },
+
+    getModel: function() {
+        return this._model;
     }
 });
 
@@ -149,14 +173,13 @@ const PreviewThumbnails = new Lang.Class({
     }
 });
 
-const PreviewEmbed = new Lang.Class({
-    Name: 'PreviewEmbed',
+const PreviewFullscreen = new Lang.Class({
+    Name: 'PreviewFullscreen',
 
-    _init: function(model, layout, parentActor, scrolledWindow) {
-        this._layout = layout;
-        this._parentActor = parentActor;
-        this._previewScrolledWindow = scrolledWindow;
+    _init: function(previewView, layout, parentActor) {
         this._motionTimeoutId = 0;
+
+        let model = previewView.getModel();
 
         this._filter = new Gd.FullscreenFilter();
         this._filter.connect('motion-event', Lang.bind(this, this._fullscreenMotionHandler));
@@ -165,17 +188,17 @@ const PreviewEmbed = new Lang.Class({
         // create thumb bar
         this._thumbBar = new PreviewThumbnails(model);
 
-        this._layout.add(this._thumbBar.actor,
+        layout.add(this._thumbBar.actor,
             Clutter.BinAlignment.FIXED, Clutter.BinAlignment.FIXED);
 
         let widthConstraint =
-            new Clutter.BindConstraint({ source: this._parentActor,
+            new Clutter.BindConstraint({ source: parentActor,
                                          coordinate: Clutter.BindCoordinate.WIDTH,
                                          offset: - 300 });
         this._thumbBar.actor.add_constraint(widthConstraint);
         this._thumbBar.actor.connect('notify::width', Lang.bind(this,
             function() {
-                let width = this._parentActor.width;
+                let width = parentActor.width;
                 let offset = 300;
 
                 if (width > 1000)
@@ -188,25 +211,25 @@ const PreviewEmbed = new Lang.Class({
 
         this._thumbBar.actor.add_constraint(
             new Clutter.AlignConstraint({ align_axis: Clutter.AlignAxis.X_AXIS,
-                                          source: this._parentActor,
+                                          source: parentActor,
                                           factor: 0.50 }));
         this._thumbBar.actor.add_constraint(
             new Clutter.AlignConstraint({ align_axis: Clutter.AlignAxis.Y_AXIS,
-                                          source: this._parentActor,
+                                          source: parentActor,
                                           factor: 0.95 }));
 
         // create toolbar
         this._fsToolbar = new MainToolbar.PreviewToolbar();
         this._fsToolbar.setModel(model);
 
-        this._layout.add(this._fsToolbar.actor,
+        layout.add(this._fsToolbar.actor,
             Clutter.BinAlignment.FIXED, Clutter.BinAlignment.FIXED);
 
-        let vScrollbar = this._previewScrolledWindow.get_vscrollbar();
+        let vScrollbar = previewView.widget.get_vscrollbar();
 
         let sizeConstraint = new Clutter.BindConstraint
             ({ coordinate: Clutter.BindCoordinate.WIDTH,
-               source: this._parentActor,
+               source: parentActor,
                offset: (vScrollbar.get_visible() ?
                         (- (vScrollbar.get_preferred_width()[1])) : 0 ) });
 
