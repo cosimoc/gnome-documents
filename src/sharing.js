@@ -58,9 +58,6 @@ const SharingDialog = new Lang.Class({
         this.identifier = doc.identifier;
         this.resourceUrn = doc.resourceUrn;
 
-        this.writer = false;
-        this.reader = false;
-        this.newContact = null;
         this.entry = null;
         this._createGDataEntry();
 
@@ -153,7 +150,6 @@ const SharingDialog = new Lang.Class({
                                            hexpand: true,
                                            halign: Gtk.Align.START });
         largeGrid.add(this._addContact);
-        this._addContact.connect("changed", Lang.bind (this, this._setNewContact));
 
         this._comboBoxText = new Gtk.ComboBoxText({ halign: Gtk.Align.START });
         let combo = [_("Set permission"), _("Can edit"), _("Can view") ]; //Permission setting labels in combobox
@@ -161,7 +157,6 @@ const SharingDialog = new Lang.Class({
             this._comboBoxText.append_text(combo[i]);
 
         this._comboBoxText.set_active(0);
-        this._comboBoxText.connect('changed', Lang.bind(this, this._setNewContactPermission));
         largeGrid.attach_next_to(this._comboBoxText, this._addContact, 1, 1, 1);
 
       /* There is no API for this
@@ -308,43 +303,35 @@ const SharingDialog = new Lang.Class({
 
          let authorizer = new GData.GoaAuthorizer({ goa_object: source.object });
          let service = new GData.DocumentsService({ authorizer: authorizer });
-
-         let exception = null;
-         this._getNewContact();
          let accessRule = new GData.AccessRule();
-         try {
-             if(this.reader)
-             accessRule.set_role(GData.DOCUMENTS_ACCESS_ROLE_READER);
-             else if(this.writer)
-             accessRule.set_role(GData.DOCUMENTS_ACCESS_ROLE_WRITER);
-             accessRule.set_scope(GData.ACCESS_SCOPE_USER, this.newContact);
-             let aclLink = this.entry.look_up_link(GData.LINK_ACCESS_CONTROL_LIST);
-             let insertedAccessRule = service.insert_entry(service.get_primary_authorization_domain(),
-                                                           aclLink.get_uri(), accessRule, null);
-         } catch(e) {
-             exception = e;
-             log("Error inserting New Rule " + e.message);
-		 }
-    },
 
-    _setNewContact: function() {
-       this.newContact = this._addContact.get_text();
+         let newContact = this._getNewContact();
+         accessRule.set_role(newContact.role);
+         accessRule.set_scope(GData.ACCESS_SCOPE_USER, newContact.name);
+
+         let aclLink = this.entry.look_up_link(GData.LINK_ACCESS_CONTROL_LIST);
+
+         service.insert_entry_async(service.get_primary_authorization_domain(),
+             aclLink.get_uri(), accessRule, null, Lang.bind(this,
+                 function(service, res) {
+                     try {
+                         let insertedAccessRule = service.insert_entry_finish(res);
+                     } catch(e) {
+                         log("Error inserting new ACL rule " + e.message);
+		     }
+                 }));
     },
 
     _getNewContact: function() {
-        return this.newContact;
-    },
-
-    _setNewContactPermission: function() {
         let activeItem = this._comboBoxText.get_active();
-        if(activeItem == 1) {
-            log("1");
-            this.writer = true;
-        }
-        if(activeItem == 2) {
-           log("2");
-            this.reader = true;
-        }
+        let newContact = { name: this._addContact.get_text() };
+
+        if (activeItem == 1)
+            newContact.role = GData.DOCUMENTS_ACCESS_ROLE_WRITER;
+        else if (activeItem == 2)
+            newContact.role = GData.DOCUMENTS_ACCESS_ROLE_READER;
+
+        return newContact;
     },
 
     _setDocumentPermission: function() {
